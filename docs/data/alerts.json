@@ -1,68 +1,20 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795191406&end_ts=1795213006&period_interval=60",
-   "delta": 0.11,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.27,
-   "headlines": [
-    {
-     "published": "2026-11-20T16:47:46+00:00",
-     "source": "bloomingbit",
-     "status": "verified-fetch",
-     "title": "Trump Administration Pushes for Ukraine-Russia Peace Deal by Early January 2027 - bloomingbit",
-     "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1oQllEaHFuZENkTlQyTFh0cEwwM3poczFVMnFVTHg3MWNGS2tpQmVONlFxc19uNlRqSTFWakZLQmtSanhrS1cyTGNSbDRhM0VhblhLRA?oc=5"
-    },
-    {
-     "published": "2026-11-20T17:47:14+00:00",
-     "source": "TechJuice",
-     "status": "verified-fetch",
-     "title": "Government Offers Free Chip Design Training With Rs. 50,000 Stipend - TechJuice",
-     "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOQTBZbzJsbU4tQXdtS0dBcWVVZmduaDFJNndETEtVc0MyZGxvdWJ5RFB0M0o2QlhQQjllS3BkYmxmSDFyMzY3Yk42Zm1Oa2UyeHpLNVU5OUVLWEhjeWlDLU13Yjl5cVBqWGZ2R2FTTmtPMjUyMHlPcUZSYVZuSE1MN3N5c2Z6Y2hEcHUtQ3ZydGpHNUMzOWc?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
-   "t": 1795212000,
-   "t_iso": "2026-11-20T22:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXBTCMINY-27JAN01-50000.00",
-   "title": "Will Bitcoin be below $50000.00 by Jan 1, 2027 at 12:00am ET?",
-   "to": 0.38,
-   "topic": "crypto",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-55000.00/candlesticks?start_ts=1795209406&end_ts=1795213006&period_interval=1",
-   "delta": 0.22,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.48,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
-   "t": 1795210320,
-   "t_iso": "2026-11-20T21:32:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXBTCMINY-27JAN01-55000.00",
-   "title": "Will Bitcoin be below $55000.00 by Jan 1, 2027 at 12:00am ET?",
-   "to": 0.7,
-   "topic": "crypto",
-   "window": "seconds"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795209406&end_ts=1795213006&period_interval=1",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795194945&end_ts=1795216545&period_interval=60",
    "delta": -0.73,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
    "flags": [],
    "from": 0.99,
    "headlines": [
+    {
+     "published": "2026-11-20T22:06:49+00:00",
+     "source": "The Washington Post",
+     "status": "verified-fetch",
+     "title": "Who gets to look presidential? - The Washington Post",
+     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOdktFNHBWb0ZaTmNKX1BweUtVTWVsVzd3N1RjaGdVZkxOSUlGR0pzX2Nld2FkOUQ5S3h2V1RDZk5nN00wSnpIeF95WnVpcEo0T21LLUhVQTNXaDhZbjNEREc0Z2FwX3U4NVdaMUpfVWdTdTR6anB2UDgzZXQ1TjZCYlJ3?oc=5"
+    },
     {
      "published": "2026-11-20T21:55:00+00:00",
      "source": "The Independent",
@@ -76,35 +28,21 @@
      "status": "verified-fetch",
      "title": "Finding the anti-Trump: The Democratic contenders for president in 2028 - Nine.com.au",
      "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOMmNVM1lubktoMFU5cHZUZm93TWsxbnZ3VEg2RjNMQlZVMnBZN2VfUXpkRWdvaUUwYWI2OEJFM2pxeWpVM0o3Ym9yRC1RT3otaTJiMzN3SHlJbnc0d1llR0xFQWt2TzN5M1VocThIVjBRNWdTSEVnOVRPLXJiN3huVFEwWWVxYjVEOGY3TmJiQzhDNExFeFg5TkQ3cUdGem5BdFN6X1phTEdyUWFVWXZzcEZrbjNXbFUwbEFsYUQ5RE5Tcm1XZ3RuSkpB?oc=5"
-    },
-    {
-     "published": "2026-11-20T15:59:28+00:00",
-     "source": "Yahoo",
-     "status": "verified-fetch",
-     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - Yahoo",
-     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNWFV2SGR0bjJBNi1DQl9FRHNxMXItN182MmtFdzBNOXdvWUYyNEttM2dGSndZa0FxRkR5UHpyU0RGOHVnUHJUUVBMNEdkVFBtOTNqZVFOTTlwck9sQm5tak9MajJhYnNta3V4Ymk5am9zQS1YRkRJbjZ2Z0w4MUVrejd2b2hibGVHRVV5NVhtWQ?oc=5"
-    },
-    {
-     "published": "2026-11-20T15:59:28+00:00",
-     "source": "The Daily Beast",
-     "status": "verified-fetch",
-     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - The Daily Beast",
-     "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOaDdvSTVHTGZEVUlGdXlyXzBZU3dQNVRBWUIwMm5DQkktWkpNSG5yUnBaamlvazhEYy00MWxRSjZ2UHAtcmFBUng5S3JfcFlwVEx0SVc5eHhwblNPaWVCbE52aXFid0VxWnh1aXRLbzV3MEJqNTlCT1Vxa3pVZ3I2TUVzRWVERXRKMkJ1YWRCTzYyRmtKUTlobmlwLUR1bVdhdjBrYnBn?oc=5"
     }
    ],
    "news_status": "ok",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JOSS",
-   "t": 1795209540,
-   "t_iso": "2026-11-20T21:19:00+00:00",
+   "t": 1795212000,
+   "t_iso": "2026-11-20T22:00:00+00:00",
    "threshold": 0.1,
    "ticker": "KXPRESNOMD-28-JOSS",
    "title": "Will Jon Ossoff be the Democratic Presidential nominee in 2028?",
    "to": 0.26,
    "topic": "elections",
-   "window": "seconds"
+   "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795191406&end_ts=1795213006&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795194945&end_ts=1795216545&period_interval=60",
    "delta": 0.858,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -112,11 +50,11 @@
    "from": 0.005,
    "headlines": [
     {
-     "published": "2026-11-20T21:55:14+00:00",
-     "source": "Yahoo News New Zealand",
+     "published": "2026-11-20T21:55:00+00:00",
+     "source": "The Independent",
      "status": "verified-fetch",
-     "title": "Rising star among Democrats becomes the new frontrunner for 2028 nod - Yahoo News New Zealand",
-     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNR0sxb2R0Ti1EbE0wSVdUS3l0VWtqcm1zRlRLdVRhQ0xIS1cxWExtbFlGbEtkMG14Z05mTE9TZDBCQk54aFRGQXg2YVkzaEtpZFQwMzZRZkpFTTNPODZMdVB3Z0ZLQzItNFUwQ3BoZmF3QnNuS1JadmZCajYyS2lNaHJn?oc=5"
+     "title": "Rising star among Democrats becomes the new frontrunner for 2028 nod - The Independent",
+     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQnF0bk1JdWhvSkNFS0FSQ0tfb0VNUTFaa2ZOSnVSYkdEc1FUQkdHdFNPT0o0ZFRCWF9PX2piYmM4Sy0zVUN2YUtUSDg0bnpGZmFzNWd2VkZMUFJ3Mkp1S3JwcVZRZVQzT2p6Smg5MHJydUZEMFNNSGxUYUxoUHhaTnJ4Z1FzVkYySU5SRnAzZHNEQ1hDSWVkNzh5WDQyQTF3dEM2eVNDc3BkZVNtcjlENjNZSUpQT0lIUWt4OFFiUXFpdw?oc=5"
     }
    ],
    "news_status": "ok",
@@ -131,7 +69,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -186,7 +124,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -213,7 +151,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -234,7 +172,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -261,7 +199,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -274,6 +212,13 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
+    },
+    {
+     "published": "2026-11-19T06:49:53+00:00",
+     "source": "Peradaban.id",
+     "status": "verified-fetch",
+     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
+     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
     },
     {
      "published": "2026-11-19T03:29:34+00:00",
@@ -295,7 +240,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T22:17:20.367342+00:00",
+ "generated_at": "2026-11-20T23:16:19.907939+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
