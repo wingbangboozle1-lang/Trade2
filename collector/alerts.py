@@ -13,6 +13,12 @@ Swing
     When only one side is quoted the quote is used on its own; when neither is
     quoted the observation is skipped, never treated as zero.
 
+    A swing alert additionally requires that the resulting quote is a real
+    market price: either two-sided and narrower than MAX_QUOTE_SPREAD, or
+    explicitly labelled one-sided. This is what stops a lone 0.8030 ask print
+    on an otherwise 0.0020/0.0030 market from being published as an 80-cent
+    move (see MAX_QUOTE_SPREAD).
+
 Threshold
     SWING_THRESHOLD = 0.10 USD, configurable, and reported in the UI.
 
@@ -49,6 +55,28 @@ SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
 MIN_TOP_LEVEL_CONTRACTS = 1.0  # the best level must actually hold size
+
+# --- swing integrity ------------------------------------------------------
+# A swing is only published when the quote AFTER the move is a real two-sided
+# quote. Reason (observed on the live demo exchange, 2026-11-20): several
+# KXPRESNOMD-28 markets print 0.8030 on one minute and 0.0030 on the next,
+# alternating for hours. The 0.8030 prints come from a lone YES ask; the
+# resting YES bid is 0.0020 and the NO bid is 0.9970, i.e. the real YES ask is
+# 0.0030. Every "80 cent crash and recovery" on those markets was a single
+# unpaired print, not a tradable price move.
+#
+# Kalshi documents a single bid as its own quote
+# (https://docs.kalshi.com/getting_started/orderbook_responses.md): a quote
+# with no opposite side is an indicative price. Treating it as a tradeable mid
+# is what produced the phantom swings. It is correct as a *chart* point, so
+# the guard belongs to the swing rule, not to the price parser.
+MAX_QUOTE_SPREAD = 0.50       # a two-sided quote wider than this is not a market price
+
+# The one definition of "the model likes this trade". Published in the snapshot
+# as ``model_gate``, enforced here for ``high_roi_alerts``, applied by
+# site_build when it pre-renders the overview's second chat, and read by
+# assets/desk.js for the live desk. One number, four consumers.
+HIGH_ROI_GATE = 0.05          # net ROI after Kalshi's published taker fee
 
 
 @dataclass
@@ -132,7 +160,8 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
 def detect_swing(previous: Observation | None, current: Observation,
                  threshold: float = SWING_THRESHOLD,
                  reference: float | None = None,
-                 reference_ts: float | None = None) -> dict[str, Any] | None:
+                 reference_ts: float | None = None,
+                 reference_quote: dict[str, Any] | None = None) -> dict[str, Any] | None:
     """Return an alert dict when the reference price moved by >= threshold.
 
     How the reference works, and why it is not simply "the previous snapshot":
@@ -159,8 +188,31 @@ def detect_swing(previous: Observation | None, current: Observation,
         base = None
     if base is None or current.mid is None:
         return None
+
+    # Integrity gate: the price we report *to* must be a real two-sided quote.
+    # See MAX_QUOTE_SPREAD for why this is not the same thing as "the mid".
+    if current.yes_bid is not None and current.yes_ask is not None:
+        width = round(current.yes_ask - current.yes_bid, 4)
+        if width > MAX_QUOTE_SPREAD:
+            return None
+        quote_width = width
+    else:
+        # One-sided: the other side is unquoted, so the printed price cannot be
+        # checked against an opposite bid. Publish the move but label it.
+        quote_width = None
+
     prev_ts = reference_ts if reference is not None else (
         previous.ts if previous is not None else None)
+
+    # The reference must be checkable, exactly like the destination. When the
+    # baseline is the official candle, its own bid/ask travel with it; when the
+    # baseline is the previous stored observation, that observation's quotes do.
+    if reference_quote is None and reference is None and previous is not None:
+        reference_quote = {"bid": previous.yes_bid, "ask": previous.yes_ask,
+                           "print": previous.last_price,
+                           "ts": previous.ts, "source": "observation"}
+    elif reference_quote is not None:
+        reference_quote = {**reference_quote, "source": "candle"}
     delta = round(current.mid - base, 4)
     if abs(delta) + 1e-9 < threshold:
         return None
@@ -188,9 +240,50 @@ def detect_swing(previous: Observation | None, current: Observation,
         "open_interest": current.open_interest,
         "market_url": current.market_url,
         "threshold": threshold,
+        "quote_width": quote_width,
+        "two_sided_quote": quote_width is not None,
+        "reference_quote": reference_quote,
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
     }
+
+
+def is_publishable(alert: dict[str, Any],
+                   max_width: float = MAX_QUOTE_SPREAD) -> bool:
+    """Does this alert survive the swing integrity gate?
+
+    Both ends of the move must be verifiable market prices: a two-sided quote no
+    wider than ``max_width``, and — where the feed gives a printed price — a
+    print that sits inside its own quote. An alert recorded without a baseline
+    quote cannot be checked and is therefore not published.
+
+    Shared by the collector (so a stored alert written by an older rule set is
+    dropped instead of republished), the backfill tool and the Flagged-for-review
+    page, so one definition decides what reaches the chat feed.
+    """
+    def ok(bid: Any, ask: Any, printed: Any) -> bool:
+        if bid is None or ask is None:
+            return False          # one-sided: cannot be checked, so not published
+        try:
+            bid, ask = float(bid), float(ask)
+        except (TypeError, ValueError):
+            return False
+        if round(ask - bid, 4) > max_width or ask < bid:
+            return False
+        if printed is not None:
+            try:
+                if not (bid - 1e-9 <= float(printed) <= ask + 1e-9):
+                    return False      # print outside its own quote
+            except (TypeError, ValueError):
+                return False
+        return True
+
+    if not ok(alert.get("yes_bid"), alert.get("yes_ask"), None):
+        return False
+    ref = alert.get("reference_quote")
+    if not isinstance(ref, dict):
+        return False              # no recorded baseline: unverifiable
+    return ok(ref.get("bid"), ref.get("ask"), ref.get("print"))
 
 
 def _all_levels(rows: list[Any]) -> list[dict[str, float]]:

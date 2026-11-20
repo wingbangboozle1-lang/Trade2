@@ -178,10 +178,14 @@
     (s.signals || []).forEach(function (sig) {
       scoreByTicker[sig.ticker] = sig;
     });
+    // The gate comes from the snapshot (written by site_build/build.py) so the
+    // browser and the pre-rendered page apply exactly the same rule.
+    var gate = Number(s.model_gate);
+    if (!isFinite(gate)) gate = 0.05;
     var model = all
       .filter(function (a) {
         var sig = scoreByTicker[a.ticker];
-        return sig && sig.net_roi >= 0.05;
+        return sig && Number(sig.net_roi) >= gate;
       })
       .map(function (a) {
         var out = Object.assign({}, a);
@@ -203,8 +207,8 @@
       feedModel.innerHTML = "";
       if (!model.length) {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
-          "model's net-ROI gate right now. This is normal — an empty feed is an " +
-          "honest answer.</div>";
+          "model's net-ROI gate (" + (gate * 100).toFixed(0) + "%) right now. This is " +
+          "normal — an empty feed is an honest answer.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
     }

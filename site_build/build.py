@@ -21,6 +21,7 @@ import json
 import os
 from typing import Any
 
+from collector.alerts import HIGH_ROI_GATE
 from collector.collector import LIVE_PATH, load_json
 from . import flagpage
 
@@ -29,6 +30,10 @@ API = "https://external-api.demo.kalshi.co/trade-api/v2"
 SITE = "https://wingbangboozle1-lang.github.io/Trade2"
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
+
+# One definition of "the model likes this" -- imported from the collector so
+# the pre-rendered HTML, the browser and the snapshot cannot drift apart.
+MODEL_NET_ROI_GATE = HIGH_ROI_GATE
 TOPIC_FILE = {t: t for t in TOPIC_ORDER}
 
 
@@ -52,6 +57,16 @@ def cents(value: Any) -> str:
         return '<span class="flag-badge">UNVERIFIED</span>'
     try:
         return f"${float(value):.4f}"
+    except (TypeError, ValueError):
+        return esc(value)
+
+
+def inum(value: Any) -> str:
+    """Whole-number count. Counts are not money: no trailing .00."""
+    if value is None or value == "":
+        return '<span class="flag-badge">UNVERIFIED</span>'
+    try:
+        return f"{int(round(float(value))):,}"
     except (TypeError, ValueError):
         return esc(value)
 
@@ -183,9 +198,8 @@ def build_overview(live: dict[str, Any]) -> str:
     alerts = live.get("alerts", [])[:12]
     exchange = live.get("exchange", {})
 
-    rows = []
-    for e in events:
-        rows.append(
+    def event_row(e: dict[str, Any]) -> str:
+        return (
             "<tr>"
             f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
             f'rel="noreferrer">{esc(e.get("title"))}</a>'
@@ -200,9 +214,39 @@ def build_overview(live: dict[str, Any]) -> str:
             f'href="{API}/markets/{html.escape(e.get("ticker",""))}">API ↗</a></td>'
             "</tr>"
         )
+
+    # Group the ranked slice by topic so all five subjects stay visible. The
+    # per-topic lists come pre-ranked from the collector; if an older snapshot
+    # has no such key the page falls back to the flat top-25 list.
+    by_topic = live.get("events_by_topic") or {}
+    rows = []
+    if by_topic:
+        for slug in TOPIC_ORDER:
+            bucket = by_topic.get(slug) or []
+            if not bucket:
+                continue
+            label = {"gas-prices": "Gas prices", "elections": "Elections",
+                     "culture": "Culture", "crypto": "Crypto",
+                     "golf": "Golf"}.get(slug, slug.title())
+            rows.append(
+                f'<tr class="group-row"><td colspan="8">'
+                f'<a href="categories/{slug}.html">{html.escape(label)}</a>'
+                f'<span class="group-count">{len(bucket)} highest-value markets '
+                f'· open the topic ↗</span></td></tr>')
+            rows.extend(event_row(e) for e in bucket)
+    else:
+        rows.extend(event_row(e) for e in events)
     if not rows:
         rows.append('<tr><td colspan="8" class="empty-state">'
                     "No snapshot yet — the collector has not completed a run.</td></tr>")
+
+    # Model shortlist: the same rule the live desk applies, evaluated here so
+    # the overview page shows both chats without JavaScript.
+    score_by_ticker = {s["ticker"]: s for s in (live.get("signals") or [])
+                       if s.get("ticker")}
+    model_alerts = [a for a in (live.get("alerts") or [])
+                    if (score_by_ticker.get(a.get("ticker")) or {})
+                    .get("net_roi", 0) >= MODEL_NET_ROI_GATE]
 
     alert_rows = []
     for a in alerts:
@@ -221,7 +265,33 @@ def build_overview(live: dict[str, Any]) -> str:
                           "in the current window yet. The feed fills as the "
                           "collector compares successive snapshots.</div>")
 
+    model_rows = []
+    for a in model_alerts[:12]:
+        sig = score_by_ticker[a["ticker"]]
+        arrow = "▲" if a.get("direction") == "up" else "▼"
+        cls = "up" if a.get("direction") == "up" else "down"
+        model_rows.append(
+            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
+            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
+            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
+            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
+            f'{esc(a.get("topic"))} · net ROI {pct(sig.get("net_roi"))}</small></span></div>'
+        )
+    if not model_rows:
+        model_rows.append('<div class="empty-state inline">Nothing clears the '
+                          f"model&rsquo;s net-ROI gate ({MODEL_NET_ROI_GATE:.0%}) right "
+                          "now. An empty feed is an honest answer, not an error.</div>")
+
     status = "trading" if exchange.get("trading_active") else "not trading"
+    # Resolutions whose series belongs to one of the five tracked topics. The
+    # rest are real settlements from series we do not track (demo 15-minute
+    # markets, other sports) and are reported, never guessed into a topic.
+    attributed = live.get("resolutions_attributed")
+    if attributed is None:
+        attributed = sum(len(v or []) for v in
+                         (live.get("resolutions") or {}).values())
+    unattributed = live.get("resolutions_unattributed") or 0
     return f"""{topbar("Overview", generated)}
         <section class="page-heading">
           <div>
@@ -234,20 +304,21 @@ def build_overview(live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{num(live.get("observation_count"))}</strong>
+            <strong>{inum(live.get("observation_count"))}</strong>
             <small>This snapshot</small></article>
           <article class="stat-card"><span>Swings ≥ $0.10</span>
             <strong>{len(live.get("alerts", []))}</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>{num(portfolio.get("open_positions"))}</strong>
+            <strong>{inum(portfolio.get("open_positions"))}</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
             <strong>{money(portfolio.get("equity"))}</strong>
             <small>Start {money(portfolio.get("starting_bankroll"))}</small></article>
-          <article class="stat-card"><span>Resolved tracked</span>
-            <strong>{num(live.get("resolutions_count"))}</strong>
-            <small>YES/NO from official result</small></article>
+          <article class="stat-card"><span>Resolutions in a topic</span>
+            <strong>{inum(attributed)}</strong>
+            <small>of {inum(live.get("resolutions_count"))} stored · YES/NO from
+            the official result field</small></article>
         </section>
         <div class="notice notice-info">
           <span>ⓘ</span>
@@ -259,9 +330,10 @@ def build_overview(live: dict[str, Any]) -> str:
         <section class="panel">
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
-              <h2>Highest-dollar open events</h2>
-              <p>Ranked by open-interest value (official open_interest_fp ×
-              notional_value_dollars)</p></div></div>
+              <h2>Highest-dollar open events, by topic</h2>
+              <p>Each topic ranked by open-interest value (official
+              open_interest_fp × notional_value_dollars). Topics are kept
+              separate; a single cross-topic ranking would show elections only.</p></div></div>
             <a class="source-link" href="{API}/events?status=open" target="_blank"
                rel="noreferrer">Events API ↗</a>
           </div>
@@ -273,17 +345,36 @@ def build_overview(live: dict[str, Any]) -> str:
               <tbody>{''.join(rows)}</tbody>
             </table>
           </div>
-          <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}</span>
+          <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}
+          · {inum(attributed)} of {inum(live.get("resolutions_count"))} stored
+          settlements belong to a tracked topic ({inum(unattributed)} are from
+          series outside the five topics and are listed on
+          <a href="review.html">Flagged for review</a>)</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed">{''.join(alert_rows)}</div>
+        <section class="desk-grid two-chats">
+          <article class="panel chat-panel alert-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">◉</span><div>
+                <h2>Swing chat — all events</h2>
+                <p>Every observed move of at least $0.10 either way</p></div></div>
+              <a class="source-link" href="live.html">Full live desk →</a>
+            </div>
+            <div class="chat-feed">{''.join(alert_rows)}</div>
+          </article>
+          <article class="panel chat-panel model-chat">
+            <div class="panel-title">
+              <div><span class="section-icon violet">★</span><div>
+                <h2>Model shortlist</h2>
+                <p>Swings on markets the model scores above a
+                {MODEL_NET_ROI_GATE:.0%} net-ROI gate</p></div></div>
+              <a class="source-link" href="methodology.html">Model rules →</a>
+            </div>
+            <div class="chat-feed">{''.join(model_rows)}</div>
+            <div class="alert-note">Rule-based edge after Kalshi&rsquo;s published
+            taker fee — a screen, not a prediction. Every outcome is scored on the
+            <a href="summary.html#performance">performance table</a>.</div>
+          </article>
         </section>"""
 
 
@@ -362,13 +453,13 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid">
           <article class="stat-card"><span>Series in scope</span>
-            <strong>{num(topic.get("series_count"))}</strong><small>Matched live</small></article>
+            <strong>{inum(topic.get("series_count"))}</strong><small>Matched live</small></article>
           <article class="stat-card"><span>Open events</span>
-            <strong>{num(topic.get("event_count"))}</strong><small>This snapshot</small></article>
+            <strong>{inum(topic.get("event_count"))}</strong><small>This snapshot</small></article>
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{num(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
+            <strong>{inum(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
           <article class="stat-card"><span>Resolved captured</span>
-            <strong>{num(len(resolutions))}</strong><small>YES/NO logged</small></article>
+            <strong>{inum(len(resolutions))}</strong><small>YES/NO logged</small></article>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -386,7 +477,7 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
               <tbody>{''.join(market_rows)}</tbody>
             </table>
           </div>
-          <div class="table-foot"><span>{num(topic.get("market_count"))} markets matched;
+          <div class="table-foot"><span>{inum(topic.get("market_count"))} markets matched;
           top {len(events)} shown</span><span>Bid depth = resting YES bid contracts</span></div>
         </section>
         <section class="panel">
@@ -428,9 +519,15 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 def build_live(live: dict[str, Any]) -> str:
+    from collector.alerts import MAX_QUOTE_SPREAD
+    MAX_QUOTE_SPREAD_TEXT = f"{MAX_QUOTE_SPREAD:.2f}"
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
-    payload = json.dumps(live, default=str).replace("</", "<\\/")
+    # The browser applies the same shortlist rule as the pre-rendered page.
+    # Publishing the threshold in the snapshot means there is one number, not
+    # a constant duplicated in Python and JavaScript that can drift apart.
+    snapshot = dict(live, model_gate=live.get("model_gate", MODEL_NET_ROI_GATE))
+    payload = json.dumps(snapshot, default=str).replace("</", "<\\/")
     return f"""{topbar("Live desk", generated)}
         <section class="page-heading">
           <div>
@@ -467,7 +564,8 @@ def build_live(live: dict[str, Any]) -> str:
             </div>
             <div class="chart-frame"><canvas id="priceChart" role="img"
               aria-label="Contract price over time"></canvas></div>
-            <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
+            <div class="chart-foot"><span>X: time · Y: YES price in dollars ·
+            plotted from official 1-minute candles and live order-book mids</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
           <article class="panel depth-panel">
@@ -496,7 +594,8 @@ def build_live(live: dict[str, Any]) -> str:
             <div class="panel-title">
               <div><span class="section-icon violet">★</span><div>
                 <h2>Model shortlist</h2>
-                <p>Filtered to signals the model scores as high ROI</p></div></div>
+                <p>Swing alerts on markets clearing a {MODEL_NET_ROI_GATE:.0%}
+                net-ROI gate after the published taker fee</p></div></div>
               <span class="count-badge" id="modelCount">0</span>
             </div>
             <div class="chat-feed tall" id="feedModel" aria-live="polite"></div>
@@ -504,6 +603,34 @@ def build_live(live: dict[str, Any]) -> str:
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
           </article>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">⚑</span><div>
+              <h2>How a swing qualifies</h2>
+              <p>Why an 80-cent print is not an 80-cent move</p></div></div>
+          </div>
+          <div style="padding: 4px 16px 14px; max-width: 980px; line-height: 1.55;">
+            <p style="margin:0 0 8px;">An alert is published when the reference
+            price of a market moves by at least <b>$0.10</b> either way
+            <i>and</i> the quote it moves to is a real market price: two-sided,
+            with a bid–ask width of at most <b>${MAX_QUOTE_SPREAD_TEXT}</b>.
+            A one-sided quote is still shown but is labelled
+            <span class="flag-badge">ONE-SIDED</span>.</p>
+            <p style="margin:0; color:#7b8884; font-size:11px;">Without that
+            gate the feed filled with phantom crashes: e.g.
+            <code>KXPRESNOMD-28-AKLO</code> has a real book of
+            <b>$0.002 bid / $0.003 ask</b>, yet a lone <b>$0.8030</b> ask prints
+            for a single minute and reverts, and the mid swings
+            $0.8030 → $0.0025 → $0.8030 every few minutes. Kalshi returns bids
+            only, so a single unpaired print has no opposite side to check
+            against — see
+            <a href="https://docs.kalshi.com/getting_started/orderbook_responses"
+               target="_blank" rel="noreferrer">Orderbook Responses ↗</a>. Those
+            rows are kept in the
+            <a href="review.html">Flagged for review</a> log with their API
+            links, not deleted.</p>
+          </div>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -529,6 +656,7 @@ def build_live(live: dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 def build_methodology(live: dict[str, Any]) -> str:
+    from collector.alerts import MAX_QUOTE_SPREAD
     return f"""{topbar("Methodology", live.get("generated_at", ""))}
         <section class="page-heading">
           <div><div class="eyebrow">HOW EVERY NUMBER IS PRODUCED</div>
@@ -570,11 +698,46 @@ def build_methodology(live: dict[str, Any]) -> str:
           Contract depth is the sum of <code>count_fp</code> at every resting price
           level, reported as contracts available at each price.</p>
           <h2>Swing threshold</h2>
-          <p>An alert is raised when the YES mid moves by at least
-          <strong>${live.get("swap_threshold_dollars", 0.10):.2f}</strong> between two
-          consecutive observations of the same market. Missing quotes are skipped,
-          never treated as zero. A $0.10 move on a $1 contract is 10 cents of
-          settlement value.</p>
+          <p>An alert is raised when the reference price moves by at least
+          <strong>${live.get("swap_threshold_dollars", 0.10):.2f}</strong> in either
+          direction. The reference is the close of the most recent completed
+          1-minute candle where one exists (<a
+          href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks"
+          target="_blank" rel="noreferrer">Get Market Candlesticks</a>, where
+          <code>period_interval</code> is in minutes and the valid values are
+          1, 60 and 1440), and the previous stored observation otherwise. Measuring
+          against the candle rather than only against the previous sample is what
+          lets a gradual 20-cent drift alert, instead of being swallowed between
+          two polls. Missing quotes are skipped, never treated as zero. A $0.10
+          move on a $1 contract is 10 cents of settlement value.</p>
+          <h2>Swing integrity gate</h2>
+          <p>An alert is published only if the price it moves <em>to</em> is a real
+          market price: two-sided, and no wider than
+          <strong>${MAX_QUOTE_SPREAD:.2f}</strong>. A one-sided quote is shown but
+          labelled <span class="flag-badge">ONE-SIDED</span>. This exists because
+          the demo exchange prints single unpaired quotes on otherwise 0.2-cent
+          markets: <code>KXPRESNOMD-28-AKLO</code> has a $0.002/$0.003 book yet a
+          lone $0.8030 ask prints for one minute and reverts, repeatedly. Those were
+          published as $0.80 crashes before the gate was added; they are logged on
+          <a href="review.html">Flagged for review</a> with their API links. Kalshi
+          returns bids only (<a
+          href="https://docs.kalshi.com/getting_started/orderbook_responses"
+          target="_blank" rel="noreferrer">Orderbook Responses</a>), so a quote with
+          no opposite side has nothing to be checked against — which is exactly why
+          it is not treated as a move.</p>
+          <h2>Resolution tracking</h2>
+          <p>A market is reported resolved from its official <code>result</code>
+          field (<code>yes</code> or <code>no</code>) plus
+          <code>settlement_value_dollars</code> and <code>settlement_ts</code>,
+          read from <a href="https://docs.kalshi.com/api-reference/market/get-markets"
+          target="_blank" rel="noreferrer">Get Markets</a> with
+          <code>status=settled</code>. The demo API returns no
+          <code>series_ticker</code> on settled markets, so the series is taken
+          from the ticker prefix (<code>SERIES-EVENT[-STRIKE]</code>) and mapped
+          through the series list. A settlement whose series is not one of the five
+          tracked topics is counted but never assigned to a topic; both totals are
+          printed on the overview and on <a href="review.html">Flagged for
+          review</a>.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the
@@ -587,8 +750,10 @@ def build_methodology(live: dict[str, Any]) -> str:
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
           actually paid to cross the spread. Net ROI divides edge after fees by that
-          price. A market is shortlisted only when net ROI clears the strategy's
-          threshold and the spread is tight. This is a screen, not a forecast; the
+          price. A market is shortlisted only when net ROI clears the published
+          gate of <strong>{MODEL_NET_ROI_GATE:.0%}</strong> and the spread is tight.
+          That single number is what the overview chat, the live desk chat and
+          <code>high_roi_alerts</code> in the snapshot all use. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:

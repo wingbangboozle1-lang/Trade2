@@ -29,6 +29,11 @@ TEMPLATE_MARKERS = [
 ]
 
 
+def _publishable(alert: dict[str, Any]) -> bool:
+    from collector.alerts import is_publishable
+    return is_publishable(alert)
+
+
 def esc(v: Any) -> str:
     return html.escape("" if v is None else str(v))
 
@@ -89,11 +94,63 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
+    # 4. Alerts whose reported quote is wider than a real market price. These
+    #    were published before the integrity gate existed and are kept visible
+    #    (with their API links) rather than deleted, so the fix can be checked.
+    from collector.alerts import MAX_QUOTE_SPREAD
+    held_back = live.get("alerts_suppressed")
+    if held_back is None:
+        held_back = [a for a in (live.get("alerts") or [])
+                     if not _publishable(a)]
+    for a in held_back:
+        bid, ask = a.get("yes_bid"), a.get("yes_ask")
+        if bid is None or ask is None:
+            width = None
+        else:
+            width = round(float(ask) - float(bid), 4)
+        # Row written by an older rule set, or a quote that does not survive the
+        # gate: either way it is reported, never silently dropped.
+        if width is None or width > MAX_QUOTE_SPREAD or a.get("integrity_note"):
+            reason = a.get("integrity_note") or (
+                f"the quote is ${width:.4f} wide, wider than the "
+                f"${MAX_QUOTE_SPREAD:.2f} gate, so the mid is not a market price")
+            quote_text = ("no quote recorded" if width is None else
+                          f"${float(bid):.4f} bid / ${float(ask):.4f} ask")
+            issues.append({
+                "kind": "Swing held back by the integrity gate",
+                "topic": a.get("topic"),
+                "ticker": a.get("ticker"),
+                "detail": (f"alert {a.get('iso')} reports {a.get('previous')} -> "
+                           f"{a.get('current')} (${a.get('abs_delta')}) on "
+                           f"{quote_text} — {reason}. Kept here with its API "
+                           f"link instead of being deleted."),
+                "source": f"{API}/markets/{a.get('ticker')}",
+                "ref": a.get("id"),
+            })
+
+    # 5. Resolutions stored but not attributable to a tracked topic.
+    counted = live.get("resolutions_count")
+    attributed = live.get("resolutions_attributed")
+    if counted is not None and attributed is not None and counted > attributed:
+        issues.append({
+            "kind": "Stored settlements outside the five topics",
+            "topic": "(all)",
+            "ticker": "resolutions",
+            "detail": (f"{int(counted - attributed):,} of {int(counted):,} stored "
+                       f"settlements belong to series that are not among the five "
+                       f"tracked topics (demo 15-minute crypto/gas markets and "
+                       f"other sports). They are counted in the store and excluded "
+                       f"from every topic page rather than guessed into one."),
+            "source": f"{API}/markets?status=settled",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
     for issue in issues:
-        key = (issue["kind"], issue["ticker"])
+        # Alerts are distinct events: key them by alert id so each held-back
+        # move gets its own row. Other findings de-duplicate by ticker.
+        key = (issue["kind"], issue["ticker"], issue.get("ref"))
         if key in seen:
             continue
         seen.add(key)
@@ -142,6 +199,27 @@ STANDING = [
                  "fee. No claim of profitability is made, and the performance table "
                  "publishes every loss alongside every win once trades settle."),
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
+    },
+    {
+        "title": "A price with only one side quoted is not a move",
+        "body": ("Kalshi's order book returns bids only, so a quote can arrive "
+                 "with no opposite side. On the demo exchange several "
+                 "KXPRESNOMD-28 markets carry a real $0.002/$0.003 book while a "
+                 "lone $0.8030 ask prints for one minute and reverts, repeatedly. "
+                 "Reading that print as a price produced '80 cent crashes' in the "
+                 "alert feed. Alerts now require a two-sided quote no wider than "
+                 "50 cents; anything else is labelled ONE-SIDED or logged on this "
+                 "page with its API link."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
+        "title": "Sub-penny and one-minute prices are the finest official grain",
+        "body": ("Candlesticks are available at 1, 60 or 1440 minute periods, so a "
+                 "sub-minute move is only visible through the order book the site "
+                 "polls. The 'Seconds' chart window therefore mixes official candle "
+                 "points with live order-book mids, each tagged with its source in "
+                 "the chart data; gaps are left as gaps."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-market-candlesticks",),
     },
     {
         "title": "Each run tracks a ranked slice, not every market",

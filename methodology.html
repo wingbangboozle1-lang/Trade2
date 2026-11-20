@@ -86,11 +86,46 @@
           Contract depth is the sum of <code>count_fp</code> at every resting price
           level, reported as contracts available at each price.</p>
           <h2>Swing threshold</h2>
-          <p>An alert is raised when the YES mid moves by at least
-          <strong>$0.10</strong> between two
-          consecutive observations of the same market. Missing quotes are skipped,
-          never treated as zero. A $0.10 move on a $1 contract is 10 cents of
-          settlement value.</p>
+          <p>An alert is raised when the reference price moves by at least
+          <strong>$0.10</strong> in either
+          direction. The reference is the close of the most recent completed
+          1-minute candle where one exists (<a
+          href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks"
+          target="_blank" rel="noreferrer">Get Market Candlesticks</a>, where
+          <code>period_interval</code> is in minutes and the valid values are
+          1, 60 and 1440), and the previous stored observation otherwise. Measuring
+          against the candle rather than only against the previous sample is what
+          lets a gradual 20-cent drift alert, instead of being swallowed between
+          two polls. Missing quotes are skipped, never treated as zero. A $0.10
+          move on a $1 contract is 10 cents of settlement value.</p>
+          <h2>Swing integrity gate</h2>
+          <p>An alert is published only if the price it moves <em>to</em> is a real
+          market price: two-sided, and no wider than
+          <strong>$0.50</strong>. A one-sided quote is shown but
+          labelled <span class="flag-badge">ONE-SIDED</span>. This exists because
+          the demo exchange prints single unpaired quotes on otherwise 0.2-cent
+          markets: <code>KXPRESNOMD-28-AKLO</code> has a $0.002/$0.003 book yet a
+          lone $0.8030 ask prints for one minute and reverts, repeatedly. Those were
+          published as $0.80 crashes before the gate was added; they are logged on
+          <a href="review.html">Flagged for review</a> with their API links. Kalshi
+          returns bids only (<a
+          href="https://docs.kalshi.com/getting_started/orderbook_responses"
+          target="_blank" rel="noreferrer">Orderbook Responses</a>), so a quote with
+          no opposite side has nothing to be checked against — which is exactly why
+          it is not treated as a move.</p>
+          <h2>Resolution tracking</h2>
+          <p>A market is reported resolved from its official <code>result</code>
+          field (<code>yes</code> or <code>no</code>) plus
+          <code>settlement_value_dollars</code> and <code>settlement_ts</code>,
+          read from <a href="https://docs.kalshi.com/api-reference/market/get-markets"
+          target="_blank" rel="noreferrer">Get Markets</a> with
+          <code>status=settled</code>. The demo API returns no
+          <code>series_ticker</code> on settled markets, so the series is taken
+          from the ticker prefix (<code>SERIES-EVENT[-STRIKE]</code>) and mapped
+          through the series list. A settlement whose series is not one of the five
+          tracked topics is counted but never assigned to a topic; both totals are
+          printed on the overview and on <a href="review.html">Flagged for
+          review</a>.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the
@@ -103,8 +138,10 @@
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
           actually paid to cross the spread. Net ROI divides edge after fees by that
-          price. A market is shortlisted only when net ROI clears the strategy's
-          threshold and the spread is tight. This is a screen, not a forecast; the
+          price. A market is shortlisted only when net ROI clears the published
+          gate of <strong>5%</strong> and the spread is tight.
+          That single number is what the overview chat, the live desk chat and
+          <code>high_roi_alerts</code> in the snapshot all use. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:
