@@ -311,13 +311,20 @@ def detect_alerts(candles: Dict[str, Any], rows: List[Dict], threshold: float, w
     return alerts
 
 
-def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict], meta: Dict) -> List[Dict]:
-    """Settled markets -> YES/NO outcome rows (used for strategy grading)."""
+def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict], meta: Dict, max_series: int = 24) -> List[Dict]:
+    """Settled markets -> YES/NO outcome rows (used for strategy grading).
+
+    `max_series` caps how many series are scanned per run to keep the run inside
+    rate limits; scanned series rotate by sort order across runs.
+    """
     out: List[Dict] = []
-    for topic_key in sorted({s["topic"] for s in series_by_ticker.values()}):
-        for ticker, s in series_by_ticker.items():
-            if s["topic"] != topic_key:
-                continue
+    per_topic: Dict[str, List[str]] = {}
+    for ticker, s in sorted(series_by_ticker.items()):
+        per_topic.setdefault(s["topic"], []).append(ticker)
+    per_cap = max(1, max_series // max(len(per_topic), 1))
+    for topic_key in sorted(per_topic):
+        for ticker in per_topic[topic_key][:per_cap]:
+            s = series_by_ticker[ticker]
             try:
                 settled = client.markets(status="settled", series_ticker=ticker, limit=200, max_pages=2)
             except Exception as exc:
@@ -367,23 +374,36 @@ def main(argv: Optional[List[str]] = None) -> int:
     }
     client = KalshiClient(logger=lambda m: print(m, file=sys.stderr))
 
+    def progress(msg: str) -> None:
+        print(f"[collector] {msg}", flush=True)
+
     try:
         status = client.exchange_status()
         meta["exchange"] = {"status": status.get("exchange_status"), "indexes": len(status.get("exchange_indexes") or [])}
+        progress(f"exchange status: {meta['exchange']['status']}")
     except Exception as exc:
         meta["errors"].append({"step": "exchange_status", "error": str(exc)})
+        progress(f"exchange status FAILED: {exc}")
 
+    progress("fetching series -> topic mapping …")
     series_map = collect_series(client, topic_keys, meta)
+    progress(f"  mapped {len(series_map)} series")
+    progress("fetching open markets …")
     rows = pick_markets(client, series_map, topic_keys, args.max_markets, meta)
     row_list = [market_row(m, m.get("_series_source") or SOURCE_MARKETS) for m in rows]
     row_list.sort(key=lambda r: (r.get("notional_usd") or 0), reverse=True)
+    progress(f"  {len(row_list)} markets kept")
 
+    progress(f"fetching top {args.orderbook_top} order books …")
     orderbooks = collect_orderbooks(client, row_list, args.orderbook_top, meta)
+    progress(f"fetching candles for top {args.candle_top} markets × 3 windows …")
     candles = collect_candles(
         client, row_list, {"seconds": 3600, "minutes": 6 * 3600, "hours": 24 * 60 * 60}, args.candle_top, meta
     )
     alerts = detect_alerts(candles, row_list, args.threshold, with_news=args.news)
+    progress(f"  {len(alerts)} alerts >= {args.threshold}")
     resolutions = collect_resolutions(client, series_map, meta)
+    progress(f"  {len(resolutions)} resolved markets")
 
     # series -> topic evidence table (each row carries the exact API URL used)
     series_rows = sorted(series_map.values(), key=lambda s: (s["topic"], s["ticker"]))

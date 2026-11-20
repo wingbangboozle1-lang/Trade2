@@ -41,9 +41,9 @@ class KalshiClient:
     def __init__(
         self,
         base: str = DEMO_BASE,
-        timeout: float = 20.0,
-        max_retries: int = 4,
-        min_interval: float = 0.35,
+        timeout: float = 12.0,
+        max_retries: int = 3,
+        min_interval: float = 0.5,
         logger=None,
     ) -> None:
         self.base = base.rstrip("/")

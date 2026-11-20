@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalshi Demo Dashboard — live events, swings &amp; paper trading</title>
+<meta name="description" content="Live tracker for the highest-volume Kalshi demo events in gas prices, elections, culture, crypto and golf. Alerts on >=$0.10 swings, order-book depth, resolutions and simulated trades.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="index">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html" class="active">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="summary.html">Executive summary</a>
+      <a href="flagged.html">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">Highest-dollar-volume live events — five topics only</h1>
+  <p class="sub">Source: Kalshi <b>demo</b> Trade API v2 (<a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">docs</a> ·
+    <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&amp;limit=1" target="_blank" rel="noopener">live endpoint</a>).
+    Every table row links its official source. Unconfirmable values are left blank and flagged, never guessed.</p>
+
+  <div class="note"><b>Read this first.</b> This dashboard reads the public demo environment only. It never sends
+    orders — the trading module is a <b>simulated paper account</b> (no API credentials exist here, flagged FL-01)
+    whose fills are matched against the real demo order book and graded on real YES/NO settlements. Demo prices may
+    not reflect real markets (<a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">official warning</a>).
+    Not investment advice.</div>
+
+  <div class="grid c4" id="stats"></div>
+
+  <h1 class="page" style="margin-top:22px">Live swing alerts ≥ $0.10 <span class="badge topic">two feeds</span></h1>
+  <div class="chats">
+    <div class="chat">
+      <div class="head"><span>💬 All events</span><span class="hint">every ≥ $0.10 move, both directions</span></div>
+      <div class="feed" id="feed-all"><div class="empty">loading…</div></div>
+    </div>
+    <div class="chat">
+      <div class="head"><span>💎 High-ROI picks</span><span class="hint" id="roi-hint">model filter · fee &amp; spread aware</span></div>
+      <div class="feed" id="feed-roi"><div class="empty">loading…</div></div>
+    </div>
+  </div>
+
+  <h1 class="page" style="margin-top:22px">Topics</h1>
+  <div class="grid c3" id="topic-cards"></div>
+
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card">
+      <h2>Top markets by $ volume <span class="live">live</span></h2>
+      <div id="top-markets"><div class="empty">loading…</div></div>
+    </div>
+    <div class="card">
+      <h2>Latest resolutions (YES / NO)</h2>
+      <div id="recent-resolutions"><div class="empty">loading…</div></div>
+      <div class="legend" style="margin-top:10px">
+        Settlement rules: <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">market settlement docs ↗</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Data: <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open" target="_blank" rel="noopener">demo REST API ↗</a> ·
+  <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">WebSocket docs ↗</a> ·
+  Fees: <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">official fee schedule PDF ↗</a> ·
+  Repo: <a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">wingbangboozle1-lang/Trade2 ↗</a><br>
+  Charts update every 20s from <code>docs/data/*.json</code> written by the collector workflow. Unverified items live on the
+  <a href="flagged.html">Flagged for Review</a> page.
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

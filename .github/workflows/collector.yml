@@ -34,8 +34,18 @@ jobs:
           python3 -m collector.test_runner
           python3 -m py_compile collector/*.py trading/*.py
 
+      - name: Probe demo API connectivity
+        run: |
+          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' \
+            'https://external-api.demo.kalshi.co/trade-api/v2/exchange/status' || echo curl_failed)
+          echo "::notice::Kalshi demo API probe HTTP $code"
+
       - name: Collect demo data (with headline lookup for >=$0.10 swings)
-        run: python3 -m collector.runner --news
+        run: |
+          set -o pipefail
+          python3 -u -m collector.runner --news \
+            --max-markets 8 --orderbook-top 10 --candle-top 10 2>&1 \
+            | sed -u 's/^/[collector] /; s/^/::notice::/'
 
       - name: Run simulated trading engine
         run: python3 -m trading.engine

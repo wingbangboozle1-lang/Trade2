@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flagged for review — Kalshi Demo Dashboard</title>
+<meta name="description" content="Every unverified value, irregularity and open question found while building the Kalshi demo dashboard, with source links.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="flagged">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="summary.html">Executive summary</a>
+      <a href="flagged.html" class="active">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">🚩 Flagged for review <span class="badge unv"><span id="flag-count">0</span> live flags</span></h1>
+  <p class="sub">Nothing here blocks the site. This page exists so every unconfirmed value and irregularity is
+  visible, with its source, instead of being quietly filled in. Items marked <b>unverified</b> mean the official
+  API did not return a confirmable value at collection time — the cell is blank on the dashboards.</p>
+
+  <div class="card">
+    <h2>Live flags from the latest collector run</h2>
+    <div id="dynamic-flags"><div class="empty">loading…</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Known irregularities &amp; open items (curated)</h2>
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr><th>ID</th><th>Status</th><th>Finding</th><th>Evidence / source</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mono">FL-01</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>No Kalshi API credentials exist in this environment</b> and the user directed that there be no
+              manual input. Therefore no real demo-account orders can be placed; the trading module is a
+              simulated paper account that fills against the real demo order book. The <i>portfolio page</i> shows
+              the simulated account, not an exchange-side balance.</td>
+            <td>Project constraint · <a href="https://docs.kalshi.com/getting_started/api_keys" target="_blank" rel="noopener">API keys docs ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-02</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>WebSocket requires an authenticated handshake</b> (<code>KALSHI-ACCESS-*</code> headers signed with
+              an API key), so the site's live layer polls REST (order book / candlesticks / markets) instead of
+              opening <code>wss://external-api-ws.demo.kalshi.co</code>. “Live” = collector cadence (~15 min)
+              plus 20s front-end polling of published JSON, not tick-by-tick WS push.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noopener">WS quick start ↗</a> ·
+                <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">connection docs ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-03</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Google News RSS headline lookup cannot be validated from the dev sandbox</b> (egress blocked), so
+              swing-catalyst links are only populated when the GitHub Actions runner fetches them. If a swing has no
+              headline inside ±6h, the link cell stays blank and shows “no verified headline”. Headline ≈ time
+              proximity only — <b>never claimed as the cause</b> of a move.</td>
+            <td><code>collector/news.py</code> · <a href="https://news.google.com/rss/search?q=kalshi" target="_blank" rel="noopener">RSS endpoint ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-04</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Series <code>limit</code> parameter is ignored by the API</b>: <code>/series?limit=1</code>
+              returns the full unpaginated list (observed 2026-11-20, responses up to 115 chunks). The collector
+              therefore filters client-side and caps results; row counts can exceed requested limits.</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/series/?limit=1" target="_blank" rel="noopener">reproduce: /series/?limit=1 ↗</a> ·
+                <a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">docs ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-05</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Fee-schedule prose vs table rounding nuance:</b> the PDF says “round up such that fee +
+              positionCost is rounded to a centicent”, while its published General Trading Fees Table matches
+              <code>ceil-to-the-cent of the raw formula</code> on all 42 rows. The engine implements the
+              <b>table</b> reading (test reproduces every row). Difference is ≤ $0.01/contract; flagged for a
+              human to confirm which reading the exchange actually charges.</td>
+            <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">official fee PDF ↗</a> ·
+                <code>trading/test_engine.py</code></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-06</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Topic ≠ category:</b> Kalshi categories (Crypto, Culture, Elections, Sports, …) are not the five
+              requested topics. “Golf” is a <i>tag</i> (<code>category=Golf</code> returns null), “gas prices” sits
+              inside Economics/Commodities. Mapping uses official <code>categories</code>/<code>tags</code>/
+              title rules (see <code>collector/topics.py</code>) and each mapped series row links the exact API
+              URL used, but a human should spot-check borderline series (e.g. broad “Mentions” folded into Culture).</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">category semantics ↗</a> ·
+                <code>docs/data/series.json</code></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-07</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Order-book “liquidity” shown is bid-side resting size only</b> (YES bids + NO bids). The API
+              returns no ask arrays — asks are implied at 1 − best opposite bid. Contracts “available at a price”
+              on the ask side are therefore derived, and the chart labels them as bids.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">orderbook_responses ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-08</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Thin markets produce empty trade/candle responses</b> (e.g.
+              <code>/markets/trades</code> → <code>{"trades":[]}</code>, candlesticks → empty array). The UI shows
+              blanks with an “unverified” badge rather than substituting values; alerts are simply absent for that
+              window (a missing series is not evidence of no move).</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">candles docs ↗</a> ·
+                <a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">trades docs ↗</a></td>
+          </tr>
+          <tr>
+            <td class="mono">FL-09</td>
+            <td><span class="badge unv">open</span></td>
+            <td><b>Branch-name protocol exception:</b> the parallel-session protocol asks for
+              <code>session-&lt;id&gt;/&lt;task&gt;</code> branches, but this Arena session is pinned to
+              <code>arena/c0205283-trade2</code> by the platform. All work happens on that single branch and the
+              exception is logged in <code>COORDINATION.md</code>.</td>
+            <td><code>COORDINATION.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Verification ledger: <code>docs/verification/sources.md</code> · task board: <code>COORDINATION.md</code> ·
+  <a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">repo ↗</a>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

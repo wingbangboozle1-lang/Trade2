@@ -48,7 +48,7 @@ def headlines_near(
     when: datetime,
     window_hours: int = 6,
     max_items: int = 5,
-    timeout: float = 12.0,
+    timeout: float = 6.0,
 ) -> List[Dict]:
     """Return RSS headlines for `query` published within +/- window_hours of `when`."""
     if not query:
