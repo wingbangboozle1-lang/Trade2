@@ -143,3 +143,14 @@ test('high-ROI rule flags a small-entry alert with tight spread and enough volum
   assert.equal(alerts.length, 1);
   assert.equal(alerts[0].high_roi, true);
 });
+
+test('capSeries keeps curated series first, then highest-volume keyword matches, up to max', async () => {
+  const { capSeries } = await import('../collect.mjs');
+  const m = new Map();
+  m.set('CUR1', { topic: 'gas', series: { ticker: 'CUR1', volume_fp: '1' }, reason: 'curated: official fee schedule row "x"' });
+  m.set('KW_LOW', { topic: 'culture', series: { ticker: 'KW_LOW', volume_fp: '5' }, reason: 'keyword "emmy"' });
+  m.set('KW_HIGH', { topic: 'culture', series: { ticker: 'KW_HIGH', volume_fp: '900' }, reason: 'keyword "emmy"' });
+  const out = capSeries(m, 2);
+  assert.deepEqual([...out.keys()], ['CUR1', 'KW_HIGH']);
+  assert.equal(capSeries(m, 10), m, 'no change when under the cap');
+});
