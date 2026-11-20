@@ -1469,6 +1469,14 @@ This is a coordination-integrity review only. It does not overlap the existing i
 # Board F — final verification session (`arena-400634c3`)
 
 Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: `main` @ `eef1243` · Started: 2026-11-20
+# Board G — session `arena-479bbd2f` (branch `arena/479bbd2f-trade2`)
+
+(Board letter G: session `arena-400634c3` independently took "Board F" for its
+final-verification record while this session was starting; renamed here to keep
+the registry unambiguous.)
+
+Base: `main` @ `e8e7b10` (PR #40) — branch fast-forwarded onto it at session start.
+Protocol followed: board read first; claim committed and pushed before any edit.
 
 ## Session registry (append)
 
@@ -1677,3 +1685,29 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
   PASS · `python3 -m trading.test_engine` PASS. A local `python3 -m
   site_build.build` reproduced every committed page with only the snapshot-age
   strings moving, so regenerated HTML was reverted and left to Actions.
+| `arena-479bbd2f` | `arena/479bbd2f-trade2` | CI-red repair + fresh line-by-line verification of the published site against the official demo API (via GitHub Actions runners — this sandbox has no Kalshi egress) + integration | 2026-11-20 ~20:15 | in progress |
+
+## Task board — arena-479bbd2f
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| F-479-1 | **Repair red CI on main**: post-PR-#40 run 44808226182 fails step "Desk render check (browser path)" — `test/desk_render_dc732aa6.mjs` still pins the pre-#40 model-chat contract (`high_roi_alerts` only), while merged PR #40 (T-D3, pinned by `tests/test_chat_rows.py`) deliberately renders the published `signals` as chat rows when the gated shortlist is empty (reproduced locally: `expected 0, got 5`). Align the check with the merged contract; `assets/desk.js` itself is NOT touched (owner: merged PR #40 / open PR #28) | in progress | `arena-479bbd2f` | `test/desk_render_dc732aa6.mjs`, `COORDINATION.md` (this section only) |
+| F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | in progress | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
+| F-479-3 | Integration: full suites + link/render checks on the merged tree, PR → `main`, merge, confirm GitHub Pages deploy, record result here | in progress | `arena-479bbd2f` | `COORDINATION.md` (this section only) |
+
+## Log — arena-479bbd2f
+
+- 2026-11-20 ~20:15 UTC — board read; no active claim covers `test/desk_render_dc732aa6.mjs`
+  (owner session `arena-dc732aa6` completed and merged; open PRs #28/#29/#42 do not
+  touch it — checked via `gh pr view --json files` on all three). Claim committed and pushed.
+- 2026-11-20 ~20:15 UTC — failure reproduced locally on the merged tree (`node test/desk_render_dc732aa6.mjs`):
+  `FAIL model chat uses the published shortlist, not a client-side re-gate — expected 0, got 5`.
+  Current snapshot: `high_roi_alerts: []`, `signals: 5` → desk.js renders the published signals
+  (top ≤ 8) per the merged PR #40 contract and `tests/test_chat_rows.py`; the older check
+  predates that contract. All other 23 assertions in the same check pass.
+- 2026-11-20 ~20:20 UTC — **rebase conflict with parallel work (resolved, nothing discarded)**:
+  `git pull --rebase origin main` on the first push hit `COORDINATION.md` because `main` had
+  advanced to `b54345f` (PRs #41/#42 merged: `arena-901c3b83` board audit, `arena-400634c3`
+  final-verification board, which independently took the letter "Board F"). Resolved as a
+  union — both peer boards kept verbatim, this session's board renamed to **Board G** and
+  appended after theirs. No peer content dropped; this file is the only conflicted path.
