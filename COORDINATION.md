@@ -23,7 +23,8 @@ Rules (agreed convention for this repo):
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | - | - | - | - | - |
-| `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | active |
+| `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | done |
+| `arena-e4e8f4e1` | `arena/e4e8f4e1-trade2` | Independent final audit, factual corrections, demo-only secondary collector integration | 2026-11-20 | active |
 | `arena-8a0899e5` | `arena/8a0899e5-trade2` | Line-by-line re-review + verification of the merged tree; found and fixed a NO-side position defect in `collector/engine.py`; re-verified official sources; re-checked site build, links and Pages | 2026-11-20 | active |
 
 No other sessions are registered as of the last update below. This session is
@@ -51,6 +52,26 @@ claims existed.
 | T13 | Line-by-line re-review of the merged tree + verification of official sources | done | `arena-8a0899e5` | `collector/engine.py`, `tests/test_engine.py`, `VERIFICATION.md`, `COORDINATION.md` |
 
 ---
+
+## Current session claim — `arena-e4e8f4e1` (2026-11-20)
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T18 | Independent final audit of the integrated dashboard, tests, official-source traceability, deployment status, and unresolved limits | in progress | `arena-e4e8f4e1` | `COORDINATION.md`, `AUDIT_2026-11-20.md` |
+
+This audit does not modify other sessions' implementation or published data. It is scoped to a standalone report and this coordination entry; existing completed tasks remain untouched.
+
+**Audit follow-up claim T14:** `EXECUTIVE_SUMMARY.md` currently abbreviates settlement payout in a way that can be read as NO contracts never paying. The official Market Settlement page states that YES holders receive $1 for a YES outcome and NO holders receive $1 for a NO outcome. T14 is claimed by this session, limited to the settlement sentence in `EXECUTIVE_SUMMARY.md` and this board; source: https://docs.kalshi.com/getting_started/market_settlement. No existing active owner is listed for the completed summary task.
+
+**Audit follow-up claim T15:** `docs/summary.html` describes `period_interval=1` as an “s-series.” The official candlestick endpoint explicitly defines the allowed periods as minutes (1, 60, or 1440 minutes). T15 is claimed by this session, limited to that table row and this board; source: https://docs.kalshi.com/api-reference/market/get-market-candlesticks. The seconds/minutes/hours buttons are time-range windows, not seconds-based candle intervals.
+
+**Audit follow-up claim T16:** `tools/rendercheck.mjs` fails in local jsdom because `window.fetch` is not defined; that prevents the intended render assertion from running despite the site-smoke test passing. T16 is claimed by this session, limited to the test harness and this board. The fix will stub snapshot fetch as an offline miss (no network) so the checker verifies the inline snapshot-render path.
+
+**Audit follow-up claim T17:** The secondary `kalshi-dashboard/` pipeline was explicitly defaulting to the production REST host (`scripts/collect.mjs`, `config/flags.json`, `site/pages/summary.html`, and `.github/workflows/dashboard.yml`), contrary to this request's demo-only environment. Claim by `arena-e4e8f4e1`; scope: `scripts/collect.mjs`, `scripts/test/collect.test.mjs`, `.github/workflows/dashboard.yml`, `config/flags.json`, `config/sources.json`, `site/pages/summary.html`, and generated `kalshi-dashboard/**`. Fix: default to the documented demo host, reject production/custom API bases, accurately label the demo snapshot, isolate the paper-trade cache from production state, and add a regression test. Existing static production snapshot data must not be relabeled as demo unless refreshed from the official demo API.
+
+**Coordination update:** `origin/main` advanced while this session was working; PR #12 from `arena/0b2d2a2a-trade2` merged with an audit addendum and request R-D-01. This branch was rebased onto the new `origin/main`, preserving that merge and its files. The first push was rejected because the remote feature branch still held the pre-rebase versions of this session's own earlier commits. The remote branch history was inspected; it contained only those already-pushed session commits. A lease-protected push will update the current session branch without discarding another session's work. No merge conflict occurred.
+
+**Follow-up status:** T14 settlement wording, T15 candle interval wording, and T16 offline render-check harness are implemented and verified. T17 demo-only collector guard, regression tests, cache isolation, and source/summary updates are implemented; F-07 remains open until main publishes a successful demo snapshot. T18 final audit is pending the PR, demo refresh, and Pages confirmation.
 
 ## Work log
 
@@ -414,3 +435,103 @@ after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
 rebase+push retry that surfaces pull/push errors as workflow annotations.
 Verified: dispatch run `44769581312` on `main` → **success**, data commit
 `0beb9b2` landed, Pages rebuilt for it (`status: built`).
+
+---
+
+## Session claim — `arena-856e184e` (2026-11-20)
+
+Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlapping with the active audit session `arena-e4e8f4e1` (T13–T15, which own `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` and `docs/summary.html`). This session does not edit those files.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | done | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `tests/test_engine.py` (one test updated), `site_build/flagpage.py`, `site_build/build.py` (count formatting), `tools/rendercheck.mjs` (harness fetch shim) |
+| T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | done (landed on `main` by `arena-e4e8f4e1` in `28577c4`; this session kept `main`'s version on merge) | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
+| T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | done (sample; see log) | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
+
+### Log — `arena-856e184e` (2026-11-20)
+
+**Sources (official):** https://docs.kalshi.com/getting_started/api_environments.md · https://docs.kalshi.com/api-reference/market/get-market.md · https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md · live demo API: `/markets/KXPRESNOMD-28-HBID`, `/markets/KXPRESNOMD-28-HBID/orderbook`, `/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks`, `/markets/KXPRESNOMD-28-AKLO` and its candlesticks, `/markets/KXPRESNOMD-28-RW`, `/markets/KXPRESNOMD-28-GW`, `/markets/KXBTCY-27JAN0100-B127500` (fetched 2026-11-20).
+
+**Findings and fixes:**
+
+| # | Finding | Handling |
+| - | - | - |
+| F-856-1 | Swing alerts compared a **candle last-trade close** with a **book mid** (`KXPRESNOMD-28-HBID`: last trade 0.8110, bid 0.0020, ask 0.8110, so the mid 0.4065 "swing" was not a trade). The spread gate was not applied to alerts. Trade prints without matching quotes (`KXPRESNOMD-28-AKLO`) produced further alerts. | **Fixed (T16).** Reference is the candle's quote closes. Alerts need a two-sided quote narrower than $0.10. Stored alerts that fail the rule are purged on the next run. 12 regression tests. Published on the Flagged page. |
+| F-856-2 | `scripts/collect.mjs` defaulted to the production host, but the brief asks for demo (`kalshi-dashboard/data/status.json` records production). | **Fixed on `main` (`28577c4`, `arena-e4e8f4e1`).** That fix adds a demo-only guard. Published on the Flagged page. |
+| F-856-3 | Overview counts were formatted as 2-decimal floats (`750.00` markets, `1.00` open positions, `2,000.00` resolved). | **Fixed** in `site_build/build.py` (`cnt()` for integer counts). Verified by `git diff`. |
+| F-856-4 | "OI value" ranking = `open_interest_fp × notional_value_dollars`. The official definitions make this a notional figure, not dollars traded. | Labelled as such; published on the Flagged page. Not changed. |
+| F-856-5 | `collector/runner.py` (docs/ pipeline) and the kalshi-dashboard pipeline alert on trade prints, which the quote rule does not cover. | **Open.** Published on the Flagged page. Not changed. |
+| F-856-6 | `tools/rendercheck.mjs` failed on **main** with `fetch is not defined` (jsdom has no fetch). The check never ran the data path. | **Fixed on `main` (`17235ca`, `arena-e4e8f4e1`)** with a hermetic fetch stub. This branch first wrote a same-origin file-serving shim, then kept `main`'s version on merge. All 10 pages render. |
+
+**Requests for other sessions' files (not edited here):**
+- REQUEST R-856-1 → **resolved on `main`** by `28577c4` (`arena-e4e8f4e1`): the workflow step is now "Collect public Kalshi demo data (demo-only host guard)" and the state key is `kalshi-demo-state-`. No further action.
+- REQUEST R-856-2 → `arena-e4e8f4e1` (active audit): the Flagged page now includes F-856-1 to F-856-5. Include them in `AUDIT_2026-11-20.md` if they agree.
+
+**Tests:** `python3 -m unittest discover -s tests` → 54 OK (1 skipped, pre-existing). `python3 -m collector.test_runner` PASS. `python3 -m trading.test_engine` PASS. `npm test` 19/19. `node tools/rendercheck.mjs` 10/10 pages. `python3 tools/linkcheck.py` 0 errors.
+
+**Not verified:** only 3 of 25 overview rows and 3 of the stored alerts were re-read from the API (see `VERIFICATION_856e184e.md`). No Kalshi demo credentials exist, so the demo account was not read and no orders were placed.
+
+## Session D — current Arena branch `arena/0b2d2a2a-trade2`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-0b2d2a2a` | `arena/0b2d2a2a-trade2` | Fresh integration audit: current public site, pipeline health, official-source validation | 2026-11-20 | active |
+
+| # | Task | Status | Owner | File scope |
+| --- | --- | --- | --- | --- |
+| T13 | Re-audit merged deliverable and current deployment; record freshness, verification evidence, and remaining blockers | done (follow-up R-D-01 needs review) | `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` |
+
+The task was documentation-only and did not edit the root dashboard, data pipeline,
+site templates, or another session's claimed implementation. See `AUDIT_ADDENDUM.md`
+for official sources, test output, and review findings.
+
+### 2026-11-20 — `arena-0b2d2a2a` — fresh integration audit
+
+- **Official source rechecks:** Kalshi demo-environment documentation confirms the requested REST URL and supported REST/WebSocket alternatives; authenticated-request guide, Get Markets, Get Events, Get Market Orderbook, and Get Market Candlesticks were fetched and checked. Live demo GETs for `KXPRESNOMD-28-RW` and its order book returned the listed official schema fields. Full URLs and observed claims are recorded in `AUDIT_ADDENDUM.md`.
+- **Build/tests:** Python unit suite 42 pass / 1 skipped (Python `cryptography` not installed); Node suite 18/18; collector fixture suite PASS; trading test engine PASS; `node test/site_smoke.mjs docs/data` PASS; link check 45 pages / 503 internal links / 0 errors; static site rebuild PASS.
+- **Deployment:** Pages build metadata reported `built`, commit `1bc32b745cc2d8f5c7e6261caf05423857d7ef01`, 2026-11-20 18:53:55 UTC. Public root, live desk, summary and flagged pages fetched successfully.
+- **Freshness review:** root snapshot timestamp was 2026-11-20 18:41:08 UTC at 19:01 UTC; latest observed successful root collector run was at 18:40:59 UTC. Pages build was later, but the root snapshot itself remained about 20 minutes old. The dashboard labels the root as a snapshot; scheduled cadence is best-effort.
+- **Irregularities (not silently fixed):** repeated same-market alerts occur 29 times over three tickers in the current snapshot; the code measures midpoint shifts, including a displayed `$0.002`–`$0.811` spread on one triggering market. The snapshot's OI notional is not traded-dollar volume. The live demo account adapter cannot be exercised without private demo credentials. No verified news-cause link was present for observed jumps. These remain review items, not claims of live ROI or tradability.
+- **Parallel session coordination:** observed successful Actions runs on `arena/e4e8f4e1-trade2` near 18:59 UTC; that branch was not registered in the prior board, so this audit did not edit or merge its work.
+- **PR #12:** https://github.com/wingbangboozle1-lang/Trade2/pull/12 — documentation-only audit from `arena/0b2d2a2a-trade2` to `main`; collector check succeeded, PR was mergeable and merged at 2026-11-20 19:02:28 UTC (merge commit `d6aaca42a32d88bb42de184335e60f4fd17558b7`).
+- **Pages after merge:** merge-triggered collector run `44798409029` succeeded and published snapshot commit `5fa83a5a794d3bb4935c792001b6ed781035b1b8` with `generated_at=2026-11-20T19:02:43Z`. Pages deployment run `44798792925` succeeded; GitHub Pages API reported `built` at 19:05:45 UTC. A cache-busted fetch of the public root confirmed the new `Updated 2026-11-20T19:02:43Z` timestamp. The refresh reduced snapshot age, but the repeated alert observations in R-D-01 persisted (32 alerts, concentrated on three tickers; 0 ROI shortlist rows).
+- No live trading credentials were requested or stored.
+
+| Request | Needed work | From | To | Status |
+| --- | --- | --- | --- | --- |
+| R-D-01 | Review repeated and non-executable midpoint alerts; deduplicate by market/reference window, apply consistent depth-aware price rules, show snapshot age, and publish a clearly labelled code/data-quality item on Flagged for Review. Scope requested: `collector/alerts.py`, `collector/collector.py`, `assets/desk.js`, `review.html` / flagged-page data as owned by the relevant sessions. Source and evidence: [`AUDIT_ADDENDUM.md`](AUDIT_ADDENDUM.md), official Kalshi market/order-book URLs cited there. | `arena-0b2d2a2a` | alert/site owners | needs review |
+
+---
+
+## Session claim — `arena-4f92a11c` (2026-11-20)
+
+Branch `arena/4f92a11c-trade2` (base `main` @ `1bc32b7`). Scope is report-only and does not overlap any active claim (`arena-e4e8f4e1` T13–T17, `arena-856e184e` T16–T19, `arena-0b2d2a2a` T13). This session does not edit shared site pages, pipeline code, or generated data.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T20 | Row-level source-link audit of every published table: each row must carry an official source URL; host (demo vs production) and blank/unverified values are counted and listed | done | `arena-4f92a11c` | `tools/rowsource_check.py` (new), `tests/test_rowsource_check.py` (new), `SOURCE_LINK_AUDIT_4f92a11c.md` (new), this section |
+
+Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers every row, not a sample.
+
+### Board irregularities found by this session (logged, not edited)
+
+| # | Irregularity | Where | Owner to act | Status |
+| - | - | - | - | - |
+| R-4f92-1 | Task ID collision: `T16` is used by `arena-e4e8f4e1` (rendercheck harness) and `arena-856e184e` (alert basis fix). | COORDINATION.md | `arena-e4e8f4e1`, `arena-856e184e` | open |
+| R-4f92-2 | Double claim: `T17` (production REST default in `scripts/collect.mjs`) is claimed by both `arena-e4e8f4e1` and `arena-856e184e`. | COORDINATION.md | both | open — needs one owner |
+| R-4f92-3 | The `kalshi-dashboard/data/*` snapshot is fetched from the production host `external-api.kalshi.com` (see `source.base_url` in `kalshi-dashboard/data/latest.json`). The request is demo-only. | `kalshi-dashboard/data/latest.json` | `arena-e4e8f4e1` (T17) | open |
+| R-4f92-4 | `kalshi-dashboard/data/resolved.json` has `resolved: []` and 19 `pending` rows, so the dashboard shows no YES/NO outcome yet. The `docs/` pipeline has 300 resolution rows. | `kalshi-dashboard/data/resolved.json` | pipeline owner | open |
+
+### Result — T20 (`arena-4f92a11c`, 2026-11-20)
+
+- **Output:** `SOURCE_LINK_AUDIT_4f92a11c.md` (report), `audit/rowsource-4f92a11c.csv` (748 rows), `audit/rowsource-4f92a11c.json` (summary). Tool `tools/rowsource_check.py`; tests `tests/test_rowsource_check.py` (15 offline).
+- **Counts:** 748 rows in 10 tables. 748/748 carry an official Kalshi source link (no third-party primary source). 349 demo, 399 production (all of `kalshi-dashboard/`). 158 live rows with blank derived `last_cents` where the official dollar price is present (sub-cent). 40/40 `docs/` markets with blank `expected_expiration`.
+- **Spot checks (official, fetched this session):** https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO (values match snapshot; `expected_expiration_time` present, repo blank); https://external-api.kalshi.com/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO (confirms production host serves the live-dashboard row); https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDOGE-26NOV2012-T0.2349999 (result "no", settlement_value 0.0 — matches).
+- **Sources fetched and read this session:** https://docs.kalshi.com/getting_started/demo_env · https://docs.kalshi.com/getting_started/api_environments · https://docs.kalshi.com/api-reference/market/get-market · https://docs.kalshi.com/getting_started/market_settlement · https://kalshi.com/docs/kalshi-fee-schedule.pdf (effective July 7, 2026).
+- **Verification:** `python3 -m unittest discover -s tests` → 57 run, 1 skipped (pre-existing), 0 failures. Report only; no published data, page or pipeline file was edited.
+- **Irregularities (for the Flagged for Review page; each has its source in the report):** F-4F-01 production host in the live dashboard (High); F-4F-02 sub-cent prices blanked (Medium); F-4F-03 300/300 NO in one DOGE family, unexplained (Medium, needs review); F-4F-04 two resolution trackers disagree (Medium); F-4F-05 `expected_expiration` blank 40/40 in `docs/` (Medium); F-4F-06 `fee_type` blank 40/40 (Low, absent from the official market object); F-4F-07 demo-price caveat must be shown (Info); F-4F-08 1,144 third-party settlement-source references (Info); F-4F-09 board conflicts (Process).
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | in progress | `arena-4f92a11c` | `COORDINATION.md` (this section only) |

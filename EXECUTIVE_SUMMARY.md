@@ -82,8 +82,9 @@ switches on automatically the moment `KALSHI_API_KEY_ID` and
   [official fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf).
   All 42 published rows are reproduced exactly by the code and asserted in
   `tests/test_engine.py`.
-* **Settlement payout.** YES pays $1.00 per contract, NO pays $0.00.
-  Source: [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement).
+* **Settlement payout.** The winning side receives $1.00 per contract (YES holders
+  when the result is YES; NO holders when the result is NO); losing-side contracts
+  receive no payout. Source: [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement).
 
 A worked correction worth recording: the first implementation computed the fee in
 binary floating point and produced **$1.76** where Kalshi's own table says

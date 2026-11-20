@@ -168,14 +168,18 @@ class TestSwing(unittest.TestCase):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
         self.assertIsNone(detect_swing(prev, cur))
         # ...but against the bar's opening price of 0.30 it is a 14c swing.
-        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0)
+        # The reference is a candle *quote* mid, so it must carry its own tight
+        # spread (see VERIFICATION_856e184e.md, T16). Without it, no alert.
+        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0,
+                             reference_spread=0.02)
         self.assertIsNotNone(alert)
         self.assertAlmostEqual(alert["abs_delta"], 0.14)
         self.assertEqual(alert["previous"], 0.30)
 
     def test_reference_bar_still_respects_the_threshold(self):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
-        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0))
+        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0,
+                                       reference_spread=0.02))
 
     def test_missing_quote_never_fires(self):
         prev = self.base(0.40)
