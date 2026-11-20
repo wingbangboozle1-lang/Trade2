@@ -28,34 +28,50 @@ export const STRATEGIES = {
   swing_momentum: {
     id: 'swing_momentum',
     label: 'Swing Momentum',
-    description: 'Buys the direction of a move of at least $0.10 once the move has printed.',
-    risk_usd: 100,
+    description: 'Buys the direction of a move of at least $0.10 once the move has printed, then exits on a $0.04 target or stop.',
+    risk_usd: 50,
     max_contracts: 100,
-    take_profit: 0.10,
-    stop_loss: 0.10,
-    max_hold_minutes: 360,
+    swing_threshold: 0.10,
+    take_profit: 0.04,
+    stop_loss: 0.04,
+    max_hold_minutes: 720,
   },
   mean_reversion: {
     id: 'mean_reversion',
     label: 'Mean Reversion',
-    description: 'Buys a market that has moved at least $0.08 away from its own 30-minute mean.',
-    risk_usd: 100,
+    description: 'Buys a market that has moved at least $0.03 away from its own 30-period mean, then exits on a $0.03 target or stop.',
+    risk_usd: 50,
     max_contracts: 100,
-    take_profit: 0.08,
-    stop_loss: 0.08,
-    max_hold_minutes: 240,
+    deviation_threshold: 0.03,
+    take_profit: 0.03,
+    stop_loss: 0.03,
+    max_hold_minutes: 480,
   },
   liquidity_capture: {
     id: 'liquidity_capture',
     label: 'Liquidity Capture',
-    description: 'Buys the touch in a tight, deep market and aims for a small spread-sized gain.',
-    risk_usd: 50,
+    description: 'Buys the touch in a tight, deep market and aims for a 2-cent spread-sized gain.',
+    risk_usd: 25,
     max_contracts: 50,
     take_profit: 0.02,
-    stop_loss: 0.03,
-    max_hold_minutes: 30,
+    stop_loss: 0.02,
+    max_hold_minutes: 60,
   },
 };
+
+/** Minimum price at which a simulated order is allowed (a $0.00 "fill" is not a fill). */
+export const MIN_ENTRY_PRICE = 0.02;
+export const MAX_ENTRY_PRICE = 0.98;
+
+/** Stable fingerprint of the strategy parameters — used to invalidate stale trade logs. */
+export function strategyConfigHash() {
+  const payload = JSON.stringify(Object.values(STRATEGIES).map((s) => [s.id, s.risk_usd, s.max_contracts, s.take_profit, s.stop_loss, s.max_hold_minutes, s.swing_threshold ?? null, s.deviation_threshold ?? null]));
+  let hash = 0;
+  for (let i = 0; i < payload.length; i += 1) {
+    hash = ((hash << 5) - hash + payload.charCodeAt(i)) | 0;
+  }
+  return hash.toString(16);
+}
 
 export const TRADE_CATEGORIES = {
   entry_signal: 'Entry signal',
@@ -112,11 +128,12 @@ function sizePosition(price, strategy) {
  */
 const SIGNALS = {
   swing_momentum(series, i, ctx) {
+    const strategy = STRATEGIES.swing_momentum;
     const price = series[i].price;
     const ref = priceBefore(series, i, ctx.swingLookbackMinutes ?? 5);
     if (ref === null) return null;
     const delta = price - ref;
-    if (Math.abs(delta) < 0.10) return null;
+    if (Math.abs(delta) < strategy.swing_threshold - 1e-9) return null;
     return {
       side: delta > 0 ? 'YES' : 'NO',
       reason: `${delta > 0 ? 'Up' : 'Down'} swing of $${Math.abs(delta).toFixed(2)} vs ${ctx.swingLookbackMinutes ?? 5}m reference $${ref.toFixed(2)}`,
@@ -124,19 +141,21 @@ const SIGNALS = {
     };
   },
   mean_reversion(series, i) {
+    const strategy = STRATEGIES.mean_reversion;
     const price = series[i].price;
     const mean = rollingMean(series, i, 30);
     if (mean === null) return null;
     const delta = price - mean;
-    if (Math.abs(delta) < 0.08) return null;
+    if (Math.abs(delta) < strategy.deviation_threshold - 1e-9) return null;
     if (price < 0.15 || price > 0.85) return null;
     return {
       side: delta < 0 ? 'YES' : 'NO',
-      reason: `Price $${price.toFixed(2)} is $${Math.abs(delta).toFixed(2)} ${delta < 0 ? 'below' : 'above'} the 30m mean $${mean.toFixed(2)}`,
+      reason: `Price $${price.toFixed(3)} is $${Math.abs(delta).toFixed(3)} ${delta < 0 ? 'below' : 'above'} the 30-period mean $${mean.toFixed(3)}`,
       ref_price: mean,
     };
   },
   liquidity_capture(series, i) {
+    const strategy = STRATEGIES.liquidity_capture;
     const bar = series[i];
     const spread = bar.spread;
     if (!Number.isFinite(spread) || spread > 0.03) return null;
@@ -199,6 +218,7 @@ export function backtestMarket({ market, series, swingLookbackMinutes = 5 }) {
       const signal = SIGNALS[strategy.id](series, i, { swingLookbackMinutes });
       if (!signal || open[strategy.id]) continue;
       const entryYesPrice = signal.side === 'YES' ? yesAsk : yesFromNo(yesBid);
+      if (!Number.isFinite(entryYesPrice) || entryYesPrice < MIN_ENTRY_PRICE || entryYesPrice > MAX_ENTRY_PRICE) continue;
       const count = sizePosition(entryYesPrice, strategy);
       if (!count) continue;
       const cost = count * entryYesPrice;
@@ -304,7 +324,7 @@ export function stepMarket({ openPositions = [], market, book, series = [], now 
     const signal = SIGNALS[id](liveSeries, index, { swingLookbackMinutes: 5 });
     if (!signal) continue;
     const entryYesPrice = signal.side === 'YES' ? yesAsk : yesFromNo(yesBid);
-    if (!Number.isFinite(entryYesPrice) || entryYesPrice <= 0 || entryYesPrice >= 1) continue;
+    if (!Number.isFinite(entryYesPrice) || entryYesPrice < MIN_ENTRY_PRICE || entryYesPrice > MAX_ENTRY_PRICE) continue;
     let count = sizePosition(entryYesPrice, strategy);
     if (!count) continue;
     // Liquidity cap: never take more contracts than rest within 2c of the touch.

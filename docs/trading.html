@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulated trading &amp; portfolio · Kalshi demo tracker</title>
+<meta name="description" content="Simulated (paper) trading results on Kalshi demo markets: strategies, per-trade-type breakdown, portfolio performance and resolution tracking.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body>
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Simulated trading &amp; portfolio</h1>
+  <p class="lede">
+    Every trade on this page is <strong>simulated</strong>. The engine replays the Kalshi demo
+    candlestick history (backtest) and then trades forward on every live collection cycle, marking
+    positions to the live bid and settling them when a market resolves <em>yes</em> or <em>no</em>.
+    No real order has been placed against a Kalshi account — see
+    <a href="flagged.html">Flagged for review</a> for why.
+  </p>
+
+  <div class="stats" id="stats" style="margin-top:16px"></div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Strategies under test</h2>
+    <div class="table-wrap">
+      <table id="strategyTable">
+        <thead>
+          <tr><th>Strategy</th><th>Rule</th><th class="num">Risk / trade</th><th class="num">Trades</th><th class="num">Closed</th><th class="num">Open</th><th class="num">Win rate</th><th class="num">Realized P&amp;L</th><th class="num">Deployed</th><th class="num">ROI</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h2>Performance by topic</h2>
+      <div class="table-wrap">
+        <table id="topicTable">
+          <thead><tr><th>Topic</th><th class="num">Trades</th><th class="num">Closed</th><th class="num">Wins</th><th class="num">Win rate</th><th class="num">P&amp;L</th><th class="num">Deployed</th><th class="num">ROI</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Trade types (strategy × topic × side)</h2>
+      <div class="table-wrap">
+        <table id="typeTable">
+          <thead><tr><th>Trade type</th><th class="num">Closed</th><th class="num">Win rate</th><th class="num">Realized P&amp;L</th><th class="num">Deployed</th><th class="num">ROI</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Strategies derived from the trade log</h2>
+    <p>Combinations of strategy, topic and side with at least three closed trades and positive realized P&amp;L, ranked by return on capital deployed.</p>
+    <div id="derived"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Open positions</h2>
+    <div class="table-wrap">
+      <table id="openTable">
+        <thead><tr><th>Market</th><th>Strategy</th><th>Side</th><th class="num">Contracts</th><th class="num">Entry</th><th class="num">Mark</th><th class="num">Cost</th><th class="num">Unrealized</th><th>Opened</th><th>Reason</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Trade log</h2>
+    <div class="toolbar">
+      <label for="tradeFilter">Show</label>
+      <select id="tradeFilter">
+        <option value="all">All trades</option>
+        <option value="closed">Closed only</option>
+        <option value="open">Open only</option>
+        <option value="settled">Settled (resolved yes/no)</option>
+        <option value="backtest">Backtest only</option>
+        <option value="live">Live paper only</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table id="tradeTable">
+        <thead><tr><th>Opened</th><th>Market</th><th>Topic</th><th>Strategy</th><th>Side</th><th class="num">Qty</th><th class="num">Entry</th><th class="num">Exit</th><th class="num">Cost</th><th class="num">P&amp;L</th><th>Exit reason</th><th>Mode</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Execution assumptions</h2>
+    <ul class="tight">
+      <li><strong>Single book.</strong> Kalshi publishes YES bids and NO bids only; a YES bid at $0.07 is the same level as a NO ask at $0.93. A YES position is bought at the YES ask and closed at the YES bid; a NO position at the NO ask and closed at the NO bid.</li>
+      <li><strong>Backtest fills</strong> use the 1-minute candle close ± $0.01 as a conservative bid/ask proxy.</li>
+      <li><strong>Forward paper fills</strong> use the live orderbook touch captured by the collector.</li>
+      <li><strong>Position sizing</strong> is a fixed dollar risk per trade (see the strategy table), capped by contracts and by resting size.</li>
+      <li><strong>Resolution.</strong> When Kalshi reports a market <code>result</code> of <code>yes</code> or <code>no</code>, open positions settle at $1 (winning side) or $0 (losing side) and the resolution is recorded on the trade.</li>
+      <li><strong>No real orders.</strong> The signed live-order client exists in <code>pipeline/src/live-trade.js</code> but is inert without a Kalshi API key, and none could be provisioned here.</li>
+    </ul>
+    <div class="src">
+      <a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">Orderbook responses</a>
+      <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a>
+      <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">Market settlement</a>
+      <a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p>Simulated trading only. <a href="dashboard.html">Dashboard</a> · <a href="methodology.html">Methodology</a> · <a href="flagged.html">Flagged for review</a></p>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/trading.js"></script>
+</body>
+</html>

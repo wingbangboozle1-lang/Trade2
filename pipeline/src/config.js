@@ -32,6 +32,9 @@ export const CANDLE_PERIOD_MINUTES = 1;
 /** How many hours of 1-minute candles to pull per market (max 5000 periods per request). */
 export const CANDLE_HISTORY_HOURS = 36;
 
+/** How many hours of hourly candles to pull for the backtest. */
+export const BACKTEST_HISTORY_HOURS = 24 * 60;
+
 /** Orderbook depth requested per side (1-100 allowed by the API). */
 export const ORDERBOOK_DEPTH = 10;
 

@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import {
   REST_BASE, WS_BASE, TOPICS, PER_TOPIC_LIMIT, SWING_THRESHOLD, ROI_CHAT_THRESHOLD,
   PAPER_START_CASH, CANDLE_PERIOD_MINUTES, CANDLE_HISTORY_HOURS, ORDERBOOK_DEPTH,
-  MAX_PAGES_PER_QUERY, MAX_DETAIL_REQUESTS, MAX_ALERTS, MAX_PRICE_POINTS, MAX_TRADES,
+  MAX_PAGES_PER_QUERY, MAX_DETAIL_REQUESTS, MAX_ALERTS, MAX_PRICE_POINTS, MAX_TRADES, BACKTEST_HISTORY_HOURS,
   SOURCES,
 } from './config.js';
 import { KalshiClient, fp } from './kalshi.js';
@@ -29,7 +29,7 @@ import { classify, kalshiSeriesUrl } from './topics.js';
 import { summarizeOrderbook } from './liquidity.js';
 import { scoreMarket } from './roi.js';
 import { detectSwings, detectTradeSwings, mergeAlerts, SWING_LOOKBACK_MINUTES } from './alerts.js';
-import { backtestMarket, stepMarket, buildPortfolio, STRATEGIES } from './paper.js';
+import { backtestMarket, stepMarket, buildPortfolio, STRATEGIES, strategyConfigHash } from './paper.js';
 import { createLiveClient, readAccountPortfolio } from './live-trade.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -278,7 +278,7 @@ async function main() {
   const endTs = now();
   const startTs = endTs - CANDLE_HISTORY_HOURS * 3600;
   const candleSets = {};
-  // Candles are only useful where the market actually trades.
+  // Intraday candles (1 minute) are only useful where the market actually trades.
   const withTrades = markets.filter((m) => (tradeFeed[m.ticker] || []).length > 0);
   for (const market of withTrades) {
     if (calls.candles >= MAX_DETAIL_REQUESTS) break;
@@ -291,6 +291,24 @@ async function main() {
       candleSets[market.ticker] = candles;
     } catch (error) {
       errors.push({ where: `candlesticks ${market.ticker}`, error: error.message });
+    }
+  }
+
+  // Hourly candles over a longer window give the backtest a usable series even
+  // where the market only prints occasionally.
+  const hourlySets = {};
+  const hourlyStart = endTs - BACKTEST_HISTORY_HOURS * 3600;
+  for (const market of markets) {
+    if (calls.candles >= MAX_DETAIL_REQUESTS) break;
+    try {
+      const series = market.series_ticker || String(market.ticker).split('-')[0];
+      const candles = await client.getCandles(series, market.ticker, {
+        startTs: hourlyStart, endTs, periodInterval: 60,
+      });
+      calls.candles += 1;
+      if (candles && candles.length) hourlySets[market.ticker] = candles;
+    } catch (error) {
+      errors.push({ where: `hourly candlesticks ${market.ticker}`, error: error.message });
     }
   }
 
@@ -311,6 +329,7 @@ async function main() {
   // ------------------------------------------- 6. normalise books / candles
   const orderbooks = {};
   const candles = {};
+  const hourly = {};
   for (const market of markets) {
     const summary = summarizeOrderbook(books[market.ticker], market);
     orderbooks[market.ticker] = summary;
@@ -331,6 +350,23 @@ async function main() {
       .filter((c) => Number.isFinite(c.ts) && Number.isFinite(c.close) && c.close > 0)
       .sort((a, b) => a.ts - b.ts);
     candles[market.ticker] = list.slice(-360);
+
+    const hourlyRaw = hourlySets[market.ticker] || [];
+    hourly[market.ticker] = hourlyRaw
+      .map((c) => ({
+        ts: Number(c.end_period_ts),
+        open: fp.dollars(c.price?.open_dollars),
+        high: fp.dollars(c.price?.high_dollars),
+        low: fp.dollars(c.price?.low_dollars),
+        close: fp.dollars(c.price?.close_dollars),
+        bid: fp.dollars(c.yes_bid?.close_dollars),
+        ask: fp.dollars(c.yes_ask?.close_dollars),
+        volume: fp.num(c.volume_fp),
+        open_interest: fp.num(c.open_interest_fp),
+      }))
+      .filter((c) => Number.isFinite(c.ts) && Number.isFinite(c.close) && c.close > 0)
+      .sort((a, b) => a.ts - b.ts)
+      .slice(-720);
   }
 
   // ------------------------------------------------------ 7. history + scores
@@ -393,15 +429,24 @@ async function main() {
   log(`swings this run: ${swings.length} (log size ${alerts.length})`);
 
   // ------------------------------------------------------- 9. paper trading
-  const trades = [...(state.trades || [])];
-  const backtested = new Set(state.backtested || []);
+  const configHash = strategyConfigHash();
+  const resetTrades = state.strategy_config_hash && state.strategy_config_hash !== configHash;
+  if (resetTrades) {
+    log('strategy parameters changed — clearing the stored trade log and re-running the backtest');
+  }
+  const trades = resetTrades ? [] : [...(state.trades || [])];
+  const backtested = resetTrades ? new Set() : new Set(state.backtested || []);
 
   // 9a. backtest newly tracked markets over their candle history.
   for (const market of markets) {
     if (backtested.has(market.ticker)) continue;
-    const series = (candles[market.ticker] || []).map((c) => ({
+    const hourlySeries = (hourly[market.ticker] || []).map((c) => ({
       ts: c.ts, price: c.close, bid: c.bid, ask: c.ask, spread: (c.ask > 0 && c.bid > 0) ? c.ask - c.bid : null,
     }));
+    const intradaySeries = (candles[market.ticker] || []).map((c) => ({
+      ts: c.ts, price: c.close, bid: c.bid, ask: c.ask, spread: (c.ask > 0 && c.bid > 0) ? c.ask - c.bid : null,
+    }));
+    const series = hourlySeries.length >= 30 ? hourlySeries : intradaySeries;
     if (series.length < 10) continue;
     const produced = backtestMarket({ market, series });
     for (const trade of produced) {
@@ -536,6 +581,7 @@ async function main() {
   writeJson(path.join(DATA_DIR, 'events.json'), events);
   writeJson(path.join(DATA_DIR, 'orderbooks.json'), orderbooks);
   writeJson(path.join(DATA_DIR, 'candles.json'), candles);
+  writeJson(path.join(DATA_DIR, 'candles_hourly.json'), hourly);
   writeJson(path.join(DATA_DIR, 'market_trades.json'), tradeFeed);
   writeJson(path.join(DATA_DIR, 'alerts.json'), alerts);
   writeJson(path.join(DATA_DIR, 'prices.json'), history);
@@ -549,6 +595,7 @@ async function main() {
   state.trades = trimmedTrades;
   state.alerts = alerts;
   state.backtested = [...backtested].slice(-500);
+  state.strategy_config_hash = configHash;
   state.runs = (state.runs || 0) + 1;
   state.lastRunAt = new Date().toISOString();
   writeJson(STATE_FILE, state);
