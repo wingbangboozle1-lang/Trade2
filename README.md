@@ -26,8 +26,19 @@ python3 -m unittest discover -s tests -v
 python3 tools/linkcheck.py          # fail on a broken internal link
 ```
 
-No third-party packages are needed for the collector, site build or tests.
-`cryptography` is only required for signed requests.
+The Python collector, site builder, and Python unit tests have no third-party
+requirements; `cryptography` is needed only for signed requests. `npm test`
+uses Node's built-in test runner and does not require `npm ci`.
+
+The browser-like UI render/smoke checks use `jsdom`. For jsdom 31, use Node
+22.22.2 or later in the 22.x line, 24.15.0 or later in the 24.x line, or
+26.0.0 or later. Install the test dependency before running `npm run test:site`,
+`node test/root_render.mjs`, `node tools/rendercheck.mjs`, or
+`node tests/test_docs_live.mjs`:
+
+```bash
+npm ci
+```
 
 ## Optional: enable real demo trading
 

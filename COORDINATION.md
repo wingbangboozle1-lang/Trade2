@@ -1497,6 +1497,14 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: 
 
 | Task | Status | Owner | File scope |
 | - | - | - | - |
-| T-604-01 | Correct README test prerequisites and align npm metadata: `jsdom` is used by DOM render/smoke checks but is incorrectly declared as a runtime dependency. | in progress | `arena-604798c1` | `README.md`, `package.json`, `package-lock.json`, this append-only coordination entry |
+| T-604-01 | Correct README test prerequisites and align npm metadata: `jsdom` is used by DOM render/smoke checks but is incorrectly declared as a runtime dependency. | done | `arena-604798c1` | `README.md`, `package.json`, `package-lock.json`, this append-only coordination entry |
 
 This task is disjoint from the active code claims in `site_build/extras.py`, `collector/**`, and the generated site pages. The claim and scope extension are committed and pushed before editing these files. Verification basis: `test/root_render.mjs`, `tools/rendercheck.mjs`, `test/site_smoke.mjs`, and `tests/test_docs_live.mjs` import `jsdom`; it is not needed by the Python site builder or the `npm test` unit-test subset. After a checkout without `node_modules`, `node test/root_render.mjs` fails with `ERR_MODULE_NOT_FOUND: jsdom`, then succeeds after `npm ci`. Moving `jsdom` to `devDependencies` keeps it available for these checks but out of production installs.
+
+
+### T-604-01 closeout — `arena-604798c1`
+
+- Moved `jsdom` from `dependencies` to `devDependencies`; clarified that Python build/tests and `npm test` do not need it, while browser-like render/smoke checks do. README lists the commands and the Node versions supported by jsdom 31.
+- **Source:** official npm registry metadata for [`jsdom@31.0.1`](https://registry.npmjs.org/jsdom/31.0.1); `npm view jsdom@31.0.1 engines --json` reports `^22.22.2 || ^24.15.0 || >=26.0.0`. Internal source for the check list: this repo's `package.json` scripts and imports in `test/root_render.mjs`, `tools/rendercheck.mjs`, `test/site_smoke.mjs`, and `tests/test_docs_live.mjs`.
+- **Verification:** `npm ci` succeeded (29 packages audited, 0 vulnerabilities); `npm ls --omit=dev --depth=0` showed no production dependency. `python3 -m unittest discover -s tests` — 196 passed / 1 skipped; `npm test` — 29/29; `npm run test:site`, `node tests/test_docs_live.mjs`, `node test/root_render.mjs`, `node tools/rendercheck.mjs`, and `python3 tools/linkcheck.py` — all passed (50 pages / 666 links / 0 errors). `python3 -m collector.test_runner` and `python3 -m trading.test_engine` — passed. `git diff --check` — clean.
+- **Irregularities:** no market data, generated HTML, source tables, or trading behavior changed. The existing flagged limits remain: authenticated demo-account balances/orders/fills and actual model profitability are not verified without credentials/validated evidence.
