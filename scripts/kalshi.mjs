@@ -25,8 +25,28 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  * GET a public JSON endpoint with retry/backoff for 429 and 5xx.
  * @returns {Promise<{data:any, url:string, fetchedAt:string}>}
  */
+export class KalshiNetworkBreaker extends Error {}
+
+// Run-wide circuit breaker: after too many consecutive network failures the whole run stops
+// (so a blocked or down host cannot hang a scheduled job for an hour).
+const breaker = { consecutiveNetworkErrors: 0, limit: 6, deadlineMs: Infinity, tripped: false };
+export function configureBreaker({ limit = 6, deadlineMs = Infinity } = {}) {
+  breaker.consecutiveNetworkErrors = 0;
+  breaker.limit = limit;
+  breaker.deadlineMs = deadlineMs;
+  breaker.tripped = false;
+}
+export function breakerTripped() {
+  return breaker.tripped;
+}
+
 export async function getPublic(base, path, params = {}, opts = {}) {
-  const { retries = 4, timeoutMs = 25000, minGapMs = 150, fetchImpl = fetch } = opts;
+  const { retries = 3, timeoutMs = 15000, minGapMs = 150, fetchImpl = fetch } = opts;
+  if (breaker.tripped) throw new KalshiNetworkBreaker('circuit breaker already tripped');
+  if (Date.now() > breaker.deadlineMs) {
+    breaker.tripped = true;
+    throw new KalshiNetworkBreaker('run deadline exceeded');
+  }
   const qs = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
     if (v === undefined || v === null || v === '' || v === false) continue;
@@ -44,10 +64,15 @@ export async function getPublic(base, path, params = {}, opts = {}) {
         signal: AbortSignal.timeout(timeoutMs),
       });
     } catch (err) {
+      if (++breaker.consecutiveNetworkErrors >= breaker.limit) {
+        breaker.tripped = true;
+        throw new KalshiNetworkBreaker(`${breaker.limit} consecutive network errors; last: ${err.message}`);
+      }
       if (attempt > retries) throw err;
       await sleep(backoff(attempt));
       continue;
     }
+    breaker.consecutiveNetworkErrors = 0;
     if (res.ok) {
       const data = await res.json();
       if (minGapMs) await sleep(minGapMs);

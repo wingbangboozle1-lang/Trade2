@@ -18,7 +18,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { getPublic, PRODUCTION_BASE, KalshiHttpError } from './kalshi.mjs';
+import { getPublic, PRODUCTION_BASE, KalshiHttpError, configureBreaker, breakerTripped } from './kalshi.mjs';
 import { dollarsToCents } from './fees.mjs';
 import { openPositions, updatePositions, summarize, STRATEGIES } from './strategies.mjs';
 
@@ -28,8 +28,9 @@ const OUT_DIR = args.out || './_site/data';
 const BASE = args.base || process.env.KALSHI_BASE || PRODUCTION_BASE;
 const CONFIG_PATH = args.config || path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'config', 'topics.json');
 
-export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now() } = {}) {
+export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now(), deadlineMs = 12 * 60 * 1000 } = {}) {
   const started = Date.now();
+  configureBreaker({ limit: 6, deadlineMs: started + deadlineMs });
   const cfg = JSON.parse(await readFile(configPath, 'utf8'));
   const state = await loadState(stateDir);
   state.run = (state.run || 0) + 1;
@@ -261,6 +262,10 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   }
   const statusOut = { generated_at: runInfo.generated_at, run: state.run, base_url: base, counts: { series_mapped: seriesMap.size, markets_active: rows.length, alerts_this_run: alerts.length, alerts_total: state.alerts.length, orderbooks: Object.keys(orderbooks).length, resolved_total: Object.keys(state.resolved).length, pending_total: Object.keys(state.pending).length, resolution_checks_this_run: checked, positions: state.positions.length, positions_opened_this_run: opened.length, history_markets: Object.keys(historyOut).length }, errors };
 
+  // Fail closed: if the API was unreachable for the whole run, do not publish a partial snapshot.
+  if (breakerTripped()) {
+    throw new Error(`Collector stopped before publishing: Kalshi API unreachable (${errors.slice(-1)[0] || 'circuit breaker tripped'}). Previous state kept; nothing written.`);
+  }
   await mkdir(outDir, { recursive: true });
   await writeFile(path.join(outDir, 'latest.json'), JSON.stringify(latest));
   await writeFile(path.join(outDir, 'alerts.json'), JSON.stringify(alertsOut));
