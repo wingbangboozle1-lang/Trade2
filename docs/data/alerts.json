@@ -1,7 +1,48 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795184291&end_ts=1795187891&period_interval=1",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESPERSON/markets/KXPRESPERSON-28-VRAM/candlesticks?start_ts=1795187135&end_ts=1795190735&period_interval=1",
+   "delta": 0.799,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.003,
+   "headlines": [
+    {
+     "published": "2026-11-20T12:00:00+00:00",
+     "source": "The Guardian",
+     "status": "verified-fetch",
+     "title": "Could Pete Buttigieg win the White House in 2028? | Politics Weekly America - The Guardian",
+     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNb2tRWjdkbXNadzVhT25qdEhwS3VPd3c1Tk5fV1BoQ3g5QTlKRHA1dDZmSDB2SWZnenRYYXd2RnFyUGlIS3A3dmk2TTdVVk1qSk5SSkJuY1AxQnJiaE9OTW5CcG1vVHExc0Fpdmh4dXlUaVpwU09RRVNFSjlXc3A1QWRadG82QWhvRXpYQk5vZm9qWmVEOVo1blJNbHdEdkJWYS1ta2VDOWpHQ2RvdlAzcjNLM041MHhtM1k5ci04YmhPa0ZxTWc?oc=5"
+    },
+    {
+     "published": "2026-11-20T13:30:00+00:00",
+     "source": "The Hill",
+     "status": "verified-fetch",
+     "title": "Who gets to look presidential? - The Hill",
+     "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPanM3a3BrcksyZTlfblZ6em1rSExBYWhhU2cwQjN3Ym1NWVBZbmNvM29oMnhCX20tcFlFQUhlQlRzeTZFV05qOWxyNEhyREQ0V01pYnJJZmpENnFQbTNOem1nMUI2TnpINzZubnFCYlpHVnU2OUxpd0xPT2lXWThVb1g4NNIBiAFBVV95cUxOS2ZURzFRV0xnZnFMQjRkWFFQSjBKSXBaczJIQ2gyLWNCZnRoeEF6cWo0Q25lanlBcVhhMHV2MGYtbXhUM2l0SURYUWlZajBKQjBtWnBPSzB6eDFuNWJmdGExUHlzOHhmX3paNUt0QWFvOXk0NHQxT2NzZ1UyeXNKM053ZV8wUm9U?oc=5"
+    },
+    {
+     "published": "2026-11-20T14:47:00+00:00",
+     "source": "Business Insider",
+     "status": "verified-fetch",
+     "title": "Meet the Potential 2028 Presidential Frontrunners From Both Parties - Business Insider",
+     "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQV1h3VnIyV3M4bmc2OWxHcTA2QWlsaUtnd3MxMkNxaGdzM19KVjRSZnduQXFtSVNIWC1HMnFrVkdxbkxzU01palpqXzVEcmNnV2V0YnJNbVotQjBJM0ZqZmxIVUNjVE9zNEtOZXlOXzdZUVBsNFlUUWtQRk5IYlZBbjIzcw?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESPERSON-28-VRAM",
+   "t": 1795187280,
+   "t_iso": "2026-11-20T15:08:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPRESPERSON-28-VRAM",
+   "title": "Who will win the next presidential election?",
+   "to": 0.802,
+   "topic": "elections",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795169135&end_ts=1795190735&period_interval=60",
    "delta": 0.806,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -12,17 +53,17 @@
    "headlines": [],
    "news_status": "no-headlines-found",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
-   "t": 1795184760,
-   "t_iso": "2026-11-20T14:26:00+00:00",
+   "t": 1795186800,
+   "t_iso": "2026-11-20T15:00:00+00:00",
    "threshold": 0.1,
    "ticker": "KXPRESNOMD-28-HBID",
    "title": "Will Hunter Biden be the nominee for the Presidency for the Democratic party?",
    "to": 0.81,
    "topic": "elections",
-   "window": "seconds"
+   "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795166291&end_ts=1795187891&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795169135&end_ts=1795190735&period_interval=60",
    "delta": 0.12,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -37,13 +78,6 @@
      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZ1ZWTnJDZHRuek9pMjY4dEFidWpETlg3NllZQWZDcERReklPeEYyVmhMdXZxYzlqSzVLNGh2NTFTYTRFZU41WlREbHAzSkF1R3pfMEMzUXpRdUhGNkgwRFcwekFoU0ZtVGNMYXJsVkJfSUZzV2taaFl3NngyMnNSbnMwSWJhVThCTU10dDFPczFTLWhmZzJBQWc2bF9iQzBtN0JmVWw4dVlaR2c?oc=5"
     },
     {
-     "published": "2026-11-20T12:00:52+00:00",
-     "source": "Kotaku",
-     "status": "verified-fetch",
-     "title": "Critics Aren\u2019t Happy With David Fincher\u2019s \u2018Blatant And Egregious AI Use\u2019 In Tarrantino Sequel - Kotaku",
-     "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxORmdaeTZIdDA0WG9pVWx2TTl4b1lqbzZxOVVwUEVfMEtBTUtoRWtoTWljOEhzZEoxYi15M1VMMU9SREtTNVRkLXV5RUU1N1FFS0dsM2ptbXA2UGdoQklMajlOLVNLaWN0MjBwNkNrektta0l4U19WV0ZST1VzYl9BN2ZCcWxaRUxvcm5PQk5RdTFqeFhxNHlHVDdlTmt3OS1wSHVjWjJaT2pjRXhGLUVMLQ?oc=5"
-    },
-    {
      "published": "2026-11-20T15:07:42+00:00",
      "source": "Washington City Paper",
      "status": "verified-fetch",
@@ -51,18 +85,25 @@
      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPNGtFYm9ubGFDWUFZMXo3UFpBcTU1Y0hsM1NKY216QVhXYVNpOUpTU3ZDQWtFdFFla054aEFaNEhkaVROVnZMcDFUcGtUWFhVaG9CWU9MZ3lmZ3BYdDBPa2Y5VENhZlVQalQ5YjNkR1NXTWNqb1pVYnhTVjdZWVh0Vk5rQmNNSFdGa3MxVEdBYmpVeUh2d1RwUVRhcWtqbmFfckJnUVVSVkpsMXJfeXlMdEQ2V3pZNXo4dmc2X29udXFzQWl3OF8ya1ZPUzdUamRmWVpzUVBTYU80bzZhWHYxak02ZWxWYzA?oc=5"
     },
     {
+     "published": "2026-11-20T09:50:28+00:00",
+     "source": "IMDb",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Draws Backlash Over Alleged Generative AI in Key Scenes - IMDb",
+     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFAtTTZMMUN1SHZESW1uX1BieXBpX0ZmWXkzVGluNS1Lb0ZVVHJ0SlhGeVdlMzE1cnhmT0ZmMjRueFpCeFFBM1BhWVJjUU5RVG02WllLWWJhREV3M2lBQ294T3kySU16TUE?oc=5"
+    },
+    {
+     "published": "2026-11-20T14:34:13+00:00",
+     "source": "Yahoo",
+     "status": "verified-fetch",
+     "title": "Stars of \u2018The Further Mis-Adventures of Cliff Booth\u2019 Talk New Series - Yahoo",
+     "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbk1LVHpLQUwxcGRxNldSRHlQbzJHN3JWakVvUWpVU3FRcXpGUnVCb2daaTh0OXZYSjc3NWh2b2RkM3pGNUZPRWJ0SFBxYTVJMjVBYXVzUFdvVkhaSXhzUmREekdNc3RUX0d2TFUtRjBlN01USXFBS21HY1l1Qzdpd2ZaNW5tZHBhRkxF?oc=5"
+    },
+    {
      "published": "2026-11-20T06:16:07+00:00",
      "source": "Film Stories",
      "status": "verified-fetch",
      "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
-    },
-    {
-     "published": "2026-11-20T07:44:22+00:00",
-     "source": "wehotimes.com",
-     "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Movie Review: A Hangout Sequel Nobody Needed Turns Out to Be a Blast - wehotimes.com",
-     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNWjFKVm1YT0ZVVmh3Z21zOFduZDhLSGxzU0UzR1dRVUNMT0l0aDg5OG9OZHBKYm05b2oySExwQ1VuTlUxSl9UdWVnNTB2cURnNGR2bi1QQ21kWHVOaUNYejk1bEhDQ2xpQmo1V3VPWGtqOW0wVGN3dE5IYzFXajVHeC05NzRNbDJNcTVSQ1lVb0hzNXJLY2E5UXBqSXNueE45ZC1Oa1ZNd01qTjZzS0dqWXN3Rk1uSUVlOElQYW50N0o0OWNuMk1xdndQOUk?oc=5"
     }
    ],
    "news_status": "ok",
@@ -77,7 +118,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794928691&end_ts=1795187891&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794931535&end_ts=1795190735&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -98,7 +139,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794928691&end_ts=1795187891&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794931535&end_ts=1795190735&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -111,6 +152,20 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
+    },
+    {
+     "published": "2026-11-19T06:49:53+00:00",
+     "source": "Peradaban.id",
+     "status": "verified-fetch",
+     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
+     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
+    },
+    {
+     "published": "2026-11-19T03:29:34+00:00",
+     "source": "Power Line",
+     "status": "verified-fetch",
+     "title": "Gas prices are falling, along with the sky - Power Line",
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOUG8zOG1LVHY1VjFYT0xCckMtWS1JdEl0eUoyenJGWkJ2NjRYZUN2ZHo2MWliMzZONmdmVnhRQ08za0N2OFBRWHRBNEZqdG40WHZ1UXN2MWFMbTRzejZsT2JUdG4xYW1yaWxpVUdaV08tM1hWM1JJLUpvaGV5OVFkN0lyTlh5MVZRcDYzRTNQRmR0Zzd3YW1J?oc=5"
     }
    ],
    "news_status": "ok",
@@ -125,7 +180,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T15:18:44.262349+00:00",
+ "generated_at": "2026-11-20T16:06:09.341354+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

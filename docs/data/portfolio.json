@@ -1,11 +1,11 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 9788.46,
+  "cash": 9786.28,
   "daily_loss_cap": 150.0,
-  "equity": 10188.38,
-  "fees_paid": 11.62,
-  "open_positions": 2,
+  "equity": 10350.92,
+  "fees_paid": 13.72,
+  "open_positions": 3,
   "realized_pnl": 0.0,
   "starting_cash": 10000.0
  },
@@ -45,9 +45,14 @@
    "cash": 9788.46,
    "equity": 10188.38,
    "ts": "2026-11-20T15:18:44.327388+00:00"
+  },
+  {
+   "cash": 9786.28,
+   "equity": 10350.92,
+   "ts": "2026-11-20T16:06:09.413619+00:00"
   }
  ],
- "generated_at": "2026-11-20T15:18:44.327391+00:00",
+ "generated_at": "2026-11-20T16:06:09.413624+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -66,7 +71,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 3,
+   "open_periods": 4,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
@@ -81,7 +86,7 @@
    "contracts": 1176,
    "entry_cost": 199.92,
    "entry_fee": 11.62,
-   "open_periods": 0,
+   "open_periods": 1,
    "opened_at": "2026-11-20T15:18:44.327370+00:00",
    "reason": "book edge fair=0.467 vs price=0.170 spread=0.030 net=+0.257",
    "side": "yes",
@@ -90,6 +95,21 @@
    "strategy": "roi_edge",
    "ticker": "KXRT-FUR-85",
    "topic": "culture"
+  },
+  {
+   "avg_price": 0.02,
+   "contracts": 10000,
+   "entry_cost": 200.0,
+   "entry_fee": 13.72,
+   "open_periods": 0,
+   "opened_at": "2026-11-20T16:06:09.413595+00:00",
+   "reason": "high-ROI: net edge +0.043 >= 0.02 (revert 30%x0.21 - fee 0.010 - spread 0.010)",
+   "side": "yes",
+   "signal": "high-roi-fade",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "topic": "gas-prices"
   }
  ],
  "source_urls": {
@@ -111,15 +131,16 @@
   "by_trade_type": {}
  },
  "this_run": {
-  "equity": 10188.38,
+  "equity": 10350.92,
   "marks": {
-   "KXAAAGASM-26NOV30-3.50": 0.5
+   "KXAAAGASM-26NOV30-3.50": 0.5,
+   "KXRT-FUR-85": 0.14
   },
   "opened": [
    {
-    "signal": "book-undervalued-yes",
+    "signal": "high-roi-fade",
     "strategy": "roi_edge",
-    "ticker": "KXRT-FUR-85"
+    "ticker": "KXAAAGASW-26NOV23-3.6400"
    }
   ]
  },
@@ -161,6 +182,25 @@
    "topic": "culture",
    "trade_type": "roi_edge|book-undervalued-yes|yes",
    "ts": "2026-11-20T15:18:44.327379+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 10000,
+   "exit_reason": null,
+   "fee": 13.72,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.02,
+   "reason": "high-ROI: net edge +0.043 >= 0.02 (revert 30%x0.21 - fee 0.010 - spread 0.010)",
+   "settlement": null,
+   "side": "yes",
+   "signal": "high-roi-fade",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
+   "strategy": "roi_edge",
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "topic": "gas-prices",
+   "trade_type": "roi_edge|high-roi-fade|yes",
+   "ts": "2026-11-20T16:06:09.413603+00:00"
   }
  ]
 }
