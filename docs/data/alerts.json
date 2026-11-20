@@ -1,28 +1,117 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795203037&end_ts=1795206637&period_interval=1",
-   "delta": 0.857,
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795206204&end_ts=1795209804&period_interval=1",
+   "delta": -0.73,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.99,
+   "headlines": [
+    {
+     "published": "2026-11-20T15:59:28+00:00",
+     "source": "Yahoo",
+     "status": "verified-fetch",
+     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - Yahoo",
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNWFV2SGR0bjJBNi1DQl9FRHNxMXItN182MmtFdzBNOXdvWUYyNEttM2dGSndZa0FxRkR5UHpyU0RGOHVnUHJUUVBMNEdkVFBtOTNqZVFOTTlwck9sQm5tak9MajJhYnNta3V4Ymk5am9zQS1YRkRJbjZ2Z0w4MUVrejd2b2hibGVHRVV5NVhtWQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T19:59:19+00:00",
+     "source": "Nine.com.au",
+     "status": "verified-fetch",
+     "title": "Finding the anti-Trump: The Democratic contenders for president in 2028 - Nine.com.au",
+     "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOMmNVM1lubktoMFU5cHZUZm93TWsxbnZ3VEg2RjNMQlZVMnBZN2VfUXpkRWdvaUUwYWI2OEJFM2pxeWpVM0o3Ym9yRC1RT3otaTJiMzN3SHlJbnc0d1llR0xFQWt2TzN5M1VocThIVjBRNWdTSEVnOVRPLXJiN3huVFEwWWVxYjVEOGY3TmJiQzhDNExFeFg5TkQ3cUdGem5BdFN6X1phTEdyUWFVWXZzcEZrbjNXbFUwbEFsYUQ5RE5Tcm1XZ3RuSkpB?oc=5"
+    },
+    {
+     "published": "2026-11-20T15:59:28+00:00",
+     "source": "The Daily Beast",
+     "status": "verified-fetch",
+     "title": "Rising Dem Star Leaps to Top of 2028 Poll - The Daily Beast",
+     "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOaDdvSTVHTGZEVUlGdXlyXzBZU3dQNVRBWUIwMm5DQkktWkpNSG5yUnBaamlvazhEYy00MWxRSjZ2UHAtcmFBUng5S3JfcFlwVEx0SVc5eHhwblNPaWVCbE52aXFid0VxWnh1aXRLbzV3MEJqNTlCT1Vxa3pVZ3I2TUVzRWVERXRKMkJ1YWRCTzYyRmtKUTlobmlwLUR1bVdhdjBrYnBn?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JOSS",
+   "t": 1795209540,
+   "t_iso": "2026-11-20T21:19:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPRESNOMD-28-JOSS",
+   "title": "Will Jon Ossoff be the Democratic Presidential nominee in 2028?",
+   "to": 0.26,
+   "topic": "elections",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2017-T1739.99/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
+   "delta": 0.46,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
    "flags": [
     "news-unverified:no headline within window (link left blank)"
    ],
-   "from": 0.005,
+   "from": 0.02,
    "headlines": [],
    "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2017-T1739.99",
+   "t": 1795204800,
+   "t_iso": "2026-11-20T20:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXETHD-26NOV2017-T1739.99",
+   "title": "Ethereum price at Nov 20, 2026 at 5pm EST?",
+   "to": 0.48,
+   "topic": "crypto",
+   "window": "minutes"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
+   "delta": 0.858,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.005,
+   "headlines": [
+    {
+     "published": "2026-11-20T18:00:00+00:00",
+     "source": "The Washington Post",
+     "status": "verified-fetch",
+     "title": "Democratic stars try to keep 2028 spotlight as newbies surge after midterms - The Washington Post",
+     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOYVl1WDVUNGpRSHZ6X1Z6dVlSeVQxYjZKRGk3Q2xsdi1pZzRLdWlfano5LVcwd21XSjVxRXd5NGE4WkN4bGpSQms3Z0JkbDZpSlRZOGhORFYxM1RHZ3JjMEEzZjJITVBjNjVONFh5eFdhOWlfSE1PcHJIbXpta2haeEpTemo3TUZ2NXNLVG01RVlYLTl4eVkzLUFBRjB0OWRGMlU0dlNtZXVjMkpieTFLWDhlSEJvLVJKUnA2RGl3?oc=5"
+    }
+   ],
+   "news_status": "ok",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
-   "t": 1795204020,
-   "t_iso": "2026-11-20T19:47:00+00:00",
+   "t": 1795204800,
+   "t_iso": "2026-11-20T20:00:00+00:00",
    "threshold": 0.1,
    "ticker": "KXPRESNOMD-28-BOBA",
    "title": "Will Barack Obama be the Democratic Presidential nominee in 2028?",
-   "to": 0.862,
+   "to": 0.863,
    "topic": "elections",
-   "window": "seconds"
+   "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2017-T1659.99/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
+   "delta": 0.77,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.18,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2017-T1659.99",
+   "t": 1795204800,
+   "t_iso": "2026-11-20T20:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXETHD-26NOV2017-T1659.99",
+   "title": "Ethereum price at Nov 20, 2026 at 5pm EST?",
+   "to": 0.95,
+   "topic": "crypto",
+   "window": "minutes"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -77,7 +166,34 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "delta": 0.108,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.032,
+   "headlines": [
+    {
+     "published": "2026-11-20T07:32:43+00:00",
+     "source": "PGA Tour",
+     "status": "verified-fetch",
+     "title": "Michael Thorbjornsen sinks 21-foot birdie putt on No. 16 at The RSM - PGA Tour",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQbHJidEFMdk1CcUlyenJKVmFwejJfRjRNd1ZXRE83T0F0ckUta1N4Z3dQSGJCOUdtOTFLZ1FYY25oSGlEQ0JUU1J5a1ptRzlzcE5zR3Z2Tk5maVc4aHFNaVZud29QM2hYODVzRGRiS1dwVDNzU3R1X2NVQjlSOVFiQVRabUJPVnVvd2x0QjBLM2w3VmthU2Y5Q20yOFJtTUkzUmFnSWw1OThicXVQQmVFQjJSSmEweEMy?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "title": "The RSM Classic: Michael Thorbjornsen wins",
+   "to": 0.14,
+   "topic": "golf",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -98,7 +214,34 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "delta": 0.2,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.74,
+   "headlines": [
+    {
+     "published": "2026-11-19T11:00:00+00:00",
+     "source": "Los Angeles Times",
+     "status": "verified-fetch",
+     "title": "David Fincher got to make his own Tarantino movie. First he needed to find himself in it - Los Angeles Times",
+     "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOQjA3bnU3N1REdnJvdnhaTmkyVlFiV0huQlM0NXc2Zl9UalpVeDhpUjA3d1duMThKNmdhR2pZNEJyOHFXSUd1MzM1bmh6MXJyaUlTVWRiZ1hWV21wbFhER08yY0xGekhBdmRrbjRzdlBoM2pyem92eUZpODhIRjRhUVN3cFVPV20zdUVabDR3cDBfbHNsN1RoYm9WLTExaXBKTWZHSVhMSTRYMzRHbmdMcGQyWFhOVEpJLWM5b2Y5STd6OGowTDgzRUpWM1VidGlFRVE?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-75",
+   "t": 1795064400,
+   "t_iso": "2026-11-19T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXRT-FUR-75",
+   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
+   "to": 0.94,
+   "topic": "culture",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -132,7 +275,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T20:31:13.353365+00:00",
+ "generated_at": "2026-11-20T21:24:01.585336+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
