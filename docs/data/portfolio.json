@@ -1,10 +1,10 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 9793.0,
+  "cash": 10000.0,
   "daily_loss_cap": 150.0,
-  "equity": 9993.0,
-  "fees_paid": 7.0,
+  "equity": 10200.0,
+  "fees_paid": 0.0,
   "open_positions": 1,
   "realized_pnl": 0.0,
   "starting_cash": 10000.0
@@ -30,9 +30,14 @@
    "cash": 9793.0,
    "equity": 9993.0,
    "ts": "2026-11-20T14:58:49.282618+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 10200.0,
+   "ts": "2026-11-20T15:04:32.246309+00:00"
   }
  ],
- "generated_at": "2026-11-20T14:58:49.282629+00:00",
+ "generated_at": "2026-11-20T15:04:32.246339+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -51,7 +56,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 0,
+   "open_periods": 1,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
@@ -81,15 +86,11 @@
   "by_trade_type": {}
  },
  "this_run": {
-  "equity": 9993.0,
-  "marks": {},
-  "opened": [
-   {
-    "signal": "book-undervalued-no",
-    "strategy": "roi_edge",
-    "ticker": "KXAAAGASM-26NOV30-3.50"
-   }
-  ]
+  "equity": 10200.0,
+  "marks": {
+   "KXAAAGASM-26NOV30-3.50": 0.5
+  },
+  "opened": []
  },
  "trades": [
   {

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T14:58:49.200608+00:00",
+ "generated_at": "2026-11-20T15:04:32.181646+00:00",
  "rows": [
   {
    "categories": [
@@ -7,68 +7,11 @@
    ],
    "category": "Crypto",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": null,
-   "ticker": "BTCI",
-   "title": "Bitcoin price hourly",
-   "topic": "crypto",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Crypto"
-   ],
-   "category": "Crypto",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": null,
-   "ticker": "KXAVAXD",
-   "title": "Avalanche price Above/below",
-   "topic": "crypto",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Crypto"
-   ],
-   "category": "Crypto",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
    "tags": [
-    "Crypto"
+    "BTC"
    ],
-   "ticker": "KXAVAXMAXY",
-   "title": "Avalanche max",
-   "topic": "crypto",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Crypto"
-   ],
-   "category": "Crypto",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": [
-    "15 min"
-   ],
-   "ticker": "KXBCH15M",
-   "title": "Bitcoin Cash 15 Minute",
-   "topic": "crypto",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Crypto"
-   ],
-   "category": "Crypto",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": [
-    "Crypto",
-    "Bitcoin"
-   ],
-   "ticker": "KXBTCMAX100INAUG",
-   "title": "Will Bitcoin hit 100k before Trump Inauguration?",
+   "ticker": "BTCATH",
+   "title": "BTC ATH",
    "topic": "crypto",
    "verified": true,
    "volume": null
@@ -82,8 +25,8 @@
    "tags": [
     "BTC"
    ],
-   "ticker": "KXBTCMAX90",
-   "title": "When will bitcoin hit 90k?",
+   "ticker": "BTCMAXM",
+   "title": "How high will Bitcoin get this month?",
    "topic": "crypto",
    "verified": true,
    "volume": null
@@ -94,29 +37,9 @@
    ],
    "category": "Crypto",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": [
-    "Crypto",
-    "HYPE",
-    "Bitcoin"
-   ],
-   "ticker": "KXBTCVSHYPE",
-   "title": "BTC vs. HYPE",
-   "topic": "crypto",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Crypto"
-   ],
-   "category": "Crypto",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": [
-    "Crypto",
-    "DOGE"
-   ],
-   "ticker": "KXDOGEMINMON",
-   "title": "Doge min monthly",
+   "tags": null,
+   "ticker": "KXDOT",
+   "title": "Polkadot range",
    "topic": "crypto",
    "verified": true,
    "volume": null
@@ -144,10 +67,11 @@
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
    "tags": [
     "Crypto",
+    "Hourly",
     "Ethereum"
    ],
-   "ticker": "KXETHMINMON",
-   "title": "ETH min one touch monthly",
+   "ticker": "KXETH",
+   "title": "Ethereum range",
    "topic": "crypto",
    "verified": true,
    "volume": null
@@ -158,8 +82,58 @@
    ],
    "category": "Crypto",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": null,
-   "ticker": "KXNEARH",
+   "tags": [
+    "Crypto",
+    "Ethereum",
+    "ETH"
+   ],
+   "ticker": "KXETHEVENT",
+   "title": "Ethereum after economic events",
+   "topic": "crypto",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Crypto"
+   ],
+   "category": "Crypto",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
+   "tags": [
+    "Crypto",
+    "Pre-Market"
+   ],
+   "ticker": "KXFDVKINETIQ",
+   "title": "KINETIQ FDV ",
+   "topic": "crypto",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Crypto"
+   ],
+   "category": "Crypto",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
+   "tags": [
+    "HYPE"
+   ],
+   "ticker": "KXHYPEMAXY",
+   "title": "Hype Max Year",
+   "topic": "crypto",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Crypto"
+   ],
+   "category": "Crypto",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
+   "tags": [
+    "Hourly"
+   ],
+   "ticker": "KXNEARD",
    "title": "NEAR Directional",
    "topic": "crypto",
    "verified": true,
@@ -171,9 +145,42 @@
    ],
    "category": "Crypto",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
-   "tags": null,
-   "ticker": "KXWAL25",
-   "title": "Wal $1 2025",
+   "tags": [
+    "Crypto"
+   ],
+   "ticker": "KXRANKLISTBONK50",
+   "title": "BONK TOP 50?",
+   "topic": "crypto",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Crypto"
+   ],
+   "category": "Crypto",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
+   "tags": [
+    "Crypto",
+    "Shiba Inu"
+   ],
+   "ticker": "KXSHIBA",
+   "title": "Shiba range",
+   "topic": "crypto",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Crypto"
+   ],
+   "category": "Crypto",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false",
+   "tags": [
+    "Hourly"
+   ],
+   "ticker": "KXSUIATH",
+   "title": "Sui ATH 2026",
    "topic": "crypto",
    "verified": true,
    "volume": null
@@ -185,12 +192,24 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Awards",
-    "BAFTA",
-    "Movies"
+    "Music",
+    "Music charts"
    ],
-   "ticker": "BAFTASUPACTR",
-   "title": "BAFTA for Best Supporting Actress",
+   "ticker": "1SONG-DRAKE",
+   "title": "Drake top song",
+   "topic": "culture",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Entertainment"
+   ],
+   "category": "Entertainment",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
+   "tags": null,
+   "ticker": "KXAMATEST",
+   "title": "TEST",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -202,10 +221,11 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Television"
+    "Anime Awards",
+    "Awards"
    ],
-   "ticker": "KXALLINGUEST",
-   "title": "All-In podcast",
+   "ticker": "KXANIMEBAC",
+   "title": "Best Action",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -232,10 +252,12 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Awards"
+    "Reality TV",
+    "Television",
+    "Dancing with the Stars"
    ],
-   "ticker": "KXESPYBESTATHLETEMEN",
-   "title": "BEST ATHLETE \u2013 MEN\u2019S SPORTS\u202c",
+   "ticker": "KXDWTSRANK",
+   "title": "what rank participant finish",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -247,10 +269,23 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Music"
+    "Video games"
    ],
-   "ticker": "KXGRAMMYCOUNTBADBUNNY",
-   "title": "HOW MANY GRAMMYS WILL BAD BUNNY WIN?",
+   "ticker": "KXMCCODBLOPS7",
+   "title": "Call of Duty: Black Ops 7",
+   "topic": "culture",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Entertainment"
+   ],
+   "category": "Entertainment",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
+   "tags": null,
+   "ticker": "KXMOVIEDELAY",
+   "title": "WHICH MOVIES WILL BE DELAYED?",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -262,25 +297,24 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Music"
-   ],
-   "ticker": "KXKWEST",
-   "title": "Kanye West total stream count",
-   "topic": "culture",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Entertainment"
-   ],
-   "category": "Entertainment",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
-   "tags": [
+    "Awards",
     "Movies"
    ],
-   "ticker": "KXPERFORMROLEMILESMORALES",
-   "title": "WHO WILL PERFORM Miles Morales",
+   "ticker": "KXOSCARCOUNTWICKED",
+   "title": "Wicked Oscar wins",
+   "topic": "culture",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Entertainment"
+   ],
+   "category": "Entertainment",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
+   "tags": null,
+   "ticker": "KXSHOWENDSIMPSONS",
+   "title": "The Simpsons ending",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -292,25 +326,11 @@
    "category": "Entertainment",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
    "tags": [
-    "Movies"
+    "Music charts",
+    "Music"
    ],
-   "ticker": "KXROLEINPRODUCTIONDOOMSDAY",
-   "title": "WHO WILL BE PLAYING WHAT IN AVENGERS DOOMSDAY",
-   "topic": "culture",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Entertainment"
-   ],
-   "category": "Entertainment",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
-   "tags": [
-    "Rotten Tomatoes"
-   ],
-   "ticker": "KXRTCLOWNINACORNFIELD",
-   "title": "CLOWN IN A CORNFIELD Rotten Tomatoes score",
+   "ticker": "KXSPOTIFYSONGCITYNASHVILLEW",
+   "title": "Top song Nashville",
    "topic": "culture",
    "verified": true,
    "volume": null
@@ -345,14 +365,30 @@
   },
   {
    "categories": [
-    "Entertainment"
+    "Elections"
    ],
-   "category": "Entertainment",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false",
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": [
+    "US Elections",
+    "Other US Elections"
+   ],
+   "ticker": "KXATTYGENSC",
+   "title": "AG race SC",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
    "tags": null,
-   "ticker": "LBJR",
-   "title": "Bronny James draft",
-   "topic": "culture",
+   "ticker": "KXFRFPNOM",
+   "title": "Front Populaire winner",
+   "topic": "elections",
    "verified": true,
    "volume": null
   },
@@ -363,10 +399,67 @@
    "category": "Elections",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
    "tags": [
-    "Primaries"
+    "Governor"
    ],
-   "ticker": "KXAZSOSR",
-   "title": "Arizona Secretary of State Republican nominee?",
+   "ticker": "KXGOPFAVGOV",
+   "title": "Republican wins in Republican-favored Governor races",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections",
+    "Politics"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": null,
+   "ticker": "KXLEAVEJAN26",
+   "title": "who will leave their position in January?",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": [
+    "US Elections"
+   ],
+   "ticker": "KXNJGA",
+   "title": "New Jersey general election",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": null,
+   "ticker": "KXNYCMAYORDSECOND",
+   "title": "NYC Mayor D primary 2nd place",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": [
+    "US Elections"
+   ],
+   "ticker": "KXPORTERDROPOUT",
+   "title": "Katie Porter dropout",
    "topic": "elections",
    "verified": true,
    "volume": null
@@ -379,129 +472,25 @@
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
    "tags": [
     "International elections",
-    "International"
-   ],
-   "ticker": "KXBC2ND",
-   "title": "British Columbia general election: 2nd place",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "International elections"
-   ],
-   "ticker": "KXBRJUSMIN",
-   "title": "Who will be Brazilian justice and public security minister after the election?",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": null,
-   "ticker": "KXDEMPRIMARYSTATE",
-   "title": "First Dem state",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "Congress"
-   ],
-   "ticker": "KXDNC28HOST",
-   "title": "Who will host the 2028 Democratic national convention?",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "Trump"
-   ],
-   "ticker": "KXELECTIONEMERGENCY",
-   "title": "Will Trump declare an election emergency?",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "US Elections"
-   ],
-   "ticker": "KXHIGHMOVKH",
-   "title": "Highest margin of victory for Harris",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "State legislatures",
-    "US Elections"
-   ],
-   "ticker": "KXKSSTATELEG",
-   "title": "Kansas State Legislature control",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
-    "US Elections"
-   ],
-   "ticker": "KXMAINE94",
-   "title": "Maine 94th House District winner?",
-   "topic": "elections",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Elections"
-   ],
-   "category": "Elections",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
-   "tags": [
     "Foreign Elections"
    ],
-   "ticker": "KXPORTUGALPRESROUND1",
-   "title": "Vote share in Portugal presidential election first round",
+   "ticker": "KXSCOTPARLIAMENT",
+   "title": "Who will win the Scottish Parliament election?",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": [
+    "Primaries"
+   ],
+   "ticker": "KXSENATEALD",
+   "title": "ALD",
    "topic": "elections",
    "verified": true,
    "volume": null
@@ -516,8 +505,8 @@
     "State legislatures",
     "US Elections"
    ],
-   "ticker": "KXSTATELEGTN",
-   "title": "Tennessee Legislature race winner?",
+   "ticker": "KXSTATELEGWA",
+   "title": "Washington Legislature race winner?",
    "topic": "elections",
    "verified": true,
    "volume": null
@@ -529,27 +518,39 @@
    "category": "Elections",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
    "tags": [
-    "Senate"
+    "Primaries"
    ],
-   "ticker": "SENATECO",
-   "title": "Colorado Senate race",
+   "ticker": "KXVAPRIMARY",
+   "title": "Virginia Primary Winners",
    "topic": "elections",
    "verified": true,
    "volume": null
   },
   {
    "categories": [
-    "Economics",
-    "Commodities"
+    "Elections"
+   ],
+   "category": "Elections",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false",
+   "tags": [
+    "US Elections",
+    "SCOTUS & courts"
+   ],
+   "ticker": "KXWASUPREME5",
+   "title": "Washington Supreme Court Position 5 election",
+   "topic": "elections",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Economics"
    ],
    "category": "Economics",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
-   "tags": [
-    "Oil and energy",
-    "Econ Daily"
-   ],
-   "ticker": "KXAAAGASCDKY",
-   "title": "Kentucky gas price",
+   "tags": null,
+   "ticker": "GASMIN",
+   "title": "EIA Gas lowest price yearly",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -565,8 +566,42 @@
     "Oil and energy",
     "Econ Daily"
    ],
-   "ticker": "KXAAAGASCDLA",
-   "title": "Louisiana gas price",
+   "ticker": "KXAAAGASCDMA",
+   "title": "Massachusetts gas price",
+   "topic": "gas-prices",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Economics",
+    "Commodities"
+   ],
+   "category": "Economics",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
+   "tags": [
+    "Oil and energy",
+    "Econ Daily"
+   ],
+   "ticker": "KXAAAGASCDME",
+   "title": "Maine gas price",
+   "topic": "gas-prices",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Economics",
+    "Commodities"
+   ],
+   "category": "Economics",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
+   "tags": [
+    "Oil and energy",
+    "Econ Daily"
+   ],
+   "ticker": "KXAAAGASCDNY",
+   "title": "New York gas price",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -599,8 +634,8 @@
     "Oil and energy",
     "Econ Daily"
    ],
-   "ticker": "KXAAAGASCDPA",
-   "title": "Pennsylvania gas price",
+   "ticker": "KXAAAGASCDOK",
+   "title": "Oklahoma gas price",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -616,74 +651,7 @@
     "Oil and energy",
     "Econ Daily"
    ],
-   "ticker": "KXAAAGASCDWA",
-   "title": "Washington gas price",
-   "topic": "gas-prices",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Economics"
-   ],
-   "category": "Economics",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
-   "tags": [
-    "Oil and energy",
-    "Econ Daily"
-   ],
-   "ticker": "KXAAAGASDCO",
-   "title": "Colorado gas price",
-   "topic": "gas-prices",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Economics",
-    "Commodities"
-   ],
-   "category": "Economics",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
-   "tags": [
-    "Oil and energy",
-    "Econ Daily"
-   ],
-   "ticker": "KXAAAGASDNE",
-   "title": "Nebraska gas price",
-   "topic": "gas-prices",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Economics",
-    "Commodities"
-   ],
-   "category": "Economics",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
-   "tags": [
-    "Oil and energy",
-    "Econ Daily"
-   ],
-   "ticker": "KXAAAGASDRI",
-   "title": "Rhode Island gas price",
-   "topic": "gas-prices",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Economics",
-    "Commodities"
-   ],
-   "category": "Economics",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
-   "tags": [
-    "Oil and energy",
-    "Econ Daily"
-   ],
-   "ticker": "KXAAAGASDWI",
+   "ticker": "KXAAAGASCDWI",
    "title": "Wisconsin gas price",
    "topic": "gas-prices",
    "verified": true,
@@ -696,11 +664,11 @@
    "category": "Economics",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
    "tags": [
-    "Oil & Gas",
-    "Oil and energy"
+    "Oil and energy",
+    "Econ Daily"
    ],
-   "ticker": "KXAAAGASM",
-   "title": "US gas price",
+   "ticker": "KXAAAGASDFL",
+   "title": "Florida gas price",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -712,10 +680,44 @@
    "category": "Economics",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
    "tags": [
-    "Oil & Gas"
+    "Oil and energy",
+    "Econ Daily"
    ],
-   "ticker": "KXAAAGASY",
-   "title": "US gas price up",
+   "ticker": "KXAAAGASDMN",
+   "title": "Minnesota gas price",
+   "topic": "gas-prices",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Economics",
+    "Commodities"
+   ],
+   "category": "Economics",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
+   "tags": [
+    "Oil and energy",
+    "Econ Daily"
+   ],
+   "ticker": "KXAAAGASDNM",
+   "title": "New Mexico gas price",
+   "topic": "gas-prices",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Economics"
+   ],
+   "category": "Economics",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
+   "tags": [
+    "Oil and energy",
+    "Econ Daily"
+   ],
+   "ticker": "KXAAAGASDNY",
+   "title": "New York gas price",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -727,8 +729,8 @@
    "category": "Economics",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false",
    "tags": null,
-   "ticker": "KXGASMIN",
-   "title": "EIA Gas lowest price yearly",
+   "ticker": "KXGASD",
+   "title": "Gas daily",
    "topic": "gas-prices",
    "verified": true,
    "volume": null
@@ -742,8 +744,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXDPWT3BALL",
-   "title": "DPWT 3-Ball",
+   "ticker": "KXDPWORLDTOURMAKECUT",
+   "title": "DP World Tour To Make Cut",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -757,8 +759,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGACUT",
-   "title": "golf cut",
+   "ticker": "KXDPWORLDTOURR2LEAD",
+   "title": "DP World Tour R2 Leader",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -772,8 +774,23 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGACUTLINE",
-   "title": "PGA What Will the Cut Line Be",
+   "ticker": "KXDPWORLDTOURR3LEAD",
+   "title": "DP World Tour R3 Leader",
+   "topic": "golf",
+   "verified": true,
+   "volume": null
+  },
+  {
+   "categories": [
+    "Sports"
+   ],
+   "category": "Sports",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false",
+   "tags": [
+    "Soccer"
+   ],
+   "ticker": "KXKXECULPGAME",
+   "title": "delete",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -787,8 +804,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGAREGION",
-   "title": "PGA Region Winner",
+   "ticker": "KXLIVTOUR",
+   "title": "LIV Tour",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -802,8 +819,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGAROUNDSCORE",
-   "title": "Golf Round Scores",
+   "ticker": "KXNEXTWIN",
+   "title": "Will golfer win this tournament next?",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -817,8 +834,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGARYDERTOP3",
-   "title": "Ryder Cup Top 3 Points Scorer",
+   "ticker": "KXPGARYDERTOP",
+   "title": "Ryder Cup Top Points Scorer",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -832,8 +849,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGATOP20",
-   "title": "PGA Top 20 Finisher",
+   "ticker": "KXPGATIGER",
+   "title": "Tiger Woods PGA",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -847,8 +864,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGATOUR",
-   "title": "PGA Tour",
+   "ticker": "KXPGAWINNERWITHOUT",
+   "title": "PGA Winner Without",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -862,23 +879,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPGAWIN",
-   "title": "Golfer to Win",
-   "topic": "golf",
-   "verified": true,
-   "volume": null
-  },
-  {
-   "categories": [
-    "Sports"
-   ],
-   "category": "Sports",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false",
-   "tags": [
-    "Esports"
-   ],
-   "ticker": "KXPGLBUCH",
-   "title": "Who will win the PGL Masters Bucharest 2025",
+   "ticker": "KXPHOENIXOPEN",
+   "title": "Phoenix Open",
    "topic": "golf",
    "verified": true,
    "volume": null
@@ -907,8 +909,8 @@
    "tags": [
     "Golf"
    ],
-   "ticker": "KXPRESCUPWINMARGIN",
-   "title": "Presidents Cup Win Margin",
+   "ticker": "KXPRESCUPPTSLEAD",
+   "title": "Presidents Cup Points Leader",
    "topic": "golf",
    "verified": true,
    "volume": null

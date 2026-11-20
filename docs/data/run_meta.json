@@ -4,19 +4,19 @@
   "alerts": 0,
   "candle_markets": 10,
   "errors": 0,
-  "markets": 40,
+  "markets": 33,
   "orderbooks": 10,
-  "resolutions": 1050,
+  "resolutions": 1724,
   "series": 60
  },
- "duration_s": 69.3,
+ "duration_s": 69.6,
  "environment": "github-actions",
  "errors": [],
  "exchange": {
   "indexes": 0,
   "status": null
  },
- "finished_at": "2026-11-20T14:58:49.219937+00:00",
+ "finished_at": "2026-11-20T15:04:32.197468+00:00",
  "series_matched": {
   "crypto": 324,
   "culture": 3135,
@@ -31,7 +31,7 @@
   "gas-prices": 12,
   "golf": 12
  },
- "started_at": "2026-11-20T14:57:39.966564+00:00",
+ "started_at": "2026-11-20T15:03:22.587381+00:00",
  "threshold": 0.1,
  "topics": [
   "gas-prices",
