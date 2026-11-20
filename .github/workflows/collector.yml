@@ -19,6 +19,11 @@ on:
 permissions:
   contents: write
 
+# never let two collectors run at once (they would fight over rate limits)
+concurrency:
+  group: collector-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   collect:
     runs-on: ubuntu-latest

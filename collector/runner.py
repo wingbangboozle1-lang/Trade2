@@ -372,7 +372,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "errors": [],
         "environment": "github-actions" if os.environ.get("GITHUB_ACTIONS") else "local",
     }
-    client = KalshiClient(logger=lambda m: print(m, file=sys.stderr))
+    client = KalshiClient(budget=170, logger=lambda m: print(m, file=sys.stderr))
 
     def progress(msg: str) -> None:
         print(f"[collector] {msg}", flush=True)

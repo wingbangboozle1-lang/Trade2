@@ -44,6 +44,7 @@ class KalshiClient:
         timeout: float = 12.0,
         max_retries: int = 3,
         min_interval: float = 0.5,
+        budget: Optional[int] = None,
         logger=None,
     ) -> None:
         self.base = base.rstrip("/")
@@ -52,6 +53,7 @@ class KalshiClient:
         self.min_interval = min_interval      # floor for the adaptive pace
         self._interval = min_interval         # current pacing (grows on 429, decays on success)
         self._last_call = 0.0
+        self.budget = budget                  # hard cap on HTTP attempts (None = unlimited)
         self.requests: List[Dict[str, Any]] = []
         self.log = logger or (lambda *a, **k: None)
 
@@ -70,6 +72,11 @@ class KalshiClient:
 
         last_err: Optional[Exception] = None
         for attempt in range(self.max_retries):
+            if self.budget is not None and self.budget <= 0:
+                # degrade gracefully: caller records the error and the run still publishes
+                raise KalshiError(url, 0, "request budget exhausted (partial run)")
+            if self.budget is not None:
+                self.budget -= 1
             self._throttle()
             req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
             try:
@@ -77,7 +84,7 @@ class KalshiClient:
                     raw = resp.read().decode("utf-8")
                     self.requests.append({"url": url, "status": resp.status, "ts": int(time.time())})
                     # success -> gently speed back up toward the floor interval
-                    self._interval = max(self.min_interval, self._interval * 0.9)
+                    self._interval = max(self.min_interval, self._interval * 0.95)
                     return json.loads(raw) if raw.strip() else {}
             except urllib.error.HTTPError as exc:  # 429 / 5xx -> backoff
                 body = ""
@@ -90,7 +97,7 @@ class KalshiClient:
                     last_err = KalshiError(url, exc.code, body)
                     if exc.code == 429:
                         # back off AND slow the whole run down, not just this request
-                        self._interval = min(6.0, max(self._interval * 1.6, 1.5))
+                        self._interval = min(4.0, max(self._interval * 1.4, 1.2))
                         self.log(f"warn: 429 rate limited; pacing now {self._interval:.1f}s/req url={url}")
                     time.sleep(min(30.0, 1.5 * (2**attempt)))
                     continue
