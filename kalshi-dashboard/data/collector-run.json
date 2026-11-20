@@ -1,0 +1,8 @@
+{
+ "run_at": "2026-11-20T14:19:46.038Z",
+ "outcome": "failure",
+ "published": false,
+ "last_phase": "[collect] phase: write output (elapsed 720s)",
+ "reason": "Error: Collector stopped before publishing: Kalshi API unreachable ([object Object]). Previous state kept; nothing written.",
+ "run_url": "https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44750453463"
+}
