@@ -1058,3 +1058,43 @@ deployed page after merging**, a diff review of your own PR cannot see another
 session's prose that merged green. R-79CC-1 (thread `fee_multiplier` through the
 collector engine) is still open with `arena-856e184e`; once it lands, K6's
 sentence and the standing flag should both be retired in the same PR.
+
+---
+
+| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | in progress | `arena-4f92a11c` | `COORDINATION.md` (this section only) |
+
+---
+
+# Board D — session `arena-dc732aa6`
+
+Session ID `arena-dc732aa6` · branch `arena/dc732aa6-trade2` · base `main` @ `1bc32b7`
+(= the published snapshot commit of 2026-11-20T18:53Z). Claimed 2026-11-20T19:05Z.
+
+Scope chosen after reading all four boards above: every prior task is merged and its
+pipelines are green, so this session works on **defects found by inspecting the
+deployed root desk data itself**, which no earlier board covers.
+
+| # | Task | Status | File scope |
+| - | - | - | - |
+| D1 | Swing-chat quality: stop the same ongoing move re-firing an alert on every collector run (29 buffered alerts, only 8 distinct moves); record the price basis of each alert so a trade price is never compared against a book mid | in progress | `collector/alerts.py`, `collector/collector.py`, `tests/test_alert_quality_dc732aa6.py` |
+| D2 | Candidate-catalyst links: `collector/news.py` is written but **never called** in the root pipeline, so no ≥ $0.10 jump carries a link as the brief requires | in progress | `collector/news.py`, `collector/collector.py`, `site_build/build.py` |
+| D3 | Landing-page correctness: integer counters render as `750.00` / `2,000.00` / `1.00`; second (model) chat lives only on `live.html`, not on the overview | in progress | `site_build/build.py`, `assets/desk.js`, `assets/styles.css` |
+| D4 | "Suggestions to make the site more live" page (explicit brief item, absent from the root site) + Flagged-for-review refresh | in progress | `site_build/build.py`, `site_build/flagpage.py` |
+| D5 | Line-by-line verification log for this session, PR → merge → Pages confirmation | in progress | `VERIFICATION-dc732aa6.md`, `COORDINATION.md` |
+
+**Not touched** (owned by other sessions): `docs/**`, `kalshi-dashboard/**`, `scripts/**`,
+`config/**`, `EXECUTIVE_SUMMARY.md`, `README.md`, `trading/**`, `collector/engine.py`,
+`collector/kalshi_api.py`, `collector/runner.py`, `collector/discover.py`, `collector/topics.py`.
+
+Requests to other sessions:
+
+| # | Request | From | To | Status |
+| - | - | - | - | - |
+| R-DC-1 | `arena/e4e8f4e1` has unmerged commits touching `EXECUTIVE_SUMMARY.md` and `docs/summary.html`; this session will not edit either file. Please rebase and open a PR so the integration does not conflict. | arena-dc732aa6 | arena-e4e8f4e1 | open |
+| R-DC-2 | `kalshi-dashboard/data/status.json` reports `base_url: https://external-api.kalshi.com/trade-api/v2` — the **production** API, not the demo API named in the brief (`external-api.demo.kalshi.co`), and `alerts_total: 0` across 8 runs. Owned by `arena-5788e385`; logged here rather than edited. This session publishes it on the Flagged page. | arena-dc732aa6 | arena-5788e385 | open |
+
+**Accepted request R-D-01** from `arena-0b2d2a2a`: this session owns the fix
+(deduplicate by market + reference window, consistent depth-aware price rules with the
+price basis published on every alert, snapshot-age display, and a labelled
+code/data-quality item on Flagged for Review). `AUDIT_ADDENDUM.md` is left untouched and
+used as the evidence base; this session does not edit that file.
