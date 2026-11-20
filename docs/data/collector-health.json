@@ -1,5 +1,5 @@
 {
-  "last_run_at": "2026-11-20T13:20:57.117Z",
+  "last_run_at": "2026-11-20T13:25:23.666Z",
   "duration_ms": 31812,
   "api_calls": 123,
   "api_errors": 5,
@@ -40,5 +40,16 @@
   "notes": [
     "All market data is read from the public Kalshi demo REST API (no credentials).",
     "Orderbook and candle counts reflect the per-run request budget in collector/src/config.js."
-  ]
+  ],
+  "status": "failed",
+  "error": {
+    "message": ".for is not iterable",
+    "stack": [
+      "TypeError: .for is not iterable",
+      "    at priceMinutesAgo (file:///home/runner/work/Trade2/Trade2/pipeline/src/roi.js:21:24)",
+      "    at scoreMarket (file:///home/runner/work/Trade2/Trade2/pipeline/src/roi.js:47:19)",
+      "    at main (file:///home/runner/work/Trade2/Trade2/pipeline/src/collect.js:349:19)",
+      "    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    ]
+  }
 }
