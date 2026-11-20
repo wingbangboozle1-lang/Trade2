@@ -271,8 +271,12 @@ def build_overview(live: dict[str, Any]) -> str:
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
               <h2>Highest-dollar open events</h2>
-              <p>Ranked by open-interest value (official open_interest_fp ×
-              notional_value_dollars)</p></div></div>
+              <p>Ranked by <strong>open-interest value</strong> — the official
+              <code>open_interest_fp</code> × <code>notional_value_dollars</code>.
+              This is the settlement value of contracts still open, not dollars
+              traded; Kalshi publishes volume in contracts, not dollars, so a
+              traded-dollar figure is never invented. Sorted by that single
+              official measure, then grouped by topic.</p></div></div>
             <a class="source-link" href="{API}/events?status=open" target="_blank"
                rel="noreferrer">Events API ↗</a>
           </div>
@@ -291,7 +295,9 @@ def build_overview(live: dict[str, Any]) -> str:
           <div class="panel-title">
             <div><span class="section-icon amber">◉</span><div>
               <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
+              <p>Every move of at least $0.10 either way that a trader could act
+              on — two-sided quote, spread under $0.10. A last-trade price is
+              never compared with a quote midpoint. Identical repeats are grouped.</p></div></div>
             <a class="source-link" href="live.html">Full live desk →</a>
           </div>
           <div class="chat-feed">{''.join(alert_rows)}</div>
