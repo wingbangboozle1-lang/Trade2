@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-20T18:41:08Z",
- "generated_at_ts": 1795201737.5365884,
+ "generated_at": "2026-11-20T19:20:47Z",
+ "generated_at_ts": 1795202560.1994312,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -15,120 +15,406 @@
   "fee": "0.07 * C * P * (1 - P), Kalshi published taker fee",
   "reference": "the order book only; both ends of every comparison are book mids so a traded price is never compared with a book quote"
  },
- "picks": [],
- "picks_count": 0,
- "swing_picks_count": 0,
- "level_picks_count": 0,
- "verdicts": [
+ "picks": [
   {
-   "verdict": "rejected",
-   "ticker": "KXPRESNOMD-28-HBID",
+   "accepted": true,
+   "kind": "swing",
+   "ticker": "KXPRESNOMD-28-RKHA",
+   "event_ticker": "KXPRESNOMD-28",
+   "series_ticker": "KXPRESNOMD",
    "topic": "elections",
-   "title": "Hunter Biden",
-   "reason": "the book has not moved since the previous snapshot (mid $0.4065 -> $0.4065), so this move is a single trade print rather than a change in the market",
-   "book_move": 0.0,
-   "alert_delta": -0.4045,
-   "alert_direction": "down",
-   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID"
+   "title": "Ro Khanna",
+   "side": "yes",
+   "executable_price": 0.016,
+   "model_fair": 0.2602,
+   "reference_price": 0.505,
+   "current_price": 0.0155,
+   "edge": 0.2442,
+   "fee": 0.01,
+   "net_edge": 0.2342,
+   "net_roi": 14.6375,
+   "spread": 0.001,
+   "depth_contracts": 46096.88,
+   "yes_bid": 0.015,
+   "yes_ask": 0.016,
+   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RKHA",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RKHA",
+   "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RKHA/orderbook",
+   "reason": "book mid moved 0.5050 -> 0.0155; fair value 0.2602 is the midpoint of the two, so YES at 0.0160 leaves $0.2442 of edge and $0.2342 after the $0.0100 taker fee",
+   "ts": 1795202560.198763,
+   "book_move": -0.4895
   },
   {
-   "verdict": "rejected",
-   "ticker": "KXPRESNOMD-28-AKLO",
-   "topic": "elections",
-   "title": "Amy Klobuchar",
-   "reason": "the book has not moved since the previous snapshot (mid $0.0025 -> $0.0025), so this move is a single trade print rather than a change in the market",
-   "book_move": 0.0,
-   "alert_delta": -0.8005,
-   "alert_direction": "down",
-   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO"
+   "accepted": true,
+   "kind": "swing",
+   "ticker": "KXBTCD-26NOV2017-T64499.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$64,500 or above",
+   "side": "yes",
+   "executable_price": 0.03,
+   "model_fair": 0.2975,
+   "reference_price": 0.57,
+   "current_price": 0.025,
+   "edge": 0.2675,
+   "fee": 0.01,
+   "net_edge": 0.2575,
+   "net_roi": 8.5833,
+   "spread": 0.01,
+   "depth_contracts": 25039.99,
+   "yes_bid": 0.02,
+   "yes_ask": 0.03,
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64499.99",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64499.99",
+   "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64499.99/orderbook",
+   "reason": "book mid moved 0.5700 -> 0.0250; fair value 0.2975 is the midpoint of the two, so YES at 0.0300 leaves $0.2675 of edge and $0.2575 after the $0.0100 taker fee",
+   "ts": 1795202560.198909,
+   "book_move": -0.545
   },
   {
-   "verdict": "rejected",
-   "ticker": "KXPRESNOMD-28-JP",
-   "topic": "elections",
-   "title": "Jared Polis",
-   "reason": "the book has not moved since the previous snapshot (mid $0.4770 -> $0.4770), so this move is a single trade print rather than a change in the market",
-   "book_move": 0.0,
-   "alert_delta": -0.467,
-   "alert_direction": "down",
-   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JP",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JP"
+   "accepted": true,
+   "kind": "swing",
+   "ticker": "KXBTCD-26NOV2017-T62999.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$63,000 or above",
+   "side": "yes",
+   "executable_price": 0.16,
+   "model_fair": 0.215,
+   "reference_price": 0.275,
+   "current_price": 0.155,
+   "edge": 0.055,
+   "fee": 0.01,
+   "net_edge": 0.045,
+   "net_roi": 0.2812,
+   "spread": 0.01,
+   "depth_contracts": 3623.63,
+   "yes_bid": 0.15,
+   "yes_ask": 0.16,
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T62999.99",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T62999.99",
+   "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T62999.99/orderbook",
+   "reason": "book mid moved 0.2750 -> 0.1550; fair value 0.2150 is the midpoint of the two, so YES at 0.1600 leaves $0.0550 of edge and $0.0450 after the $0.0100 taker fee",
+   "ts": 1795202560.1988814,
+   "book_move": -0.12
+  },
+  {
+   "accepted": true,
+   "kind": "swing",
+   "ticker": "KXBTCD-26NOV2017-T60499.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$60,500 or above",
+   "side": "yes",
+   "executable_price": 0.79,
+   "model_fair": 0.855,
+   "reference_price": 0.925,
+   "current_price": 0.785,
+   "edge": 0.065,
+   "fee": 0.02,
+   "net_edge": 0.045,
+   "net_roi": 0.057,
+   "spread": 0.01,
+   "depth_contracts": 649.41,
+   "yes_bid": 0.78,
+   "yes_ask": 0.79,
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T60499.99",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T60499.99",
+   "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T60499.99/orderbook",
+   "reason": "book mid moved 0.9250 -> 0.7850; fair value 0.8550 is the midpoint of the two, so YES at 0.7900 leaves $0.0650 of edge and $0.0450 after the $0.0200 taker fee",
+   "ts": 1795202560.198897,
+   "book_move": -0.14
+  },
+  {
+   "accepted": true,
+   "kind": "level",
+   "ticker": "KXBTCD-26NOV2017-T63999.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$64,000 or above",
+   "side": "yes",
+   "executable_price": 0.05,
+   "model_fair": 0.09,
+   "reference_price": 0.135,
+   "current_price": 0.045,
+   "edge": 0.04,
+   "fee": 0.01,
+   "net_edge": 0.03,
+   "net_roi": 0.6,
+   "spread": 0.01,
+   "depth_contracts": 18075.54,
+   "yes_bid": 0.04,
+   "yes_ask": 0.05,
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T63999.99",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T63999.99",
+   "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T63999.99/orderbook",
+   "reason": "book mid moved 0.1350 -> 0.0450; fair value 0.0900 is the midpoint of the two, so YES at 0.0500 leaves $0.0400 of edge and $0.0300 after the $0.0100 taker fee",
+   "ts": 1795202560.199213,
+   "book_move": -0.09
   }
  ],
- "verdicts_count": 3,
- "rejected_count": 7,
+ "picks_count": 5,
+ "swing_picks_count": 4,
+ "level_picks_count": 1,
+ "verdicts": [],
+ "verdicts_count": 0,
+ "rejected_count": 25,
  "rejection_summary": [
+  {
+   "reason": "neither side can be bought inside the $0.01-$0.99 grid",
+   "count": 4
+  },
   {
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
    "count": 3
   },
   {
-   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful",
+   "reason": "the spread is $0.81, wider than $0.20, so the mid is not meaningful",
    "count": 2
+  },
+  {
+   "reason": "YES at 0.9700",
+   "count": 2
+  },
+  {
+   "reason": "YES at 0.1000",
+   "count": 1
   },
   {
    "reason": "YES",
    "count": 1
   },
   {
-   "reason": "the spread is $0.86, wider than $0.20, so the mid is not meaningful",
+   "reason": "YES at 0.0800",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.0700",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.4800",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.2700",
+   "count": 1
+  },
+  {
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.1400",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.0200",
+   "count": 1
+  },
+  {
+   "reason": "YES leaves $0.0000 after the $0.0200 taker fee; NO at 0.4500",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.0300",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.9600",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.5000",
+   "count": 1
+  },
+  {
+   "reason": "the spread is $0.94, wider than $0.20, so the mid is not meaningful",
    "count": 1
   }
  ],
  "rejected_sample": [
   {
+   "ticker": "KXPRESNOMD-28-BORO",
+   "topic": "elections",
+   "kind": "swing",
+   "book_move": -0.4985,
+   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-BORO",
+   "topic": "elections",
+   "kind": "level",
+   "book_move": -0.4985,
+   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-HBID",
+   "topic": "elections",
+   "kind": "swing",
+   "book_move": -0.404,
+   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-HBID",
+   "topic": "elections",
+   "kind": "level",
+   "book_move": -0.404,
+   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+  },
+  {
+   "ticker": "KXAAAGASD-26NOV21-3.6600",
+   "topic": "gas-prices",
+   "kind": "swing",
+   "book_move": 0.185,
+   "reason": "the spread is $0.81, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXAAAGASD-26NOV21-3.6600",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": 0.1775,
+   "reason": "the spread is $0.81, wider than $0.20, so the mid is not meaningful"
+  },
+  {
    "ticker": "KXPGATOUR-THRC26-RHIS",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.0987,
+   "book_move": 0.0823,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
-  },
-  {
-   "ticker": "KXPRESNOMD-28-RKHA",
-   "topic": "elections",
-   "kind": "level",
-   "book_move": 0.0979,
-   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXPGATOUR-THRC26-NSHI",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.0964,
+   "book_move": 0.0803,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B97500",
    "topic": "crypto",
    "kind": "level",
-   "book_move": -0.096,
+   "book_move": -0.08,
    "reason": "YES has only 0 contracts resting"
   },
   {
    "ticker": "KXPGATOUR-THRC26-RCAS",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.096,
+   "book_move": 0.08,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXBTCD-26NOV2017-T66499.99",
    "topic": "crypto",
    "kind": "level",
-   "book_move": 0.094,
+   "book_move": 0.0783,
    "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
   },
   {
-   "ticker": "KXBTCD-26NOV2017-T64499.99",
+   "ticker": "KXBTCD-26NOV2017-T61499.99",
    "topic": "crypto",
    "kind": "level",
-   "book_move": 0.083,
-   "reason": "the spread is $0.86, wider than $0.20, so the mid is not meaningful"
+   "book_move": -0.05,
+   "reason": "YES leaves $0.0000 after the $0.0200 taker fee; NO at 0.4500 leaves only $-0.0300 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCD-26NOV2017-T64999.99",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.04,
+   "reason": "YES at 0.0200 leaves only $0.0150 of edge before fees; NO at 0.9900 leaves only $-0.0250 of edge before fees"
+  },
+  {
+   "ticker": "KXAAAGASW-26NOV23-3.6200",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": 0.035,
+   "reason": "YES at 0.9700 leaves only $-0.0225 of edge before fees; NO at 0.0400 leaves only $0.0125 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.03,
+   "reason": "YES at 0.2700 leaves only $-0.0200 of edge before fees; NO at 0.7400 leaves only $0.0100 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCD-26NOV2017-T58499.99",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.025,
+   "reason": "YES at 0.9600 leaves only $0.0075 of edge before fees; NO at 0.0500 leaves only $-0.0175 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCD-26NOV2017-T56999.99",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.0208,
+   "reason": "YES at 0.9700 leaves only $-0.0154 of edge before fees; NO at 0.0400 leaves only $0.0054 of edge before fees"
+  },
+  {
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": -0.0108,
+   "reason": "YES at 0.0300 leaves only $0.0004 of edge before fees; NO at 0.9800 leaves only $-0.0104 of edge before fees"
+  },
+  {
+   "ticker": "KXAAAGASD-26NOV21-3.6550",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": -0.0108,
+   "reason": "the spread is $0.94, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B52500",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.01,
+   "reason": "YES at 0.1000 leaves only $-0.0100 of edge before fees; NO at 0.9100 leaves only $0.0000 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B72500",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.01,
+   "reason": "YES at 0.0800 leaves only $0.0000 of edge before fees; NO at 0.9300 leaves only $-0.0100 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-40000.00",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.01,
+   "reason": "YES at 0.0700 leaves only $0.0000 of edge before fees; NO at 0.9400 leaves only $-0.0100 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.01,
+   "reason": "YES at 0.4800 leaves only $-0.0100 of edge before fees; NO at 0.5300 leaves only $0.0000 of edge before fees"
+  },
+  {
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "topic": "golf",
+   "kind": "level",
+   "book_move": 0.01,
+   "reason": "YES at 0.1400 leaves only $-0.0100 of edge before fees; NO at 0.8700 leaves only $0.0000 of edge before fees"
+  },
+  {
+   "ticker": "KXAAAGASM-26NOV30-3.50",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": -0.01,
+   "reason": "YES at 0.5000 leaves only $0.0000 of edge before fees; NO at 0.5100 leaves only $-0.0100 of edge before fees"
   }
  ],
- "alerts_seen": 29,
+ "alerts_seen": 0,
  "markets_seen": 750,
  "sources": {
   "markets": "https://docs.kalshi.com/api-reference/market/get-markets",

@@ -1,5 +1,5 @@
 {
- "bankroll": 9786.56,
+ "bankroll": 9578.36,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -25,6 +25,30 @@
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500",
    "bankroll_at_entry": 9786.56
+  },
+  {
+   "position_id": "pos-7d2956bb2e",
+   "ticker": "KXPGAR2LEAD-THRC26-MGRE",
+   "event_ticker": "KXPGAR2LEAD-THRC26",
+   "topic": "golf",
+   "title": "Max Greyserman",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2174.79,
+   "entry_price": 0.09,
+   "entry_ts": 1795202558.513031,
+   "entry_fee": 12.47,
+   "current_price": 0.09,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 14% on a 0.04 spread",
+   "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-MGRE",
+   "bankroll_at_entry": 9578.3589
   }
  ],
  "trades": [
@@ -40,6 +64,19 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.03 spread"
+  },
+  {
+   "trade_id": "tr-3ad17960a3",
+   "ts": 1795202558.513031,
+   "ticker": "KXPGAR2LEAD-THRC26-MGRE",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2174.79,
+   "price": 0.09,
+   "fee": 12.47,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 14% on a 0.04 spread"
   }
  ],
  "equity_curve": [
@@ -180,6 +217,12 @@
    "equity": 9861.56,
    "realized": 0,
    "open": 200.0
+  },
+  {
+   "ts": 1795202447.6564806,
+   "equity": 9849.09,
+   "realized": 0,
+   "open": 395.73
   }
  ],
  "started_at": 1795182592.2117689
