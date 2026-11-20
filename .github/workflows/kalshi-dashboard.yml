@@ -66,6 +66,9 @@ jobs:
       - name: Link check
         run: python3 tools/linkcheck.py
 
+      - name: Every table row links an official source
+        run: python3 tools/row_sources.py
+
       - name: Commit data
         run: |
           git config user.name  "kalshi-collector[bot]"
