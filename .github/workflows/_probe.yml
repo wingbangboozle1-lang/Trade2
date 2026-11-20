@@ -10,6 +10,7 @@ jobs:
       - name: Probe CORS variants
         run: |
           mkdir -p data
+          {
           U=https://external-api.demo.kalshi.co/trade-api/v2/markets
           for O in "https://wingbangboozle1-lang.github.io" "http://localhost:8000" "https://evil.example.com" "null"; do
             echo "### Origin: $O"
@@ -17,13 +18,15 @@ jobs:
               -H "Origin: $O" -H "Access-Control-Request-Method: GET" "$U" \
               | grep -iE "^HTTP|access-control-allow-origin" || echo "none"
           done
-          echo "### GET with Origin header (actual response)"
+          echo "### GET with Origin"
           curl -sS -m 20 -D - -o /dev/null -H "Origin: https://wingbangboozle1-lang.github.io" "$U?limit=1" \
             | grep -iE "^HTTP|access-control|vary" || echo none
-          echo "### unauthenticated rate-limit headers"
+          echo "### unauth rate limit headers"
           curl -sS -m 20 -D - -o /dev/null "https://external-api.demo.kalshi.co/trade-api/v2/exchange/status" | grep -i ratelimit || echo "no ratelimit headers"
-        > data/_cors.txt 2>&1
-        - name: Commit
+          echo "### series KXAAAGASM"
+          curl -sS -m 20 -w "\nHTTP:%{http_code}\n" "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASM" | head -c 700
+          } > data/_cors.txt 2>&1
+      - name: Commit
         run: |
           git config user.name bot; git config user.email bot@users.noreply.github.com
-          git add data/_cors.txt; git commit -m "chore: cors probe [skip ci]" || true; git push
+          git add -f data/_cors.txt; git commit -m "chore: cors probe [skip ci]" || true; git push || (git pull --rebase && git push)
