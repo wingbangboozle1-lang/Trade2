@@ -33,13 +33,13 @@ Status values: `unclaimed` · `in progress` · `done` · `blocked` · `needs rev
 | --- | --- | --- | --- | --- |
 | T1 | Repo review, line by line, with official sources | done (see `REPO_REVIEW.md`) | arena-5788e385 | `REPO_REVIEW.md` |
 | T2 | Executive summary | done (`site/pages/summary.html`) | arena-5788e385 | `site/pages/summary.html` |
-| T3 | Kalshi public-data collector and offline verification tests | done; live run blocked from this sandbox (egress), runs in Actions | arena-5788e385 | `scripts/kalshi.mjs`, `scripts/collect.mjs`, `scripts/fees.mjs`, `scripts/test/*`, `config/*` |
+| T3 | Kalshi public-data collector and offline verification tests | done; first live run on main succeeded (run 44752723436), 60 series, 573 markets, 40 order books, 0 errors | arena-5788e385 | `scripts/kalshi.mjs`, `scripts/collect.mjs`, `scripts/fees.mjs`, `scripts/test/*`, `config/*` |
 | T4 | Static dashboard site (landing, topic subpages, charts, two alert chats) | done (rendered in jsdom against synthetic data; not yet checked in a real browser) | arena-5788e385 | `site/*`, `scripts/build-site.mjs` |
 | T5 | Simulated trades, strategy and category analysis | done (paper engine; no orders placed) | arena-5788e385 | `scripts/strategies.mjs` |
 | T6 | Demo-account portfolio tracking (signed requests) | **blocked**: needs demo API key secrets from the owner; code tested offline only | arena-5788e385 | `scripts/kalshi-auth.mjs`, `scripts/portfolio.mjs` |
 | T7 | Suggestions for a more live, interactive site | done (`site/pages/suggestions.html`) | arena-5788e385 | `site/pages/suggestions.html` |
 | T8 | Flagged for Review page and irregularity log | done (`config/flags.json`, `site/pages/flagged.html` to be generated) | arena-5788e385 | `config/flags.json`, `site/pages/flagged.html` |
-| T9 | Integration: merge, PR to `main`, merge, Pages check | in progress; see Integration section | arena-5788e385 | `.github/workflows/dashboard.yml`, `site/pages/sources.html`, `site/pages/index.html` |
+| T9 | Integration: merge, PR to `main`, merge, Pages check | done: PRs #3–#7 merged; Pages serves `/Trade2/kalshi-dashboard/` with live data (see Integration section) | arena-5788e385 | `.github/workflows/dashboard.yml`, `site/pages/sources.html`, `site/pages/index.html` |
 
 ## Task log — arena-5788e385
 
@@ -52,7 +52,7 @@ Status values: `unclaimed` · `in progress` · `done` · `blocked` · `needs rev
 
 ## Integration — arena-5788e385 (T9)
 
-Integration status is recorded at the bottom of this section when it is complete.
+Integration status is recorded below.
 
 - Pre-merge checks (local, arena-5788e385): `npm test` 16/16 pass; `node scripts/build-site.mjs --out kalshi-dashboard` builds 13 pages with links and config OK; jsdom render of all 13 pages against synthetic collector output with no errors; empty-data state renders with the designed "not available yet" message.
 - **Integration log (T9):**
@@ -62,7 +62,11 @@ Integration status is recorded at the bottom of this section when it is complete
   - PR #5 (rate-limit cap) — https://github.com/wingbangboozle1-lang/Trade2/pull/5 — merged into `main` at `de76dc2825fde85a62dd0bbd01d6075a2c4c6a82`. Its run (44748392399) completed, but the collect step **failed** (outcome `failure`; `continue-on-error` hid this as `success` in the summary). The run took about 12 minutes and the sandbox cannot download Actions logs, so the cause is not yet known. Fix in progress: the collector logs each phase, and every run writes `kalshi-dashboard/data/collector-run.json` (outcome, last phase, reason, run URL) so the cause is visible from the repo.
   - PR #6 (phase logs and run record) — https://github.com/wingbangboozle1-lang/Trade2/pull/6 — merged at `d615edb7744d2d7426ce176280be6bb35b1cc619`. Run 44750453463 on `main`: collect step **failed at 720 s** in phase "write output"; the record on `main` (`kalshi-dashboard/data/collector-run.json`) gives the reason: the 12-minute run deadline was reached. Cause: keyword discovery mapped every matching live series, and each was fetched (up to five pages). The stop message read `[object Object]`.
   - Fix in PR #7: series capped at 60 (curated first, then by volume), two event pages per series, a readable stop message, and an explicit series-list error path. Tests 18/18.
-- Not yet verified: the live collector run from GitHub Actions (the sandbox cannot reach Kalshi hosts). Result to be recorded below after the first `dashboard.yml` run on `main`.
+  - PR #7 (series cap) — https://github.com/wingbangboozle1-lang/Trade2/pull/7 — merged at `2a2ac2eef5f292aaa469301a7df7dc5c46dc9e9f`. Run **44752723436 on `main` succeeded**: 60 series mapped, 573 active markets (golf 200, crypto 285, elections 49, gas 39, culture 0), 40 order books, 0 errors, 21 s collect time. Record: `kalshi-dashboard/data/collector-run.json` on `main`.
+  - Pages: legacy build of `main` `/` completed (build at 2026-11-20T14:22:27Z). Verified by fetch: `https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/` (landing with live counts), `…/gas.html` (39 markets with source links), and `…/data/collector-run.json`.
+  - Root site (`index.html`, `categories/`, `summary.html`, `review.html`) was not changed by this session. It is still owned by `arena-ba6888b7`, and the root-site decision is open (R-5788-2).
+  - Alerts and trades need at least two runs to show a move; they will appear after the next scheduled runs.
+- Live collector run from GitHub Actions: verified (run 44752723436, success). The sandbox itself still cannot reach Kalshi hosts.
 
 - Pages source is legacy `main` `/` (verified by `gh api repos/wingbangboozle1-lang/Trade2/pages`). Earlier attempts to change it through the API returned 403 (recorded by `ba6888b7`). An Actions deploy job therefore cannot publish here.
 - Plan: this session's site is built into `kalshi-dashboard/` and committed by a scheduled workflow on `main`. Legacy Pages then publishes it at `https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/` without touching root files owned by other sessions.

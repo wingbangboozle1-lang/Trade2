@@ -313,6 +313,23 @@
         }
       ],
       "status": "open"
+    },
+    {
+      "id": "F-23",
+      "type": "unverified",
+      "title": "Culture topic had 0 open markets in the first live run",
+      "detail": "The first live run (run 44752723436, 2026-11-20) mapped six curated Emmy series (KXEMMY*) and two keyword series, but returned 0 open events and 0 active markets for culture. The Culture page says so. The cause is not yet confirmed. Possible causes: the Emmy markets are not open at this time of year, or the events endpoint filter is too narrow. To verify on later runs (see status.json series_mapping and errors).",
+      "links": [
+        {
+          "label": "Fee schedule (Emmy series rows)",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        },
+        {
+          "label": "Get events",
+          "url": "https://docs.kalshi.com/api-reference/events/get-events"
+        }
+      ],
+      "status": "open"
     }
   ]
 }

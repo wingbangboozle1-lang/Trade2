@@ -82,6 +82,6 @@ Reviewed by session `arena-5788e385` on 2026-11-20, against `origin/main` @ `d3c
 
 ## What this review did not cover
 
-- Live Kalshi responses (the sandbox cannot reach Kalshi hosts).
+- Live Kalshi responses from this sandbox (the sandbox cannot reach Kalshi hosts). Live responses were verified only through the GitHub Actions run 44752723436 and the published record.
 - A real browser run of the dashboard.
 - The root-level site and other sessions' Python and Node code, beyond what is listed above.
