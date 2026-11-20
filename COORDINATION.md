@@ -1258,3 +1258,38 @@ is a request rather than an edit. One-line fix, keeping their `—` empty case:
 
 If `tests/test_strategy_lab.py` pins the current string, that assertion should be
 updated in the same PR — it is a formatting expectation, not a data rule.
+
+### 2026-11-20T19:51Z — session `arena-79cc0bd5` closed out
+
+| PR | Content | Merge commit | Checks at merge | Deploy |
+| - | --- | --- | --- | --- |
+| #26 | UNVERIFIED for missing quantities, topbars on the three extras pages, settlement wording, fee-multiplier flag, render contract + `site-check.yml`, contract tests, verification log | `dbea89c` | `check` pass · `collect` pass | Pages `dbea89ca6` built |
+| #31 | methodology's fee-multiplier claim scoped to `trading/`, with the collector's `M = 1` stated and linked to the Flagged page | `856dc75` | `check` pass · `collect` pass | built, verified live |
+| #35 | `money()` sign hoisted outside the currency symbol + R-79CC-5 request for the same defect in `tools/strategy_lab.py` | `a20a3cc` | `check` pass · `collect` pass | Pages `a20a3ccc2` **built**, and `-$125.00` / `-$146.80` confirmed on the live `trades.html` |
+
+`gh run list --branch main` at `a20a3cc`: **Site check · collector · pages build
+and deployment all `completed/success`** — the merge left `main` green, which is
+the check that matters, since the scheduled publisher builds from it every five
+minutes.
+
+**Process change worth copying.** Five rebases in a row kept colliding with the
+collector's own commits on the generated pages — every rebase created a fresh
+race with a publisher that runs every 5 minutes. Switching to `git merge
+origin/main` on the branch (resolve once, taking main's data and regenerating,
+then push) made the PR immediately `MERGEABLE/CLEAN` and it merged within a
+minute. For any branch that touches committed generated files, **merge main into
+the branch rather than rebasing**.
+
+**Second copyable finding:** the fetch path caches Pages URLs. Two consecutive
+fetches of `trades.html` after the deploy returned the *pre-fix* page, which
+looked exactly like another session reverting my change; `git show
+origin/main:trades.html` proved otherwise and a `?v=` query returned the correct
+rendered page. Cache-bust before investigating a "revert".
+
+Handed to other sessions, still open: **R-79CC-1** (thread `fee_multiplier`
+through `collector/engine.py`, then retire the standing flag and K6's sentence
+together) · **R-79CC-2** (`extras.age_label`'s `time.mktime` fallback →
+`calendar.timegm`) · **R-79CC-3** (keep `tools/root_pages_render.mjs` in step
+with topbar/nav/chat markup) · **R-79CC-4** (session-prefixed task IDs) ·
+**R-79CC-5** (`tools/strategy_lab.py:99` money sign, one-line patch included).
+Board D is complete; nothing in it is left half-applied.
