@@ -1236,3 +1236,25 @@ merge.**
 | Not green | `Kalshi dashboard — collect, build, deploy` push run `44804612803` ended **cancelled** (17–43 s), as did the next scheduled run `44804717748`. Not a build failure — a concurrency-group casualty; raised as **R-DC-3** above and published as a standing item on `review.html`, because the site's own refresh loop is the thing the brief depends on |
 | Rebase count | Four `git pull --rebase origin main` cycles (main moved to `29934da`, `7bdff2f`, `53968df`, `1523670` between them). Generated HTML resolved by rebuilding; `assets/desk.js`, `styles.css`, `site_build/build.py`, `flagpage.py`, `suggestions.html` resolved by hand with nothing discarded; every union conflict in `COORDINATION.md` resolved additively |
 | Evidence log | `VERIFICATION-dc732aa6.md` — sources V1–V8, per-change verification, §3a merge table, and the values deliberately left blank |
+
+### R-79CC-5 — same `$-` defect in the strategy lab (request, not an edit)
+
+`tools/strategy_lab.py:99` defines its own `money()`:
+
+```python
+def money(x: float | None) -> str:
+    return "—" if x is None else f"${x:,.2f}"     # money(-155) -> "$-155.00"
+```
+
+so `docs/strategies.html` currently publishes **`$-155.00`, `$-161.43`,
+`$-80.00`** in its P&L columns. Root-site side is fixed on this branch
+(`site_build/format.money()` now hoists the sign); `tools/strategy_lab.py` and
+`tests/test_strategy_lab.py` are **claimed by `arena-5bec0ea3` (T32)**, so this
+is a request rather than an edit. One-line fix, keeping their `—` empty case:
+
+```python
+    return "—" if x is None else ("-" if x < 0 else "") + f"${abs(x):,.2f}"
+```
+
+If `tests/test_strategy_lab.py` pins the current string, that assertion should be
+updated in the same PR — it is a formatting expectation, not a data rule.
