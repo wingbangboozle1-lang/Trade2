@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elections on Kalshi demo</title>
+<meta name="description" content="Election winners, nominations, appointments, referendums and ballot outcomes — the largest dollar book on the demo exchange. Most of these contracts resolve far in the future, so their prices move on polling, procedure and headline news rather than on a game-day clock.">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body data-topic="elections" data-data-base="../data/">
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Elections on Kalshi demo</h1>
+  <p class="lede">Election winners, nominations, appointments, referendums and ballot outcomes — the largest dollar book on the demo exchange. Most of these contracts resolve far in the future, so their prices move on polling, procedure and headline news rather than on a game-day clock.</p>
+
+  <div class="stats" id="stats" style="margin-top:16px"></div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>How this topic is tracked</h2>
+    <ul class="tight">
+      <li>Identification: series whose title or ticker mentions elections, president, senate, house, congress, primary, governor, mayor, nominee, referendum or a named officeholder.</li>
+      <li>These are long-dated contracts: the ROI model deliberately scores them lower on the "time to close" component because a single headline can move them a long way.</li>
+      <li>Each market links to the official settlement sources Kalshi publishes for it (election offices, AP, Reuters and similar).</li>
+    </ul>
+    <div class="src">
+      <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Demo environment docs</a>
+      <a href="https://docs.kalshi.com/api-reference/events/get-event" target="_blank" rel="noopener">Get Event (settlement sources)</a>
+      <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">Market settlement</a>
+    </div>
+  </div>
+
+  <div class="grid dash" style="margin-top:16px">
+    <div class="card">
+      <h2>Swings in this topic <span class="count">≥ $0.10</span></h2>
+      <div class="chat" id="topicChat"></div>
+    </div>
+    <div class="card">
+      <h2>Price history</h2>
+      <div class="toolbar">
+        <label for="topicChartMarket">Market</label>
+        <select id="topicChartMarket" style="min-width:260px"></select>
+      </div>
+      <div class="chart-box">
+        <canvas class="chart" id="topicChart"></canvas>
+        <div class="chart-tip"></div>
+      </div>
+      <div class="chart-legend">
+        <span class="k"><i class="sw swatch-line"></i> Contract price</span>
+        <span class="k"><i class="sw swatch-mark"></i> Swing ≥ $0.10</span>
+      </div>
+      <h3 style="margin-top:14px">Sources</h3>
+      <div class="src" id="topicSources"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Live markets in this topic <span class="count" id="tableCount"></span></h2>
+    <div class="table-wrap">
+      <table id="topicTable">
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th class="num">Last</th>
+            <th class="num">Change</th>
+            <th class="num">Bid / Ask</th>
+            <th class="num">Spread</th>
+            <th class="num">$ amount</th>
+            <th class="num">$ volume</th>
+            <th class="num">Depth ±5¢</th>
+            <th class="num">ROI</th>
+            <th class="num">Hrs to close</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p>
+      Data source: Kalshi <strong>demo</strong> REST API —
+      <a href="https://external-api.demo.kalshi.co/trade-api/v2" target="_blank" rel="noopener">external-api.demo.kalshi.co/trade-api/v2</a>.
+      <a href="../dashboard.html">Dashboard</a> · <a href="../methodology.html">Methodology</a> · <a href="../flagged.html">Flagged for review</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="../assets/js/topic.js"></script>
+</body>
+</html>

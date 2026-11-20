@@ -559,5 +559,16 @@ async function main() {
 
 main().catch((error) => {
   console.error('[collector] fatal error:', error);
+  // Persist the failure so the scheduled run leaves a diagnosable artefact.
+  try {
+    const file = path.join(DATA_DIR, 'collector-health.json');
+    const previous = readJson(file, {});
+    writeJson(file, {
+      ...previous,
+      last_run_at: new Date().toISOString(),
+      status: 'failed',
+      error: { message: String(error?.message || error), stack: String(error?.stack || '').split('\n').slice(0, 12) },
+    });
+  } catch { /* never mask the original failure */ }
   process.exitCode = 1;
 });

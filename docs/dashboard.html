@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live dashboard · Kalshi demo tracker</title>
+<meta name="description" content="Live Kalshi demo dashboard: highest dollar events in gas, elections, culture, crypto and golf, with $0.10 swing alerts, liquidity and paper-trade results.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body>
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Live dashboard</h1>
+  <p class="lede">
+    Every tracked market is a live Kalshi <strong>demo</strong> market. The alert feeds below fire on any
+    contract price move of <strong>&ge; $0.10</strong> in either direction, measured between two consecutive
+    trade prints reported by the exchange. The right-hand feed filters the same alerts through the ROI model
+    documented on the <a href="methodology.html">methodology</a> page.
+  </p>
+
+  <div class="toolbar" style="margin-top:16px">
+    <label for="topicFilter">Topic</label>
+    <select id="topicFilter">
+      <option value="">All topics</option>
+      <option value="gas">Gas Prices</option>
+      <option value="elections">Elections</option>
+      <option value="culture">Culture</option>
+      <option value="crypto">Crypto</option>
+      <option value="golf">Golf</option>
+    </select>
+    <label for="roiFilter">Min ROI score</label>
+    <select id="roiFilter">
+      <option value="0">0 (everything)</option>
+      <option value="40">40</option>
+      <option value="60" selected>60 (high ROI)</option>
+      <option value="75">75</option>
+    </select>
+    <button id="refreshBtn" class="ghost" type="button">Refresh snapshot</button>
+    <button id="liveBtn" class="primary" type="button">Try live browser API</button>
+    <span class="badge" id="dataSource">snapshot</span>
+    <span style="flex:1"></span>
+    <span data-role="status"></span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h2>All swings &ge; $0.10 <span class="count" id="allCount"></span></h2>
+      <div class="chat" id="chatAll"></div>
+    </div>
+    <div class="card">
+      <h2>High-ROI swings <span class="count" id="roiCount"></span></h2>
+      <div class="chat" id="chatRoi"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Tracked live markets <span class="count" id="marketCount"></span></h2>
+    <div class="toolbar">
+      <label for="sortBy">Sort by</label>
+      <select id="sortBy">
+        <option value="dollar_amount">Dollar amount (OI &times; price)</option>
+        <option value="roi_score">ROI score</option>
+        <option value="dollar_volume">Dollar volume</option>
+        <option value="abs_move">Biggest move</option>
+        <option value="spread">Tightest spread</option>
+      </select>
+      <label for="marketSearch">Search</label>
+      <input type="search" id="marketSearch" placeholder="ticker or title…" style="min-width:220px">
+    </div>
+    <div class="table-wrap">
+      <table id="marketTable">
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Market</th>
+            <th class="num">Last</th>
+            <th class="num">Change</th>
+            <th class="num">Bid / Ask</th>
+            <th class="num">Spread</th>
+            <th class="num">$ amount</th>
+            <th class="num">$ volume</th>
+            <th class="num">Depth &plusmn;5&cent;</th>
+            <th class="num">ROI</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid dash" style="margin-top:16px">
+    <div class="card">
+      <h2>Price history <span class="count" id="chartMarketLabel"></span></h2>
+      <div class="toolbar">
+        <label for="chartMarket">Market</label>
+        <select id="chartMarket" style="min-width:280px"></select>
+        <label for="chartUnit">X axis</label>
+        <div class="seg" id="chartUnit">
+          <button type="button" data-unit="s">seconds</button>
+          <button type="button" data-unit="m" class="on">minutes</button>
+          <button type="button" data-unit="h">hours</button>
+        </div>
+        <label for="chartWindow">Window</label>
+        <select id="chartWindow">
+          <option value="900">15 min</option>
+          <option value="3600" selected>1 hour</option>
+          <option value="21600">6 hours</option>
+          <option value="86400">24 hours</option>
+          <option value="259200">3 days</option>
+          <option value="604800">7 days</option>
+        </select>
+      </div>
+      <div class="chart-box">
+        <canvas class="chart" id="priceChart"></canvas>
+        <div class="chart-tip"></div>
+      </div>
+      <div class="chart-legend">
+        <span class="k"><i class="sw swatch-line"></i> Contract price</span>
+        <span class="k"><i class="sw swatch-mark"></i> Swing &ge; $0.10</span>
+        <span class="k" id="chartNote"></span>
+      </div>
+      <h3 style="margin-top:16px">Sources that may explain a jump</h3>
+      <div id="chartSources" class="src"></div>
+    </div>
+
+    <div class="card">
+      <h2>Liquidity <span class="count" id="bookLabel"></span></h2>
+      <p style="font-size:13px">
+        Kalshi publishes <em>YES bids and NO bids only</em>: a YES bid at $0.07 is the same level as a NO ask at
+        $0.93. The tables below show how many contracts rest at each price.
+      </p>
+      <div class="book">
+        <div>
+          <h3>YES bids</h3>
+          <div class="table-wrap">
+            <table id="yesBook"><thead><tr><th class="num">Price</th><th class="num">Contracts</th><th class="num">$ notional</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+        <div>
+          <h3>NO bids</h3>
+          <div class="table-wrap">
+            <table id="noBook"><thead><tr><th class="num">Price</th><th class="num">Contracts</th><th class="num">$ notional</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </div>
+      <h3 style="margin-top:16px">Market snapshot</h3>
+      <dl class="kv" id="marketKv"></dl>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p>
+      Data source: Kalshi <strong>demo</strong> REST API —
+      <a href="https://external-api.demo.kalshi.co/trade-api/v2" target="_blank" rel="noopener">external-api.demo.kalshi.co/trade-api/v2</a>.
+      Simulated trades only — no real order has been placed.
+      <a href="methodology.html">Methodology</a> · <a href="flagged.html">Flagged for review</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/dashboard.js"></script>
+</body>
+</html>
