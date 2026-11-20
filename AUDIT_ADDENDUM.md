@@ -12,7 +12,9 @@ The audit also found **three operational issues that should remain visible for r
 2. **Repeated alert rows and non-executable midpoint swings:** the snapshot has 29 alerts but only three distinct tickers; Hunter Biden and Jared Polis each occur 12 times, Amy Klobuchar 5 times, with repeated same-direction/same-price changes. The alert implementation compares midpoints, while observed rows include very wide YES bid/ask spreads (for example, Hunter Biden `$0.002` / `$0.811`, with alert midpoint `$0.4065`). These rows can represent repeated alerts on one sustained move and/or a midpoint change that was not executable at the displayed size. They require deduplication and a consistent, depth-aware executable-price rule before being treated as actionable alerts.
 3. **No authenticated demo-account execution:** the deployed ledger is labelled simulated and `live_demo_trading_enabled` is false. No account credentials were available to this session, so live account balances, fills, and order placement remain unverified and are not claimed as complete.
 
-The full audit trail for these items is logged in `COORDINATION.md` as request **R-D-01** for the collector/alert owners; this session did not edit their claimed code or the public flagged page.
+**Post-merge recheck:** PR #12's successful main workflow collected a newer snapshot at 19:02:43 UTC, and the subsequent Pages build completed successfully at 19:05:45 UTC for commit `5fa83a5a794d3bb4935c792001b6ed781035b1b8`. A cache-busted fetch of the public site showed `Updated 2026-11-20T19:02:43Z`, so the initial stale-snapshot finding recovered after the workflow ran; scheduled cadence remains best-effort. The refreshed snapshot had 32 alerts, still concentrated on the same three tickers (Hunter Biden 13, Jared Polis 13, Amy Klobuchar 6), and the ROI shortlist remained empty. This confirms the repeated-alert concern persists after refresh.
+
+The full audit trail for the remaining alert issue is logged in `COORDINATION.md` as request **R-D-01** for the collector/alert owners; this session did not edit their claimed code or the public flagged page.
 
 ## Fresh verification evidence
 
