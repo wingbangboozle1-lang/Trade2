@@ -698,6 +698,7 @@ def build_live(live: dict[str, Any]) -> str:
             </div>
             <div class="chart-frame"><canvas id="priceChart" role="img"
               aria-label="Contract price over time"></canvas></div>
+            <div class="chart-notes" id="chartNotes" aria-live="polite"></div>
             <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
@@ -948,6 +949,10 @@ def build_performance_section(live: dict[str, Any]) -> str:
           </div>
         </section>"""
 
+
+# ---------------------------------------------------------------------------
+# Suggestions
+# ---------------------------------------------------------------------------
 
 def main() -> dict[str, Any]:
     live = load_json(LIVE_PATH, {})

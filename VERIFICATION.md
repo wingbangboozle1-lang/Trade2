@@ -132,3 +132,21 @@ session; the URL that was opened is given.
 | H12 | No internal link is broken anywhere on the site | `python3 tools/linkcheck.py` | **Verified.** 48 pages, 609 internal links, 0 errors. |
 | H13 | The root site's executive summary described a browser-side collector that the root pages do not load | `summary.html` and the page list (`index.html` loads `assets/nav.js` and `assets/desk.js` only) | **Irregularity found and fixed.** The "At a glance" text and the next-steps list were rewritten to describe the architecture that actually runs: scheduled collector → pre-rendered pages → JS polling on top, with a server-side paper ledger rather than browser local storage. |
 | H14 | `review.html` did not report repeated alerts for one market | the current snapshot (29 alerts over 3 tickers) | **Irregularity found and flagged.** A literal counting rule now raises "Same swing reported repeatedly" when one ticker appears three or more times in the alert buffer, and the finding is published on the Flagged page with the API URL. The underlying alert rule is owned by another session and is not changed here. |
+
+---
+
+## Session `arena-8b01a1c4` (2026-11-20) — re-verification against official sources
+
+The full line-by-line log for this session is [`INTEGRATION_REVIEW.md`](INTEGRATION_REVIEW.md)
+(components, requirements matrix, live-API row checks V1–V6 with URLs, docs-claim
+table, R-D-01 fix record, irregularities I-R1…I-R5). Everything above in this
+file remains valid; nothing was edited or downgraded here. Summary: five
+published market rows (one per topic) plus one order book were re-fetched from
+`https://external-api.demo.kalshi.co/trade-api/v2` and matched the snapshot
+(exact on slow-moving fields, live drift on traded fields); the fee formula and
+General Fees table were re-fetched from
+[the official PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf); the demo
+endpoint table was re-fetched from
+[demo_env](https://docs.kalshi.com/getting_started/demo_env). All suites re-run
+green on the merged tree (95 python tests, 29 node tests, all three pipelines'
+own gates, linkcheck 641/0, rendercheck 13/13, root_render PASS).
