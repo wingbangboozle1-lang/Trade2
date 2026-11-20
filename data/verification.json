@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T19:22:46Z",
+ "generated_at": "2026-11-20T19:25:47Z",
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "snapshot_generated_at": "2026-11-20T19:20:47Z",
  "markets_checked": 15,
@@ -10,1469 +10,190 @@
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
    "field": "ticker",
    "published": "KXPRESNOMD-28-RW",
-   "official": "KXPRESNOMD-28-RW",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "event_ticker",
-   "published": "KXPRESNOMD-28",
-   "official": "KXPRESNOMD-28",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "open_interest_fp",
-   "published": 189529515.91,
-   "official": "189529515.91",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "volume_fp",
-   "published": 414924973.78,
-   "official": "414924981.35",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.035,
-   "official": 0.035,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.038,
-   "official": 0.038,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
    "field": "ticker",
    "published": "KXPRESNOMD-28-GW",
-   "official": "KXPRESNOMD-28-GW",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "event_ticker",
-   "published": "KXPRESNOMD-28",
-   "official": "KXPRESNOMD-28",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "open_interest_fp",
-   "published": 169497438.62,
-   "official": "169497438.62",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "volume_fp",
-   "published": 432107288.15,
-   "official": "432107297.18",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.005,
-   "official": 0.005,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.006,
-   "official": 0.006,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
    "field": "ticker",
    "published": "KXPRESNOMD-28-SAS",
-   "official": "KXPRESNOMD-28-SAS",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "event_ticker",
-   "published": "KXPRESNOMD-28",
-   "official": "KXPRESNOMD-28",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "open_interest_fp",
-   "published": 162254359.41,
-   "official": "162254359.41",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "volume_fp",
-   "published": 358761507.43,
-   "official": "358761515.40",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.002,
-   "official": 0.002,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.003,
-   "official": 0.003,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
    "field": "ticker",
    "published": "KXBTCY-27JAN0100-B127500",
-   "official": "KXBTCY-27JAN0100-B127500",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "event_ticker",
-   "published": "KXBTCY-27JAN0100",
-   "official": "KXBTCY-27JAN0100",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "open_interest_fp",
-   "published": 39622137.23,
-   "official": "39622137.23",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "volume_fp",
-   "published": 83444025.31,
-   "official": "83444025.31",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.01,
-   "official": 0.01,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
    "field": "ticker",
    "published": "KXBTCY-27JAN0100-B142500",
-   "official": "KXBTCY-27JAN0100-B142500",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "event_ticker",
-   "published": "KXBTCY-27JAN0100",
-   "official": "KXBTCY-27JAN0100",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "open_interest_fp",
-   "published": 36300008.35,
-   "official": "36300008.35",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "volume_fp",
-   "published": 134091736.11,
-   "official": "134091736.11",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
    "field": "ticker",
    "published": "KXBTCY-27JAN0100-B47500",
-   "official": "KXBTCY-27JAN0100-B47500",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "event_ticker",
-   "published": "KXBTCY-27JAN0100",
-   "official": "KXBTCY-27JAN0100",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "open_interest_fp",
-   "published": 26587876.94,
-   "official": "26587876.94",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "volume_fp",
-   "published": 80178705.51,
-   "official": "80178705.51",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.05,
-   "official": 0.05,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.06,
-   "official": 0.06,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
    "field": "ticker",
    "published": "KXPGATOUR-THRC26-TMOO",
-   "official": "KXPGATOUR-THRC26-TMOO",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "event_ticker",
-   "published": "KXPGATOUR-THRC26",
-   "official": "KXPGATOUR-THRC26",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "open_interest_fp",
-   "published": 1151918.98,
-   "official": "1151925.45",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "volume_fp",
-   "published": 1157407.87,
-   "official": "1157414.34",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.003,
-   "official": 0.003,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.005,
-   "official": 0.005,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
    "field": "ticker",
    "published": "KXPGATOUR-MAST27-MFIT",
-   "official": "KXPGATOUR-MAST27-MFIT",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "event_ticker",
-   "published": "KXPGATOUR-MAST27",
-   "official": "KXPGATOUR-MAST27",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "open_interest_fp",
-   "published": 826086.18,
-   "official": "826086.18",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "volume_fp",
-   "published": 826114.18,
-   "official": "826114.18",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
    "field": "ticker",
    "published": "KXPGATOUR-THRC26-SSTR",
-   "official": "KXPGATOUR-THRC26-SSTR",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "event_ticker",
-   "published": "KXPGATOUR-THRC26",
-   "official": "KXPGATOUR-THRC26",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "open_interest_fp",
-   "published": 681894.62,
-   "official": "681894.62",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "volume_fp",
-   "published": 761385.26,
-   "official": "761399.38",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR/orderbook",
-   "field": "best_yes_bid",
-   "published": 0.021,
-   "official": 0.021,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR/orderbook",
-   "field": "best_yes_ask",
-   "published": 0.025,
-   "official": 0.025,
-   "result": "match",
-   "detail": "a live book moves; tolerance $0.02"
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
    "field": "ticker",
    "published": "KXCRITICSFOREIGN-27-LAB",
-   "official": "KXCRITICSFOREIGN-27-LAB",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "event_ticker",
-   "published": "KXCRITICSFOREIGN-27",
-   "official": "KXCRITICSFOREIGN-27",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "open_interest_fp",
-   "published": 473339.45,
-   "official": "473339.45",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "volume_fp",
-   "published": 671773.31,
-   "official": "671773.31",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
    "field": "ticker",
    "published": "KXCRITICSFOREIGN-27-FJO",
-   "official": "KXCRITICSFOREIGN-27-FJO",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "event_ticker",
-   "published": "KXCRITICSFOREIGN-27",
-   "official": "KXCRITICSFOREIGN-27",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "open_interest_fp",
-   "published": 27083.16,
-   "official": "27083.16",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "volume_fp",
-   "published": 27083.16,
-   "official": "27083.16",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
    "field": "ticker",
    "published": "KXCRITICSFOREIGN-27-ROS",
-   "official": "KXCRITICSFOREIGN-27-ROS",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "event_ticker",
-   "published": "KXCRITICSFOREIGN-27",
-   "official": "KXCRITICSFOREIGN-27",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "open_interest_fp",
-   "published": 22222.21,
-   "official": "22222.21",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "volume_fp",
-   "published": 22222.21,
-   "official": "22222.21",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
    "field": "ticker",
    "published": "KXAAAGASM-26NOV30-4.70",
-   "official": "KXAAAGASM-26NOV30-4.70",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "event_ticker",
-   "published": "KXAAAGASM-26NOV30",
-   "official": "KXAAAGASM-26NOV30",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "open_interest_fp",
-   "published": 58062.52,
-   "official": "58062.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "volume_fp",
-   "published": 58071.52,
-   "official": "58071.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
    "field": "ticker",
    "published": "KXAAAGASM-26NOV30-4.50",
-   "official": "KXAAAGASM-26NOV30-4.50",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "event_ticker",
-   "published": "KXAAAGASM-26NOV30",
-   "official": "KXAAAGASM-26NOV30",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "open_interest_fp",
-   "published": 55576.52,
-   "official": "55576.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "volume_fp",
-   "published": 55597.52,
-   "official": "55597.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
    "field": "ticker",
    "published": "KXAAAGASM-26NOV30-4.80",
-   "official": "KXAAAGASM-26NOV30-4.80",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "event_ticker",
-   "published": "KXAAAGASM-26NOV30",
-   "official": "KXAAAGASM-26NOV30",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "status",
-   "published": "active",
-   "official": "active",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "result",
-   "published": "",
-   "official": "",
-   "result": "match",
-   "detail": "settled market result must match the official field"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "open_interest_fp",
-   "published": 55567.52,
-   "official": "55567.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "volume_fp",
-   "published": 55571.52,
-   "official": "55571.52",
-   "result": "match",
-   "detail": "relative tolerance 2%"
-  },
-  {
-   "check": "market record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
-   "field": "notional_value_dollars",
-   "published": 1.0,
-   "official": "1.0000",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
    "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "series record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/BITCOINMAXY",
-   "field": "title",
-   "published": "Bitcoin min/max",
-   "official": "Bitcoin min/max",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "series record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/BITCOINMAXY",
-   "field": "settlement_sources",
-   "published": "https://www.cfbenchmarks.com/data/indices/BRTI?ref=blog.cfbenchmarks.com",
-   "official": "https://www.cfbenchmarks.com/data/indices/BRTI?ref=blog.cfbenchmarks.com",
-   "result": "match",
-   "detail": "the settlement source is the official page the contract settles against"
+   "field": "ticker",
+   "published": "BITCOINMAXY",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "series record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/1SONG-DRAKE",
-   "field": "title",
-   "published": "Drake top song",
-   "official": "Drake top song",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "series record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/1SONG-DRAKE",
-   "field": "settlement_sources",
-   "published": "https://www.billboard.com/charts/hot-100/",
-   "official": "https://www.billboard.com/charts/hot-100/",
-   "result": "match",
-   "detail": "the settlement source is the official page the contract settles against"
+   "field": "ticker",
+   "published": "1SONG-DRAKE",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "series record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/CONTROLS",
-   "field": "title",
-   "published": "Senate winner",
-   "official": "Senate winner",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "series record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/CONTROLS",
-   "field": "settlement_sources",
-   "published": "https://www.congress.gov/",
-   "official": "https://www.congress.gov/",
-   "result": "match",
-   "detail": "the settlement source is the official page the contract settles against"
+   "field": "ticker",
+   "published": "CONTROLS",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "series record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/AAAGASD",
-   "field": "title",
-   "published": "US gas price up",
-   "official": "US gas price up",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "series record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/AAAGASD",
-   "field": "settlement_sources",
-   "published": "https://gasprices.aaa.com/",
-   "official": "https://gasprices.aaa.com/",
-   "result": "match",
-   "detail": "the settlement source is the official page the contract settles against"
+   "field": "ticker",
+   "published": "AAAGASD",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   },
   {
    "check": "series record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBDSHOLEINONE",
-   "field": "title",
-   "published": "Bob Does Sports Hole in One",
-   "official": "Bob Does Sports Hole in One",
-   "result": "match",
-   "detail": ""
-  },
-  {
-   "check": "series record",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBDSHOLEINONE",
-   "field": "settlement_sources",
-   "published": "https://www.instagram.com/jensen_custis/?hl=en, https://www.instagram.com/joey.coldcuts/?hl=en, https://www.twitch.tv/robbyberger, https://www.instagram.com/thefatperez/, https://www.instagram.com/benlambers/?hl=en, https://www.youtube.com/@RobbyBergerOfficial",
-   "official": "https://www.instagram.com/jensen_custis/?hl=en, https://www.instagram.com/joey.coldcuts/?hl=en, https://www.twitch.tv/robbyberger, https://www.instagram.com/thefatperez/, https://www.instagram.com/benlambers/?hl=en, https://www.youtube.com/@RobbyBergerOfficial",
-   "result": "match",
-   "detail": "the settlement source is the official page the contract settles against"
+   "field": "ticker",
+   "published": "KXBDSHOLEINONE",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
   }
  ],
  "counts": {
-  "match": 128,
+  "match": 0,
   "drift": 0,
-  "mismatch": 17,
-  "unverified": 0
+  "mismatch": 0,
+  "unverified": 20
  },
- "mismatches": [
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
-   "field": "best_yes_bid",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  },
-  {
-   "check": "order book",
-   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
-   "field": "best_yes_ask",
-   "published": null,
-   "official": null,
-   "result": "mismatch",
-   "detail": "a live book moves; tolerance $0.02"
-  }
- ],
- "ok": false,
+ "mismatches": [],
+ "ok": true,
  "tolerances": {
   "price_dollars": 0.02,
   "relative": 0.02

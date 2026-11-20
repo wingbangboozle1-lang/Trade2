@@ -65,12 +65,18 @@ def fetch(url: str, timeout: float = 15.0) -> tuple[Any, str | None]:
 
 
 def close(a: float | None, b: float | None, tol: float) -> bool:
+    if a is None and b is None:
+        # Both sides agree there is no quote (empty book). That is a match,
+        # not a disagreement.
+        return True
     if a is None or b is None:
         return False
     return abs(float(a) - float(b)) <= tol
 
 
 def close_rel(a: float | None, b: float | None, tol: float) -> bool:
+    if a is None and b is None:
+        return True
     if a is None or b is None:
         return False
     scale = max(abs(float(a)), abs(float(b)), 1.0)
