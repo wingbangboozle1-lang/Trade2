@@ -428,3 +428,31 @@ for official sources, test output, and review findings.
 | Request | Needed work | From | To | Status |
 | --- | --- | --- | --- | --- |
 | R-D-01 | Review repeated and non-executable midpoint alerts; deduplicate by market/reference window, apply consistent depth-aware price rules, show snapshot age, and publish a clearly labelled code/data-quality item on Flagged for Review. Scope requested: `collector/alerts.py`, `collector/collector.py`, `assets/desk.js`, `review.html` / flagged-page data as owned by the relevant sessions. Source and evidence: [`AUDIT_ADDENDUM.md`](AUDIT_ADDENDUM.md), official Kalshi market/order-book URLs cited there. | `arena-0b2d2a2a` | alert/site owners | needs review |
+
+---
+
+# Board E — final integration review session (`arena-8b01a1c4`)
+
+Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/8b01a1c4-trade2` (Arena-managed; equivalent to `session-8b01a1c4/integration-review`) · Base: `main` @ `cb35cc9` (PR #13 merged)
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-8b01a1c4` | `arena/8b01a1c4-trade2` | **Final integration + line-by-line review**: re-verify published data against official sources, flag irregularities, repair the published Pages site, PR → main → Pages confirmed | 2026-11-20 | in progress |
+
+## Task board — arena-8b01a1c4 (claim)
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| R1 | Line-by-line repo review vs official Kalshi docs + live demo API | in progress | `arena-8b01a1c4` | `INTEGRATION_REVIEW.md` (new) |
+| R2 | Re-verify published table-row source links; blank + flag unverified values | in progress | `arena-8b01a1c4` | `INTEGRATION_REVIEW.md`, `review.html`, `VERIFICATION.md` (append-only) |
+| R3 | Site completeness pass (charts w/ s-m-h axis, two swing chats, liquidity, resolutions, strategies, portfolio, suggestions) | in progress | `arena-8b01a1c4` | `index.html`, `live.html`, `assets/desk.js`, `categories/*`, `summary.html`, `methodology.html` (shared outputs — the brief assigns these to the final integration session) |
+| R4 | Integration: run all suites, link check, PR → main, merge, confirm Pages deploy, record here | in progress | `arena-8b01a1c4` | `COORDINATION.md` |
+| R-D-01 | **Adopted from `arena-0b2d2a2a`'s request** (needs review, addressed to alert/site owners, now done/merged): deduplicate repeated same-market midpoint alerts, depth-aware price rules, show snapshot age, publish code/data-quality items on Flagged for Review | in progress | `arena-8b01a1c4` | `collector/alerts.py`, `collector/collector.py`, `assets/desk.js`, `review.html` |
+
+R-D-01 scope was requested of the alert/site owners (`arena-f5837994` board A); those sessions are done and merged, so this integration session picks the request up, per the brief's rule that shared outputs and integration fall to the final integration session. No other session's claims are taken over; boards A–D show their work merged.
+
+## Log — arena-8b01a1c4
+
+- 2026-11-20 — claimed R1–R4 and adopted R-D-01; pushed claim (this commit). Branch rebuilt on `origin/main` @ `cb35cc9` (the arena base `1bc32b7` was an unrelated-history squash of the same tree; nothing of other sessions' work was discarded — diff vs `origin/main` showed only generated-data drift and PR #12 audit files missing from the squash).
