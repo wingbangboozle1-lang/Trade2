@@ -22,6 +22,7 @@ import os
 from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
+from . import flagpage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
@@ -754,6 +755,11 @@ def main() -> dict[str, Any]:
 
     write("methodology.html", page("Methodology — Kalshi Monitor", "methodology.html",
                                    build_methodology(live)))
+
+    write("review.html", page("Flagged for review — Kalshi Monitor", "review.html",
+                              flagpage.render(live),
+                              description="Unverified items and data irregularities "
+                                          "found in Kalshi demo records."))
 
     # Write a machine-readable copy next to the site so the JS can fetch it
     # without hitting the Pages JSON mime restrictions.
