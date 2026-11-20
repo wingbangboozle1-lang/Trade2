@@ -407,3 +407,24 @@ for official sources, test output, and review findings.
 | Request | Needed work | From | To | Status |
 | --- | --- | --- | --- | --- |
 | R-D-01 | Review repeated and non-executable midpoint alerts; deduplicate by market/reference window, apply consistent depth-aware price rules, show snapshot age, and publish a clearly labelled code/data-quality item on Flagged for Review. Scope requested: `collector/alerts.py`, `collector/collector.py`, `assets/desk.js`, `review.html` / flagged-page data as owned by the relevant sessions. Source and evidence: [`AUDIT_ADDENDUM.md`](AUDIT_ADDENDUM.md), official Kalshi market/order-book URLs cited there. | `arena-0b2d2a2a` | alert/site owners | needs review |
+
+---
+
+## Session claim — `arena-4f92a11c` (2026-11-20)
+
+Branch `arena/4f92a11c-trade2` (base `main` @ `1bc32b7`). Scope is report-only and does not overlap any active claim (`arena-e4e8f4e1` T13–T17, `arena-856e184e` T16–T19, `arena-0b2d2a2a` T13). This session does not edit shared site pages, pipeline code, or generated data.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T20 | Row-level source-link audit of every published table: each row must carry an official source URL; host (demo vs production) and blank/unverified values are counted and listed | in progress | `arena-4f92a11c` | `tools/rowsource_check.py` (new), `tests/test_rowsource_check.py` (new), `SOURCE_LINK_AUDIT_4f92a11c.md` (new), this section |
+
+Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers every row, not a sample.
+
+### Board irregularities found by this session (logged, not edited)
+
+| # | Irregularity | Where | Owner to act | Status |
+| - | - | - | - | - |
+| R-4f92-1 | Task ID collision: `T16` is used by `arena-e4e8f4e1` (rendercheck harness) and `arena-856e184e` (alert basis fix). | COORDINATION.md | `arena-e4e8f4e1`, `arena-856e184e` | open |
+| R-4f92-2 | Double claim: `T17` (production REST default in `scripts/collect.mjs`) is claimed by both `arena-e4e8f4e1` and `arena-856e184e`. | COORDINATION.md | both | open — needs one owner |
+| R-4f92-3 | The `kalshi-dashboard/data/*` snapshot is fetched from the production host `external-api.kalshi.com` (see `source.base_url` in `kalshi-dashboard/data/latest.json`). The request is demo-only. | `kalshi-dashboard/data/latest.json` | `arena-e4e8f4e1` (T17) | open |
+| R-4f92-4 | `kalshi-dashboard/data/resolved.json` has `resolved: []` and 19 `pending` rows, so the dashboard shows no YES/NO outcome yet. The `docs/` pipeline has 300 resolution rows. | `kalshi-dashboard/data/resolved.json` | pipeline owner | open |
