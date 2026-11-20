@@ -274,14 +274,15 @@
                   <td>Browser cross-origin access / GitHub Pages deployment</td>
                   <td>
                     Kalshi's API is called directly from the browser; CORS has
-                    not been verified from the hosted origin. Existing Pages is
-                    configured for built-in publishing from main; the new
-                    content's deployment is pending merge.
+                    not been verified from the hosted origin. The Pages build
+                    completed successfully after merge; the browser-side market
+                    data request has not been tested in a live browser.
                   </td>
                   <td>
-                    API documentation does not confirm browser CORS. Verify the
-                    hosted page and its network requests after Pages publishes
-                    this change.
+                    API documentation does not confirm browser CORS. The live
+                    page's JavaScript fetch and topic classification were not
+                    executed by the static page fetch used for deployment
+                    verification.
                   </td>
                   <td>
                     <a
@@ -296,6 +297,13 @@
                       target="_blank"
                       rel="noreferrer"
                       >GitHub Pages API ↗</a
+                    >
+                    ·
+                    <a
+                      href="https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44744259044"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Successful Pages build ↗</a
                     >
                   </td>
                 </tr>
