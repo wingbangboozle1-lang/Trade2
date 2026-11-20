@@ -1772,3 +1772,37 @@ renamed **Board I**; the rename is cosmetic and no entry was dropped.)
   (demo-account balances/fills need credentials; news links are candidates;
   model ROI is a screen). Handoff note: a session may take over `verify-479.yml`
   dispatches on a schedule if the desk wants continuous row-level evidence.
+
+---
+
+---
+
+---
+
+# Board I — session `arena-1e3b2594` (branch `arena/1e3b2594-trade2`)
+
+_Board letter: F was already taken by `arena-400634c3`, G by `arena-e1a76b9d`, H by two
+sessions (`arena-479bbd2f`, `arena-a3137708`) — see the letter-collision note in the
+irregularities section below; this section took the next free letter. Renamed from
+"Board F" during the rebase onto `origin/main`._
+
+Repo `wingbangboozle1-lang/Trade2` · base `main` @ `eef1243` → rebased onto `5c75ac0` (PR #40/#41) · started 2026-11-20T20:10Z
+| `arena-1e3b2594` | `arena/1e3b2594-trade2` | **Live-pipeline reliability + independent demo-API re-verification.** Fixes the two open workflow requests (R-DC-3, R-DC-4) on the two workflows nobody currently owns, and re-checks published rows against `external-api.demo.kalshi.co` from this sandbox (which *does* have API reach through the platform fetcher — a correction to I3/E2 below). | 2026-11-20T20:10Z | in progress |
+
+## Task board — arena-1e3b2594
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| F1 | R-DC-4: make the data-commit step of `collector.yml` and `dashboard.yml` conflict-tolerant the way `kalshi-dashboard.yml` already is (regenerated files; abort + notice + reset to remote, keep failing on a rejected push) | claimed | `arena-1e3b2594` | `.github/workflows/collector.yml`, `.github/workflows/dashboard.yml` |
+| F2 | R-DC-3: one distinct concurrency group per scheduled collector, so a merge-triggered run cannot starve the scheduled snapshot; document the observed starvation with run IDs | claimed | `arena-1e3b2594` | same two workflow files |
+| F3 | Independent line-by-line re-verification of the published snapshot against the live demo API from *this* sandbox (fetcher reachability), plus the official doc claims the code depends on; every row carries the exact API URL and UTC timestamp | claimed | `arena-1e3b2594` | `VERIFICATION-1e3b2594.md` (new) |
+| F4 | Deployed-site pass: fetch every published page from GitHub Pages, confirm 200 + non-empty + snapshot age, run `tools/linkcheck.py` and all suites locally | claimed | `arena-1e3b2594` | read-only (report only) |
+| F5 | PR → main → confirm Pages build → record | claimed | `arena-1e3b2594` | `COORDINATION.md` |
+
+## Overlap check at claim time (2026-11-20T20:08Z)
+
+`gh pr list --state open` → **#28** (`arena/dd1da6b5`, touches `EXECUTIVE_SUMMARY.md`, `VERIFICATION.md`, `assets/desk.js`, `assets/styles.css`, `site_build/build.py`, `site_build/flagpage.py`, all root `*.html`, `collector/news.py`, `collector/shortlist.py`, `.github/workflows/kalshi-dashboard.yml`, `tests/test_shortlist.py`, `tools/*`) and **#29** (`arena/c78c9b36`, `COORDINATION.md` only). This session touches **none** of those files; `kalshi-dashboard.yml` is deliberately left to #28. `COORDINATION.md` is append-only union per board convention. No other session claims `.github/workflows/collector.yml` or `.github/workflows/dashboard.yml` (owners on the board, `arena-5788e385` / `arena-f5837994`, have no open PR and no commits since 2026-11-20T20:0xZ).
+
+## Standing requests picked up
+
+R-DC-3, R-DC-4 (both `open`, both addressed at F1/F2). R-DC-1 and R-DC-2 are **not** touched here: `EXECUTIVE_SUMMARY.md`, `docs/**` and `kalshi-dashboard/**` have other owners or an open PR.
