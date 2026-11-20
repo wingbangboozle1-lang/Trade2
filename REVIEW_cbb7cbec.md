@@ -137,6 +137,32 @@ and how many rows are unattributed.
 stale 1-cent quote on an empty book scored an "edge". It now returns `None`
 when the spread is unknown: no book, no price.
 
+### P5b — The chart plotted trade prints on a quote axis (High)
+
+**Symptom.** Selecting a market drew a line with steps such as 0.002 → 0.811 →
+0.002 that no quote ever moved through, and the line disagreed with the alert
+feed for the same market.
+
+**Cause.** `assets/desk.js` seeded the series from the candle's
+`price.close_dollars` — the **last traded price** — while `pollBook()` appended
+*quote mids*. The chart therefore plotted two different quantities on one axis.
+`midFromBook()` had a second defect: on a one-sided book it returned the single
+side, inventing a "price" for a market that had only a bid.
+
+**Official evidence.** The candlestick schema defines `price` as trade OHLC and
+`yes_bid` / `yes_ask` as the quote OHLC
+(<https://docs.kalshi.com/api-reference/market/get-market-candlesticks>). For
+`KXPRESNOMD-28-HBID` every minute in the fetched window has
+`price.close_dollars "0.8110"` with `yes_bid.close_dollars "0.0020"` and
+`yes_ask.close_dollars "0.8110"`
+(<https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks>).
+
+**Fix.** The chart now seeds from the candle's `yes_bid` / `yes_ask` closes
+(`blockClose`, `candleMid`) and `midFromBook` requires **both** sides. A candle
+with no two-sided quote, or a crossed quote, contributes no point at all — gaps
+stay gaps. `tests/test_desk_chart.mjs` asserts both rules against documented
+payload shapes and now runs in the `kalshi-dashboard.yml` workflow.
+
 ### P6 — A network outage could publish an empty dashboard (Medium)
 
 Running the collector in this sandbox (no Kalshi egress) rewrote
@@ -201,6 +227,7 @@ each one:
 | `node tools/rendercheck.mjs` | every page renders, no `undefined` / `NaN` / `[object Object]` |
 | `python3 tools/linkcheck.py` | 45 pages, 513 internal links, 0 errors |
 | `node --check assets/desk.js` | OK |
+| `node tests/test_desk_chart.mjs` | DESK CHART BASIS OK |
 
 ## 5. What this review does **not** claim
 

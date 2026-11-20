@@ -466,10 +466,18 @@
 
     return candle.then(function (data) {
       (data && data.candlesticks || []).forEach(function (c) {
-        var price = c.price || {};
-        var close = price.close_dollars != null ? Number(price.close_dollars) : null;
-        if (close === null || !isFinite(close) || close <= 0) return;
-        points.push({ t: c.end_period_ts, mid: close, src: "candle" });
+        /* A candle carries two different things: `price` is the last *trade*
+         * OHLC and `yes_bid` / `yes_ask` are the quote OHLC (official schema:
+         * https://docs.kalshi.com/api-reference/market/get-market-candlesticks).
+         * The chart plots the quote mid, so that the line and the >= $0.10 feed
+         * are the same quantity. Plotting the trade price is what made the graph
+         * show jumps (0.002 -> 0.811) that no quote ever moved through. */
+        var bid = blockClose(c.yes_bid);
+        var ask = blockClose(c.yes_ask);
+        if (bid === null || ask === null || ask < bid) return;
+        var mid = Math.round(((bid + ask) / 2) * 10000) / 10000;
+        points.push({ t: c.end_period_ts, mid: mid, src: "candle",
+                      spread: Math.round((ask - bid) * 10000) / 10000 });
       });
       points.sort(function (a, b) { return a.t - b.t; });
       state.series[ticker] = points;
@@ -513,15 +521,25 @@
     return isFinite(p) ? { price: p, contracts: isFinite(c) ? c : 0 } : null;
   }
 
+  /* YES mid from a two-sided book. Both sides are required: a book with only
+   * one side has a bid and no offer, so it has no mid. Returning the single
+   * side (the previous behaviour) plotted a "price" the market never traded at,
+   * and it disagreed with the server-side rule in collector/alerts.py. */
   function midFromBook(book) {
     var yb = bestBid(book.yes_dollars);
     var nb = bestBid(book.no_dollars);
-    var yesBid = yb ? yb.price : null;
-    var yesAsk = nb ? 1 - nb.price : null;
-    if (yesBid === null && yesAsk === null) return null;
-    if (yesBid === null) return yesAsk;
-    if (yesAsk === null) return yesBid;
+    if (!yb || !nb) return null;
+    var yesBid = yb.price;
+    var yesAsk = 1 - nb.price;
+    if (!(yesAsk >= yesBid)) return null;
     return (yesBid + yesAsk) / 2;
+  }
+
+  /* close_dollars of a candle's yes_bid / yes_ask block. */
+  function blockClose(block) {
+    if (!block || block.close_dollars == null || block.close_dollars === "") return null;
+    var v = Number(block.close_dollars);
+    return isFinite(v) && v > 0 && v <= 1 ? v : null;
   }
 
   function appendPoint(ticker, mid) {
