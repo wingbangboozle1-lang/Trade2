@@ -134,5 +134,6 @@
   "alert_threshold_cents": 10,
   "history_retention_hours": 72,
   "orderbook_top_n": 40,
-  "tracked_max": 80
+  "tracked_max": 80,
+  "max_series": 60
 }

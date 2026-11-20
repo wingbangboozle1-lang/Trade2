@@ -18,7 +18,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { getPublic, PRODUCTION_BASE, KalshiHttpError, configureBreaker, breakerTripped } from './kalshi.mjs';
+import { getPublic, PRODUCTION_BASE, KalshiHttpError, configureBreaker, breakerTripped, breakerReason } from './kalshi.mjs';
 import { dollarsToCents } from './fees.mjs';
 import { openPositions, updatePositions, summarize, STRATEGIES } from './strategies.mjs';
 
@@ -57,15 +57,20 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   }
 
   // 3) series list -> topic mapping
-  const seriesList = (await get('/series')).data.series || [];
-  const seriesMap = resolveTopicSeries(cfg, seriesList);
+  let seriesList = [];
+  try {
+    seriesList = (await get('/series')).data.series || [];
+  } catch (e) {
+    errors.push(describeErr('series', e));
+  }
+  const seriesMap = capSeries(resolveTopicSeries(cfg, seriesList), cfg.max_series || 60);
 
   log(`[collect] phase: events (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 4) events (with nested markets) for each mapped series
   const eventsBySeries = new Map();
   for (const [seriesTicker] of seriesMap) {
     try {
-      const evs = await fetchAllEvents(get, seriesTicker, 5);
+      const evs = await fetchAllEvents(get, seriesTicker, 2);
       eventsBySeries.set(seriesTicker, evs);
     } catch (e) {
       errors.push(describeErr(`events?series_ticker=${seriesTicker}`, e));
@@ -272,7 +277,8 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
 
   // Fail closed: if the API was unreachable for the whole run, do not publish a partial snapshot.
   if (breakerTripped()) {
-    throw new Error(`Collector stopped before publishing: Kalshi API unreachable (${errors.slice(-1)[0] || 'circuit breaker tripped'}). Previous state kept; nothing written.`);
+    const last = errors.length ? errors[errors.length - 1] : null;
+    throw new Error(`Collector stopped before publishing: ${breakerReason() || 'circuit breaker tripped'}${last ? ` · last error at ${last.where}: ${last.message}` : ''}. Previous snapshot kept; nothing written.`);
   }
   await mkdir(outDir, { recursive: true });
   await writeFile(path.join(outDir, 'latest.json'), JSON.stringify(latest));
@@ -286,6 +292,17 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
 }
 
 // ---------- helpers ----------
+
+// Keep curated series first, then the highest-volume keyword matches, up to `max`.
+// Without a cap, keyword discovery over the full live series list made the run exceed its deadline.
+export function capSeries(map, max) {
+  if (map.size <= max) return map;
+  const entries = [...map.entries()];
+  const curated = entries.filter(([, v]) => String(v.reason).startsWith('curated'));
+  const rest = entries.filter(([, v]) => !String(v.reason).startsWith('curated'))
+    .sort((a, b) => Number(b[1].series.volume_fp || 0) - Number(a[1].series.volume_fp || 0));
+  return new Map([...curated, ...rest].slice(0, max));
+}
 
 export function resolveTopicSeries(cfg, seriesList) {
   const out = new Map();

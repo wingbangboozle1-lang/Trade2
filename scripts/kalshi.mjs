@@ -30,22 +30,27 @@ export class KalshiNetworkBreaker extends Error {}
 
 // Run-wide circuit breaker: after too many consecutive network failures the whole run stops
 // (so a blocked or down host cannot hang a scheduled job for an hour).
-const breaker = { consecutiveNetworkErrors: 0, limit: 6, deadlineMs: Infinity, tripped: false };
+const breaker = { consecutiveNetworkErrors: 0, limit: 6, deadlineMs: Infinity, tripped: false, reason: '' };
 export function configureBreaker({ limit = 6, deadlineMs = Infinity } = {}) {
   breaker.consecutiveNetworkErrors = 0;
   breaker.limit = limit;
   breaker.deadlineMs = deadlineMs;
   breaker.tripped = false;
+  breaker.reason = '';
 }
 export function breakerTripped() {
   return breaker.tripped;
 }
+export function breakerReason() {
+  return breaker.reason;
+}
 
 export async function getPublic(base, path, params = {}, opts = {}) {
   const { retries = 3, timeoutMs = 15000, minGapMs = 150, fetchImpl = fetch } = opts;
-  if (breaker.tripped) throw new KalshiNetworkBreaker('circuit breaker already tripped');
+  if (breaker.tripped) throw new KalshiNetworkBreaker(`stopped: ${breaker.reason || 'circuit breaker tripped'}`);
   if (Date.now() > breaker.deadlineMs) {
     breaker.tripped = true;
+    breaker.reason = 'run deadline reached';
     throw new KalshiNetworkBreaker('run deadline exceeded');
   }
   const qs = new URLSearchParams();
@@ -67,12 +72,14 @@ export async function getPublic(base, path, params = {}, opts = {}) {
     } catch (err) {
       if (++breaker.consecutiveNetworkErrors >= breaker.limit) {
         breaker.tripped = true;
-        throw new KalshiNetworkBreaker(`${breaker.limit} consecutive network errors; last: ${err.message}`);
+        breaker.reason = `${breaker.limit} consecutive network errors (last: ${err.message})`;
+        throw new KalshiNetworkBreaker(breaker.reason);
       }
       if (attempt > retries) throw err;
       if (Date.now() + backoff(attempt) > breaker.deadlineMs) {
         breaker.tripped = true;
-        throw new KalshiNetworkBreaker('network retry past the run deadline');
+        breaker.reason = 'network retry would pass the run deadline';
+        throw new KalshiNetworkBreaker(breaker.reason);
       }
       await sleep(backoff(attempt));
       continue;
@@ -90,7 +97,8 @@ export async function getPublic(base, path, params = {}, opts = {}) {
     const wait = Math.min(Number.isFinite(ra) && ra > 0 ? ra * 1000 : backoff(attempt), MAX_WAIT_MS);
     if (Date.now() + wait > breaker.deadlineMs) {
       breaker.tripped = true;
-      throw new KalshiNetworkBreaker(`rate limited past the run deadline (HTTP ${res.status})`);
+      breaker.reason = `rate limited (HTTP ${res.status}); Retry-After would pass the run deadline`;
+      throw new KalshiNetworkBreaker(breaker.reason);
     }
     await sleep(wait);
   }
