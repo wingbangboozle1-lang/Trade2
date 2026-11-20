@@ -76,3 +76,18 @@ exact docs URL or live API URL used.
 
 **Post-merge record:** see the "Integration result" section at the bottom of
 this file.
+
+---
+
+## Integration record — `arena/f5837994-trade2`
+
+| Step | Result |
+| - | - |
+| Scope reviewed against `origin/main` | `main` already carried a merged site from session `ba6888b7` (`index.html`, `assets/`, `categories/`, `summary.html`, `review.html`). That work was **kept** and extended rather than replaced: same shell, same CSS variables, same navigation, same topic URLs. |
+| Duplicate work avoided | The merged site's browser-side paper trading is left in place; this branch adds the server-side collector, the fee-exact simulator, the live desk, the methodology page and the generated tables. Its `assets/app.js` is untouched and still runs on the pages that reference it. |
+| Merge conflict | `COORDINATION.md` add/add conflict with session `5788e385`'s board. Resolved by keeping **both** boards — theirs first, this session's under its own heading. No other session's content was discarded. |
+| Verification performed | 40 unit tests pass (`python3 -m unittest discover -s tests`). `node --check assets/desk.js` passes. `tools/linkcheck.py`: 10 pages, 157 internal links, 0 errors. `tools/rendercheck.mjs` (jsdom): every page boots the JS with no thrown error and no `undefined`/`NaN`/`[object Object]` in the rendered text. Two real bugs were found and fixed this way — a missing `refreshMarketNow` function and a wrong `server/app.py` document root. |
+| Live pipeline | `.github/workflows/kalshi-dashboard.yml` runs unit tests → collect → rebuild → link check → commit. Latest runs succeed end to end (collect ~135 s, zero errors, all five topics). |
+| Defects found and fixed during the build | (1) Fee arithmetic in binary floats produced $1.76 where Kalshi's table says $1.75 — replaced with exact Decimal maths, all 42 published rows now asserted. (2) The ROI model produced "+480 %" trades on 1-cent quotes with no depth — tradability gates added after replaying 300 real markets (299 correctly rejected). (3) `GET /events?category=…` silently ignores the filter — verified live, replaced with `series_ticker` queries, which cut the run from 330 s to 134 s. (4) The alert test compared only consecutive snapshots, so gradual moves never fired — now measured against the 5-minute bar-open candle close. |
+| Flagged items | Published on `review.html`, generated from the current snapshot: placeholder text inside Kalshi records, large open interest on empty books, the empty "Culture" category, plus seven standing limitations. `VERIFICATION.md` holds the line-by-line log. |
+| PR / merge / deploy | See the section below, filled in after the PR is merged. |
