@@ -104,3 +104,21 @@ against every row of Kalshi's published fee table by an automated test.
 | G3 | WebSocket streaming in the running site | The handshake requires the same signed headers as REST. Polling is used instead; the endpoint and channels are documented and linked. |
 | G4 | Attribution of a price move to a specific news article | Deliberately not attempted: no official source maps articles to moves. |
 | G5 | A complete census of every Kalshi market | Each run tracks a bounded, ranked slice (top markets per topic) and reports the counts it read. |
+
+---
+
+## Session `arena-8b01a1c4` (2026-11-20) — re-verification against official sources
+
+The full line-by-line log for this session is [`INTEGRATION_REVIEW.md`](INTEGRATION_REVIEW.md)
+(components, requirements matrix, live-API row checks V1–V6 with URLs, docs-claim
+table, R-D-01 fix record, irregularities I-R1…I-R5). Everything above in this
+file remains valid; nothing was edited or downgraded here. Summary: five
+published market rows (one per topic) plus one order book were re-fetched from
+`https://external-api.demo.kalshi.co/trade-api/v2` and matched the snapshot
+(exact on slow-moving fields, live drift on traded fields); the fee formula and
+General Fees table were re-fetched from
+[the official PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf); the demo
+endpoint table was re-fetched from
+[demo_env](https://docs.kalshi.com/getting_started/demo_env). All automated
+suites re-run green (55 python tests, 19 node tests, 3 pipelines' own gates,
+linkcheck 538/0, rendercheck 11/11).
