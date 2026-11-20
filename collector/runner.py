@@ -289,44 +289,75 @@ def collect_candles(
     meta: Dict,
     series_map: Optional[Dict[str, Dict]] = None,
 ) -> Dict[str, Any]:
-    """Fetch candlesticks per (interval label). `windows` maps label -> seconds of history."""
+    """Fetch candlesticks, two-phase so budget goes to markets that actually trade.
+
+    Phase A probes the mid window (6h) for up to 2x top_n candidates; only markets
+    with >= 2 official points get the remaining windows. Markets with no trades in
+    the window simply produce no chart (never a fabricated series).
+    """
     out: Dict[str, Any] = {}
     end = int(time.time())
     interval_of = {"seconds": 1, "minutes": 60, "hours": 1440}
-    for row in select_top(rows, top_n):
+
+    def fetch(series: str, ticker: str, label: str) -> Dict[str, Any]:
+        secs = windows[label]
+        interval = interval_of[label]
+        try:
+            sticks = client.candlesticks(series, ticker, end - secs, end, interval)
+        except Exception as exc:
+            meta["errors"].append({"step": "candles", "ticker": ticker, "window": label, "error": str(exc)})
+            sticks = []
+        return {
+            "interval": interval,
+            "points": [
+                {
+                    "t": s.get("end_period_ts"),
+                    "close": fnum((s.get("price") or {}).get("close_dollars")),
+                    "open": fnum((s.get("price") or {}).get("open_dollars")),
+                    "high": fnum((s.get("price") or {}).get("high_dollars")),
+                    "low": fnum((s.get("price") or {}).get("low_dollars")),
+                    "volume": fnum(s.get("volume_fp")),
+                }
+                for s in sticks
+            ],
+            "source_url": api_link(
+                f"/series/{series}/markets/{ticker}/candlesticks?start_ts={end - secs}&end_ts={end}&period_interval={interval}"
+            ),
+            "docs_url": SOURCE_CANDLES,
+        }
+
+    def resolve(row: Dict) -> Optional[tuple]:
         ticker = row.get("ticker")
         base = (str(ticker or "").split("-")[0]) if ticker else ""
         series = row.get("series_ticker") or base
-        if series_map is not None and series not in series_map:
-            # series_ticker is derived, not API-provided: confirm against tracked series
-            meta.setdefault("candles_skipped", []).append(ticker)
-            continue
         if not ticker or not series:
+            return None
+        if series_map is not None and series not in series_map:
+            meta.setdefault("candles_skipped", []).append(ticker)
+            return None
+        return ticker, series
+
+    # phase A: probe the 6h window across a wide, topic-balanced candidate pool
+    active: List[tuple] = []
+    for row in select_top(rows, top_n * 2):
+        res = resolve(row)
+        if not res:
             continue
-        for label, secs in windows.items():
-            interval = interval_of[label]
-            try:
-                sticks = client.candlesticks(series, ticker, end - secs, end, interval)
-            except Exception as exc:
-                meta["errors"].append({"step": "candles", "ticker": ticker, "window": label, "error": str(exc)})
-                sticks = []
-            out.setdefault(ticker, {})[label] = {
-                "interval": interval,
-                "points": [
-                    {
-                        "t": s.get("end_period_ts"),
-                        "close": fnum((s.get("price") or {}).get("close_dollars")),
-                        "open": fnum((s.get("price") or {}).get("open_dollars")),
-                        "high": fnum((s.get("price") or {}).get("high_dollars")),
-                        "low": fnum((s.get("price") or {}).get("low_dollars")),
-                        "volume": fnum(s.get("volume_fp")),
-                    }
-                    for s in sticks
-                ],
-                "source_url": api_link(f"/series/{series}/markets/{ticker}/candlesticks?start_ts={end - secs}&end_ts={end}&period_interval={interval}"),
-                "docs_url": SOURCE_CANDLES,
-            }
-    return out
+        ticker, series = res
+        out.setdefault(ticker, {})["minutes"] = fetch(series, ticker, "minutes")
+        if len(out[ticker]["minutes"]["points"]) >= 2:
+            active.append((ticker, series))
+            if len(active) >= top_n:
+                break
+    # phase B: enrich markets that showed activity with seconds + hours windows
+    for ticker, series in active:
+        out[ticker]["seconds"] = fetch(series, ticker, "seconds")
+        out[ticker]["hours"] = fetch(series, ticker, "hours")
+    # keep only markets with at least one chartable series
+    return {
+        t: v for t, v in out.items()
+        if any(v.get(lbl, {}).get("points") for lbl in ("seconds", "minutes", "hours"))
+    }
 
 
 def detect_alerts(candles: Dict[str, Any], rows: List[Dict], threshold: float, with_news: bool = True) -> List[Dict]:
