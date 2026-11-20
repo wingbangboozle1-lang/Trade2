@@ -222,11 +222,17 @@ def pick_markets(
     return rows
 
 
-def market_notional(m: Dict) -> float:
+def market_notional(m: Dict) -> float | None:
     """Dollar volume proxy = (24h volume if present, else total volume) x last price.
 
-    Both inputs are official fields; the product is a derived ranking metric only
-    (documented as such — the raw fields appear in the same table row).
+    Both inputs are official fields; the product is a derived metric and the raw
+    fields appear in the same table row. ``None`` means "no price was returned":
+    the published column is then left blank + flagged rather than filled with a
+    made-up number. It used to substitute $0.50 here, and because the same
+    function also feeds the row's ``notional_usd`` (line 232), that invented
+    price could reach a published dollar figure — logged as F-E1-05 and
+    requested as R-E1-02 by session arena-e1a76b9d. The fallback now lives only
+    inside :func:`market_rank`, where it cannot be read as a value.
     """
     vol24 = fnum(m.get("volume_24h_fp")) or 0.0
     vol = fnum(m.get("volume_fp")) or 0.0
@@ -237,7 +243,7 @@ def market_notional(m: Dict) -> float:
         ask = fnum(m.get("yes_ask_dollars"))
         price = (bid + ask) / 2 if bid is not None and ask is not None else None
     if price is None:
-        price = 0.5  # ranking fallback only; the displayed value stays null in tables
+        return None
     return vol * price
 
 
@@ -250,8 +256,13 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
     if last is None and bid is None and ask is None:
         flags.append("price-unverified:no last/bid/ask returned")
     volume = fnum(m.get("volume_fp"))
+    notional = market_notional(m)   # None when the response carries no price at all
     if volume is None:
         flags.append("volume-unverified:not returned")
+    elif notional is None:
+        # Same rule as every other column here: a value we cannot read from the
+        # response is left blank and labelled, never synthesised (F-E1-05).
+        flags.append("notional-unverified:no price in the response, dollar volume left blank")
     ticker = str(m.get("ticker") or "")
     # The market object carries no `series_ticker` field (verified against the live
     # API 2026-11-20); the series is the ticker prefix before the first hyphen.
@@ -272,7 +283,7 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         "last_price": last,
         "volume_fp": volume,
         "volume_24h_fp": fnum(m.get("volume_24h_fp")),
-        "notional_usd": round(market_notional(m), 2) if volume is not None else None,
+        "notional_usd": round(notional, 2) if (notional is not None and volume is not None) else None,
         "open_interest_fp": fnum(m.get("open_interest_fp")),
         # The market object's own field is `expected_expiration_time` (an ISO
         # string) — verified against six live GET /markets/{ticker} responses on
@@ -296,9 +307,13 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
 
 
 def market_rank(m: Dict) -> tuple:
-    """Sort key: markets with 24h volume (recently traded) first, then by notional."""
+    """Sort key: markets with 24h volume (recently traded) first, then by notional.
+
+    An unpriced market ranks at zero dollars here — deliberately: a ranking
+    proxy may be a convention, a *published* column may not (see market_notional).
+    """
     vol24 = fnum(m.get("volume_24h_fp")) or 0.0
-    return (1 if vol24 > 0 else 0, market_notional(m))
+    return (1 if vol24 > 0 else 0, market_notional(m) or 0.0)
 
 
 def select_top(rows: List[Dict], n: int) -> List[Dict]:
