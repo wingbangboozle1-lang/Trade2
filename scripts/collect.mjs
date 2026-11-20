@@ -28,6 +28,8 @@ const OUT_DIR = args.out || './_site/data';
 const BASE = args.base || process.env.KALSHI_BASE || PRODUCTION_BASE;
 const CONFIG_PATH = args.config || path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'config', 'topics.json');
 
+const log = (m) => console.error(m);
+
 export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now(), deadlineMs = 12 * 60 * 1000 } = {}) {
   const started = Date.now();
   configureBreaker({ limit: 6, deadlineMs: started + deadlineMs });
@@ -37,6 +39,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   const errors = [];
   const get = (p, params, o) => getFn(base, p, params, o);
 
+  log(`[collect] phase: exchange status (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 1) exchange status
   let exchange = null;
   try {
@@ -57,6 +60,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   const seriesList = (await get('/series')).data.series || [];
   const seriesMap = resolveTopicSeries(cfg, seriesList);
 
+  log(`[collect] phase: events (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 4) events (with nested markets) for each mapped series
   const eventsBySeries = new Map();
   for (const [seriesTicker] of seriesMap) {
@@ -107,6 +111,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
     if (nowMs - state.last[t].ms > 2 * 3600e3) delete state.last[t];
   }
 
+  log(`[collect] phase: order books (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 7) order books for the top-N markets by estimated 24h dollar volume
   const topN = rows.slice(0, cfg.orderbook_top_n);
   const orderbooks = {};
@@ -141,6 +146,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
     if (state.history[t].length === 0) delete state.history[t];
   }
 
+  log(`[collect] phase: resolution (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 9) resolution tracking: markets that were tracked but are no longer active are checked by ticker
   const activeTickers = new Set(rows.map((r) => r.ticker));
   const watch = Object.keys(state.meta).filter((t) => !activeTickers.has(t) && !state.resolved[t]);
@@ -177,6 +183,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   for (const t of Object.keys(state.pending)) if (!state.meta[t]) delete state.pending[t];
   // Markets resolved in this run stop being watched; still-active ones refresh their meta above.
 
+  log(`[collect] phase: paper trades (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 10) simulated trades (paper) — uses only official prices + official fee formula
   const marketsByTicker = new Map(rows.map((r) => [r.ticker, r]));
   const resolvedByTicker = new Map(Object.entries(state.resolved).map(([t, v]) => [t, v]));
@@ -191,6 +198,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   // 11) alert memory (chronological, bounded)
   state.alerts = [...state.alerts, ...alerts].slice(-1000);
 
+  log(`[collect] phase: write output (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
   // 12) topic index for the site
   const topicIndex = {};
   for (const key of Object.keys(cfg.topics)) {
