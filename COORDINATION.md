@@ -416,7 +416,7 @@ Branch `arena/4f92a11c-trade2` (base `main` @ `1bc32b7`). Scope is report-only a
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T20 | Row-level source-link audit of every published table: each row must carry an official source URL; host (demo vs production) and blank/unverified values are counted and listed | in progress | `arena-4f92a11c` | `tools/rowsource_check.py` (new), `tests/test_rowsource_check.py` (new), `SOURCE_LINK_AUDIT_4f92a11c.md` (new), this section |
+| T20 | Row-level source-link audit of every published table: each row must carry an official source URL; host (demo vs production) and blank/unverified values are counted and listed | done | `arena-4f92a11c` | `tools/rowsource_check.py` (new), `tests/test_rowsource_check.py` (new), `SOURCE_LINK_AUDIT_4f92a11c.md` (new), this section |
 
 Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers every row, not a sample.
 
@@ -428,3 +428,16 @@ Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers ev
 | R-4f92-2 | Double claim: `T17` (production REST default in `scripts/collect.mjs`) is claimed by both `arena-e4e8f4e1` and `arena-856e184e`. | COORDINATION.md | both | open — needs one owner |
 | R-4f92-3 | The `kalshi-dashboard/data/*` snapshot is fetched from the production host `external-api.kalshi.com` (see `source.base_url` in `kalshi-dashboard/data/latest.json`). The request is demo-only. | `kalshi-dashboard/data/latest.json` | `arena-e4e8f4e1` (T17) | open |
 | R-4f92-4 | `kalshi-dashboard/data/resolved.json` has `resolved: []` and 19 `pending` rows, so the dashboard shows no YES/NO outcome yet. The `docs/` pipeline has 300 resolution rows. | `kalshi-dashboard/data/resolved.json` | pipeline owner | open |
+
+### Result — T20 (`arena-4f92a11c`, 2026-11-20)
+
+- **Output:** `SOURCE_LINK_AUDIT_4f92a11c.md` (report), `audit/rowsource-4f92a11c.csv` (748 rows), `audit/rowsource-4f92a11c.json` (summary). Tool `tools/rowsource_check.py`; tests `tests/test_rowsource_check.py` (15 offline).
+- **Counts:** 748 rows in 10 tables. 748/748 carry an official Kalshi source link (no third-party primary source). 349 demo, 399 production (all of `kalshi-dashboard/`). 158 live rows with blank derived `last_cents` where the official dollar price is present (sub-cent). 40/40 `docs/` markets with blank `expected_expiration`.
+- **Spot checks (official, fetched this session):** https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO (values match snapshot; `expected_expiration_time` present, repo blank); https://external-api.kalshi.com/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO (confirms production host serves the live-dashboard row); https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDOGE-26NOV2012-T0.2349999 (result "no", settlement_value 0.0 — matches).
+- **Sources fetched and read this session:** https://docs.kalshi.com/getting_started/demo_env · https://docs.kalshi.com/getting_started/api_environments · https://docs.kalshi.com/api-reference/market/get-market · https://docs.kalshi.com/getting_started/market_settlement · https://kalshi.com/docs/kalshi-fee-schedule.pdf (effective July 7, 2026).
+- **Verification:** `python3 -m unittest discover -s tests` → 57 run, 1 skipped (pre-existing), 0 failures. Report only; no published data, page or pipeline file was edited.
+- **Irregularities (for the Flagged for Review page; each has its source in the report):** F-4F-01 production host in the live dashboard (High); F-4F-02 sub-cent prices blanked (Medium); F-4F-03 300/300 NO in one DOGE family, unexplained (Medium, needs review); F-4F-04 two resolution trackers disagree (Medium); F-4F-05 `expected_expiration` blank 40/40 in `docs/` (Medium); F-4F-06 `fee_type` blank 40/40 (Low, absent from the official market object); F-4F-07 demo-price caveat must be shown (Info); F-4F-08 1,144 third-party settlement-source references (Info); F-4F-09 board conflicts (Process).
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | in progress | `arena-4f92a11c` | `COORDINATION.md` (this section only) |
