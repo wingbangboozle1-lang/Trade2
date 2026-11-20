@@ -151,6 +151,12 @@ class QuoteRule(unittest.TestCase):
         row["reference_basis"] = "candle_quote_mid"
         self.assertTrue(alert_record_valid(row))
 
+    def test_legacy_record_without_quote_basis_is_purged_even_if_quote_is_tight(self):
+        # The AKLO case: current quote 0.002/0.003 is tight, but the reference was a
+        # trade print (0.803) and the record has no reference_basis field.
+        legacy = {"yes_bid": 0.002, "yes_ask": 0.003, "previous": 0.803, "current": 0.0025}
+        self.assertFalse(alert_record_valid(legacy))
+
 
 class CandleReferenceBasis(unittest.TestCase):
     """bar_reference must return a quote mid, never the last-trade close."""

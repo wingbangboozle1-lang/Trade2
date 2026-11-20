@@ -531,7 +531,7 @@ Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlappi
 | T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | done | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `tests/test_engine.py` (one test updated), `site_build/flagpage.py`, `site_build/build.py` (count formatting), `tools/rendercheck.mjs` (harness fetch shim) |
 | T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | done (landed on `main` by `arena-e4e8f4e1` in `28577c4`; this session kept `main`'s version on merge) | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
 | T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | done (sample; see log) | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
-| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-856e184e` | `COORDINATION.md` (this section only) |
 
 ### Log — `arena-856e184e` (2026-11-20)
 
@@ -632,17 +632,25 @@ Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers ev
 | Open after re-run | F-4F-02 (691 blank derived `last_cents`, 639 official `0.0000`), F-4F-03 (300/300 NO), F-4F-05 (`expected_expiration` blank 40/40), F-4F-06 (`fee_type` blank 40/40). See `SOURCE_LINK_AUDIT_4f92a11c.md`. |
 | R-4f92-2 / R-4f92-3 | Resolved on `main` by PR #13 (guard) and PR #14 (refresh): the production host no longer appears in the published data. |
 | Verification before merge | `python3 -m unittest discover -s tests` → 57 run, 1 skipped (pre-existing), 0 failures. `python3 tools/linkcheck.py` → 45 pages, 503 links, 0 errors. |
+
+### Post-merge check — `arena-856e184e` (2026-11-20, after PR #14)
+
+- PR #14 merged to `main` at `adc26c9`. GitHub Pages build for `adc26c9`: `built`. `kalshi-dashboard.yml` run `44799269520` on `main`: success.
+- Observed: stored root alerts fell from **29 to 3**; `KXPRESNOMD-28-HBID` phantom removed. `kalshi-dashboard/data/status.json` and `docs/data/run_meta.json` now record `base_url` = `https://external-api.demo.kalshi.co/trade-api/v2`.
+- The 3 remaining AKLO records had no `reference_basis` (written by the old code). A follow-up change drops stored alerts without a verifiable quote basis.
+- Note: one `dashboard.yml` publish step failed on the PR #13 merge (`Commit and publish to main`, run `44799192230`). The runs since then succeeded (`44799040872`, scheduled runs). This looks like a push race between sessions, not a persistent defect. Logged, not changed.
+
 ## Session claim — `arena-997c9c83` (2026-11-20)
 
 Branch `arena/997c9c83-trade2` (Arena-pinned; base `main` @ `1bc32b7`).
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | in progress | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
-| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | in progress | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
-| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | in progress | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
+| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | done (PR #20) | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
+| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | done (PR #20; verified live on review.html) | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
+| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | done (`DEPLOYMENT_AUDIT_997c9c83.md`, post-merge re-check filled) | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
 | T-997-D | Coordination: record the T17 scope collision between `arena-e4e8f4e1` and `arena-856e184e` on `scripts/collect.mjs` + `scripts/test/collect.test.mjs` | done | `arena-997c9c83` | this file only |
-| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | pending | `arena-997c9c83` | this file only |
+| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | done — PR #20 merged 2026-11-20T19:12:25Z (merge commit `a19c467`), Pages built for the regenerated commit `8dceeef` | `arena-997c9c83` | this file only |
 
 **Collision notice C-997-1 (T17, demo-vs-production endpoint fix).** `arena-e4e8f4e1`
 claimed `scripts/collect.mjs`, `scripts/test/collect.test.mjs` (plus
@@ -713,6 +721,32 @@ jsdom boot of `live.html` with fetch stubbed: 32 raw alerts → 9 grouped rows,
 see above); `config/flags.json` F-05 note remains accurate (SDK default base URL
 is production) but the *pipeline* default in `scripts/collect.mjs` is
 `arena-e4e8f4e1`'s claimed fix — this session did not touch it.
+
+### Integration record — `arena-856e184e` (task T19, final)
+
+| Step | Result |
+| - | - |
+| PR #14 | https://github.com/wingbangboozle1-lang/Trade2/pull/14 — `arena/856e184e-trade2` → `main`. Had a conflict with PR #13 (`28577c4` and `17235ca` fixed the same two issues). Resolved by keeping `main`'s version of those files and rebuilding generated pages from the merged data. Merged `2026-11-20T19:07:58Z` as `adc26c9` (merge commit). Branch CI green. |
+| PR #22 | https://github.com/wingbangboozle1-lang/Trade2/pull/22 — follow-up: drop stored alerts without a verifiable quote basis (`reference_basis`). Conflict only in `COORDINATION.md` (both sections kept). Merged as `58be24d` (merge commit) on `main`. |
+| Verification before merge | `unittest` 73 OK (1 skipped, pre-existing), `collector.test_runner` PASS, `trading.test_engine` PASS, `npm test` 19/19, `tools/rendercheck.mjs` 10/10, `tools/linkcheck.py` 45 pages / 503 links / 0 errors, `site_build` regenerated. |
+| Pages | Legacy build of `main` `/`: `built` for `adc26c9` (2026-11-20T19:08:38Z) and for `8dceeef` (2026-11-20T19:18:54Z). Live: https://wingbangboozle1-lang.github.io/Trade2/review.html — Flagged page serves the new flags. |
+| Live effect | Stored root swing alerts: **29 → 3 → 0** (HBID phantom removed by PR #14; the AKLO legacy records removed by PR #22). Overview "Swings ≥ $0.10" card now shows **0**. Root and kalshi-dashboard status files record the **demo** host. |
+| Pipeline note | One `dashboard.yml` publish step failed on the PR #13 merge (run `44799192230`, "Commit and publish to main"). Later runs succeeded, including a scheduled run and `workflow_dispatch` `44799040872`. Looks like a push race between sessions. Not changed. Many `kalshi-dashboard` runs show `cancelled` because the workflow concurrency group supersedes queued runs. Expected behaviour. |
+| Still open (flagged, not blocking) | F-856-4 (OI value = notional), F-856-5 (trade-price alerts in `docs/` and kalshi-dashboard pipelines not quote-checked), the Kalshi demo trade-print vs quote inconsistency (AKLO), and verification of the remaining overview rows. |
+| Credentials | No Kalshi demo API key is configured, so the demo account was not read and no orders were placed. The brief asks for demo-account tracking and trade execution. Those need a demo key pair added as repo secrets, which the agent cannot create. |
+
+
+
+### 2026-11-20 — `arena-997c9c83` — integration record (T-997-E)
+
+| Step | Result |
+| - | - |
+| Branch state | Squashed onto `main` @ `dbdfa1d` (union of all boards PRs #1–#18 preserved verbatim; repeated COORDINATION.md add/add conflicts with concurrent sessions resolved as unions each time). |
+| PR | **#20** — https://github.com/wingbangboozle1-lang/Trade2/pull/20 — merged 2026-11-20T19:12:25Z, merge commit `a19c467c1f46e37cad810e1f4149bd7ea4034d68`, no approval wait per brief. |
+| Post-merge regeneration | Scheduled `kalshi-dashboard.yml` main run `44800499251` (success, 2m21s) regenerated the pages with the new `alerts-view.js` tag + flagged-page card; two dispatch runs cancelled by the `collect` concurrency group were harmless (cron covers main every ≤5 min). |
+| Pages | Built for `a19c467`, then **built** for regenerated commit `8dceeef` (verified `gh api repos/.../pages/builds/latest`). |
+| Live verification | Fetched with cache-buster: `review.html` renders the new standing limitation card with its official source; `assets/alerts-view.js` serves verbatim; `live.html`/`index.html` in the built commit load it before `desk.js`. Deployed-module + jsdom boot checks together cover the client behaviour; a human browser pass remains open for any session (flagged, does not block). |
+| Irregularities logged | C-997-1 (T17 double-claim — both claims since merged via PRs #13/#14, kept for the record); A-6 stale CDN copy right after a Pages build (cache-buster workaround, not repo content). No other session's work discarded; no shared outputs touched beyond the session's claimed scope. |
 
 ## Request — `arena/cbb7cbec-trade2` → owner of `site_build/flagpage.py`
 
