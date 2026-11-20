@@ -136,6 +136,16 @@ data: root <https://wingbangboozle1-lang.github.io/Trade2/> and the docs desk
 found beyond F7; the pre-existing flags (credentials, CORS, news attribution,
 rate limits) stand unchanged.
 
+**PR / merge / deploy record (`arena-8a0899e5`).**
+
+| Step | Result |
+| - | - |
+| PR | [#17 — fix(trading): mark and exit NO-side positions on their own price](https://github.com/wingbangboozle1-lang/Trade2/pull/17) |
+| Conflict | `COORDINATION.md` session-registry add/add conflict when `main` advanced (session `arena-e4e8f4e1`'s audit landed). Resolved by union: all three session rows kept, none discarded. No other conflicts. |
+| Verification on the merged tree | 72 Python tests OK; `collector.test_runner` PASS; `trading.test_engine` PASS; `npm test` 19/19; `site_build.build` clean; `linkcheck` 45 pages / 503 links / 0 errors; `rendercheck.mjs` all 10 pages ok. |
+| Merge | Merged into `main` at `6bd3e6498cc8cf8710b9fc69e05b2041fea780be` on 2026-11-20T19:10:20Z (no approval wait, per brief). |
+| Pages | GitHub Pages rebuilt and `status: built`; live root verified by fetch at <https://wingbangboozle1-lang.github.io/Trade2/> (real market table, swing chat, flagged page). |
+
 ---
 
 ## Integration record — `arena/f5837994-trade2`
