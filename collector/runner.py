@@ -161,11 +161,14 @@ def pick_markets(
 
 
 def market_notional(m: Dict) -> float:
-    """Dollar volume proxy = volume_fp x last price (both official fields).
+    """Dollar volume proxy = (24h volume if present, else total volume) x last price.
 
-    Documented as a derived ranking metric, not an API-provided value.
+    Both inputs are official fields; the product is a derived ranking metric only
+    (documented as such — the raw fields appear in the same table row).
     """
+    vol24 = fnum(m.get("volume_24h_fp")) or 0.0
     vol = fnum(m.get("volume_fp")) or 0.0
+    vol = vol24 if vol24 > 0 else vol
     price = fnum(m.get("last_price_dollars"))
     if price is None:
         bid = fnum(m.get("yes_bid_dollars"))
@@ -187,13 +190,21 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
     volume = fnum(m.get("volume_fp"))
     if volume is None:
         flags.append("volume-unverified:not returned")
+    ticker = str(m.get("ticker") or "")
+    # The market object carries no `series_ticker` field (verified against the live
+    # API 2026-11-20); the series is the ticker prefix before the first hyphen.
+    series = str(m.get("series_ticker") or "") or (ticker.split("-")[0] if ticker else None)
+    # query status=open returns objects whose own status field is "active"
+    status = m.get("status")
+    if status == "active":
+        status = "open"
     row = {
         "ticker": m.get("ticker"),
         "event_ticker": m.get("event_ticker"),
         "title": m.get("title"),
         "topic": m.get("_topic"),
-        "series_ticker": m.get("series_ticker"),
-        "status": m.get("status"),
+        "series_ticker": series,
+        "status": status,
         "yes_bid": bid,
         "yes_ask": ask,
         "last_price": last,
@@ -263,13 +274,26 @@ def collect_orderbooks(client: KalshiClient, rows: List[Dict], top_n: int, meta:
     return out
 
 
-def collect_candles(client: KalshiClient, rows: List[Dict], windows: Dict[str, int], top_n: int, meta: Dict) -> Dict[str, Any]:
+def collect_candles(
+    client: KalshiClient,
+    rows: List[Dict],
+    windows: Dict[str, int],
+    top_n: int,
+    meta: Dict,
+    series_map: Optional[Dict[str, Dict]] = None,
+) -> Dict[str, Any]:
     """Fetch candlesticks per (interval label). `windows` maps label -> seconds of history."""
     out: Dict[str, Any] = {}
     end = int(time.time())
     interval_of = {"seconds": 1, "minutes": 60, "hours": 1440}
     for row in select_top(rows, top_n):
-        ticker, series = row.get("ticker"), row.get("series_ticker")
+        ticker = row.get("ticker")
+        base = (str(ticker or "").split("-")[0]) if ticker else ""
+        series = row.get("series_ticker") or base
+        if series_map is not None and series not in series_map:
+            # series_ticker is derived, not API-provided: confirm against tracked series
+            meta.setdefault("candles_skipped", []).append(ticker)
+            continue
         if not ticker or not series:
             continue
         for label, secs in windows.items():
@@ -441,7 +465,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     orderbooks = collect_orderbooks(client, row_list, args.orderbook_top, meta)
     progress(f"fetching candles for top {args.candle_top} markets × 3 windows …")
     candles = collect_candles(
-        client, row_list, {"seconds": 3600, "minutes": 6 * 3600, "hours": 24 * 60 * 60}, args.candle_top, meta
+        client, row_list, {"seconds": 3600, "minutes": 6 * 3600, "hours": 24 * 60 * 60}, args.candle_top, meta,
+        series_map=series_map,
     )
     alerts = detect_alerts(candles, row_list, args.threshold, with_news=args.news)
     progress(f"  {len(alerts)} alerts >= {args.threshold}")

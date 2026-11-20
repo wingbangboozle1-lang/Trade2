@@ -430,7 +430,7 @@
   function renderIndex() {
     const wrap = $("#stats");
     if (!wrap) return;
-    const open = S.markets.filter(m => m.status === "open");
+    const open = S.markets.filter(m => m.status === "open" || m.status === "active");
     const totalVol = open.reduce((s, m) => s + (m.notional_usd || 0), 0);
     const byTopic = {};
     TOPICS.forEach(t => { byTopic[t.key] = { n: 0, vol: 0, top: null }; });

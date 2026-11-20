@@ -94,6 +94,13 @@ OPEN_MARKETS = {
          "status": "open", "yes_bid_dollars": None, "yes_ask_dollars": None,
          "last_price_dollars": None, "volume_fp": None, "open_interest_fp": None,
          "expected_expiration_ts": 1795188000, "fee_type": "quadratic", "fee_multiplier": 1},
+        # regression: real API objects have NO series_ticker field and report
+        # status "active" (not "open") — both must normalize correctly
+        {"ticker": "KXSOLE-26NOV20-H33", "event_ticker": "KXSOLE-26NOV20",
+         "title": "Solana up or down hour 33",
+         "status": "active", "yes_bid_dollars": "0.4000", "yes_ask_dollars": "0.4400",
+         "last_price_dollars": "0.4200", "volume_fp": "600.00", "open_interest_fp": "100.00",
+         "expected_expiration_ts": 1795191600, "fee_type": "quadratic", "fee_multiplier": 1},
     ],
     "KXXBANNEDGROK": [
         {"ticker": "KXXBANNEDGROK-26DEC31", "event_ticker": "KXXBANNEDGROK",
@@ -255,6 +262,12 @@ def main() -> int:
                 assert any("price-unverified" in f for f in m["flags"])
             else:
                 assert m["verified"] is True, m
+            # normalization invariants (real API quirks)
+            assert m["series_ticker"], m
+            assert m["status"] in ("open", "active"), m
+            if m["ticker"] == "KXSOLE-26NOV20-H33":
+                assert m["series_ticker"] == "KXSOLE", m          # derived from ticker prefix
+                assert m["status"] == "open", m                   # "active" normalized to "open"
         # orderbooks with depth for top markets
         books = load("orderbooks.json")["books"]
         assert books, "no orderbooks"

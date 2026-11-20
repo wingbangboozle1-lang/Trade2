@@ -291,7 +291,7 @@ class Engine:
 
         for ticker, alert in recent.items():
             m = by_ticker.get(ticker)
-            if not m or m.get("status") != "open":
+            if not m or m.get("status") not in ("open", "active"):
                 continue
             book = books.get(ticker) or {}
             yb, ask, spread = implied_prices(book)
@@ -357,7 +357,7 @@ class Engine:
             if ticker in self.positions or len(out) >= 40:
                 continue
             m = by_ticker.get(ticker)
-            if not m or m.get("status") != "open":
+            if not m or m.get("status") not in ("open", "active"):
                 continue
             edge = book_edge(book)
             yb, ask, spread = implied_prices(book)
