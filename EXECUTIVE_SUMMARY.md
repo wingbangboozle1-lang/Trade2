@@ -307,3 +307,88 @@ FL-09 pinned-branch exception to the session-branch protocol. Full detail with l
 - Verification ledger: `docs/verification/sources.md`
 - Task board / PR record: `COORDINATION.md`
 - Reproduce any row: open its `source_url` — it is a GET on the public demo API, no key needed.
+
+---
+
+# Appendix — Audit and repairs, session `arena-1011a94f` (2026-11-20, later in the day)
+
+The site described above was live and its pipeline was healthy, but a
+line-by-line check of the published snapshot against the official demo API
+(snapshot `data/live.json`, generated `2026-11-20T18:41:08Z`) turned up three
+defects that changed what a trader saw. All three are fixed on
+`arena/1011a94f-trade2`; the evidence for each is in `VERIFICATION.md`
+section "Session D" with the exact API URL.
+
+## A1. The alert feed was reporting artefacts as $0.40–$0.80 swings
+
+| Published before this audit | What the exchange actually showed | Source |
+| - | - | - |
+| `▼ $0.8005  $0.8030 → $0.0025` on `KXPRESNOMD-28-AKLO`, five times in one afternoon | The market's own book is **$0.0020 bid / $0.0030 ask**. The candle for the minute used as the baseline prints a close of 0.8030 while quoting 0.0020/0.0030 — a single unpaired print. | [`…/markets/KXPRESNOMD-28-AKLO`](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO) · [candlesticks for that window](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795199400&end_ts=1795200300&period_interval=1) |
+| `▼ $0.4045  $0.8110 → $0.4065` on `KXPRESNOMD-28-HBID` | `yes_bid 0.0020`, `yes_ask 0.8110`. The "mid" 0.4065 is an average of two prices 80 cents apart. | [`…/markets/KXPRESNOMD-28-HBID`](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID) |
+| `▼ $0.4670  $0.9440 → $0.4770` on `KXPRESNOMD-28-JP` | `yes_bid 0.0100`, `yes_ask 0.9440` — 93 cents wide. | [`…/markets/KXPRESNOMD-28-JP`](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JP) |
+
+**Rule now enforced** (`collector/alerts.py`, `collector.collector.candle_reference`):
+a swing is published only when **both ends** are verifiable market prices — a
+two-sided quote no wider than **$0.50**, and, where a printed price exists, a
+print that lies inside its own quote. A candlestick is usable as the baseline
+only if its own `yes_bid`/`yes_ask` pass the same test. Alerts written by the
+older rule are held back and published on **Flagged for review** with their API
+links rather than deleted, so the fix stays checkable.
+
+Effect on the current snapshot: 3 stored alerts → 0 publishable, 3 held back.
+The chat now says so in words instead of inventing a move.
+
+## A2. No resolution ever reached a topic page
+
+The API returns settled markets **without** a `series_ticker`
+([`…/markets?status=settled`](https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&limit=3)),
+so the old mapping always missed: `resolutions` was empty for all five topics
+while the overview claimed 2,000. Attribution now uses the event's own
+`series_ticker` from
+[`GET /events?status=settled&with_nested_markets=true`](https://docs.kalshi.com/api-reference/events/get-events),
+then the recorded series, then the ticker prefix. Both totals are published:
+**80 of 2,000** stored settlements belong to a tracked topic; the other
+**1,920** are real demo settlements from series outside the five topics
+(soccer, tennis, 15-minute demo markets) and are named on the review page.
+
+## A3. The two "model likes this" views disagreed
+
+`high_roi_alerts` in the snapshot used a `score ≥ 0.10` test while the browser
+chat used `net_roi ≥ 0.05`, so the overview's model panel and the live desk's
+could show different rows. There is now one published number,
+`HIGH_ROI_GATE = 0.05` in `collector/alerts.py`, exported into the snapshot as
+`model_gate`, used by the collector, both pre-rendered panels and `assets/desk.js`.
+
+## A4. Interface changes made in this pass
+
+* **Overview:** the ranked table is grouped by topic (8 rows per topic) so gas,
+  culture, crypto and golf are visible without scrolling past elections'
+  hundreds of millions of contracts. Each group links to its topic page.
+* **Overview:** the second scrolling chat (model shortlist) is now on the
+  landing page as well as the live desk, so both chats are visible at a glance.
+* **Overview:** the resolution stat reads "N of M stored" instead of a bare
+  2,000 that implied all of them were in-topic.
+* **Live desk:** a "How a swing qualifies" panel explains the integrity gate in
+  plain words, with the worked example above and the docs link.
+* **Methodology:** swing threshold, integrity gate, resolution attribution and
+  the single ROI gate are each described with their official source link.
+* **Flagged for review:** two new standing items (one-sided quotes are not a
+  move; 1-minute candles are the finest official grain) and two new generated
+  row types (held-back swings, out-of-topic settlements).
+
+## A5. Verification performed for this appendix
+
+| Check | Result |
+| - | - |
+| `python3 -m unittest discover -s tests` | **67 tests, OK** (42 before; 25 added for the integrity gate, candle references, publishability, resolution attribution and observation persistence) |
+| `npm test` (node collector suite) | 18/18 pass |
+| `python3 -m trading.test_engine` | all fee-table rows reproduced |
+| `python3 -m collector.test_runner` | PASS |
+| `node --check assets/desk.js` | passes |
+| `python3 tools/linkcheck.py` | 45 pages, 514 internal links, **0 errors** |
+| `python3 -m site_build.build` | rebuilds all 11 pages from the snapshot |
+| `python3 tools/backfill_snapshot.py` | re-derives the groupings already in the repo; no invented values |
+
+Every value quoted above is a string returned by the official demo API at the
+URL beside it, read on 2026-11-20. Nothing was inferred, and nothing that could
+not be confirmed was filled in.
