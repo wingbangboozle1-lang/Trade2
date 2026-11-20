@@ -128,6 +128,36 @@
     </div>
   </div>
 
+  <div class="card" style="margin-top:14px">
+    <h2>Live &amp; interactive — what's in, what's next</h2>
+    <div class="grid c2">
+      <div>
+        <b>Implemented</b>
+        <ul class="tight">
+          <li>Two-speed data: 15-min collector cadence, plus optional local 5s SSE mode
+            (<code>live/server.py</code>) the page auto-detects.</li>
+          <li>≥$0.10 swing markers drawn on the price chart (green ▲ / red ▼).</li>
+          <li>Clickable catalyst headlines per swing (time-proximity only, never claimed as cause).</li>
+          <li>Sortable tables — blanks always sink, so unverified values can't be mistaken for low ones.</li>
+          <li>Seconds / minutes / hours chart windows + per-topic market picker.</li>
+          <li>Depth chart: contracts resting at each price (YES vs NO bids).</li>
+          <li>LIVE pulse + freshness chip (last run, error count, environment).</li>
+        </ul>
+      </div>
+      <div>
+        <b>Roadmap (not built)</b>
+        <ul class="tight">
+          <li>Browser/sound alerts for swings in your selected topic.</li>
+          <li>Watchlist + topic personalization (localStorage).</li>
+          <li>True tick streaming via WebSocket (needs an API key — FL-01/FL-02).</li>
+          <li>Strategy lab: slider-tuned backtests in the browser.</li>
+          <li>News timeline aggregating all swing headlines per topic.</li>
+          <li>Email/Slack webhook from the collector run.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="note" style="margin-top:14px"><b>Demo caveat (official):</b> “Prices in the demo environment may not
   reflect real market prices.” —
   <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Kalshi demo docs ↗</a>.

@@ -89,7 +89,27 @@ FL-04 `/series` ignores `limit` · FL-05 fee PDF prose-vs-table rounding nuance 
 mapping (Golf is a tag) · FL-07 book is bids-only (asks implied) · FL-08 thin markets return empty series ·
 FL-09 pinned-branch exception to the session-branch protocol. Full detail with links: **docs/flagged.html**.
 
-## 8. How to review manually
+## 8. Suggestions for a more live / interactive feel (implemented + roadmap)
+
+**Implemented now**
+- Two-speed data: 15-minute collector cadence on Pages, plus an optional local mode (`live/server.py`)
+  that pushes a fresh order-book snapshot every **5 seconds over SSE** — the page auto-detects and upgrades.
+- Swing markers drawn directly on the price chart (green ▲ / red ▼ dots at every ≥$0.10 point in view).
+- Clickable catalyst headlines under each swing, with an explicit “not causation” disclaimer.
+- Sortable tables (click a header); blanks always sink so an unverified value can’t be mistaken for a low one.
+- Chart window segmented control (seconds / minutes / hours) and a market picker per topic.
+- Depth chart showing contracts resting at each price (YES bids vs NO bids side by side).
+- LIVE pulse dot + freshness chip (last run time, error count, environment).
+
+**Good next steps (not built)**
+- Browser Notification / sound alert when a ≥$0.10 swing hits the selected topic.
+- Watchlist + “only my topics” personalization stored in localStorage.
+- WebSocket tick streaming (needs an API key — FL-01/FL-02) for true sub-second updates on Pages.
+- Strategy lab: parameter sliders (reversion share, ROI threshold) re-running the backtest in-browser.
+- News correlation view: aggregate all swing headlines into a single timeline per topic.
+- Email/Slack webhook alerts from the collector run (Actions secret).
+
+## 9. How to review manually
 
 - Live site: https://wingbangboozle1-lang.github.io/Trade2/
 - Raw data written by each run: `docs/data/*.json` (every object carries `source_url`)
