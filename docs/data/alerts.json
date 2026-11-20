@@ -1,7 +1,62 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795206204&end_ts=1795209804&period_interval=1",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795191406&end_ts=1795213006&period_interval=60",
+   "delta": 0.11,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.27,
+   "headlines": [
+    {
+     "published": "2026-11-20T16:47:46+00:00",
+     "source": "bloomingbit",
+     "status": "verified-fetch",
+     "title": "Trump Administration Pushes for Ukraine-Russia Peace Deal by Early January 2027 - bloomingbit",
+     "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1oQllEaHFuZENkTlQyTFh0cEwwM3poczFVMnFVTHg3MWNGS2tpQmVONlFxc19uNlRqSTFWakZLQmtSanhrS1cyTGNSbDRhM0VhblhLRA?oc=5"
+    },
+    {
+     "published": "2026-11-20T17:47:14+00:00",
+     "source": "TechJuice",
+     "status": "verified-fetch",
+     "title": "Government Offers Free Chip Design Training With Rs. 50,000 Stipend - TechJuice",
+     "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOQTBZbzJsbU4tQXdtS0dBcWVVZmduaDFJNndETEtVc0MyZGxvdWJ5RFB0M0o2QlhQQjllS3BkYmxmSDFyMzY3Yk42Zm1Oa2UyeHpLNVU5OUVLWEhjeWlDLU13Yjl5cVBqWGZ2R2FTTmtPMjUyMHlPcUZSYVZuSE1MN3N5c2Z6Y2hEcHUtQ3ZydGpHNUMzOWc?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+   "t": 1795212000,
+   "t_iso": "2026-11-20T22:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "title": "Will Bitcoin be below $50000.00 by Jan 1, 2027 at 12:00am ET?",
+   "to": 0.38,
+   "topic": "crypto",
+   "window": "minutes"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-55000.00/candlesticks?start_ts=1795209406&end_ts=1795213006&period_interval=1",
+   "delta": 0.22,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.48,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
+   "t": 1795210320,
+   "t_iso": "2026-11-20T21:32:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "title": "Will Bitcoin be below $55000.00 by Jan 1, 2027 at 12:00am ET?",
+   "to": 0.7,
+   "topic": "crypto",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795209406&end_ts=1795213006&period_interval=1",
    "delta": -0.73,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -9,11 +64,11 @@
    "from": 0.99,
    "headlines": [
     {
-     "published": "2026-11-20T15:59:28+00:00",
-     "source": "Yahoo",
+     "published": "2026-11-20T21:55:00+00:00",
+     "source": "The Independent",
      "status": "verified-fetch",
-     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - Yahoo",
-     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNWFV2SGR0bjJBNi1DQl9FRHNxMXItN182MmtFdzBNOXdvWUYyNEttM2dGSndZa0FxRkR5UHpyU0RGOHVnUHJUUVBMNEdkVFBtOTNqZVFOTTlwck9sQm5tak9MajJhYnNta3V4Ymk5am9zQS1YRkRJbjZ2Z0w4MUVrejd2b2hibGVHRVV5NVhtWQ?oc=5"
+     "title": "Rising star among Democrats becomes the new frontrunner for 2028 nod - The Independent",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOaDJ1UUhNajVvTFdsWHhtaGQ5ejRZNlNfT3hXNjZObC05U1NQQm9ubDlpaThKRDB5UVViS1ZYLWtCaVp6eHF5MjFFYW9sMUFwVE52MkhpdTh4QWxDRVdZRl9WcnJoWnNGaE9kN2pSOUljdnhnNkxNYXZEOUFXWGNodUo2NllJbmVBYVhuTWZpWkNCU2lHSlBtLUxXQ0lMT0tpZFNTM21ydk44MnpNcnd4RlJqWXdlN0VESXpkaTNISlJKYW45?oc=5"
     },
     {
      "published": "2026-11-20T19:59:19+00:00",
@@ -24,9 +79,16 @@
     },
     {
      "published": "2026-11-20T15:59:28+00:00",
+     "source": "Yahoo",
+     "status": "verified-fetch",
+     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - Yahoo",
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNWFV2SGR0bjJBNi1DQl9FRHNxMXItN182MmtFdzBNOXdvWUYyNEttM2dGSndZa0FxRkR5UHpyU0RGOHVnUHJUUVBMNEdkVFBtOTNqZVFOTTlwck9sQm5tak9MajJhYnNta3V4Ymk5am9zQS1YRkRJbjZ2Z0w4MUVrejd2b2hibGVHRVV5NVhtWQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T15:59:28+00:00",
      "source": "The Daily Beast",
      "status": "verified-fetch",
-     "title": "Rising Dem Star Leaps to Top of 2028 Poll - The Daily Beast",
+     "title": "Rising Dem Star Jon Ossoff Leaps to Top of 2028 Democratic Candidate Poll - The Daily Beast",
      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOaDdvSTVHTGZEVUlGdXlyXzBZU3dQNVRBWUIwMm5DQkktWkpNSG5yUnBaamlvazhEYy00MWxRSjZ2UHAtcmFBUng5S3JfcFlwVEx0SVc5eHhwblNPaWVCbE52aXFid0VxWnh1aXRLbzV3MEJqNTlCT1Vxa3pVZ3I2TUVzRWVERXRKMkJ1YWRCTzYyRmtKUTlobmlwLUR1bVdhdjBrYnBn?oc=5"
     }
    ],
@@ -42,28 +104,7 @@
    "window": "seconds"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2017-T1739.99/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
-   "delta": 0.46,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.02,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2017-T1739.99",
-   "t": 1795204800,
-   "t_iso": "2026-11-20T20:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXETHD-26NOV2017-T1739.99",
-   "title": "Ethereum price at Nov 20, 2026 at 5pm EST?",
-   "to": 0.48,
-   "topic": "crypto",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795191406&end_ts=1795213006&period_interval=60",
    "delta": 0.858,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -71,11 +112,11 @@
    "from": 0.005,
    "headlines": [
     {
-     "published": "2026-11-20T18:00:00+00:00",
-     "source": "The Washington Post",
+     "published": "2026-11-20T21:55:14+00:00",
+     "source": "Yahoo News New Zealand",
      "status": "verified-fetch",
-     "title": "Democratic stars try to keep 2028 spotlight as newbies surge after midterms - The Washington Post",
-     "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOYVl1WDVUNGpRSHZ6X1Z6dVlSeVQxYjZKRGk3Q2xsdi1pZzRLdWlfano5LVcwd21XSjVxRXd5NGE4WkN4bGpSQms3Z0JkbDZpSlRZOGhORFYxM1RHZ3JjMEEzZjJITVBjNjVONFh5eFdhOWlfSE1PcHJIbXpta2haeEpTemo3TUZ2NXNLVG01RVlYLTl4eVkzLUFBRjB0OWRGMlU0dlNtZXVjMkpieTFLWDhlSEJvLVJKUnA2RGl3?oc=5"
+     "title": "Rising star among Democrats becomes the new frontrunner for 2028 nod - Yahoo News New Zealand",
+     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNR0sxb2R0Ti1EbE0wSVdUS3l0VWtqcm1zRlRLdVRhQ0xIS1cxWExtbFlGbEtkMG14Z05mTE9TZDBCQk54aFRGQXg2YVkzaEtpZFQwMzZRZkpFTTNPODZMdVB3Z0ZLQzItNFUwQ3BoZmF3QnNuS1JadmZCajYyS2lNaHJn?oc=5"
     }
    ],
    "news_status": "ok",
@@ -90,28 +131,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2017-T1659.99/candlesticks?start_ts=1795188204&end_ts=1795209804&period_interval=60",
-   "delta": 0.77,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.18,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2017-T1659.99",
-   "t": 1795204800,
-   "t_iso": "2026-11-20T20:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXETHD-26NOV2017-T1659.99",
-   "title": "Ethereum price at Nov 20, 2026 at 5pm EST?",
-   "to": 0.95,
-   "topic": "crypto",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -133,11 +153,18 @@
      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
     },
     {
-     "published": "2026-11-19T23:00:11+00:00",
-     "source": "Comic Book Resources",
+     "published": "2026-11-20T09:50:28+00:00",
+     "source": "IMDb",
      "status": "verified-fetch",
-     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Sequel Is Both Shaggy And Intoxicating - Comic Book Resources",
-     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Draws Backlash Over Alleged Generative AI in Key Scenes - IMDb",
+     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFAtTTZMMUN1SHZESW1uX1BieXBpX0ZmWXkzVGluNS1Lb0ZVVHJ0SlhGeVdlMzE1cnhmT0ZmMjRueFpCeFFBM1BhWVJjUU5RVG02WllLWWJhREV3M2lBQ294T3kySU16TUE?oc=5"
+    },
+    {
+     "published": "2026-11-20T08:21:33+00:00",
+     "source": "IMDb",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Goes Certified Fresh as Critics Embrace Brad Pitt\u2019s Return - IMDb",
+     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9rOG53bERCSXlNMnFSY042NWxMTWdfanBoR3ZTM0hkczlCblVrbEo4Q3h1ZEllYkg3Tnhlb0JEZG5lNTNudTRPSVpIal9HdmNxMDNIeENRSVlyWTlJdWRudzh5ZnFZZFU?oc=5"
     },
     {
      "published": "2026-11-20T05:44:18+00:00",
@@ -145,13 +172,6 @@
      "status": "verified-fetch",
      "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
-    },
-    {
-     "published": "2026-11-20T02:16:43+00:00",
-     "source": "Comic Book Resources",
-     "status": "verified-fetch",
-     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
-     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
     }
    ],
    "news_status": "ok",
@@ -166,7 +186,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -193,7 +213,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -214,7 +234,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -241,7 +261,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794950604&end_ts=1795209804&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794953806&end_ts=1795213006&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -275,7 +295,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T21:24:01.585336+00:00",
+ "generated_at": "2026-11-20T22:17:20.367342+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
