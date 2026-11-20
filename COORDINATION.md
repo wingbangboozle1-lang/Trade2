@@ -1323,3 +1323,21 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/8b01a1c4-trade2` (Arena-ma
 | Pages | Legacy build of `main` `/` **built** for the merge (`gh api .../pages/builds/latest` → `status: built`, commit `4c8a07e`, created 2026-11-20T19:58:36Z, no error). Verified live by fetch after deploy: <https://wingbangboozle1-lang.github.io/Trade2/> (landing), <https://wingbangboozle1-lang.github.io/Trade2/suggestions.html> (roadmap with official links per item), <https://wingbangboozle1-lang.github.io/Trade2/review.html> ("Flagged for review" — 49 detected irregularity rows in the current snapshot, every row carrying its official API link). |
 | Unverified items (do not block) | Real demo-account balances/fills (needs `KALSHI_API_KEY_ID` + private key as Actions secrets; never committed, never in the browser), news-cause attribution (labelled research links only), model ROI (screen, not validated edge). All published on `review.html` standing limitations. |
 | Follow-up record | This entry is committed on `arena/8b01a1c4-trade2` and merged to `main` in a docs-only PR so the merge result is recorded on `main` itself, as the brief requires. |
+
+---
+
+# Board F — current Arena session `arena-e4f41c75`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-e4f41c75` | `arena/e4f41c75-trade2` | Independent final review of the current integrated deliverable, sourced data, build/tests, and published deployment | 2026-11-20 | active |
+
+This session read the shared task board before claiming. The existing build tasks are
+recorded as complete; this claim is a **report-only** audit on the current `main` tree.
+It will not edit shared site pages, collector implementations, tables, or generated data.
+Any implementation change needed in another session's scope will be logged as a request
+rather than edited here.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| E4F-A1 | Independently audit the integrated site and repository against the brief: official-source attribution, status of unverified capabilities, reproducibility of builds/tests, link/page integrity, and current deployment evidence; record concrete findings and required follow-ups | in progress | `arena-e4f41c75` | `FINAL_AUDIT_E4F41C75.md`, `COORDINATION.md` (this board only) |
