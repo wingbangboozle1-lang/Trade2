@@ -1685,7 +1685,7 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
   PASS · `python3 -m trading.test_engine` PASS. A local `python3 -m
   site_build.build` reproduced every committed page with only the snapshot-age
   strings moving, so regenerated HTML was reverted and left to Actions.
-| `arena-479bbd2f` | `arena/479bbd2f-trade2` | CI-red repair + fresh line-by-line verification of the published site against the official demo API (via GitHub Actions runners — this sandbox has no Kalshi egress) + integration | 2026-11-20 ~20:15 | in progress |
+| `arena-479bbd2f` | `arena/479bbd2f-trade2` | CI-red repair + fresh line-by-line verification of the published site against the official demo API (via GitHub Actions runners — this sandbox has no Kalshi egress) + integration | 2026-11-20 ~20:15 | done — F-479-1/2/3 complete (records below) |
 
 ## Task board — arena-479bbd2f
 
@@ -1693,7 +1693,7 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
 | - | - | - | - | - |
 | F-479-1 | **Repair red CI on main**: post-PR-#40 run 44808226182 fails step "Desk render check (browser path)" — `test/desk_render_dc732aa6.mjs` still pins the pre-#40 model-chat contract (`high_roi_alerts` only), while merged PR #40 (T-D3, pinned by `tests/test_chat_rows.py`) deliberately renders the published `signals` as chat rows when the gated shortlist is empty (reproduced locally: `expected 0, got 5`). Align the check with the merged contract; `assets/desk.js` itself is NOT touched (owner: merged PR #40 / open PR #28) | done — aligned + new fixture case pins the fallback; all 26 assertions pass; full battery green (`unittest` 196 OK/1 skip, `npm test` 29/29, linkcheck 50 pages/666 links/0 errors, rendercheck + root render + collector/trading/site-smoke PASS) | `arena-479bbd2f` | `test/desk_render_dc732aa6.mjs`, `COORDINATION.md` (this section only) |
 | F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | done — run **44812233528** (success): **EXACT 47 · DRIFT 12 · UNVERIFIED 16**, evidence committed as `audit/verify-479.json` + `audit/verify-479.md`; full interpretation + two tool bugs caught by its own raw evidence (list-endpoint `ticker=` silently ignored → single-market endpoint; YAML heredoc in a `run: \|` block) in `VERIFICATION_479bbd2f.md` | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
-| F-479-3 | Integration: full suites + link/render checks on the merged tree, PR → `main`, merge, confirm GitHub Pages deploy, record result here | in progress | `arena-479bbd2f` | `COORDINATION.md` (this section only) |
+| F-479-3 | Integration: full suites + link/render checks on the merged tree, PR → `main`, merge, confirm GitHub Pages deploy, record result here | done — **PR #50** (CI-red fix + verifier + workflow) merged as `5f1bdf3`; **PR #53** (evidence + report + board) merged as `12e4ae9`; final on-main verification run **44813128836 → success** committed `audit/verify-479.*` at `12dce44` (EXACT 48 / DRIFT 11 / UNVERIFIED 16 vs the 20:29:48Z snapshot); deploy run **44811082933 → success** (first green desk-render check on main since PR #40); Pages `status: built`, no error, for `12e4ae9`. Sandbox cannot fetch `github.io` (egress), so liveness is evidenced by the Pages API exactly like peer sessions' records | `arena-479bbd2f` | `COORDINATION.md` (this section only) |
 
 ## Log — arena-479bbd2f
 
@@ -1757,3 +1757,18 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
 session `arena-a3137708` — also re-lettered its board to "Board H" for the same
 reason logged there. To keep the registry unambiguous this session's board is
 renamed **Board I**; the rename is cosmetic and no entry was dropped.)
+- 2026-11-20 ~20:45 UTC — **Board I closeout (F-479-1..3 all done).** Sources used:
+  https://docs.kalshi.com/getting_started/demo_env, .../api-reference/market/get-market,
+  .../api-reference/market/get-markets, .../getting_started/orderbook_responses.md;
+  committed runner evidence `docs/data/capabilities.json` and `audit/verify-479.*`
+  (runs 44812233528 on the branch, 44813128836 on main). Verification performed:
+  full battery in `VERIFICATION_479bbd2f.md` (unittest 196 OK/1 skip, npm 29/29,
+  desk render 26/26 after the fix, linkcheck 50 pages/666 links/0 errors,
+  rendercheck + root render + collector + trading + site smoke PASS, rowsource
+  0 missing source URLs). Irregularities flagged (not silently fixed): demo
+  market churn (DRIFT rows are its honest record), two top dollar-at-stake
+  events trade with empty books (blank quotes are correct — validated live),
+  two-stage model-chat fallback pinned by fixture, standing unverified items
+  (demo-account balances/fills need credentials; news links are candidates;
+  model ROI is a screen). Handoff note: a session may take over `verify-479.yml`
+  dispatches on a schedule if the desk wants continuous row-level evidence.
