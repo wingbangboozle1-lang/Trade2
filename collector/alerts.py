@@ -147,12 +147,19 @@ def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
     return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
 
 
+QUOTE_BASES = ("candle_quote_mid", "previous_snapshot_mid")
+
+
 def alert_record_valid(alert: dict[str, Any]) -> bool:
     """Re-check a stored alert against the current quote rule.
 
-    Used to purge alerts written before the quote rule existed (for example a
-    \"0.811 -> 0.4065\" move that was only the midpoint of a 0.002/0.811 book).
+    Used to purge alerts written before the quote rule existed. Such records
+    have no ``reference_basis`` field, so their reference cannot be shown to be a
+    quote mid, and they are dropped even when their current quote looks tight.
+    Example: the 0.803 -> 0.0025 AKLO alert, whose reference was a trade print.
     """
+    if alert.get("reference_basis") not in QUOTE_BASES:
+        return False
     return swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask"))
 
 

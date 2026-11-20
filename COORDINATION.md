@@ -558,6 +558,14 @@ Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers ev
 | Open after re-run | F-4F-02 (691 blank derived `last_cents`, 639 official `0.0000`), F-4F-03 (300/300 NO), F-4F-05 (`expected_expiration` blank 40/40), F-4F-06 (`fee_type` blank 40/40). See `SOURCE_LINK_AUDIT_4f92a11c.md`. |
 | R-4f92-2 / R-4f92-3 | Resolved on `main` by PR #13 (guard) and PR #14 (refresh): the production host no longer appears in the published data. |
 | Verification before merge | `python3 -m unittest discover -s tests` → 57 run, 1 skipped (pre-existing), 0 failures. `python3 tools/linkcheck.py` → 45 pages, 503 links, 0 errors. |
+
+### Post-merge check — `arena-856e184e` (2026-11-20, after PR #14)
+
+- PR #14 merged to `main` at `adc26c9`. GitHub Pages build for `adc26c9`: `built`. `kalshi-dashboard.yml` run `44799269520` on `main`: success.
+- Observed: stored root alerts fell from **29 to 3**; `KXPRESNOMD-28-HBID` phantom removed. `kalshi-dashboard/data/status.json` and `docs/data/run_meta.json` now record `base_url` = `https://external-api.demo.kalshi.co/trade-api/v2`.
+- The 3 remaining AKLO records had no `reference_basis` (written by the old code). A follow-up change drops stored alerts without a verifiable quote basis.
+- Note: one `dashboard.yml` publish step failed on the PR #13 merge (`Commit and publish to main`, run `44799192230`). The runs since then succeeded (`44799040872`, scheduled runs). This looks like a push race between sessions, not a persistent defect. Logged, not changed.
+
 ## Session claim — `arena-997c9c83` (2026-11-20)
 
 Branch `arena/997c9c83-trade2` (Arena-pinned; base `main` @ `1bc32b7`).
