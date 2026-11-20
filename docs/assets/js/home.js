@@ -68,8 +68,8 @@ function renderFindings(data) {
       ${fmt.signed(a.delta, 3)} (${fmt.cents(a.from, 3)} → ${fmt.cents(a.to, 3)}) ·
       ${esc(a.reference || '')}</li>`).join('')}</ul>`);
   } else {
-    rows.push('<p><strong>No $0.10 swing has been recorded yet</strong> in the current alert log — the demo books move in
-      single-cent increments most of the time.</p>');
+    rows.push('<p><strong>No $0.10 swing has been recorded yet</strong> in the current alert log '
+      + '— the demo books move in single-cent increments most of the time.</p>');
   }
 
   rows.push(`<p><strong>Simulated book:</strong> ${portfolio.total_trades || 0} trades (${portfolio.closed_trades || 0} closed,

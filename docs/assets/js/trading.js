@@ -42,7 +42,7 @@ function renderStats() {
     { k: 'Total ROI', v: fmt.pct(p.roi_pct ?? 0), cls: (p.total_pnl ?? 0) >= 0 ? 'up' : 'down' },
     { k: 'Trades', v: String(p.total_trades ?? 0), d: `${p.closed_trades ?? 0} closed · ${p.open_positions ?? 0} open` },
     { k: 'Win rate', v: `${fmt.num(p.win_rate, 1)}%`, d: `${p.wins ?? 0}W / ${p.losses ?? 0}L` },
-    { k: 'Avg hold', v: `${p.avg_hold_minutes ?? 0}m' },
+    { k: 'Avg hold', v: `${p.avg_hold_minutes ?? 0} min` },
   ];
   document.getElementById('stats').innerHTML = cards.map((c) => `
     <div class="stat ${c.cls || ''}">
