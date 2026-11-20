@@ -41,6 +41,26 @@ export KALSHI_ENV=demo
 
 Signing follows the [official guide](https://docs.kalshi.com/getting_started/quick_start_authenticated_requests.md).
 
+## Data-integrity rules (enforced, not aspirational)
+
+Two rules decide what reaches the alert feed and the resolution pages. Both were
+added after a line-by-line audit of the live snapshot found artefacts being
+published as facts — evidence in `VERIFICATION.md`, section "Session D".
+
+1. **A swing needs a verifiable price at both ends.** An alert is published
+   only when both the baseline and the destination are two-sided quotes no wider
+   than `$0.50`, and any printed price lies inside its own quote. Candlestick
+   baselines are checked against the candle's own bid/ask. Held-back alerts are
+   listed on the review page with their API links.
+2. **A resolution is never guessed into a topic.** Attribution uses the event's
+   own `series_ticker`, then the recorded series, then the ticker prefix.
+   Settlements from series outside the five topics are counted and named, not
+   assigned.
+
+```bash
+python3 tools/backfill_snapshot.py   # re-derive groupings the current code defines
+```
+
 ## Documents
 
 * [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md) — what this is, with every source linked
