@@ -1,0 +1,4576 @@
+{
+  "tables": {
+    "kd.markets": {
+      "file": "kalshi-dashboard/data/latest.json",
+      "rows": 877,
+      "source_present": 877,
+      "demo": 877,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 691,
+      "blank_value_cells": 691,
+      "ok_demo": 877,
+      "derived_blank_official_present": 691
+    },
+    "kd.topic_events": {
+      "file": "kalshi-dashboard/data/latest.json",
+      "rows": 75,
+      "source_present": 75,
+      "demo": 75,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 75
+    },
+    "kd.resolved_pending": {
+      "file": "kalshi-dashboard/data/resolved.json",
+      "rows": 0,
+      "source_present": 0,
+      "demo": 0,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 0
+    },
+    "kd.resolved": {
+      "file": "kalshi-dashboard/data/resolved.json",
+      "rows": 0,
+      "source_present": 0,
+      "demo": 0,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 0
+    },
+    "kd.alerts": {
+      "file": "kalshi-dashboard/data/alerts.json",
+      "rows": 0,
+      "source_present": 0,
+      "demo": 0,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 0
+    },
+    "kd.trade_positions": {
+      "file": "kalshi-dashboard/data/trades.json",
+      "rows": 0,
+      "source_present": 0,
+      "demo": 0,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 0
+    },
+    "docs.markets": {
+      "file": "docs/data/markets.json",
+      "rows": 40,
+      "source_present": 40,
+      "demo": 40,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 40,
+      "docs_expected": 40,
+      "rows_with_blank_values": 40,
+      "blank_value_cells": 40,
+      "ok_demo": 40
+    },
+    "docs.resolutions": {
+      "file": "docs/data/resolutions.json",
+      "rows": 300,
+      "source_present": 300,
+      "demo": 300,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 300,
+      "docs_expected": 300,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 300
+    },
+    "docs.alerts": {
+      "file": "docs/data/alerts.json",
+      "rows": 5,
+      "source_present": 5,
+      "demo": 5,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 5,
+      "docs_expected": 5,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 5
+    },
+    "docs.portfolio_trades": {
+      "file": "docs/data/portfolio.json",
+      "rows": 8,
+      "source_present": 8,
+      "demo": 8,
+      "production": 0,
+      "official_doc": 0,
+      "third_party_or_other": 0,
+      "missing_source": 0,
+      "docs_present": 0,
+      "docs_expected": 0,
+      "rows_with_blank_values": 0,
+      "blank_value_cells": 0,
+      "ok_demo": 8
+    }
+  },
+  "settlement_source_hosts": {
+    "abcnews.go.com": 578,
+    "www.foxnews.com": 578,
+    "www.nbcnews.com": 578,
+    "www.cnn.com": 578,
+    "www.nytimes.com": 578,
+    "apnews.com": 578,
+    "www.decisiondeskhq.com": 566,
+    "cbsnews.com": 566,
+    "www.foxsports.com": 210,
+    "www.espn.com": 210,
+    "www.pgatour.com": 207,
+    "www.cfbenchmarks.com": 46,
+    "gasprices.aaa.com": 31,
+    "www.wsj.com": 15,
+    "www.msnbc.com": 12,
+    "www.semafor.com": 12,
+    "www.bloomberg.com": 12,
+    "www.theinformation.com": 12,
+    "www.cbsnews.com": 12,
+    "www.washingtonpost.com": 12,
+    "www.axios.com": 12,
+    "www.reuters.com": 12,
+    "www.politico.com": 12,
+    "www.tccb.gov.tr": 10,
+    "www.ine.mx": 7,
+    "www.te.gob.mx": 7,
+    "www.elections.ca": 4,
+    "www.theguardian.com": 1,
+    "www.bbc.com": 1,
+    "ft.com": 1,
+    "sos.ks.gov": 1
+  },
+  "issues": [
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-KROY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MMEI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-HSPR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ZBLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-TCRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CBLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JKEE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-RHOE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-APUT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BHOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ZBAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-KHIR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BSIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-SNOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JHIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-WGOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DMCC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-AECK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MMCG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ASVE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ATOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MPAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-PMAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-TDUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-VWHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-TKAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-AWIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BCAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MATK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BMAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JPAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DCHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JLOW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXAAAGASM-26NOV30-4.90",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXAAAGASM-26NOV30-5.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DBER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-FBID",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-RCAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-TCOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BGAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0040 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-EGON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-AHAD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-HHIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-RHOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MHUB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0040 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JKAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-KKIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MKUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CLAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-KLEE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-NLIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DLIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DLIP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-LLIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-SMAZ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-TMER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-WMOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-PNYH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JPAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MROZ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ASAD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0040 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CSAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ASCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DSKI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0040 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JSTA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-KSTR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0040 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BTOD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DWAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-DWU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-SYEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JBYR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-NHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CVIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-CCHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-ACOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MDON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-JOVE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-HNOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MLAI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-RBRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-MJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-RSTR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-THRC26-BHAA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-RHEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-PCAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-XSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-CMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-SKIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-CGOT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-VHOV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-BDEC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-MMCN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-JBRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-JSPA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-JTHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-KKIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-TKIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-ASCO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-JROS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-ANOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-MWAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-MBRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-RFOW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-BGRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-PREE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-MWLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-KBRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-ASMA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-AFIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-SJIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-MTHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-LHER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-ABHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-ARAI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-KREI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-KMIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-BCAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0030 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-TWOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXPGATOUR-MAST27-JSPI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL251",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL300",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL320",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL334",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL350",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL375",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXMEXCOALSEATS-27JUN06-AL400",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSNAPELECTIONBEL-27JAN02",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-KMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-ACRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-SSIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-JFRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-IOMA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-EMUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-DPHI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-AFRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-MCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MND-27-TSMI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-MTAF",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-LDEM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-TEMM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-ASCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-PSTA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-BFIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-RWHI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-MLIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MNR-27-KQUA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-TDUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-RKRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-RKEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-AGIA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-LUND",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILD-28-SCAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-DTRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-DLAH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-MBOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-KSAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-JEVA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-CBAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-DBAI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-TDAB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-MMIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-RIRV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-JSUL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-RDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-PSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ILR-28-TDEV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-SBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-TRYA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-ESYK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-GLAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-MKAP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHD-28-APUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-JHUS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-FLAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-VRAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-DYOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-MDOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-JMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-MTUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-MMIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-MCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-WDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-KCOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-JTRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OHR-28-JJOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-EWES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-DJON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-SFIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-TSEW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-WMAD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-RWOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-DLAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-PENS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-JMCL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALD-28-ADAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-KBRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-DDEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-SMAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-JHUD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-RADE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-MROG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ALR-28-WALL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-HSHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-CJON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-CTUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-CELD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-FLOV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-FSCO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-GLED",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARD-28-JELL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-JBOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-TGRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-LRUT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-RCRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-BWES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ARR-28-JBEQ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-CHOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-JRAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-GIVE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-DTRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-JOLS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-KMFU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDD-28-ABRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-DCOX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-AHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-KSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-SHER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-NPAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-EHAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-NKIP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-JREA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-KKLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-BCAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MDR-28-BRUT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-BBAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-EBAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-JMCC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-ACAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-FMRV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-JDON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-JHOG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-SYOD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-JFOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IND-28-BSAK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-TYOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-CYOD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-TROK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-MBEC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-EHOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-RYAK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-VSPA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-INR-28-EHOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-JDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-TCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-CFIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-JEDW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-MLAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-HMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-NALB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-SWIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-GCHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-DLEW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAD-28-CRIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-JKEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-JFLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-BMIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-LMUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-CHIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-GGRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-LAR-28-BCAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-IRUB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-LMCL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-MWIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-PJOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-TPIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDD-28-DROT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-MCRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-RLAB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-BLIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-RFUL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-MSIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-SBED",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-PMCG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-JMCG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-IDR-28-MFIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-CBOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-ABES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-MMCG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-AMCG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-JCOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-CGRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-RADK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYD-28-ZDEM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-RPAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-NMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-TMAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-DCAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-RCOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-JCOM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-KCRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KYR-28-ABAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-JJAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-RHUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-DDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-DROS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-WNIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-JAGE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-CBEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-ACLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-VFOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-KMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCD-28-JHOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-TBUD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-MWAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-MWHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-RHUD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-DBIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-TMOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NCR-28-LTRU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-RWYD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-WBAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-JRYA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-VHOY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-SBON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-JBYN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-MDEX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORD-28-DRAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-CDRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-CBEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-LCHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-KBUE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-ASKA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-DSMI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-EDIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-JPER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-BBAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-CDUD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-MERI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-MDES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-DBON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-KTHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-ORR-28-DLIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-DSUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-DMEU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-RBRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-SPER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-JFET",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-MOZ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-DMAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-RMAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-GTHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-JJOY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-LSMU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-CSAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-JBAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-PAR-28-KBAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-KCHR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-JBOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-MPIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-THAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-HHEI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-TLAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-RBRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDD-28-ZIST",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-JHOE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-KARM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-JFED",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-DBUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-DWRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-RBEC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NDR-28-TMIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-MHAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-MGOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-SSHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-MSUL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-COST",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-CWAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHD-28-KMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-VMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-CSUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-KAYO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-JSUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-SBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-CMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-JRUA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-MMOW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-KLEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NHR-28-CMES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-CMAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-SLEE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-SHOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-DTIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-CGIU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-NCAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-ZCON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-CAGU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-SSIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVD-28-AHIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-JLOM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-ALAX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-SBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-MAMO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-SANT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-MHUT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-RTIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-BKIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-SHAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NVR-28-PGUZ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-RWAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-LMCB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-NWIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-JMCL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-JEST",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-SABR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAD-28-MTHU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-RMCC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-BKEM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-MCOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-BJON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-BCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-DDOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-BRAF",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-MGRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-RJAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-GAR-28-CCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-MBEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-JNEG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-JCRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-BPET",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-JGRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-JPOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-MJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-JGON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-DDEG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-YCAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-AROM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-KSAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-DYOU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-DPRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-CDUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COD-28-AFRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-JHUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-GEVA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-LBOE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-JCRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-JODE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-BKIR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-VMAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-MBAI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-SBOT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-CGAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-KBUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-HGAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-COR-28-DGLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-ESTE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-BBLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-EANT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-TMIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-MLAW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-LZEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-NMAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-AGAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-NLAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-NLAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-AGIU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-NYR-28-CTEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-JJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-JCUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-JHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-BBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-BWEB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-NLAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-ROTT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCD-28-MMCL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-TSCO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-EHOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-RNOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-NMAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-PEVE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-RFRY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-DGRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-MSAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SCR-28-MLYN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-JYAH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-BMCA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-JWIL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-EMEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-CGLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-ZNEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTD-28-NBLO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-MLEE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-TSTA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-SCOX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-BEDW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-DBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-CMAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-BMOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-PLYM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-UTR-28-JCHA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-MKEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-GSTA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-KMAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-AFON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-YANS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZD-28-JMEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-MLAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-AHAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-ABIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-BMAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-DDUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-JCIS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-DSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-WPET",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-KLAK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-KROB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-AZR-28-ECRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-SDAV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-CHOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-CMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-ECOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-LKEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-DTOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-DSYK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-BWOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-PSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSD-28-NTAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-JMOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-TMAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-DSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-REST",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-KKOB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-TMAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-RMAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-SSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-VSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-KSR-28-PSAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-DAHL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-JSMI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-BSUT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-RNES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-NGRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-JBEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-BBEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDD-28-SHER",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-JTHU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-LRHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-MJAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-TDOE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-JHAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-SDR-28-TVEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-GJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-JGRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-JPEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-KDEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-FOCO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-MBRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-ABEH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-JJON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TND-28-RAKB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-TBUR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-GJAC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-CFLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-SMCW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-AOGL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-DHIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-CSEX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-JJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-DHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-JROS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-MEPP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-MFRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-TNR-28-PHEG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-RBLU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-WTON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-LBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-JHAY",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-SBYS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-JHIM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTD-28-JELL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-RFAZ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-LLEV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-BSTE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-TKLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-VCAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-RSAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-THWA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-SHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-MCOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-CTR-28-ESTE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-QLUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-WBEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-LKUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-CQUA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-NGAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-JKAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOD-28-TJON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-ESCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-ABAI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-CHAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-AWAG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-VHAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-JASH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-MOR-28-BEIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-PWEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-BBAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-MGRA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-DZUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-CCLA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-MPIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-AJAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTD-28-ARIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-PSCO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-JROD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-CNOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-GMAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-SBEC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-JBEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-RBRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-VTR-28-PMCC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-BWIK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-MBAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-SGOD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-MPOC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-JKAU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-SROD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WID-28-FHON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-RJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-TTIF",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-EHOV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-BSTE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-GGRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-SFIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-MGAL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-RKLE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-WIR-28-TWIE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-BSCH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-JTOK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-ECAS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-JGRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-SLUK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-KKAH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HID-28-DKAW",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-BAWA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-BMCD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-DAIO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-GCOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-TGAB",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-LMAT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-DGAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-ATUP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-HIR-28-ALAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-ANIX",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-JMOS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-DJOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-AVIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-VDEM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-NFRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLD-28-MFRO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-AMOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-RDES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-JCOL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-CDES",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-JUTH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-LTRU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-FLR-28-DBON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-CMUN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-KHOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-JHOF",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-MNIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-NTHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-JPRI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-CJOH",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-JNEL",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-NCOF",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-KFOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKD-28-MHOR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-JLAN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-CTUC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-GDRU",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-KSTI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-MPIN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-SBIC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-GBYN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-CMCC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXSENATENOM-OKR-28-CKEA",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXLAURIERBY-26DEC07-NDP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXLAURIERBY-26DEC07-LPC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXLAURIERBY-26DEC07-BQ",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXLAURIERBY-26DEC07-CPC",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "kd.markets",
+      "row": "KXKSSUPREMECOURT-26NOV03-ROSEN",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: last_cents; last_cents blank but official last_price_dollars=0.0000 is present"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-TMOO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-SSTR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-LHOD",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-GHIG",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-MGRE",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-DGHI",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMD-28-AKLO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-KMIT",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPGATOUR-THRC26-MTHO",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXTIME-26-CHR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXRT-FUR-85",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASW-26NOV23-3.6400",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXTIME-26-JON",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXTIME-26-MARK",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMR-28-MR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMR-28-JDV",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMD-28-JP",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMD-28-JOSS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMD-28-HBID",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESNOMR-28-RDS",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXRT-HUN-65",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXPRESPERSON-28-VRAM",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXBTCMINY-27JAN01-55000.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASW-26NOV23-3.6200",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASW-26NOV23-3.6600",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXTIME-26-DAR",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXRT-FUR-75",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASM-26NOV30-3.50",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXRT-FUR-70",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXBTCMINY-27JAN01-50000.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASD-26NOV21-3.6600",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASM-26DEC31-3.30",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASM-26NOV30-3.60",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXAAAGASD-26NOV21-3.6550",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXBTCMINY-27JAN01-45000.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXBTCMINY-27JAN01-40000.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXBTCMINY-27JAN01-60000.00",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXETHD-26NOV2015-T1624.99",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXETHD-26NOV2117-T979.99",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    },
+    {
+      "table": "docs.markets",
+      "row": "KXETHD-26NOV2117-T939.99",
+      "status": "OK_DEMO_WITH_UNVERIFIED_VALUES",
+      "notes": "UNVERIFIED blank: expected_expiration"
+    }
+  ]
+}

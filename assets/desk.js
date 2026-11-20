@@ -94,10 +94,19 @@
   }
 
   function connected() {
+    tickAge();
+  }
+
+  /* R-D-01 (arena-0b2d2a2a): show the snapshot age continuously, not only at
+   * sync time, so a stale view is never mistaken for a live one. */
+  function tickAge() {
     var el = document.getElementById("updatedAt");
-    if (state.lastSync && el) {
-      el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString();
-    }
+    if (!el || !state.lastSync) return;
+    var V = window.AlertsView;
+    var age = V ? V.ageLabel(state.lastSync) : "";
+    el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString() +
+      (age ? " · " + age : "");
+    el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
   }
 
   function startStream() {
@@ -175,9 +184,24 @@
         detail += " · net ROI " + pct(a.model_net_roi);
       }
     }
-    var badge = kind ? ' <span class="tag tag-purple">' + esc(kind) + "</span>" : "";
+    var badges = "";
+    if (kind) {
+      badges += '<span class="tag tag-purple" title="What kind of row this is: ' +
+        'an observed price move, a scored model signal, or both.">' +
+        esc(kind) + "</span> ";
+    }
+    if (Number(a.repeat_count) > 1) {
+      badges += '<span class="tag tag-purple" title="The same ' +
+        "&ge; $0.10 step fired again on later snapshots; identical rows are " +
+        'grouped here.">×' + Number(a.repeat_count) + " repeats</span> ";
+    }
+    if (a.wide_spread) {
+      badges += '<span class="flag-badge" title="YES bid ' + money(a.yes_bid) +
+        " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
+        'this midpoint is not an executable price.">wide spread · not executable</span> ';
+    }
     row.innerHTML =
-      '<time>' + esc(when) + "</time>" +
+      "<time>" + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
       (a.kind === "signal"
         ? (a.model_side === "no" ? "NO " : "YES ") + money(a.executable_price)
@@ -185,8 +209,10 @@
       "</span>" +
       '<span class="chat-body">' +
       '<a href="' + esc(a.market_url || "#") + '" target="_blank" rel="noreferrer">' +
-      esc(a.title || a.ticker) + "</a>" + badge +
-      "<small>" + detail + "</small></span>" +
+      esc(a.title || a.ticker) + "</a>" +
+      "<small>" + detail + "</small>" +
+      (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
+      "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
     return row;
@@ -195,7 +221,12 @@
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
-    var all = s.alerts || [];
+    var raw = s.alerts || [];
+    /* R-D-01 (arena-0b2d2a2a): identical repeated rows are grouped and rows
+     * whose quoted YES spread is >= the $0.10 threshold are marked
+     * non-executable. Display-only: the raw rows stay in the snapshot. */
+    var V = window.AlertsView;
+    var all = V ? V.dedupeAlerts(raw) : raw;
 
     // Model shortlist. The collector publishes it in `high_roi_alerts`, built by
     // collector/alerts.py::model_shortlist from (a) every swing whose book is
@@ -205,7 +236,7 @@
     // move usually happens on a market whose book is too wide to score. If an
     // older snapshot has no `high_roi_alerts` key, fall back to showing the
     // scored signals so the chat is never blank for the wrong reason.
-    var model = (s.high_roi_alerts && s.high_roi_alerts.length)
+    var rawModel = (s.high_roi_alerts && s.high_roi_alerts.length)
       ? s.high_roi_alerts
       : (s.signals || []).filter(function (sig) {
           return sig && sig.net_roi >= 0.05;
@@ -218,6 +249,7 @@
             abs_delta: sig.edge,
           });
         });
+    var model = V ? V.dedupeAlerts(rawModel) : rawModel;
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -226,6 +258,8 @@
       if (!all.length) {
         feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move observed ' +
           "yet. The feed fills as successive snapshots are compared.</div>";
+      } else if (raw.length > all.length) {
+        feedAll.appendChild(feedNote(all, raw));
       }
       all.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
     }
@@ -240,9 +274,24 @@
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
     }
     var ac = document.getElementById("allCount");
-    if (ac) ac.textContent = all.length;
+    if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
     if (mc) mc.textContent = model.length;
+  }
+
+  /* One-line explainer shown above the "all events" feed whenever grouping
+   * actually collapsed rows, so the viewer knows what they are looking at. */
+  function feedNote(deduped, raw) {
+    var flagged = deduped.filter(function (a) { return a.wide_spread; }).length;
+    var div = document.createElement("div");
+    div.className = "chat-note";
+    div.innerHTML =
+      "<b>" + raw.length + " raw detections → " + deduped.length +
+      " distinct rows.</b> Identical repeats of the same ≥ $0.10 step are grouped " +
+      "(×N badge); rows whose YES bid/ask spread is ≥ $0.10 are marked " +
+      "<i>not executable</i>. Raw rows are never deleted from the snapshot." +
+      (flagged ? " " + flagged + " row(s) currently flagged wide-spread." : "");
+    return div;
   }
 
   document.addEventListener("click", function (ev) {
@@ -674,6 +723,9 @@
     setInterval(function () {
       if (state.market) pollBook(state.market);
     }, 4000);
+
+    // Keep the visible snapshot age current (R-D-01).
+    setInterval(tickAge, 5000);
   }
 
   if (document.readyState === "loading") {
