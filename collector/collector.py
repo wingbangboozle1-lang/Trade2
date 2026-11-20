@@ -427,6 +427,14 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                          key=lambda kv: kv[1].get("settlement_ts") or "", reverse=True)
         resolutions["resolutions"] = dict(ordered[:2000])
 
+    # Keep the published snapshot lean: full series metadata (settlement source
+    # URLs, contract terms) is valuable on the topic pages up to a point, but
+    # shipping 400 rows x 5 topics of it dominates the file. Each topic publishes
+    # its top 60 series with sources; the full list stays in data/series_cache.json.
+    for slug, topic_payload in per_topic.items():
+        topic_payload["series"] = topic_payload.get("series", [])[:60]
+        topic_payload["series_listed"] = len(topic_payload["series"])
+
     payload = {
         "generated_at": iso(now),
         "generated_at_ts": now,
