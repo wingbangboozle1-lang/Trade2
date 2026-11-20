@@ -104,3 +104,145 @@ against every row of Kalshi's published fee table by an automated test.
 | G3 | WebSocket streaming in the running site | The handshake requires the same signed headers as REST. Polling is used instead; the endpoint and channels are documented and linked. |
 | G4 | Attribution of a price move to a specific news article | Deliberately not attempted: no official source maps articles to moves. |
 | G5 | A complete census of every Kalshi market | Each run tracks a bounded, ranked slice (top markets per topic) and reports the counts it read. |
+
+---
+
+# Session D verification log — `arena-1011a94f` (2026-11-20)
+
+Scope: line-by-line audit of the snapshot published at
+`https://wingbangboozle1-lang.github.io/Trade2/` (commit `1bc32b7`,
+snapshot `data/live.json` generated `2026-11-20T18:41:08Z`) against the official
+demo Trade API. Every row below states what was checked, what was found, and the
+exact URL that shows it. Nothing in this section is inferred.
+
+Environment note: this sandbox's egress allowlist still blocks `*.kalshi.co`
+(`curl` → `SSL_ERROR_SYSCALL`, HTTP 000, re-tested 2026-11-20T19:0xZ). Live reads
+were made through the platform fetch channel against the same official demo
+host, which returns raw JSON; the URL column is the URL that was read.
+
+## D1 — Endpoint and host claims
+
+| # | Claim on the site | Verified against | Result |
+| - | - | - | - |
+| D1-1 | Recommended demo REST root is `https://external-api.demo.kalshi.co/trade-api/v2`, alternate `https://demo-api.kalshi.co/trade-api/v2` | https://docs.kalshi.com/getting_started/demo_env and https://docs.kalshi.com/getting_started/api_environments | matches, word for word |
+| D1-2 | Recommended demo WebSocket is `wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2`, alternate `wss://demo-api.kalshi.co/trade-api/ws/v2` | same two pages | matches |
+| D1-3 | The demo exchange is live and trading | https://external-api.demo.kalshi.co/trade-api/v2/exchange/status | `{"exchange_active":true,"trading_active":true,...}` |
+| D1-4 | Demo prices "may not be reflective of those in real markets" | https://docs.kalshi.com/getting_started/demo_env | sentence is present on the official page; the site says the same |
+
+## D2 — Order book maths
+
+| # | Claim | Verified against | Result |
+| - | - | - | - |
+| D2-1 | Arrays are ascending; best bid is the last element | https://docs.kalshi.com/getting_started/orderbook_responses | matches |
+| D2-2 | Implied YES ask = 1.00 − best NO bid | same page (worked example 0.44 − 0.42 = 0.02) | matches; `collector/kalshi_api.implied_yes_ask` implements it |
+| D2-3 | Order books are bids only | same page | matches |
+| D2-4 | An empty book and an unknown ticker both return 200 with empty arrays | same page | matches; `collector/kalshi_api.orderbooks` documents it |
+
+## D3 — Candlesticks and the swing reference
+
+| # | Claim | Verified against | Result |
+| - | - | - | - |
+| D3-1 | `period_interval` is **minutes**, valid values 1, 60, 1440 | https://docs.kalshi.com/api-reference/market/get-market-candlesticks | matches |
+| D3-2 | A candlestick carries its own `yes_bid` / `yes_ask` / `price` OHLC for that period | same page (200-response schema) + live read | matches |
+| D3-3 | The site's swing reference is the most recent completed 1-minute candle | implementation `collector.collector.candle_reference` | matches, and now integrity-checked (D4) |
+
+### D3-4 — IRREGULARITY: a candlestick print that sits outside its own quote
+
+Read: `https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795199400&end_ts=1795200300&period_interval=1`
+
+| `end_period_ts` | `price.close_dollars` | `yes_bid.close_dollars` | `yes_ask.close_dollars` |
+| - | - | - | - |
+| 1795199940 | 0.0030 | 0.0000 | 0.8030 |
+| 1795200000 | **0.8030** | **0.0020** | **0.0030** |
+| 1795200060 | 0.0030 | 0.0000 | 0.8030 |
+| 1795200120 | 0.0030 | 0.0020 | 0.0030 |
+| 1795200300 | 0.8030 | 0.0020 | 0.0030 |
+
+The minute ending 1795200000 prints a close of **0.8030** while the same minute
+quotes **0.0020 bid / 0.0030 ask**. A price cannot be 0.8030 when the market is
+0.0020/0.0030; this is an unpaired print, and it alternates every other minute.
+The collector used that 0.8030 as its swing baseline and published
+`▼ $0.8005  $0.8030 → $0.0025` at 15:03, 15:43, 16:51, 17:44 and 18:41 on
+2026-11-20. **Handling:** a candle is now only usable as a reference when its
+print lies inside its own quoted bid/ask *and* that quote is two-sided and no
+wider than `MAX_QUOTE_SPREAD` (0.50). Verifying ticker:
+`https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO`
+(`yes_bid_dollars 0.0020`, `yes_ask_dollars 0.0030`, `last_price_dollars 0.0030`).
+
+### D3-5 — IRREGULARITY: alerts produced from one-sided quotes
+
+Read: `https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID`
+and `…/KXPRESNOMD-28-JP`.
+
+| Ticker | Published alert | Quote recorded with it | Width |
+| - | - | - | - |
+| KXPRESNOMD-28-HBID | `$0.8110 → $0.4065` (▼ $0.4045) | bid 0.0020 / ask 0.8110 | 0.8090 |
+| KXPRESNOMD-28-JP | `$0.9440 → $0.4770` (▼ $0.4670) | bid 0.0100 / ask 0.9440 | 0.9340 |
+
+For HBID the live market record confirms `yes_bid_dollars 0.0020`,
+`yes_ask_dollars 0.8110`, `last_price_dollars 0.8110`; for JP `yes_bid_dollars
+0.0100`, `yes_ask_dollars 0.9440`, `last_price_dollars 0.9440`. The "mid" of such
+a book (0.4065, 0.4770) is not a price anyone can transact at, and the resulting
+`$0.40`/`$0.47` "moves" are artefacts of averaging a 0.2-cent bid with an
+80-cent ask. **Handling:** both ends of a move must now be verifiable market
+prices. The three stored AKLO rows (which carry no baseline quote at all) are
+held back and listed on `review.html` with their API links; see D6.
+
+## D4 — Resolutions
+
+### D4-1 — IRREGULARITY: no settlement ever reached a topic page
+
+Read: `https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&limit=3`
+
+The settled market objects returned by the official API include
+`event_ticker`, `result`, `settlement_value_dollars`, `settlement_ts`,
+`status` — and **no `series_ticker` field at all**. The collector keyed its
+topic mapping on `rec["series_ticker"]`, so the lookup always missed. Evidence
+in the published snapshot (`data/live.json`, commit `1bc32b7`):
+`resolutions` was `{gas-prices: 0, elections: 0, culture: 0, crypto: 0, golf: 0}`
+while `resolutions_count` was `2000`, and all five topic pages rendered
+"No resolved market from this topic has been captured yet."
+**Handling:** attribution now uses, in order, (a) an explicit `topic_hint`
+recorded when the settlement was read from
+`GET /events?status=settled&with_nested_markets=true`, whose event object *does*
+carry `series_ticker`, (b) the recorded series ticker, (c) the ticker prefix
+`SERIES-EVENT[-STRIKE]`. Unattributable settlements are counted and reported,
+never guessed.
+
+### D4-2 — Settlements stored are mostly out-of-scope series
+
+Read: `data/resolutions.json` (2,000 entries) grouped by series prefix:
+`KXESOCCERGAME` 510, `KXQUICKSETTLE` 110, `KXCRYPTOLEAD15M` 85,
+`KXEBASKETBALLGAME` 72, `KXLIGAPROMATCH` 56, … Verified as real demo series:
+`https://external-api.demo.kalshi.co/trade-api/v2/markets?series_ticker=KXNATGAS15M&status=settled&limit=1`
+returns a genuine settled energy market (`"title":"Natural Gas price up in next
+15 mins?"`, `result":"yes"`, `settlement_value_dollars":"1.0000"`), i.e. these
+are legitimate demo contracts outside the five tracked topics. **Handling:** they
+are excluded from topic pages and their count is published: the overview now
+reads "N of 2,000 stored settlements belong to a tracked topic", with the
+remainder named on `review.html`.
+
+## D5 — Topic matching (Culture)
+
+| # | Claim | Verified against | Result |
+| - | - | - | - |
+| D5-1 | `GET /series?category=Culture` returns very few series | https://external-api.demo.kalshi.co/trade-api/v2/series?category=Culture&include_volume=true | returns **2** series (`KXXBANNEDGROK`, `KXXBANNEDMURRAYHILLGUY1`) |
+| D5-2 | Culture content is filed under Entertainment / Mentions, which is why the topic page shows content with `category=Culture` nearly empty | same read + `data/series_cache.json` (789 culture series resolved from Entertainment/Mentions) | consistent; the page's "topic category is effectively empty" flag is accurate |
+
+## D6 — Flagged-for-review rows generated from this snapshot
+
+| Row | Source link that proves it |
+| - | - |
+| 3 × swing held back by the integrity gate (KXPRESNOMD-28-AKLO) | `…/markets/KXPRESNOMD-28-AKLO` |
+| 1,920 of 2,000 stored settlements outside the five topics | `…/markets?status=settled` |
+| Series `KXGOLFCAT` has the placeholder title `"a"` | https://external-api.demo.kalshi.co/trade-api/v2/series/KXGOLFCAT (confirmed: `"title":"a"`) |
+| Culture category effectively empty (2 series) | `…/series?category=Culture` |
+| Large open interest on an empty book (elections, crypto) | per-market `…/markets/{ticker}/orderbook` |
+
+## D7 — What this session did not verify
+
+* Authenticated demo endpoints (`/portfolio/*`, order entry, WebSocket handshake):
+  no key pair exists in the repository and none was provided. Unchanged from
+  sessions B/C; still published on `review.html`.
+* Anything requiring the sandbox to reach `kalshi.com` or `docs.kalshi.com`
+  directly over TLS: blocked, as above. Reads used the platform fetch channel.
