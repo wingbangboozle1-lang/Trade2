@@ -37,6 +37,7 @@ class Topic:
     exclude_tickers: tuple[str, ...] = ()
     notes: str = ""
     series_pages: int = 4          # pages of 100-ish series to walk per query
+    event_series_scan: int = 40    # series to ask /events about per run
     _cache: dict[str, Any] = field(default_factory=dict, compare=False)
 
     @property
@@ -82,7 +83,8 @@ ELECTIONS = Topic(
     slug="elections",
     label="Elections",
     queries=(("Elections", None),),
-    series_pages=8,   # Elections is by far the largest category (~1,450 series)
+    series_pages=8,
+    event_series_scan=30,   # Elections is by far the largest category (~1,450 series)
     matchers=(_kw("election", "electoral", "vote", "ballot", "primary",
                   "nominee", "nomination", "mayor", "governor", "senate",
                   "congress", "president", "parliament"),),

@@ -67,41 +67,45 @@ def save_json(path: str, payload: Any) -> None:
     os.replace(tmp, path)
 
 
-def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
-                           series_tickers: set[str]) -> list[dict[str, Any]]:
-    """Open events for one topic.
+_series_volume: dict[str, float] = {}
 
-    Kalshi's GET /events supports ``series_ticker`` and ``category``. We use the
-    topic's category where the category is topic-specific, then filter by the
-    series we resolved, which keeps scope enforcement in one place.
+
+def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
+                           series_tickers: set[str],
+                           max_series: int = 40,
+                           deadline: float | None = None) -> list[dict[str, Any]]:
+    """Open events for one topic, queried by series.
+
+    ``category`` is NOT a working filter on ``GET /events``: requesting
+    ``?status=open&category=Crypto`` returns events from *every* category
+    (verified 2026-11-20 — the first page came back with World, Elections and
+    other categories). Filtering by the documented ``series_ticker`` parameter
+    is both correct and far faster, and it keeps topic scoping in one place: a
+    series only belongs to a topic because ``topics.resolve_series`` matched it.
+
+    ``max_series`` bounds the work per run; the series are walked busiest-first
+    using the volume Kalshi reports on each series record.
     """
+    series_tickers = {t for t in series_tickers if t}
+    if not series_tickers:
+        return []
+    # Busiest series first: volume_fp is an official field on GET /series and is
+    # the honest proxy for where activity is. Unknown volume sorts last.
+    ordered = sorted(series_tickers, key=lambda t: -_series_volume.get(t, 0.0))
     events: dict[str, dict[str, Any]] = {}
-    per_category: set[str] = set()
-    for category, _tags in topic.queries:
-        per_category.add(category)
-    for category in per_category:
-        try:
-            batch = client.events(status="open", category=category,
-                                  with_nested_markets="true", limit=200)
-        except KalshiHTTPError:
-            batch = []
-        for event in batch:
-            series = event.get("series_ticker")
-            if series in series_tickers:
-                events[event["event_ticker"]] = event
-    # Fallback only. The category query above is authoritative for these topics;
-    # this catches a series whose primary category differs from the discovery
-    # category. It is capped tightly because one extra request per series is
-    # what blew the time budget when it was allowed to run to 60.
-    missing = series_tickers - {e.get("series_ticker") for e in events.values()}
-    for series in sorted(missing)[:5]:
+    for index, series in enumerate(ordered):
+        if index >= max_series:
+            break
+        if deadline is not None and time.time() > deadline:
+            break
         try:
             batch = client.events(status="open", series_ticker=series,
-                                  with_nested_markets="true", limit=200)
+                                  with_nested_markets="true")
         except KalshiHTTPError:
             continue
         for event in batch:
-            events[event["event_ticker"]] = event
+            if event.get("series_ticker") == series:
+                events[event["event_ticker"]] = event
     return list(events.values())
 
 
@@ -207,10 +211,17 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         t_mark = lap(f"series:{topic.slug}", t_prev)
         for row in series:
             series_registry[row["ticker"]] = row
+            try:
+                _series_volume[row["ticker"]] = float(row.get("volume_fp") or 0)
+            except (TypeError, ValueError):
+                _series_volume[row["ticker"]] = 0.0
         series_tickers = {r["ticker"] for r in series}
 
         try:
-            events = fetch_events_for_topic(client, topic, series_tickers)
+            events = fetch_events_for_topic(
+                client, topic, series_tickers,
+                max_series=topic.event_series_scan,
+                deadline=discovery_deadline)
         except KalshiHTTPError as exc:
             errors.append(f"{topic.slug}: event fetch failed ({exc})")
             events = []
