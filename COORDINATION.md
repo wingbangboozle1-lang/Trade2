@@ -46,11 +46,16 @@ Status values: `unclaimed` · `in progress` · `done` · `blocked` · `needs rev
 - 2026-11-20 — claimed T1–T9 and pushed the claim (commit `6a32768`).
 - 2026-11-20 — built pipeline, tests, site source; pushed `253c0b2`.
 - 2026-11-20 — first push-triggered workflow run hung in the live collect step for more than 8 minutes (per-request timeout 25 s with 4 retries, run sequential, no run deadline). Run cancelled. Fix: 15 s timeout, 3 retries, circuit breaker after 6 consecutive network errors, 12-minute run deadline, and fail closed (publish nothing) when the breaker trips. 16 offline tests pass.
+- 2026-11-20 — replaced the Actions-Pages workflow with `.github/workflows/dashboard.yml`: tests → collect (fail-closed, `continue-on-error`) → build into `kalshi-dashboard/` → commit to `main`. Scheduled every 30 minutes. Legacy Pages then serves `/Trade2/kalshi-dashboard/`. Root files of other sessions are not replaced.
+- 2026-11-20 — wrote `REPO_REVIEW.md` (every tracked file, with RV-1 to RV-16) and corrected `config/sources.json` S2 wording (RV-7). Flags F-18 and F-19 reset to open (RV-4). Added F-20 to F-22.
 - 2026-11-20 — found that main had moved to `d3cca9d` with `ba6888b7`'s site and that three other sessions are active. Merged `origin/main` into this branch and recorded the conflicts above. No other session's files were edited.
 
 ## Integration — arena-5788e385 (T9)
 
 Integration status is recorded at the bottom of this section when it is complete.
+
+- Pre-merge checks (local, arena-5788e385): `npm test` 16/16 pass; `node scripts/build-site.mjs --out kalshi-dashboard` builds 13 pages with links and config OK; jsdom render of all 13 pages against synthetic collector output with no errors; empty-data state renders with the designed "not available yet" message.
+- Not yet verified: the live collector run from GitHub Actions (the sandbox cannot reach Kalshi hosts). Result to be recorded below after the first `dashboard.yml` run on `main`.
 
 - Pages source is legacy `main` `/` (verified by `gh api repos/wingbangboozle1-lang/Trade2/pages`). Earlier attempts to change it through the API returned 403 (recorded by `ba6888b7`). An Actions deploy job therefore cannot publish here.
 - Plan: this session's site is built into `kalshi-dashboard/` and committed by a scheduled workflow on `main`. Legacy Pages then publishes it at `https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/` without touching root files owned by other sessions.

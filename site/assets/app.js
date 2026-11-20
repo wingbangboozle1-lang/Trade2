@@ -61,7 +61,7 @@
     const stale = $('#stale');
     if (stale) {
       stale.style.display = age > 45 ? 'block' : 'none';
-      stale.innerHTML = `Data is ${Number.isFinite(age) ? Math.round(age) + ' min old' : 'missing'}. The collector runs on a schedule (about every 15 minutes, subject to GitHub Actions scheduling delays), so this page is near-real-time, not tick-by-tick.`;
+      stale.innerHTML = `Data is ${Number.isFinite(age) ? Math.round(age) + ' min old' : 'missing'}. The collector runs on a schedule (about every 30 minutes, subject to GitHub Actions scheduling delays), so this page is near-real-time, not tick-by-tick.`;
     }
   }
 
@@ -175,7 +175,7 @@
         <div class="two">
           <div>
             <svg id="chart" class="chart" viewBox="0 0 900 300" preserveAspectRatio="none" role="img" aria-label="Price over time"></svg>
-            <p class="note">X axis: time (range above). Y axis: contract price in cents, 0–100¢. Points are collector snapshots (about every 15 minutes), so sub-minute movement is not shown.</p>
+            <p class="note">X axis: time (range above). Y axis: contract price in cents, 0–100¢. Points are collector snapshots (about every 30 minutes), so sub-minute movement is not shown.</p>
           </div>
           <div id="liquidity"></div>
         </div>
@@ -323,7 +323,7 @@
       <h2>Recent simulated positions (latest 200)</h2>
       <div class="table-wrap"><table><thead><tr><th>Opened</th><th>Strategy</th><th>Topic</th><th>Event / outcome</th><th>Side</th><th class="num">Contracts</th><th class="num">Entry</th><th class="num">Fee</th><th class="num">Cost</th><th>Status</th><th class="num">P&amp;L</th><th>Source</th></tr></thead><tbody>${pos || '<tr><td colspan="12" class="empty">No positions yet.</td></tr>'}</tbody></table></div>
       <h2>Demo account portfolio</h2>
-      <div class="card flag"><strong>Not connected.</strong> Portfolio tracking for the Kalshi demo account needs a demo API key pair stored as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>). Those secrets have not been provided, so no account balance, positions or demo orders are shown. See Flagged for Review.</div>`;
+      <div class="card flag"><strong>Not connected.</strong> Portfolio tracking for the Kalshi demo account needs a demo API key pair stored as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>). No account balance, positions or demo orders are shown on this page. Even when the secrets are set, this section is not yet wired to the snapshot file (flag F-20). See Flagged for Review.</div>`;
   }
   const STRAT_NAME = { follow: 'Follow big moves', fade: 'Fade big moves', high_roi_rule: 'High-ROI rule (heuristic)' };
 
