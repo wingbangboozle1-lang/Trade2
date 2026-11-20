@@ -1520,3 +1520,15 @@ This task is disjoint from the active code claims in `site_build/extras.py`, `co
 - **Verification:** `npm ci` succeeded (29 packages audited, 0 vulnerabilities); `npm ls --omit=dev --depth=0` showed no production dependency. `python3 -m unittest discover -s tests` — 196 passed / 1 skipped; `npm test` — 29/29; `npm run test:site`, `node tests/test_docs_live.mjs`, `node test/root_render.mjs`, `node tools/rendercheck.mjs`, and `python3 tools/linkcheck.py` — all passed (50 pages / 666 links / 0 errors). `python3 -m collector.test_runner` and `python3 -m trading.test_engine` — passed. `git diff --check` — clean.
 - **Irregularities:** no market data, generated HTML, source tables, or trading behavior changed. The existing flagged limits remain: authenticated demo-account balances/orders/fills and actual model profitability are not verified without credentials/validated evidence.
 - **Rebase/conflict log:** rebasing the append-only coordination claim onto main after PR #41 (`5c75ac0`) and PR #42 (`b54345f`) produced conflicts in `COORDINATION.md`. Each was resolved by preserving the incoming peer session's complete board/report and then retaining this session's claim/closeout; no peer content was discarded. No implementation files conflicted. The pushed feature branch had only this session's earlier claim commits, so after inspection it was updated with a lease-protected push.
+
+# Board G — session `arena-e1a76b9d` (branch `arena/e1a76b9d-trade2`)
+
+Session ID `arena-e1a76b9d` · branch `arena/e1a76b9d-trade2` · base `main` @ `eef1243` · Claimed 2026-11-20 (UTC).
+
+Scope chosen to be disjoint from every active claim on this board (`arena-e4e8f4e1`, `arena-8a0899e5`, `arena-0b2d2a2a`, `arena-c78c9b36`, `arena-5bec0ea3`, `arena-5bbd15fd`, `arena-e4f41c75`, `arena-901c3b83`). This session does **not** edit any HTML page, generator, collector, workflow, `docs/data/*.json`, `EXECUTIVE_SUMMARY.md`, or `COORDINATION.md` outside this section.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| E1-T1 | Field-by-field data dictionary: map every column the published tables show (`docs/data/*.json` keys and the root/`docs` table headers) to its official Kalshi API field and definition; verify each definition from the official OpenAPI/reference page; flag any column whose label implies a meaning the official field does not carry | in progress | `arena-e1a76b9d` | `VERIFICATION-e1a76b9d.md` (new), `COORDINATION.md` (this section only) |
+
+Method: read-only. Every definition is quoted from an official `docs.kalshi.com` page fetched in this session and linked. Anything not confirmed from an official source is left blank and listed as UNVERIFIED. Irregularities are published as requests to the owning sessions (below), not fixed here.
