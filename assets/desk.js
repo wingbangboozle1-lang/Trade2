@@ -168,26 +168,64 @@
     return row;
   }
 
+  function newsFor(ticker) {
+    var news = (state.snapshot && state.snapshot.news) || {};
+    return (news.headlines || {})[ticker] || [];
+  }
+
+  function newsLinks(ticker) {
+    var items = newsFor(ticker);
+    if (!items.length) return "";
+    var links = items.slice(0, 2).map(function (item) {
+      if (!item || !item.url || !item.title) return "";
+      return '<a class="headline-link" href="' + esc(item.url) + '" target="_blank" ' +
+        'rel="noreferrer nofollow" title="Candidate headline published near this ' +
+        'move - temporal proximity is not a confirmed cause">↗ ' +
+        esc(String(item.title).slice(0, 110)) +
+        (item.source ? " · " + esc(item.source) : "") + "</a>";
+    }).filter(Boolean);
+    if (!links.length) return "";
+    return '<span class="headlines"><b>Possible catalyst:</b> ' + links.join(" · ") + "</span>";
+  }
+
+  function modelRows(shortlist) {
+    var rows = [];
+    (shortlist.picks || []).forEach(function (pick) {
+      var row = document.createElement("div");
+      row.className = "chat-row model-pick";
+      row.innerHTML =
+        '<span class="chat-delta up">★ ' + pct(pick.net_roi) + "</span>" +
+        '<span class="chat-body"><a href="' + esc(pick.market_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">' + esc(pick.title || pick.ticker) + "</a>" +
+        "<small>buy " + esc(String(pick.side || "").toUpperCase()) + " at " +
+        money(pick.executable_price) + " · fair " + money(pick.model_fair) +
+        " · edge " + money(pick.net_edge) + " after $" +
+        Number(pick.fee || 0).toFixed(4) + " fee · " + esc(pick.kind || "") + "</small>" +
+        '<small><a class="source-link" href="' + esc(pick.source_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">API ↗</a></small></span>';
+      rows.push(row);
+    });
+    (shortlist.verdicts || []).forEach(function (verdict) {
+      var row = document.createElement("div");
+      row.className = "chat-row model-verdict " + (verdict.verdict === "picked" ? "picked" : "passed");
+      row.innerHTML =
+        '<span class="chat-delta ' + (verdict.verdict === "picked" ? "up" : "flat") + '">' +
+        (verdict.verdict === "picked" ? "★ picked" : "— passed") + "</span>" +
+        '<span class="chat-body"><a href="' + esc(verdict.market_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">' + esc(verdict.title || verdict.ticker) + "</a>" +
+        "<small>" + esc(verdict.reason || "") + "</small>" +
+        '<small><a class="source-link" href="' + esc(verdict.source_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">API ↗</a></small></span>';
+      rows.push(row);
+    });
+    return rows;
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
     var all = s.alerts || [];
-
-    // Model shortlist: alerts on markets the model scored as high ROI.
-    var scoreByTicker = {};
-    (s.signals || []).forEach(function (sig) {
-      scoreByTicker[sig.ticker] = sig;
-    });
-    var model = all
-      .filter(function (a) {
-        var sig = scoreByTicker[a.ticker];
-        return sig && sig.net_roi >= 0.05;
-      })
-      .map(function (a) {
-        var out = Object.assign({}, a);
-        out.model_net_roi = scoreByTicker[a.ticker].net_roi;
-        return out;
-      });
+    var shortlist = s.shortlist || {};
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -197,21 +235,45 @@
         feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move observed ' +
           "yet. The feed fills as successive snapshots are compared.</div>";
       }
-      all.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
+      all.slice(0, 200).forEach(function (a) {
+        var row = alertRow(a, false);
+        var body = row.querySelector(".chat-body");
+        if (body) body.insertAdjacentHTML("beforeend", newsLinks(a.ticker));
+        feedAll.appendChild(row);
+      });
     }
+
+    var modelCount = 0;
     if (feedModel) {
       feedModel.innerHTML = "";
-      if (!model.length) {
-        feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
-          "model's net-ROI gate right now. This is normal — an empty feed is an " +
-          "honest answer.</div>";
+      var rows = modelRows(shortlist);
+      if (!rows.length) {
+        // Fallback for snapshots taken before the order-book model existed.
+        var scoreByTicker = {};
+        (s.signals || []).forEach(function (sig) {
+          scoreByTicker[sig.ticker] = sig;
+        });
+        all.filter(function (a) {
+          var sig = scoreByTicker[a.ticker];
+          return sig && sig.net_roi >= 0.05;
+        }).forEach(function (a) {
+          feedModel.appendChild(alertRow(a, true));
+          modelCount += 1;
+        });
+      } else {
+        rows.forEach(function (row) { feedModel.appendChild(row); });
+        modelCount = (shortlist.picks || []).length;
       }
-      model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
+      if (!modelCount) {
+        feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
+          "model's gates right now. This is normal — an empty shortlist is an " +
+          "honest answer, and the verdicts below say why.</div>";
+      }
     }
     var ac = document.getElementById("allCount");
     if (ac) ac.textContent = all.length;
     var mc = document.getElementById("modelCount");
-    if (mc) mc.textContent = model.length;
+    if (mc) mc.textContent = modelCount;
   }
 
   document.addEventListener("click", function (ev) {

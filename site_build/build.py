@@ -19,6 +19,7 @@ from __future__ import annotations
 import html
 import json
 import os
+import time
 from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
@@ -27,9 +28,22 @@ from . import flagpage
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
 SITE = "https://wingbangboozle1-lang.github.io/Trade2"
+DATA_DIR = os.path.join(ROOT, "data")
+SHORTLIST_PATH = os.path.join(DATA_DIR, "shortlist.json")
+NEWS_PATH = os.path.join(DATA_DIR, "news.json")
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
 TOPIC_FILE = {t: t for t in TOPIC_ORDER}
+
+
+def load_optional(path: str) -> dict[str, Any]:
+    """Read a generated side-car file, or return an empty dict."""
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
 
 
 def esc(value: Any) -> str:
@@ -65,6 +79,22 @@ def num(value: Any) -> str:
         return esc(value)
 
 
+def count(value: Any) -> str:
+    """Whole numbers: market counts, positions, resolutions.
+
+    ``num`` renders two decimals because open interest and volume are
+    fractional contract counts. Counts of things (how many markets, how many
+    positions, how many resolutions) are whole numbers and are printed as
+    such.
+    """
+    if value is None or value == "":
+        return ""
+    try:
+        return f"{int(round(float(value))):,}"
+    except (TypeError, ValueError):
+        return esc(value)
+
+
 def pct(value: Any) -> str:
     if value is None or value == "":
         return ""
@@ -72,6 +102,74 @@ def pct(value: Any) -> str:
         return f"{float(value) * 100:.1f}%"
     except (TypeError, ValueError):
         return esc(value)
+
+
+def news_links(alert: dict[str, Any], news: dict[str, Any]) -> str:
+    """Candidate headline links for one alert, or an empty string.
+
+    Headlines come from Google News RSS by keyword and publish time. They are
+    labelled as candidates because temporal proximity is not causation; the
+    official Kalshi market link is always shown next to them.
+    """
+    ticker = alert.get("ticker") or ""
+    items = (news.get("headlines") or {}).get(ticker) or []
+    if not items:
+        return ""
+    links = []
+    for item in items[:2]:
+        title = (item.get("title") or "").strip()
+        url = (item.get("url") or "").strip()
+        source = (item.get("source") or "").strip()
+        if not title or not url:
+            continue
+        links.append(
+            f'<a class="headline-link" href="{html.escape(url)}" target="_blank" '
+            f'rel="noreferrer nofollow" title="Candidate headline — published '
+            f'near this move, not a confirmed cause">↗ {html.escape(title[:110])}'
+            f'{(" · " + html.escape(source)) if source else ""}</a>'
+        )
+    if not links:
+        return ""
+    return ('<span class="headlines"><b>Possible catalyst:</b> '
+            + " · ".join(links) + "</span>")
+
+
+def model_chat_rows(shortlist: dict[str, Any]) -> list[str]:
+    """Rows for the model shortlist chat: the picks first, then the verdicts."""
+    rows: list[str] = []
+    for pick in (shortlist.get("picks") or [])[:12]:
+        badge = "swing" if pick.get("kind") == "swing" else "level"
+        rows.append(
+            '<div class="chat-row model-pick"><time>'
+            f'{html.escape((pick.get("ts") and time.strftime("%H:%M:%S", time.gmtime(pick["ts"]))) or "")}</time>'
+            f'<span class="chat-delta up">★ {pct(pick.get("net_roi"))}</span>'
+            f'<span class="chat-body"><a href="{html.escape(pick.get("market_url") or "")}" '
+            f'target="_blank" rel="noreferrer">{esc(pick.get("title"))}</a> '
+            f'<small>buy {html.escape((pick.get("side") or "").upper())} at '
+            f'{cents(pick.get("executable_price"))} · fair {cents(pick.get("model_fair"))} · '
+            f'edge {cents(pick.get("net_edge"))} after ${(pick.get("fee") or 0):.4f} fee · '
+            f'{html.escape(badge)}</small>'
+            f'<small><a class="source-link" href="{html.escape(pick.get("source_url") or "")}" '
+            f'target="_blank" rel="noreferrer">API ↗</a></small></span></div>'
+        )
+    verdicts = shortlist.get("verdicts") or []
+    for verdict in verdicts[:24]:
+        picked = verdict.get("verdict") == "picked"
+        rows.append(
+            f'<div class="chat-row model-verdict {"picked" if picked else "passed"}">'
+            f'<span class="chat-delta {"up" if picked else "flat"}">'
+            f'{"★ picked" if picked else "— passed"}</span>'
+            f'<span class="chat-body"><a href="{html.escape(verdict.get("market_url") or "")}" '
+            f'target="_blank" rel="noreferrer">{esc(verdict.get("title"))}</a> '
+            f'<small>{html.escape(verdict.get("reason") or "")}</small>'
+            f'<small><a class="source-link" href="{html.escape(verdict.get("source_url") or "")}" '
+            f'target="_blank" rel="noreferrer">API ↗</a></small></span></div>'
+        )
+    if not rows:
+        rows.append('<div class="empty-state inline">The model has not priced a '
+                    'market yet — the history it needs is built one snapshot at '
+                    'a time by the scheduled collector.</div>')
+    return rows
 
 
 def result_chip(result: str) -> str:
@@ -205,6 +303,7 @@ def build_overview(live: dict[str, Any]) -> str:
                     "No snapshot yet — the collector has not completed a run.</td></tr>")
 
     alert_rows = []
+    news = live.get("news") or {}
     for a in alerts:
         arrow = "▲" if a.get("direction") == "up" else "▼"
         cls = "up" if a.get("direction") == "up" else "down"
@@ -214,12 +313,19 @@ def build_overview(live: dict[str, Any]) -> str:
             f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
             f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
             f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-            f'{esc(a.get("topic"))}</small></span></div>'
+            f'{esc(a.get("topic"))}</small>'
+            f'{news_links(a, news)}</span></div>'
         )
     if not alert_rows:
         alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
                           "in the current window yet. The feed fills as the "
                           "collector compares successive snapshots.</div>")
+
+    shortlist = live.get("shortlist") or {}
+    model_rows = model_chat_rows(shortlist)
+    pick_count = shortlist.get("picks_count") or 0
+    model_note = (f"{count(pick_count)} pick(s) from "
+                  f"{count(shortlist.get('markets_seen'))} markets priced")
 
     status = "trading" if exchange.get("trading_active") else "not trading"
     return f"""{topbar("Overview", generated)}
@@ -234,19 +340,19 @@ def build_overview(live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{num(live.get("observation_count"))}</strong>
+            <strong>{count(live.get("observation_count"))}</strong>
             <small>This snapshot</small></article>
           <article class="stat-card"><span>Swings ≥ $0.10</span>
             <strong>{len(live.get("alerts", []))}</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>{num(portfolio.get("open_positions"))}</strong>
+            <strong>{count(portfolio.get("open_positions"))}</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
             <strong>{money(portfolio.get("equity"))}</strong>
             <small>Start {money(portfolio.get("starting_bankroll"))}</small></article>
           <article class="stat-card"><span>Resolved tracked</span>
-            <strong>{num(live.get("resolutions_count"))}</strong>
+            <strong>{count(live.get("resolutions_count"))}</strong>
             <small>YES/NO from official result</small></article>
         </section>
         <div class="notice notice-info">
@@ -275,6 +381,10 @@ def build_overview(live: dict[str, Any]) -> str:
           </div>
           <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
+          <div class="table-foot"><span><span class="flag-badge">UNVERIFIED</span>
+          means the official API returns no quote for that market — its book is
+          empty or the resting size is zero. The value is left blank and
+          flagged rather than filled in.</span></div>
         </section>
         <section class="panel alert-panel">
           <div class="panel-title">
@@ -284,6 +394,22 @@ def build_overview(live: dict[str, Any]) -> str:
             <a class="source-link" href="live.html">Full live desk →</a>
           </div>
           <div class="chat-feed">{''.join(alert_rows)}</div>
+        </section>
+        <section class="panel alert-panel model-panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">★</span><div>
+              <h2>Model shortlist — what the model would trade</h2>
+              <p>Selective filter over the same swings, priced from the order
+              book only</p></div></div>
+            <span class="count-badge">{count(pick_count)}</span>
+          </div>
+          <div class="chat-feed">{''.join(model_rows)}</div>
+          <div class="alert-note">{html.escape(model_note)}. The model takes the
+          book mid before and after a move, assumes half the move is an
+          overreaction, and only keeps a side that clears $0.02 of edge after
+          Kalshi's published taker fee <em>and</em> has real resting size
+          behind it. Every verdict links to the exact API response it used.
+          Full rules on the <a href="methodology.html">methodology page</a>.</div>
         </section>"""
 
 
@@ -362,13 +488,13 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid">
           <article class="stat-card"><span>Series in scope</span>
-            <strong>{num(topic.get("series_count"))}</strong><small>Matched live</small></article>
+            <strong>{count(topic.get("series_count"))}</strong><small>Matched live</small></article>
           <article class="stat-card"><span>Open events</span>
-            <strong>{num(topic.get("event_count"))}</strong><small>This snapshot</small></article>
+            <strong>{count(topic.get("event_count"))}</strong><small>This snapshot</small></article>
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{num(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
+            <strong>{count(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
           <article class="stat-card"><span>Resolved captured</span>
-            <strong>{num(len(resolutions))}</strong><small>YES/NO logged</small></article>
+            <strong>{count(len(resolutions))}</strong><small>YES/NO logged</small></article>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -386,7 +512,7 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
               <tbody>{''.join(market_rows)}</tbody>
             </table>
           </div>
-          <div class="table-foot"><span>{num(topic.get("market_count"))} markets matched;
+          <div class="table-foot"><span>{count(topic.get("market_count"))} markets matched;
           top {len(events)} shown</span><span>Bid depth = resting YES bid contracts</span></div>
         </section>
         <section class="panel">
@@ -583,13 +709,64 @@ def build_methodology(live: dict[str, Any]) -> str:
           table are reproduced exactly by the implementation and are asserted in
           <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
           respected via each series' own <code>fee_multiplier</code>.</p>
-          <h2>The high-ROI filter</h2>
-          <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
-          a wide book means the mid is unreliable. Edge is fair value minus the price
-          actually paid to cross the spread. Net ROI divides edge after fees by that
-          price. A market is shortlisted only when net ROI clears the strategy's
-          threshold and the spread is tight. This is a screen, not a forecast; the
-          performance table shows realised results including every loss.</p>
+          <h2>The high-ROI filter (order-book model)</h2>
+          <p>The second chat is a selective filter over the same swings. It is
+          priced from the <strong>order book only</strong>, so that both ends of
+          every comparison are the same kind of number:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Step</th><th>Rule</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td>Fair value</td>
+                  <td><code>fair = (previous book mid + current book mid) / 2</code> —
+                  the model assumes half of a move is an overreaction that unwinds</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>YES edge</td>
+                  <td><code>fair − implied YES ask</code> (the price you actually pay)</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>NO edge</td>
+                  <td><code>YES bid − fair</code> (buying NO costs <code>1 − YES bid</code>)</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>Fee</td>
+                  <td><code>0.07 × C × P × (1 − P)</code>, Kalshi's published taker fee</td>
+                  <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">fee schedule ↗</a></td></tr>
+                <tr><td>Net edge / ROI</td>
+                  <td><code>(edge − fee) / price</code></td>
+                  <td>computed</td></tr>
+                <tr><td>Gate 1</td><td>the book must be quoted on both sides</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 2</td><td>spread ≤ $0.20 — a wider book makes the mid meaningless</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 3</td><td>≥ 10 contracts resting on the side the model would buy</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 4</td><td>price inside Kalshi's $0.01–$0.99 grid</td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">markets docs ↗</a></td></tr>
+                <tr><td>Gate 5</td><td>edge after fees ≥ $0.02 and net ROI &gt; 0</td>
+                  <td>computed</td></tr>
+                <tr><td>Gate 6</td><td>the book must have moved by at least $0.10 itself — a move the book did not confirm is a single trade print, not a change in the market</td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">candlestick docs ↗</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Gate 6 matters because the demo feed prints alternating trades on
+          markets whose book never moves: on <code>KXPRESNOMD-28-AKLO</code> the
+          one-minute candles alternate between $0.8030 and $0.0030 while the
+          quoted book stays at $0.0020 × $0.0030 for the whole window
+          (<a href="https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&amp;end_ts=1795200500&amp;period_interval=1"
+          target="_blank" rel="noreferrer">official candles ↗</a>). A price move the
+          book does not confirm is not a market move, so the model passes on it and
+          says why.</p>
+          <p>This is a screen, not a forecast; the performance table shows realised
+          results including every loss.</p>
+          <h2>Candidate news on a swing</h2>
+          <p>Each swing row can carry <em>candidate</em> headlines found through
+          Google News RSS by keyword and publish time
+          (<a href="https://news.google.com/rss/search" target="_blank"
+          rel="noreferrer">the feed ↗</a>). They are labelled as candidates on
+          purpose: temporal proximity is not causation, and a headline is never
+          presented as the confirmed cause of a move. Every swing row also links
+          to the exact Kalshi API response it was computed from. When no headline
+          matches the window, the row says so instead of inventing one.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:
           YES pays $1.00 per contract, NO pays nothing, as documented in
@@ -597,11 +774,13 @@ def build_methodology(live: dict[str, Any]) -> str:
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>
           <ul>
-            <li>No news article is attributed to a price move. The alert links to
-            the market, not to a cause we cannot verify.</li>
+            <li>A headline near a move is a candidate, never a confirmed cause. The
+            alert always links to the official Kalshi market response as well.</li>
             <li>The paper ledger is not your demo account balance. Authenticated
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
+            <li>The model's fair value is a rule, not a forecast of where a price
+            will settle.</li>
           </ul>
         </section>"""
 
@@ -620,15 +799,15 @@ def build_performance_section(live: dict[str, Any]) -> str:
             "<tr>"
             f"<td><b>{html.escape(s.get('label', slug))}</b>"
             f"<small class=\"ticker\">{html.escape(s.get('description',''))}</small></td>"
-            f"<td>{num(a.get('trades'))}</td><td>{num(a.get('wins'))}</td>"
-            f"<td>{num(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
+            f"<td>{count(a.get('trades'))}</td><td>{count(a.get('wins'))}</td>"
+            f"<td>{count(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
             f"<td>{money(a.get('realized'))}</td><td>{money(a.get('expectancy'))}</td>"
             f"<td>{pct(a.get('roi_on_cost'))}</td><td>{money(a.get('fees'))}</td></tr>")
     topic_rows = []
     for slug, a in (p.get("by_topic") or {}).items():
         topic_rows.append(
             "<tr>"
-            f"<td>{html.escape(slug)}</td><td>{num(a.get('trades'))}</td>"
+            f"<td>{html.escape(slug)}</td><td>{count(a.get('trades'))}</td>"
             f"<td>{pct(a.get('win_rate'))}</td><td>{money(a.get('realized'))}</td>"
             f"<td>{money(a.get('expectancy'))}</td></tr>")
     settled_rows = []
@@ -661,10 +840,10 @@ def build_performance_section(live: dict[str, Any]) -> str:
               <small>from {money(p.get('starting_bankroll'))}</small></article>
             <article class="stat-card"><span>Realised P&amp;L</span>
               <strong>{money(p.get('realized_pnl'))}</strong>
-              <small>{num(overall.get('trades'))} settled</small></article>
+              <small>{count(overall.get('trades'))} settled</small></article>
             <article class="stat-card"><span>Win rate</span>
               <strong>{pct(overall.get('win_rate'))}</strong>
-              <small>{num(overall.get('wins'))}W / {num(overall.get('losses'))}L</small></article>
+              <small>{count(overall.get('wins'))}W / {count(overall.get('losses'))}L</small></article>
             <article class="stat-card"><span>Fees paid</span>
               <strong>{money(p.get('fees_paid'))}</strong>
               <small>official quadratic fee</small></article>
@@ -713,6 +892,10 @@ def build_performance_section(live: dict[str, Any]) -> str:
 
 def main() -> dict[str, Any]:
     live = load_json(LIVE_PATH, {})
+    # Side-cars written by the two model steps that run after the collector:
+    # the order-book model shortlist and the candidate-news lookup.
+    live["shortlist"] = load_optional(SHORTLIST_PATH)
+    live["news"] = load_optional(NEWS_PATH)
     written = []
 
     def write(path: str, content: str) -> None:

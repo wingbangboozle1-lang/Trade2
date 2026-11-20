@@ -99,13 +99,64 @@
           table are reproduced exactly by the implementation and are asserted in
           <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
           respected via each series' own <code>fee_multiplier</code>.</p>
-          <h2>The high-ROI filter</h2>
-          <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
-          a wide book means the mid is unreliable. Edge is fair value minus the price
-          actually paid to cross the spread. Net ROI divides edge after fees by that
-          price. A market is shortlisted only when net ROI clears the strategy's
-          threshold and the spread is tight. This is a screen, not a forecast; the
-          performance table shows realised results including every loss.</p>
+          <h2>The high-ROI filter (order-book model)</h2>
+          <p>The second chat is a selective filter over the same swings. It is
+          priced from the <strong>order book only</strong>, so that both ends of
+          every comparison are the same kind of number:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Step</th><th>Rule</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td>Fair value</td>
+                  <td><code>fair = (previous book mid + current book mid) / 2</code> —
+                  the model assumes half of a move is an overreaction that unwinds</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>YES edge</td>
+                  <td><code>fair − implied YES ask</code> (the price you actually pay)</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>NO edge</td>
+                  <td><code>YES bid − fair</code> (buying NO costs <code>1 − YES bid</code>)</td>
+                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
+                <tr><td>Fee</td>
+                  <td><code>0.07 × C × P × (1 − P)</code>, Kalshi's published taker fee</td>
+                  <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">fee schedule ↗</a></td></tr>
+                <tr><td>Net edge / ROI</td>
+                  <td><code>(edge − fee) / price</code></td>
+                  <td>computed</td></tr>
+                <tr><td>Gate 1</td><td>the book must be quoted on both sides</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 2</td><td>spread ≤ $0.20 — a wider book makes the mid meaningless</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 3</td><td>≥ 10 contracts resting on the side the model would buy</td>
+                  <td>order book</td></tr>
+                <tr><td>Gate 4</td><td>price inside Kalshi's $0.01–$0.99 grid</td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">markets docs ↗</a></td></tr>
+                <tr><td>Gate 5</td><td>edge after fees ≥ $0.02 and net ROI &gt; 0</td>
+                  <td>computed</td></tr>
+                <tr><td>Gate 6</td><td>the book must have moved by at least $0.10 itself — a move the book did not confirm is a single trade print, not a change in the market</td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">candlestick docs ↗</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Gate 6 matters because the demo feed prints alternating trades on
+          markets whose book never moves: on <code>KXPRESNOMD-28-AKLO</code> the
+          one-minute candles alternate between $0.8030 and $0.0030 while the
+          quoted book stays at $0.0020 × $0.0030 for the whole window
+          (<a href="https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&amp;end_ts=1795200500&amp;period_interval=1"
+          target="_blank" rel="noreferrer">official candles ↗</a>). A price move the
+          book does not confirm is not a market move, so the model passes on it and
+          says why.</p>
+          <p>This is a screen, not a forecast; the performance table shows realised
+          results including every loss.</p>
+          <h2>Candidate news on a swing</h2>
+          <p>Each swing row can carry <em>candidate</em> headlines found through
+          Google News RSS by keyword and publish time
+          (<a href="https://news.google.com/rss/search" target="_blank"
+          rel="noreferrer">the feed ↗</a>). They are labelled as candidates on
+          purpose: temporal proximity is not causation, and a headline is never
+          presented as the confirmed cause of a move. Every swing row also links
+          to the exact Kalshi API response it was computed from. When no headline
+          matches the window, the row says so instead of inventing one.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:
           YES pays $1.00 per contract, NO pays nothing, as documented in
@@ -113,11 +164,13 @@
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>
           <ul>
-            <li>No news article is attributed to a price move. The alert links to
-            the market, not to a cause we cannot verify.</li>
+            <li>A headline near a move is a candidate, never a confirmed cause. The
+            alert always links to the official Kalshi market response as well.</li>
             <li>The paper ledger is not your demo account balance. Authenticated
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
+            <li>The model's fair value is a rule, not a forecast of where a price
+            will settle.</li>
           </ul>
         </section>
         <footer class="site-footer">

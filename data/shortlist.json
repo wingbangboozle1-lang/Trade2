@@ -1,0 +1,139 @@
+{
+ "generated_at": "2026-11-20T18:41:08Z",
+ "generated_at_ts": 1795201737.5365884,
+ "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
+ "threshold_dollars": 0.1,
+ "min_edge_dollars": 0.02,
+ "max_spread_dollars": 0.2,
+ "min_depth_contracts": 10.0,
+ "trail_length": 12,
+ "model": "fair = (book mid before the move + book mid now) / 2; the model assumes half of a move is an overreaction. Edge is measured against the executable price (YES ask, or 1 - YES bid for NO) and Kalshi's published taker fee 0.07 * C * P * (1 - P).",
+ "model_inputs": {
+  "fair_value": "(previous book mid + current book mid) / 2",
+  "yes_edge": "fair - implied YES ask",
+  "no_edge": "YES bid - fair",
+  "fee": "0.07 * C * P * (1 - P), Kalshi published taker fee",
+  "reference": "the order book only; both ends of every comparison are book mids so a traded price is never compared with a book quote"
+ },
+ "picks": [],
+ "picks_count": 0,
+ "swing_picks_count": 0,
+ "level_picks_count": 0,
+ "verdicts": [
+  {
+   "verdict": "rejected",
+   "ticker": "KXPRESNOMD-28-HBID",
+   "topic": "elections",
+   "title": "Hunter Biden",
+   "reason": "the book has not moved since the previous snapshot (mid $0.4065 -> $0.4065), so this move is a single trade print rather than a change in the market",
+   "book_move": 0.0,
+   "alert_delta": -0.4045,
+   "alert_direction": "down",
+   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID"
+  },
+  {
+   "verdict": "rejected",
+   "ticker": "KXPRESNOMD-28-AKLO",
+   "topic": "elections",
+   "title": "Amy Klobuchar",
+   "reason": "the book has not moved since the previous snapshot (mid $0.0025 -> $0.0025), so this move is a single trade print rather than a change in the market",
+   "book_move": 0.0,
+   "alert_delta": -0.8005,
+   "alert_direction": "down",
+   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO"
+  },
+  {
+   "verdict": "rejected",
+   "ticker": "KXPRESNOMD-28-JP",
+   "topic": "elections",
+   "title": "Jared Polis",
+   "reason": "the book has not moved since the previous snapshot (mid $0.4770 -> $0.4770), so this move is a single trade print rather than a change in the market",
+   "book_move": 0.0,
+   "alert_delta": -0.467,
+   "alert_direction": "down",
+   "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JP",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JP"
+  }
+ ],
+ "verdicts_count": 3,
+ "rejected_count": 7,
+ "rejection_summary": [
+  {
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+   "count": 3
+  },
+  {
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful",
+   "count": 2
+  },
+  {
+   "reason": "YES",
+   "count": 1
+  },
+  {
+   "reason": "the spread is $0.86, wider than $0.20, so the mid is not meaningful",
+   "count": 1
+  }
+ ],
+ "rejected_sample": [
+  {
+   "ticker": "KXPGATOUR-THRC26-RHIS",
+   "topic": "golf",
+   "kind": "level",
+   "book_move": 0.0987,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-RKHA",
+   "topic": "elections",
+   "kind": "level",
+   "book_move": 0.0979,
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPGATOUR-THRC26-NSHI",
+   "topic": "golf",
+   "kind": "level",
+   "book_move": 0.0964,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B97500",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.096,
+   "reason": "YES has only 0 contracts resting"
+  },
+  {
+   "ticker": "KXPGATOUR-THRC26-RCAS",
+   "topic": "golf",
+   "kind": "level",
+   "book_move": 0.096,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCD-26NOV2017-T66499.99",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.094,
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCD-26NOV2017-T64499.99",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.083,
+   "reason": "the spread is $0.86, wider than $0.20, so the mid is not meaningful"
+  }
+ ],
+ "alerts_seen": 29,
+ "markets_seen": 750,
+ "sources": {
+  "markets": "https://docs.kalshi.com/api-reference/market/get-markets",
+  "orderbook": "https://docs.kalshi.com/getting_started/orderbook_responses",
+  "candlesticks": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+  "fees": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+ }
+}

@@ -89,6 +89,31 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
+    # 4. A published swing that the order book does not confirm.
+    # The Kalshi demo feed prints alternating trades on some markets while the
+    # quoted book stays flat. A price move the book did not make is a trade
+    # print, not a change in the market, so it is flagged here rather than
+    # presented as a swing. The model's verdict for each alert says the same
+    # thing on the live desk.
+    for verdict in ((live.get("shortlist") or {}).get("verdicts") or []):
+        if verdict.get("verdict") == "picked":
+            continue
+        reason = verdict.get("reason") or ""
+        if "book has not moved" not in reason:
+            continue
+        ticker = verdict.get("ticker")
+        issues.append({
+            "kind": "Swing not confirmed by the order book",
+            "topic": verdict.get("topic"),
+            "ticker": ticker,
+            "detail": ("the alert stream reports a >= $0.10 move for this market, "
+                       "but the quoted book did not move between the last two "
+                       "snapshots — the demo feed printed an alternating trade. "
+                       "The model passes on it and the row is labelled as an "
+                       "unconfirmed print."),
+            "source": f"{API}/markets/{ticker}/orderbook",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -119,14 +144,27 @@ STANDING = [
         "source": ("https://docs.kalshi.com/getting_started/quick_start_create_order.md",),
     },
     {
-        "title": "No news article is attributed to a price move",
+        "title": "News headlines are candidates, never a confirmed cause",
         "body": ("The brief asked for links to news that may have caused jumps. No "
-                 "official source maps articles to Kalshi price moves, so guessing "
-                 "one would be fabrication. Instead every alert links to the market "
-                 "itself and the series page lists Kalshi's own settlement sources "
-                 "(AAA, CF Benchmarks, ESPN, pgatour.com), which are the official "
-                 "pages that explain the underlying."),
+                 "official source maps articles to Kalshi price moves, so a headline "
+                 "is shown only as a candidate found by keyword and publish time in "
+                 "Google News RSS, and it is labelled as such. Every alert row also "
+                 "links to the market itself and the series page lists Kalshi's own "
+                 "settlement sources (AAA, CF Benchmarks, ESPN, pgatour.com), which "
+                 "are the official pages that explain the underlying."),
         "source": ("https://docs.kalshi.com/api-reference/market/get-series-list",),
+    },
+    {
+        "title": "The demo feed prints alternating trades on some markets",
+        "body": ("On several demo markets the traded price oscillates between two "
+                 "levels every minute while the quoted order book never changes. "
+                 "For example the one-minute candles for KXPRESNOMD-28-AKLO "
+                 "alternate between $0.8030 and $0.0030 while the book stays at "
+                 "$0.0020 x $0.0030 for the whole window. A move the book did not "
+                 "make is a trade print rather than a market move, so the model "
+                 "rejects it and it is listed on this page."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/series/"
+                   "KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks",),
     },
     {
         "title": "Live streaming uses polling, not the WebSocket",
