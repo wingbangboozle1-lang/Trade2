@@ -7,14 +7,24 @@ import { mkdtemp, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { main, resolveTopicSeries, DEFAULT_BASE } from '../collect.mjs';
-import { DEMO_BASE } from '../kalshi.mjs';
+import { assertDemoBase, main, resolveTopicSeries } from '../collect.mjs';
+import { DEMO_BASE, PRODUCTION_BASE } from '../kalshi.mjs';
 import { takerFeeCents } from '../fees.mjs';
 import { readFileSync } from 'node:fs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const cfg = JSON.parse(readFileSync(path.join(here, '..', '..', 'config', 'topics.json'), 'utf8'));
-const BASE = 'https://example.invalid/trade-api/v2'; // mock host; never contacted
+const BASE = DEMO_BASE; // all mock calls are intercepted; no network is used
+
+test('collector allows only official demo Trade API roots', () => {
+  assert.equal(assertDemoBase(DEMO_BASE), DEMO_BASE);
+  assert.equal(assertDemoBase('https://demo-api.kalshi.co/trade-api/v2/'), 'https://demo-api.kalshi.co/trade-api/v2/');
+  assert.throws(() => assertDemoBase(PRODUCTION_BASE), /Demo-only guard/);
+  assert.throws(() => assertDemoBase('https://example.invalid/trade-api/v2'), /Demo-only guard/);
+  assert.throws(() => assertDemoBase('http://external-api.demo.kalshi.co/trade-api/v2'), /Demo-only guard/);
+  assert.throws(() => assertDemoBase('https://external-api.demo.kalshi.co:8443/trade-api/v2'), /Demo-only guard/);
+  assert.throws(() => assertDemoBase('https://user@external-api.demo.kalshi.co/trade-api/v2'), /Demo-only guard/);
+});
 
 const SERIES = [
   { ticker: 'KXAAAGASM', title: 'US gas price', category: 'Climate and Weather', categories: [], tags: [], fee_type: 'quadratic', fee_multiplier: 1, contract_url: 'https://kalshi.com/docs/example-contract.pdf', contract_terms_url: 'https://kalshi.com/docs/example-terms.pdf', settlement_sources: [{ name: 'SYNTHETIC SOURCE', url: 'https://example.invalid/source' }] },
@@ -154,13 +164,4 @@ test('capSeries keeps curated series first, then highest-volume keyword matches,
   const out = capSeries(m, 2);
   assert.deepEqual([...out.keys()], ['CUR1', 'KW_HIGH']);
   assert.equal(capSeries(m, 10), m, 'no change when under the cap');
-});
-
-// Requirement (owner brief): the Kalshi DEMO endpoint. The default must never be production.
-test('collector default base is the Kalshi demo endpoint (not production)', () => {
-  assert.equal(DEMO_BASE, 'https://external-api.demo.kalshi.co/trade-api/v2');
-  if (!process.env.KALSHI_BASE && !process.argv.includes('--base')) {
-    assert.equal(DEFAULT_BASE, DEMO_BASE);
-  }
-  assert.notEqual(DEFAULT_BASE, 'https://external-api.kalshi.com/trade-api/v2');
 });

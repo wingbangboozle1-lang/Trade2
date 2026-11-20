@@ -65,7 +65,7 @@ Irregularities seen in these rows (flagged, not changed):
 
 | # | Item | Finding | Source | Result |
 | - | - | - | - | - |
-| C1 | kalshi-dashboard collector host | `scripts/collect.mjs` defaulted to `PRODUCTION_BASE`. Published `kalshi-dashboard/data/status.json` records `base_url` `https://external-api.kalshi.com/trade-api/v2`. The brief asked for demo. | https://docs.kalshi.com/getting_started/api_environments.md ; https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/status.json | **Fixed (T17).** Default is `DEMO_BASE`. A production base now requires `--base` or `KALSHI_BASE`, and the page label says so. Test added in `scripts/test/collect.test.mjs`. |
+| C1 | kalshi-dashboard collector host | `scripts/collect.mjs` defaulted to `PRODUCTION_BASE`. Published `kalshi-dashboard/data/status.json` records `base_url` `https://external-api.kalshi.com/trade-api/v2`. The brief asked for demo. | https://docs.kalshi.com/getting_started/api_environments.md ; https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/status.json | **Fixed on `main` by commit `28577c4` (session `arena-e4e8f4e1`, PR #13).** That fix also adds a demo-only guard (`assertDemoBase`). This branch first made the same change and then kept `main`'s version during the merge, so one fix remains. |
 | C2 | Root Python collector host | `collector/collector.py` uses `DEMO_REST`. | https://docs.kalshi.com/getting_started/api_environments.md | Match (no change) |
 | C3 | Trading ledger | 1 open simulated position (`KXBTCY-27JAN0100-B87500`, strategy `value`), not swing-based. No simulated trade in the current ledger came from a phantom alert. | `data/portfolio_state.json` | Checked. No effect from the alert bug. |
 | C4 | `docs/` alerts (trade-price closes) | Three hourly trade-price moves, e.g. KXRT-FUR-85 0.43 → 0.05. Not checked against quotes. | https://wingbangboozle1-lang.github.io/Trade2/docs/data/alerts.json | **Open.** Flagged on the Flagged page. |
@@ -78,9 +78,8 @@ Irregularities seen in these rows (flagged, not changed):
   `reference_spread`, because a reference is only valid with its own quote spread.
 - `python3 -m collector.test_runner` → PASS.
 - `python3 -m trading.test_engine` → PASS.
-- `npm test` → 19/19 pass (includes the new demo-default test).
-- `python3 -m site_build.build` → regenerated pages differ only in count formatting and the new
-  Flagged entries (verified by `git diff`).
+- `npm test` → 19/19 pass (includes `main`'s demo-only guard test).
+- `python3 -m site_build.build` → regenerated from the merged data. Count formatting and the new Flagged entries are present (verified by `git diff`).
 - `python3 tools/linkcheck.py` → 0 broken internal links.
 
 ## Not verified in this pass (kept as open items)

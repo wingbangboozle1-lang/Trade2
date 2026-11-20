@@ -32,19 +32,9 @@ for (const page of pages) {
     virtualConsole: vc,
   });
   const w = dom.window;
-  // jsdom has no fetch(). Serve same-origin files from the repo, exactly as the
-  // static site would, and reject every external host so the check stays offline
-  // and deterministic. Without this, desk.js throws "fetch is not defined" on load.
-  w.fetch = async (input) => {
-    const u = new URL(String(input), `http://127.0.0.1:8137/${page}`);
-    if (u.hostname !== "127.0.0.1") throw new TypeError("offline in render check: " + u.href);
-    const f = path.join(root, decodeURIComponent(u.pathname));
-    if (!fs.existsSync(f) || fs.statSync(f).isDirectory()) {
-      return { ok: false, status: 404, json: async () => { throw new Error("404"); }, text: async () => "" };
-    }
-    const body = fs.readFileSync(f, "utf8");
-    return { ok: true, status: 200, json: async () => JSON.parse(body), text: async () => body };
-  };
+  // This checker must be hermetic: prevent the desk's optional polling request
+  // from reaching the network, while still exercising its inline snapshot path.
+  w.fetch = async () => ({ ok: false, json: async () => null });
   w.HTMLCanvasElement.prototype.getContext = () =>
     new Proxy({}, { get: (t, k) => (k === "canvas" ? {} : () => {}), set: () => true });
   w.HTMLCanvasElement.prototype.getBoundingClientRect = () =>

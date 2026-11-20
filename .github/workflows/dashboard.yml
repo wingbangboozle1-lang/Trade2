@@ -3,7 +3,7 @@ name: Kalshi dashboard — collect, build, publish
 # Publishing model: Pages is the legacy branch build of `main` `/` (the only mode this
 # repository's token can use). This workflow builds the dashboard into `kalshi-dashboard/`
 # and commits it to `main`, so the site is served at /Trade2/kalshi-dashboard/ without
-# touching root files owned by other sessions.
+# touching root files owned by other sessions. The collector is locked to Kalshi demo only.
 
 on:
   schedule:
@@ -44,11 +44,11 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: state
-          key: kalshi-state-${{ github.run_id }}
+          key: kalshi-demo-state-${{ github.run_id }}
           restore-keys: |
-            kalshi-state-
+            kalshi-demo-state-
 
-      - name: Collect public Kalshi data (production by default; fails closed)
+      - name: Collect public Kalshi demo data (demo-only host guard)
         id: collect
         continue-on-error: true
         timeout-minutes: 14
@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: state
-          key: kalshi-state-${{ github.run_id }}
+          key: kalshi-demo-state-${{ github.run_id }}
 
       - name: Record run result (always; published so the site and reviewers can see it)
         if: always()
