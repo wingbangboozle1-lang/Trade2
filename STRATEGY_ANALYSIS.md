@@ -1,5 +1,5 @@
 # Strategy lab — simulated-trade analysis and reference backtests
-_Generated 2026-11-20T19:20:33Z by `tools/strategy_lab.py` from the repo's published simulated-trade data and recorded demo candlesticks. All figures are **computed from simulated/demo data** — not verified live performance, not investment advice. Kalshi's demo environment uses mock funds and its market behaviour may not reflect production ([Demo environment](https://docs.kalshi.com/getting_started/demo_env))._
+_Generated 2026-11-20T19:28:30Z by `tools/strategy_lab.py` from the repo's published simulated-trade data and recorded demo candlesticks. All figures are **computed from simulated/demo data** — not verified live performance, not investment advice. Kalshi's demo environment uses mock funds and its market behaviour may not reflect production ([Demo environment](https://docs.kalshi.com/getting_started/demo_env))._
 Fee model used throughout: taker fee = round_up(0.07 * C * P * (1 - P)) to the cent (https://kalshi.com/docs/kalshi-fee-schedule.pdf).
 ## 1. Data sources (provenance)
 | Book | Engine file | Round-trips (closed / open) | Rows carry official source links |
