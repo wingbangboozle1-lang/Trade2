@@ -86,10 +86,12 @@ def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
             series = event.get("series_ticker")
             if series in series_tickers:
                 events[event["event_ticker"]] = event
-    # Any resolved series whose events did not come back by category (for
-    # example because its primary category differs from the discovery category).
+    # Fallback only. The category query above is authoritative for these topics;
+    # this catches a series whose primary category differs from the discovery
+    # category. It is capped tightly because one extra request per series is
+    # what blew the time budget when it was allowed to run to 60.
     missing = series_tickers - {e.get("series_ticker") for e in events.values()}
-    for series in sorted(missing)[:60]:
+    for series in sorted(missing)[:5]:
         try:
             batch = client.events(status="open", series_ticker=series,
                                   with_nested_markets="true", limit=200)
@@ -154,6 +156,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     started = time.time()
     deadline = started + budget_seconds
     now = started
+    timings: dict[str, float] = {}
+
+    def lap(label: str, since: float) -> float:
+        mark = time.time()
+        timings[label] = round(timings.get(label, 0.0) + mark - since, 2)
+        return mark
     client = KalshiClient(DEMO_REST)
 
     exchange = {}
@@ -171,6 +179,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     history = load_json(HISTORY_PATH, {"series": {}})
     resolutions = load_json(RESOLUTIONS_PATH, {"resolutions": {}, "meta": {}})
 
+    series_cache = load_json(os.path.join(DATA_DIR, "series_cache.json"), {})
     holdings = {p["ticker"] for p in
                 load_json(STATE_PATH, {}).get("positions", [])
                 if p.get("status") == "open"}
@@ -181,15 +190,17 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     series_registry: dict[str, dict[str, Any]] = {}
     errors: list[str] = []
 
+    t_prev = time.time()
     for topic in topic_mod.TOPICS:
         if time.time() > deadline:
             errors.append(f"budget exhausted before topic {topic.slug}")
             continue
         try:
-            series = topic_mod.resolve_series(client, topic)
+            series = topic_mod.cached_series(client, topic, series_cache)
         except KalshiHTTPError as exc:
             errors.append(f"{topic.slug}: series discovery failed ({exc})")
             series = []
+        t_mark = lap(f"series:{topic.slug}", t_prev)
         for row in series:
             series_registry[row["ticker"]] = row
         series_tickers = {r["ticker"] for r in series}
@@ -199,6 +210,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         except KalshiHTTPError as exc:
             errors.append(f"{topic.slug}: event fetch failed ({exc})")
             events = []
+        t_mark = lap(f"events:{topic.slug}", t_mark)
 
         markets: list[dict[str, Any]] = []
         for event in events:
@@ -250,6 +262,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             if book:
                 liquidity[ticker] = alerts.analyse_liquidity(book_payload)
             observations.append(obs)
+        t_mark = lap(f"books:{topic.slug}", t_mark)
 
         per_topic[topic.slug] = {
             "label": topic.label,
@@ -259,6 +272,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "event_count": len(events),
             "market_count": len(markets),
             "tracked_market_count": len(selected),
+            "series_resolved_at": (series_cache.get(topic.slug) or {}).get("resolved_at"),
             "series": series[:400],
         }
 
@@ -278,6 +292,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             ref = bar_reference(client, stub, deadline)
             if ref:
                 references[obs.ticker] = ref
+    t_mark = lap("reference_bars", t_mark)
 
     # -- swaps ------------------------------------------------------------
     new_alerts: list[dict[str, Any]] = []
@@ -332,13 +347,16 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     # Settle anything the exchange has already resolved.
     settled_updates: list[dict[str, Any]] = []
     settled_markets = []
+    t_settle = time.time()
     if time.time() < deadline:
         try:
             settled_markets = client.markets(status="settled",
-                                             limit=min(1000, settle_scan))
+                                             limit=min(1000, settle_scan),
+                                             max_pages=3)
         except KalshiHTTPError as exc:
             errors.append(f"settled scan failed ({exc})")
 
+    lap("settled_scan", t_settle)
     for market in settled_markets:
         ticker = market.get("ticker")
         result = (market.get("result") or "").lower()
@@ -433,6 +451,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "reference_bar_seconds": BAR_SECONDS,
         "reference_bars_used": len(references),
         "run_seconds": round(time.time() - started, 1),
+        "timings": timings,
         "budget_seconds": budget_seconds,
         "errors": errors[:20],
         "strategies": STRATEGIES,
@@ -449,6 +468,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     save_json(os.path.join(DATA_DIR, "alerts.json"), {"alerts": merged})
     save_json(HISTORY_PATH, history)
     save_json(RESOLUTIONS_PATH, resolutions)
+    save_json(os.path.join(DATA_DIR, "series_cache.json"), series_cache)
     return payload
 
 

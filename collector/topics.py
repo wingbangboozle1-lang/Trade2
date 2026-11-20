@@ -175,5 +175,31 @@ def resolve_series(client, topic: Topic) -> list[dict[str, Any]]:
     return sorted(seen.values(), key=lambda s: s["ticker"])
 
 
+def cached_series(client, topic: "Topic", cache: dict[str, Any],
+                  max_age_seconds: float = 6 * 3600) -> list[dict[str, Any]]:
+    """resolve_series() with an on-disk cache.
+
+    Series metadata (title, category, settlement sources, fee type) changes on
+    the order of days, so walking every page on every 5-minute run is wasted
+    time that starves the alerting work. The cache is keyed by topic and
+    re-resolved when older than ``max_age_seconds``. The snapshot records
+    whether the series list came from cache or a fresh walk, so nothing is
+    passed off as freshly verified when it is not.
+    """
+    import time as _time
+
+    entry = cache.get(topic.slug) or {}
+    fresh = (_time.time() - float(entry.get("resolved_at") or 0)) < max_age_seconds
+    if fresh and entry.get("series"):
+        rows = entry["series"]
+        for row in rows:
+            row.setdefault("topic", topic.slug)
+            row.setdefault("source_url", f"{API_ROOT}/series/{row.get('ticker')}")
+        return rows
+    rows = resolve_series(client, topic)
+    cache[topic.slug] = {"resolved_at": _time.time(), "series": rows}
+    return rows
+
+
 def all_series(client) -> dict[str, list[dict[str, Any]]]:
     return {t.slug: resolve_series(client, t) for t in TOPICS}
