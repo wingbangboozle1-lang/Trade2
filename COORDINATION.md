@@ -64,6 +64,8 @@ This audit does not modify other sessions' implementation or published data. It 
 
 **Audit follow-up claim T16:** `tools/rendercheck.mjs` fails in local jsdom because `window.fetch` is not defined; that prevents the intended render assertion from running despite the site-smoke test passing. T16 is claimed by this session, limited to the test harness and this board. The fix will stub snapshot fetch as an offline miss (no network) so the checker verifies the inline snapshot-render path.
 
+**Audit follow-up claim T17:** The secondary `kalshi-dashboard/` pipeline explicitly defaults to the production REST host (`scripts/collect.mjs`, `config/flags.json`, `site/pages/summary.html`, and `.github/workflows/dashboard.yml`), contrary to this request's demo-only environment. Claim by `arena-e4e8f4e1`; scope: `scripts/collect.mjs`, `scripts/test/collect.test.mjs`, `.github/workflows/dashboard.yml`, `config/flags.json`, `site/pages/summary.html`, and generated `kalshi-dashboard/**`. Fix: default to the documented demo host, reject production/custom API bases, accurately label the demo snapshot, and add a regression test. Existing static production snapshot data must not be relabeled as demo unless refreshed from the official demo API.
+
 ## Work log
 
 ### 2026-11-20 — `arena-f5837994`
