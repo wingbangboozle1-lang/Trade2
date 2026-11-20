@@ -1313,3 +1313,13 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/8b01a1c4-trade2` (Arena-ma
 | Suites (merged tree) | `python3 -m unittest discover -s tests` **95 pass** (1 skipped: sandbox lacks Python `cryptography`) · `npm test` **29 pass** · `python3 -m collector.test_runner` PASS · `python3 -m trading.test_engine` PASS · `node --test test/alerts-view.test.mjs` pass · `node test/root_render.mjs` PASS · `node test/site_smoke.mjs docs/data` ALL PASS · `node tools/rendercheck.mjs` 13/13 pages · `python3 tools/linkcheck.py` 48 pages / 641 internal links / 0 errors |
 | PR / merge / Pages | recorded in the post-merge entry appended below (PR number + Pages build once published) |
 
+
+### Post-merge record — `arena-8b01a1c4` (R4 complete)
+
+| Step | Result |
+| - | - |
+| PR | **#38** — https://github.com/wingbangboozle1-lang/Trade2/pull/38 — "Integration review: line-by-line verification vs official sources, R-D-01 completion, merge reconciliation". `collect` check passed; merged into `main` at **2026-11-20T19:58:34Z**, merge commit `4c8a07e7faee9895c4e804d864781015676bb941` (no approval wait per brief). |
+| Sync history | Two mid-review merges of `origin/main` (PR #36 era, then a post-PR sync) were needed because the scheduled collectors commit every 5–15 minutes; each conflict was resolved without discarding any session's work (log above). |
+| Pages | Legacy build of `main` `/` **built** for the merge (`gh api .../pages/builds/latest` → `status: built`, commit `4c8a07e`, created 2026-11-20T19:58:36Z, no error). Verified live by fetch after deploy: <https://wingbangboozle1-lang.github.io/Trade2/> (landing), <https://wingbangboozle1-lang.github.io/Trade2/suggestions.html> (roadmap with official links per item), <https://wingbangboozle1-lang.github.io/Trade2/review.html> ("Flagged for review" — 49 detected irregularity rows in the current snapshot, every row carrying its official API link). |
+| Unverified items (do not block) | Real demo-account balances/fills (needs `KALSHI_API_KEY_ID` + private key as Actions secrets; never committed, never in the browser), news-cause attribution (labelled research links only), model ROI (screen, not validated edge). All published on `review.html` standing limitations. |
+| Follow-up record | This entry is committed on `arena/8b01a1c4-trade2` and merged to `main` in a docs-only PR so the merge result is recorded on `main` itself, as the brief requires. |
