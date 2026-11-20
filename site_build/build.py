@@ -166,6 +166,17 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     event_url = kalshi_event_url(a.get("event_ticker"), a.get("series_ticker"))
     news_url = news_search_url(title, topic_label)
     roi = f" · net ROI {pct(model_roi)}" if model_roi is not None else ""
+    badges = ""
+    repeats = int(a.get("repeat_count") or 1)
+    if repeats > 1:
+        badges += (f'<span class="tag tag-purple" title="The same step fired '
+                   f'again on later snapshots; identical rows are grouped.">'
+                   f'×{repeats} repeats</span> ')
+    if a.get("wide_spread"):
+        badges += ('<span class="flag-badge" title="The quoted YES spread is at '
+                   'least $0.10, so this midpoint is not an executable price.">'
+                   'wide spread · not executable</span> ')
+    badge_html = (f'<span class="chat-badges">{badges}</span>' if badges else "")
     return (
         f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
         f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
@@ -173,6 +184,7 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         f'target="_blank" rel="noreferrer">{esc(title)}</a> '
         f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
         f'{esc(topic)}{roi}</small>'
+        f'{badge_html}'
         f'<span class="cause-links">'
         f'<a href="{html.escape(event_url)}" target="_blank" rel="noreferrer">'
         f'Event page ↗</a>'
@@ -245,14 +257,17 @@ def build_overview(live: dict[str, Any]) -> str:
         for slug in TOPIC_ORDER)
 
     # -- the two chats -----------------------------------------------------
-    alert_rows = [alert_chat_row(a) for a in alerts[:14]]
+    # Grouped with the same rule the browser uses (assets/alerts-view.js), so
+    # the server-rendered feed and the live one agree.
+    grouped = extras.group_alerts(alerts)
+    alert_rows = [alert_chat_row(a) for a in grouped[:14]]
     if not alert_rows:
         alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
                           "in the current window yet. The feed fills as the "
                           "collector compares successive snapshots.</div>")
 
     model_rows = []
-    for a in alerts:
+    for a in grouped:
         sig = signals.get(a.get("ticker"))
         if sig and (sig.get("net_roi") or 0) >= 0.05:
             model_rows.append(alert_chat_row(a, sig.get("net_roi")))
@@ -509,7 +524,7 @@ def build_live(live: dict[str, Any]) -> str:
     # who never enable it, the table and both chats still carry real data.
     signals = {s.get("ticker"): s for s in (live.get("signals") or [])
                if s.get("ticker")}
-    alerts = live.get("alerts") or []
+    alerts = extras.group_alerts(live.get("alerts") or [])
     feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
         '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
         "feed fills as successive snapshots are compared.</div>")

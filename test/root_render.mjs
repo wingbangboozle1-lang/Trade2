@@ -77,7 +77,7 @@ for (const page of PAGES) {
   w.HTMLCanvasElement.prototype.getBoundingClientRect = () =>
     ({ width: 800, height: 260, top: 0, left: 0 });
 
-  for (const script of ["assets/nav.js", "assets/desk.js"]) {
+  for (const script of ["assets/alerts-view.js", "assets/nav.js", "assets/desk.js"]) {
     const scriptPath = path.join(ROOT, script);
     if (!fs.existsSync(scriptPath)) continue;
     try {

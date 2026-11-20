@@ -82,6 +82,85 @@ def resolution_topic(rec: dict[str, Any], series_map: dict[str, str]) -> str | N
     return series_map.get(prefix)
 
 
+#: Same threshold as the alert engine: a swing of >= $0.10 in either
+#: direction. A quoted spread at or above it means the midpoint sits inside a
+#: gap that no resting order fills, so it is displayed but never called
+#: executable.
+ALERT_THRESHOLD = 0.10
+
+
+def alert_row_key(a: dict[str, Any]) -> str:
+    """Identity of one alert row.
+
+    Two rows are the same alert when market, direction and the
+    previous -> current price pair match exactly, i.e. the engine fired on
+    the identical step again. Mirrors ``rowKey`` in ``assets/alerts-view.js``;
+    ``tests/test_alerts_view_parity.py`` asserts the two agree.
+    """
+    return "|".join([
+        str(a.get("ticker")),
+        str(a.get("direction")),
+        str(a.get("previous")),
+        str(a.get("current")),
+    ])
+
+
+def alert_spread(a: dict[str, Any]) -> float | None:
+    """The quoted YES spread in dollars, or None when either side is absent."""
+    try:
+        bid = float(a.get("yes_bid"))
+        ask = float(a.get("yes_ask"))
+    except (TypeError, ValueError):
+        return None
+    return ask - bid
+
+
+def group_alerts(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Collapse repeated alert rows, exactly as the browser does.
+
+    The collector compares book midpoints between reference bars, so one
+    sustained >= $0.10 move can re-fire on several consecutive snapshots and
+    produce identical feed rows. Grouping them keeps first-appearance order,
+    the most recent occurrence time, a repeat count, and flags a row whose
+    quoted spread is wider than the alert threshold.
+
+    Mirrors ``dedupeAlerts`` in ``assets/alerts-view.js``. The raw rows are
+    never deleted from the snapshot; this only shapes what is displayed.
+    """
+    out: list[dict[str, Any]] = []
+    index: dict[str, dict[str, Any]] = {}
+    for a in alerts or []:
+        if not isinstance(a, dict):
+            continue
+        key = alert_row_key(a)
+        spread = alert_spread(a)
+        row = index.get(key)
+        if row is None:
+            row = dict(a)
+            row["repeat_count"] = 1
+            row["last_iso"] = a.get("iso")
+            row["last_ts"] = a.get("ts")
+            row["spread"] = spread
+            row["wide_spread"] = spread is not None and spread >= ALERT_THRESHOLD
+            index[key] = row
+            out.append(row)
+            continue
+        row["repeat_count"] = row.get("repeat_count", 1) + 1
+        ts = a.get("ts")
+        last_ts = row.get("last_ts")
+        if isinstance(ts, (int, float)) and (last_ts is None or ts > last_ts):
+            row["last_ts"] = ts
+        iso = a.get("iso")
+        if iso and (not row.get("last_iso") or iso > row["last_iso"]):
+            row["last_iso"] = iso
+        # Latest quotes win.
+        row["yes_bid"] = a.get("yes_bid")
+        row["yes_ask"] = a.get("yes_ask")
+        row["spread"] = spread
+        row["wide_spread"] = spread is not None and spread >= ALERT_THRESHOLD
+    return out
+
+
 def age_label(generated_at: Any, generated_at_ts: Any = None) -> str:
     """Human age of the snapshot, so a stale view is never read as live."""
     ts = None
