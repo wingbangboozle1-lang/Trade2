@@ -1203,3 +1203,17 @@ table tr.topic-head th a { font-weight: 700; font-size: 13px; }
 .eq-line { fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linejoin: round; }
 .eq-dot { fill: #fff; stroke: var(--green); stroke-width: 1.8; }
 .eq-label { font-size: 10.5px; fill: var(--muted); font-family: system-ui, sans-serif; }
+
+/* ------------------------------------------------------------------ */
+/* Session arena-dc732aa6 — what a swing row is allowed to claim.      */
+/* ------------------------------------------------------------------ */
+
+/* The collector's executability verdict and the pre-rule marker for rows
+   written before it stated a price basis. */
+.tag-grey { background: #f0f4f2; color: #71807b; }
+
+/* Candidate-catalyst line under a chat row. The label is the point: the link is
+   a place that was published at the same time, never a proven cause. */
+.cause-label { color: var(--muted); font-size: 10.5px; }
+.cause-none { color: var(--muted); font-size: 10.5px; font-style: italic; }
+.cause-links .cause-none { border-bottom: none; }
