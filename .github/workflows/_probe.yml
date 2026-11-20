@@ -7,41 +7,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Probe Kalshi demo REST
+      - name: Probe CORS variants
         run: |
           mkdir -p data
-          {
-            echo "=== exchange/status headers+body ==="
-            curl -sS -m 25 -D /tmp/h1.txt -o /tmp/b1.json -w "HTTP:%{http_code}\n" \
-              https://external-api.demo.kalshi.co/trade-api/v2/exchange/status || echo CURLFAIL
-            cat /tmp/h1.txt || true
-            echo "--- body ---"
-            head -c 500 /tmp/b1.json || true
-            echo
-            echo "=== markets headers ==="
-            curl -sS -m 25 -D /tmp/h2.txt -o /tmp/b2.json -w "HTTP:%{http_code}\n" \
-              "https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&limit=1" || echo CURLFAIL
-            grep -iE "access-control|content-type|server|via" /tmp/h2.txt || true
-            echo "=== OPTIONS preflight (browser CORS) ==="
-            curl -sS -m 25 -X OPTIONS -D /tmp/h3.txt -o /dev/null -w "HTTP:%{http_code}\n" \
-              -H "Origin: https://wingbangboozle1-lang.github.io" \
-              -H "Access-Control-Request-Method: GET" \
-              https://external-api.demo.kalshi.co/trade-api/v2/markets || echo CURLFAIL
-            grep -iE "access-control" /tmp/h3.txt || echo "NO-CORS-HEADERS"
-            echo "=== orderbook sample ==="
-            T=$(python3 -c "import json;print(json.load(open('/tmp/b2.json'))['markets'][0]['ticker'])")
-            echo "ticker=$T"
-            curl -sS -m 25 -o /tmp/ob.json -w "HTTP:%{http_code}\n" \
-              "https://external-api.demo.kalshi.co/trade-api/v2/markets/$T/orderbook" || echo CURLFAIL
-            head -c 600 /tmp/ob.json || true
-            echo
-            echo "date=$(date -u +%FT%TZ) runner=$RUNNER_OS"
-          } > data/_probe.txt 2>&1
-          cat data/_probe.txt
-      - name: Commit probe
+          U=https://external-api.demo.kalshi.co/trade-api/v2/markets
+          for O in "https://wingbangboozle1-lang.github.io" "http://localhost:8000" "https://evil.example.com" "null"; do
+            echo "### Origin: $O"
+            curl -sS -m 20 -X OPTIONS -D - -o /dev/null \
+              -H "Origin: $O" -H "Access-Control-Request-Method: GET" "$U" \
+              | grep -iE "^HTTP|access-control-allow-origin" || echo "none"
+          done
+          echo "### GET with Origin header (actual response)"
+          curl -sS -m 20 -D - -o /dev/null -H "Origin: https://wingbangboozle1-lang.github.io" "$U?limit=1" \
+            | grep -iE "^HTTP|access-control|vary" || echo none
+          echo "### unauthenticated rate-limit headers"
+          curl -sS -m 20 -D - -o /dev/null "https://external-api.demo.kalshi.co/trade-api/v2/exchange/status" | grep -i ratelimit || echo "no ratelimit headers"
+        > data/_cors.txt 2>&1
+        - name: Commit
         run: |
-          git config user.name "kalshi-collector-bot"
-          git config user.email "actions@github.com"
-          git add data/_probe.txt
-          git commit -m "chore: egress probe result [skip ci]" || echo "no change"
-          git push || git pull --rebase && git push
+          git config user.name bot; git config user.email bot@users.noreply.github.com
+          git add data/_cors.txt; git commit -m "chore: cors probe [skip ci]" || true; git push
