@@ -26,7 +26,7 @@ from collector.collector import LIVE_PATH, load_json
 from . import extras, flagpage
 from .format import (API, count, cents, esc, kalshi_event_url,
                      kalshi_market_url, money, news_search_url, num, pct,
-                     result_chip)
+                     result_chip, safe_url)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://wingbangboozle1-lang.github.io/Trade2"
@@ -148,6 +148,32 @@ def topbar(crumb: str, generated: str, prefix: str = "",
 # Overview
 # ---------------------------------------------------------------------------
 
+def model_shortlist(live: dict[str, Any]) -> list[dict[str, Any]]:
+    """The swing rows the model likes, with its net ROI attached.
+
+    One gate for every renderer. The collector publishes ``high_roi_alerts`` from
+    ``alerts.MODEL_MIN_NET_ROI``, so the overview, the live desk and the browser
+    cannot each invent their own threshold. For a snapshot written before that
+    field existed the published number is still read out of ``model_gate`` rather
+    than hard-coded a second time.
+    """
+    published = live.get("high_roi_alerts")
+    if isinstance(published, list) and published:
+        return published
+    gate = (live.get("model_gate") or {}).get("min_net_roi")
+    threshold = float(gate) if gate is not None else 0.05
+    signals = {x.get("ticker"): x for x in (live.get("signals") or [])
+               if x.get("ticker")}
+    out = []
+    for a in (live.get("alerts") or []):
+        sig = signals.get(a.get("ticker"))
+        if sig and (sig.get("net_roi") or 0) >= threshold:
+            row = dict(a)
+            row["model_net_roi"] = sig.get("net_roi")
+            out.append(row)
+    return out
+
+
 def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     """One row of a swing chat.
 
@@ -176,15 +202,59 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         badges += ('<span class="flag-badge" title="The quoted YES spread is at '
                    'least $0.10, so this midpoint is not an executable price.">'
                    'wide spread · not executable</span> ')
+    # The collector stamps a verdict on every row it writes. A row without one
+    # predates the rule and is labelled as such instead of being assumed
+    # executable — the same no-claim discipline the tables use for blanks.
+    quality = a.get("quality")
+    if quality == "executable":
+        badges += ('<span class="tag tag-yes" title="Both sides quoted, and the '
+                   'YES spread is tighter than the $0.10 threshold, so the midpoint '
+                   'sits inside a range a trader could transact in.">executable'
+                   '</span> ')
+    elif quality == "indicative":
+        badges += (f'<span class="flag-badge" title="'
+                   f'{esc(a.get("quality_reason") or "")}">indicative · not '
+                   f'executable</span> ')
+    elif quality is None:
+        badges += ('<span class="tag tag-grey" title="Written before the collector '
+                   'stated a price basis per row; no executability claim is made '
+                   'either way.">pre-rule row</span> ')
     badge_html = (f'<span class="chat-badges">{badges}</span>' if badges else "")
+    # What the two numbers being subtracted actually are. Stated on the row so a
+    # mid-vs-mid step is never mistaken for two prints.
+    basis = str(a.get("reference_basis") or "").strip()
+    basis_html = f" · {esc(basis)}" if basis else ""
+    depth_html = ""
+    if a.get("spread") is not None:
+        size = a.get("size_at_top")
+        depth = (f"{count(size)} contracts at the level" if size is not None
+                 else "no resting size at the level")
+        depth_html = f' · YES spread {cents(a.get("spread"))} · {depth}'
+    # Headlines the collector found inside ± six hours of the move. Labelled
+    # candidates: no row on this site claims that an article caused a price.
+    causes = []
+    for head in (a.get("news") or [])[:2]:
+        href = safe_url(head.get("url"))
+        label = str(head.get("title") or "").strip()
+        if href and label:
+            causes.append(f'<a href="{href}" target="_blank" rel="noreferrer noopener">'
+                          f'{esc(label)} ↗</a>')
+    if causes:
+        news_html = ('<span class="cause-links"><span class="cause-label">candidate '
+                     'headline, not confirmed:</span>' + " ".join(causes) + "</span>")
+    else:
+        why = str(a.get("news_status") or "no news lookup recorded for this row").strip()
+        news_html = (f'<span class="cause-links"><span class="cause-none" title="'
+                     f'{esc(why)}">no verified news link · {esc(why)}</span></span>')
     return (
         f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
         f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
-        f'<span class="chat-body"><a href="{html.escape(market_url)}" '
+        f'<span class="chat-body"><a href="{safe_url(market_url) or "#"}" '
         f'target="_blank" rel="noreferrer">{esc(title)}</a> '
         f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-        f'{esc(topic)}{roi}</small>'
+        f'{esc(topic)}{roi}{basis_html}{depth_html}</small>'
         f'{badge_html}'
+        f'{news_html}'
         f'<span class="cause-links">'
         f'<a href="{html.escape(event_url)}" target="_blank" rel="noreferrer">'
         f'Event page ↗</a>'
@@ -221,7 +291,7 @@ def build_overview(live: dict[str, Any]) -> str:
         for e in by_topic[slug][:6]:
             rows.append(
                 "<tr>"
-                f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+                f'<td><a href="{safe_url(e.get("market_url","")) or "#"}" target="_blank" '
                 f'rel="noreferrer">{esc(e.get("title"))}</a>'
                 f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
                 f"<td>{cents(e.get('yes_bid'))}</td>"
@@ -262,15 +332,24 @@ def build_overview(live: dict[str, Any]) -> str:
     grouped = extras.group_alerts(alerts)
     alert_rows = [alert_chat_row(a) for a in grouped[:14]]
     if not alert_rows:
-        alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
-                          "in the current window yet. The feed fills as the "
-                          "collector compares successive snapshots.</div>")
+        refused_n = len(live.get("suppressed_alerts") or [])
+        alert_rows.append(
+            '<div class="empty-state inline">No ≥ $0.10 swing on a two-sided book in '
+            "the current buffer. "
+            + (f"{refused_n} midpoint move{'s' if refused_n != 1 else ''} the quote "
+               'rule refused '
+               f'{"are" if refused_n != 1 else "is"} listed with the reason on '
+               '<a href="review.html#refused">Flagged for review</a>. '
+               if refused_n else
+               "The feed fills as the collector compares successive snapshots. ")
+            + "</div>")
 
     model_rows = []
+    shortlist = {a.get("ticker"): a for a in model_shortlist(live)}
     for a in grouped:
-        sig = signals.get(a.get("ticker"))
-        if sig and (sig.get("net_roi") or 0) >= 0.05:
-            model_rows.append(alert_chat_row(a, sig.get("net_roi")))
+        pick = shortlist.get(a.get("ticker"))
+        if pick is not None:
+            model_rows.append(alert_chat_row(a, pick.get("model_net_roi")))
     if not model_rows:
         picks = sorted(signals.values(),
                        key=lambda s: s.get("score") or 0, reverse=True)[:8]
@@ -278,7 +357,7 @@ def build_overview(live: dict[str, Any]) -> str:
             model_rows.append(
                 f'<div class="chat-row"><time>{html.escape((sig.get("ts") and time.strftime("%H:%M", time.gmtime(sig["ts"])) or ""))}</time>'
                 f'<span class="chat-delta up">★ {pct(sig.get("net_roi"))}</span>'
-                f'<span class="chat-body"><a href="{html.escape(sig.get("market_url",""))}" '
+                f'<span class="chat-body"><a href="{safe_url(sig.get("market_url","")) or "#"}" '
                 f'target="_blank" rel="noreferrer">{esc(sig.get("title"))}</a> '
                 f'<small>{esc((sig.get("side") or "").upper())} at '
                 f'{cents(sig.get("executable_price"))} · {esc(sig.get("topic"))} · '
@@ -389,7 +468,7 @@ def build_topic(slug: str, live: dict[str, Any],
     for e in events[:60]:
         market_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+            f'<td><a href="{safe_url(e.get("market_url","")) or "#"}" target="_blank" '
             f'rel="noreferrer">{esc(e.get("title"))}</a>'
             f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
             f"<td>{cents(e.get('yes_bid'))}</td>"
@@ -417,7 +496,7 @@ def build_topic(slug: str, live: dict[str, Any],
             f"<td>{cents(r.get('settlement_value_dollars'))}</td>"
             f"<td>{esc((r.get('settlement_ts') or '')[:19].replace('T',' '))}</td>"
             f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-            f'href="{html.escape(r.get("source_url",""))}">API ↗</a></td>'
+            f'href="{safe_url(r.get("source_url","")) or "#"}">API ↗</a></td>'
             "</tr>")
     if not res_rows:
         res_rows.append('<tr><td colspan="5" class="empty-state">'
@@ -542,10 +621,11 @@ def build_live(live: dict[str, Any]) -> str:
         '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
         "feed fills as successive snapshots are compared.</div>")
     model_rows = []
+    shortlist = {a.get("ticker"): a for a in model_shortlist(live)}
     for a in alerts:
-        sig = signals.get(a.get("ticker"))
-        if sig and (sig.get("net_roi") or 0) >= 0.05:
-            model_rows.append(alert_chat_row(a, sig.get("net_roi")))
+        pick = shortlist.get(a.get("ticker"))
+        if pick is not None:
+            model_rows.append(alert_chat_row(a, pick.get("model_net_roi")))
     if not model_rows:
         model_html = ('<div class="empty-state inline">Nothing clears the '
                       "model's net-ROI gate right now. An empty feed is an "
@@ -566,7 +646,7 @@ def build_live(live: dict[str, Any]) -> str:
             roi_cell = pct(sig.get("net_roi"))
         desk_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+            f'<td><a href="{safe_url(e.get("market_url","")) or "#"}" target="_blank" '
             f'rel="noreferrer">{esc(e.get("title"))}</a>'
             f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
             f"<td>{esc(e.get('topic'))}</td>"
@@ -793,7 +873,7 @@ def build_performance_section(live: dict[str, Any]) -> str:
     for pos in (p.get("settled_positions") or [])[:50]:
         settled_rows.append(
             "<tr>"
-            f"<td><a href=\"{html.escape(pos.get('market_url',''))}\" target=\"_blank\" "
+            f"<td><a href=\"{safe_url(pos.get('market_url','')) or '#'}\" target=\"_blank\" "
             f"rel=\"noreferrer\">{esc(pos.get('title'))}</a>"
             f"<small class=\"ticker\">{esc(pos.get('ticker'))}</small></td>"
             f"<td>{esc(pos.get('strategy'))}</td><td>{esc(pos.get('side'))}</td>"

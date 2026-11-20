@@ -71,6 +71,27 @@ jobs:
       - name: Link check
         run: python3 tools/linkcheck.py
 
+      # Added by session arena-dc732aa6 (R-D-01): the two scrolling chats, the
+      # price-basis badges and the snapshot-age label are rendered by
+      # assets/desk.js, which tools/rendercheck.mjs cannot execute (jsdom does
+      # not fetch external scripts). This step runs the page + script together
+      # against the published snapshot. It skips loudly if jsdom cannot be
+      # installed, so an infra problem never fails a collection run silently.
+      - name: Desk render check (browser path)
+        run: |
+          # jsdom is a declared dependency now; the install below is only a
+          # fallback for a runner that skipped npm install, and the step becomes
+          # a notice instead of a false failure if the registry is unreachable.
+          if ! node -e 'require.resolve("jsdom")' >/dev/null 2>&1; then
+            npm install --no-save --no-audit --no-fund jsdom >/dev/null 2>&1 || true
+            git checkout -- package.json package-lock.json 2>/dev/null || true
+          fi
+          if node -e 'require.resolve("jsdom")' >/dev/null 2>&1; then
+            node test/desk_render_dc732aa6.mjs
+          else
+            echo "::notice::jsdom unavailable — desk render check skipped"
+          fi
+
       - name: Commit data
         run: |
           git config user.name  "kalshi-collector[bot]"
