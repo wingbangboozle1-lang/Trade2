@@ -1,5 +1,5 @@
 {
- "bankroll": 9023.68,
+ "bankroll": 8831.08,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -38,8 +38,8 @@
    "entry_price": 0.06,
    "entry_ts": 1795202282.6330771,
    "entry_fee": 12.88,
-   "current_price": 0.04,
-   "unrealized": -65.2438,
+   "current_price": 0.015,
+   "unrealized": -146.7986,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -110,8 +110,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795204857.7884183,
    "entry_fee": 12.4,
-   "current_price": 0.04,
-   "unrealized": 0.0,
+   "current_price": 0.025,
+   "unrealized": -69.1536,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -121,6 +121,30 @@
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B37500",
    "bankroll_at_entry": 9023.6804
+  },
+  {
+   "position_id": "pos-a52cc4d013",
+   "ticker": "KXHOUSEPOPVOTEMARGIN-27NOV03-B58",
+   "event_ticker": "KXHOUSEPOPVOTEMARGIN-27NOV03",
+   "topic": "elections",
+   "title": "Democrats, 16% and above",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4511.84,
+   "entry_price": 0.04,
+   "entry_ts": 1795206521.485993,
+   "entry_fee": 12.13,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 26% on a 0.03 spread",
+   "market_url": "https://kalshi.com/markets/KXHOUSEPOPVOTEMARGIN/KXHOUSEPOPVOTEMARGIN-27NOV03-B58",
+   "bankroll_at_entry": 8831.0764
   }
  ],
  "trades": [
@@ -198,6 +222,19 @@
    "contracts": 4610.24,
    "price": 0.04,
    "fee": 12.4,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 26% on a 0.03 spread"
+  },
+  {
+   "trade_id": "tr-be5d45f880",
+   "ts": 1795206521.485993,
+   "ticker": "KXHOUSEPOPVOTEMARGIN-27NOV03-B58",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4511.84,
+   "price": 0.04,
+   "fee": 12.13,
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.03 spread"
@@ -377,6 +414,12 @@
    "equity": 9659.02,
    "realized": -166.91,
    "open": 759.17
+  },
+  {
+   "ts": 1795206412.3552172,
+   "equity": 9496.18,
+   "realized": -166.91,
+   "open": 939.64
   }
  ],
  "started_at": 1795182592.2117689
