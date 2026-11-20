@@ -1436,3 +1436,21 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/8b01a1c4-trade2` (Arena-ma
 | Pages | Legacy build of `main` `/` **built** for the merge (`gh api .../pages/builds/latest` → `status: built`, commit `4c8a07e`, created 2026-11-20T19:58:36Z, no error). Verified live by fetch after deploy: <https://wingbangboozle1-lang.github.io/Trade2/> (landing), <https://wingbangboozle1-lang.github.io/Trade2/suggestions.html> (roadmap with official links per item), <https://wingbangboozle1-lang.github.io/Trade2/review.html> ("Flagged for review" — 49 detected irregularity rows in the current snapshot, every row carrying its official API link). |
 | Unverified items (do not block) | Real demo-account balances/fills (needs `KALSHI_API_KEY_ID` + private key as Actions secrets; never committed, never in the browser), news-cause attribution (labelled research links only), model ROI (screen, not validated edge). All published on `review.html` standing limitations. |
 | Follow-up record | This entry is committed on `arena/8b01a1c4-trade2` and merged to `main` in a docs-only PR so the merge result is recorded on `main` itself, as the brief requires. |
+
+## Session claim — `arena-901c3b83` (2026-11-20)
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-901-1 | Audit the shared coordination board for stale branch/status claims and document findings without changing implementation or published data | done (`BOARD_AUDIT_901c3b83.md`) | `arena-901c3b83` | `COORDINATION.md` (append-only), `BOARD_AUDIT_901c3b83.md` |
+
+This is a coordination-integrity review only. It does not overlap the existing implementation/data audits and does not edit the site, collector, or generated content.
+
+### T-901-1 closeout — `arena-901c3b83`
+
+- **Official endpoint verification:** fetched and compared Kalshi's [demo environment](https://docs.kalshi.com/getting_started/demo_env) and [API environments](https://docs.kalshi.com/getting_started/api_environments) pages. The documented recommended demo REST root, alternate REST root, and both WebSocket roots match the repository configuration.
+- **Build/publication:** GitHub Pages latest build API reported `built` with no error for `eef1243977f90205021faedc3507a697dc83f109` at 2026-11-20T20:01:16Z; [published site](https://wingbangboozle1-lang.github.io/Trade2/). Current branch collector run [44807952089](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44807952089) succeeded, but its API probe/data-collection stages were skipped for the push event (not represented as a fresh market-data run).
+- **Local verification:** 174 Python tests passed / 1 skipped; npm 29/29; root render 13 pages; `tools/rendercheck.mjs` 13 pages; site smoke checks passed; collector and trading-engine fixtures passed; internal-link check 50 pages / 666 links / 0 errors.
+- **Row-source audit:** `tools/rowsource_check.py` found 332/332 root-market and 40/40 docs-market rows with demo source URLs and zero missing primary source URLs. It listed 182 partial/issue rows; 142 root-market rows and 40 docs-market rows have one or more blank value fields. These blanks remain unverified and were not filled. Generated audit outputs were restored after this read-only inspection.
+- **Irregularities left for review:** PR [#28](https://github.com/wingbangboozle1-lang/Trade2/pull/28) is open with a failed `Desk render check (browser path)` in run [44807390799](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44807390799). GitHub's failed-log retrieval returned EOF, so the cause is unverified; no peer code was changed. PR [#29](https://github.com/wingbangboozle1-lang/Trade2/pull/29) was also open at audit time. Coordination inconsistency: T34 in the `arena-5bec0ea3` board remains `in progress` while its appended final record says PRs #30/#33 merged and post-merge checks passed. The peer-owned row was not edited.
+- **Limits:** real demo account balances/orders/fills remain unverified because credentials are absent; the Kalshi demo docs note credentials are separate from production and demo market behavior may differ. This audit makes no claim that the model has a profitable edge or that news links establish causation.
+- Full evidence and all commands are recorded in `BOARD_AUDIT_901c3b83.md`. No product code, market snapshots, or generated site pages were changed.
