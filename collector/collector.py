@@ -40,7 +40,10 @@ VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
-REFERENCE_MARKET_CAP = 120  # markets per topic to ask for a reference bar
+REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
+# Reserve part of the budget for reference bars, alerts and settlement so the
+# discovery phase can never consume the whole run.
+DISCOVERY_SHARE = 0.55
 
 
 def iso(ts: float | None = None) -> str:
@@ -190,10 +193,11 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     series_registry: dict[str, dict[str, Any]] = {}
     errors: list[str] = []
 
+    discovery_deadline = started + budget_seconds * DISCOVERY_SHARE
     t_prev = time.time()
     for topic in topic_mod.TOPICS:
-        if time.time() > deadline:
-            errors.append(f"budget exhausted before topic {topic.slug}")
+        if time.time() > discovery_deadline:
+            errors.append(f"discovery budget exhausted before topic {topic.slug}")
             continue
         try:
             series = topic_mod.cached_series(client, topic, series_cache)
