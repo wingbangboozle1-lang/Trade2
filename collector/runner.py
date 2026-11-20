@@ -274,7 +274,17 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         "volume_24h_fp": fnum(m.get("volume_24h_fp")),
         "notional_usd": round(market_notional(m), 2) if volume is not None else None,
         "open_interest_fp": fnum(m.get("open_interest_fp")),
-        "expected_expiration": m.get("expected_expiration_ts"),
+        # The market object's own field is `expected_expiration_time` (an ISO
+        # string) — verified against six live GET /markets/{ticker} responses on
+        # 2026-11-20, every one of which carries that key and none of which
+        # carries `expected_expiration_ts`. The old key was never returned, so
+        # this column published blank for all 40 rows and the blank was flagged
+        # as "unconfirmable" when it was confirmable all along. The value is
+        # copied verbatim; nothing is reformatted or converted here.
+        "expected_expiration": m.get("expected_expiration_time"),
+        # `fee_type` is a *series* field (GET /series), not a market field, so it
+        # is legitimately absent from this response. Left blank + flagged rather
+        # than joined from another endpoint, which would need its own source link.
         "fee_type": m.get("fee_type"),
         "price_level_structure": m.get("price_level_structure"),
         "source_url": api_link(f"/markets/{m.get('ticker')}"),
