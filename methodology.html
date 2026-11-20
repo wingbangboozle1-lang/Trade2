@@ -29,6 +29,9 @@
           <a href="live.html"><span>◈</span> Live desk</a>
           <a href="index.html"><span>◫</span> Overview</a>
           <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="resolutions.html"><span>✓</span> Resolved</a>
+          <a href="trades.html"><span>⇄</span> Trades</a>
+          <a href="suggestions.html"><span>✦</span> Suggestions</a>
           <a href="review.html"><span>⚑</span> Flagged for review</a>
         </nav>
         <div class="sidebar-foot">
@@ -43,7 +46,8 @@
           <div class="breadcrumb">Workspace <span>/</span> Methodology</div>
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
-            <time id="updatedAt">Snapshot 2026-11-20T19:43:49Z</time>
+            <time id="updatedAt">Snapshot 2026-11-20T19:35:43Z</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795203343.6819024">23 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -97,81 +101,36 @@
           <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank"
           rel="noreferrer">official fee schedule</a>. All 42 published rows of that
           table are reproduced exactly by the implementation and are asserted in
-          <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
-          respected via each series' own <code>fee_multiplier</code>.</p>
-          <h2>The high-ROI filter (order-book model)</h2>
-          <p>The second chat is a selective filter over the same swings. It is
-          priced from the <strong>order book only</strong>, so that both ends of
-          every comparison are the same kind of number:</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Step</th><th>Rule</th><th>Source</th></tr></thead>
-              <tbody>
-                <tr><td>Fair value</td>
-                  <td><code>fair = (previous book mid + current book mid) / 2</code> —
-                  the model assumes half of a move is an overreaction that unwinds</td>
-                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
-                <tr><td>YES edge</td>
-                  <td><code>fair − implied YES ask</code> (the price you actually pay)</td>
-                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
-                <tr><td>NO edge</td>
-                  <td><code>YES bid − fair</code> (buying NO costs <code>1 − YES bid</code>)</td>
-                  <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">order book docs ↗</a></td></tr>
-                <tr><td>Fee</td>
-                  <td><code>0.07 × C × P × (1 − P)</code>, Kalshi's published taker fee</td>
-                  <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">fee schedule ↗</a></td></tr>
-                <tr><td>Net edge / ROI</td>
-                  <td><code>(edge − fee) / price</code></td>
-                  <td>computed</td></tr>
-                <tr><td>Gate 1</td><td>the book must be quoted on both sides</td>
-                  <td>order book</td></tr>
-                <tr><td>Gate 2</td><td>spread ≤ $0.20 — a wider book makes the mid meaningless</td>
-                  <td>order book</td></tr>
-                <tr><td>Gate 3</td><td>≥ 10 contracts resting on the side the model would buy</td>
-                  <td>order book</td></tr>
-                <tr><td>Gate 4</td><td>price inside Kalshi's $0.01–$0.99 grid</td>
-                  <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">markets docs ↗</a></td></tr>
-                <tr><td>Gate 5</td><td>edge after fees ≥ $0.02 and net ROI &gt; 0</td>
-                  <td>computed</td></tr>
-                <tr><td>Gate 6</td><td>the book must have moved by at least $0.10 itself — a move the book did not confirm is a single trade print, not a change in the market</td>
-                  <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">candlestick docs ↗</a></td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p>Gate 6 matters because the demo feed prints alternating trades on
-          markets whose book never moves: on <code>KXPRESNOMD-28-AKLO</code> the
-          one-minute candles alternate between $0.8030 and $0.0030 while the
-          quoted book stays at $0.0020 × $0.0030 for the whole window
-          (<a href="https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&amp;end_ts=1795200500&amp;period_interval=1"
-          target="_blank" rel="noreferrer">official candles ↗</a>). A price move the
-          book does not confirm is not a market move, so the model passes on it and
-          says why.</p>
-          <p>This is a screen, not a forecast; the performance table shows realised
-          results including every loss.</p>
-          <h2>Candidate news on a swing</h2>
-          <p>Each swing row can carry <em>candidate</em> headlines found through
-          Google News RSS by keyword and publish time
-          (<a href="https://news.google.com/rss/search" target="_blank"
-          rel="noreferrer">the feed ↗</a>). They are labelled as candidates on
-          purpose: temporal proximity is not causation, and a headline is never
-          presented as the confirmed cause of a move. Every swing row also links
-          to the exact Kalshi API response it was computed from. When no headline
-          matches the window, the row says so instead of inventing one.</p>
+          <code>tests/test_engine.py</code>. The <code>trading/</code> engine
+          respects each series' own <code>fee_multiplier</code>; the collector's
+          simulated ledger, which is what <code>trades.html</code> publishes,
+          applies a multiplier of 1 to every series because it calls
+          <code>kalshi_fee(price, contracts)</code> without one — that difference
+          is listed on <a href="review.html">Flagged for review</a> rather than
+          left implicit.</p>
+          <h2>The high-ROI filter</h2>
+          <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
+          a wide book means the mid is unreliable. Edge is fair value minus the price
+          actually paid to cross the spread. Net ROI divides edge after fees by that
+          price. A market is shortlisted only when net ROI clears the strategy's
+          threshold and the spread is tight. This is a screen, not a forecast; the
+          performance table shows realised results including every loss.</p>
           <h2>Settlement</h2>
-          <p>Positions settle from the market's official <code>result</code> field:
-          YES pays $1.00 per contract, NO pays nothing, as documented in
+          <p>Positions settle from the market's official <code>result</code> field.
+          On a <b>Yes</b> outcome, Yes contract holders receive $1.00 per contract;
+          on a <b>No</b> outcome, No contract holders receive $1.00 per contract —
+          the losing side pays nothing. Only net positions are settled. Source:
           <a href="https://docs.kalshi.com/getting_started/market_settlement"
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>
           <ul>
-            <li>A headline near a move is a candidate, never a confirmed cause. The
-            alert always links to the official Kalshi market response as well.</li>
+            <li>No news article is attributed to a price move. The alert links to
+            the market, not to a cause we cannot verify.</li>
             <li>The paper ledger is not your demo account balance. Authenticated
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
-            <li>The model's fair value is a rule, not a forecast of where a price
-            will settle.</li>
           </ul>
+          <h2>Last automated verification run</h2>
           <p>Every published row links to the exact official response it came
           from. The scheduled pipeline re-opens those responses and compares them
           with what this site shows, one market at a time. Last run
@@ -186,7 +145,7 @@
         <div class="table-wrap">
           <table>
             <thead><tr><th>Result</th><th>Source</th><th>Field</th>
-              <th>Published here</th><th>Official API</th><th>Checked</th></tr></thead>
+              <th>Published here</th><th>Official response</th><th>Checked</th></tr></thead>
             <tbody><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>ticker</code></td><td>KXPRESNOMD-28-RW</td><td>KXPRESNOMD-28-RW</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>event_ticker</code></td><td>KXPRESNOMD-28</td><td>KXPRESNOMD-28</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>status</code></td><td>active</td><td>active</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>result</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>open_interest_fp</code></td><td>189529515.91</td><td>189529515.91</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>volume_fp</code></td><td>414925093.53</td><td>414925101.74</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>notional_value_dollars</code></td><td>1.0</td><td>1.0000</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_bid</code></td><td>0.035</td><td>0.035</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_ask</code></td><td>0.038</td><td>0.038</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>ticker</code></td><td>KXPRESNOMD-28-GW</td><td>KXPRESNOMD-28-GW</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>event_ticker</code></td><td>KXPRESNOMD-28</td><td>KXPRESNOMD-28</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>status</code></td><td>active</td><td>active</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>result</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>open_interest_fp</code></td><td>169497438.62</td><td>169497438.62</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>volume_fp</code></td><td>432107426.1</td><td>432107434.46</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>notional_value_dollars</code></td><td>1.0</td><td>1.0000</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_bid</code></td><td>0.005</td><td>0.005</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_ask</code></td><td>0.006</td><td>0.006</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>ticker</code></td><td>KXPRESNOMD-28-SAS</td><td>KXPRESNOMD-28-SAS</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>event_ticker</code></td><td>KXPRESNOMD-28</td><td>KXPRESNOMD-28</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>status</code></td><td>active</td><td>active</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>result</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>open_interest_fp</code></td><td>162254359.41</td><td>162254359.41</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>volume_fp</code></td><td>358761581.77</td><td>358761587.75</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>notional_value_dollars</code></td><td>1.0</td><td>1.0000</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_bid</code></td><td>0.002</td><td>0.002</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_ask</code></td><td>0.003</td><td>0.003</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>ticker</code></td><td>KXBTCY-27JAN0100-B127500</td><td>KXBTCY-27JAN0100-B127500</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>event_ticker</code></td><td>KXBTCY-27JAN0100</td><td>KXBTCY-27JAN0100</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>status</code></td><td>active</td><td>active</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>result</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>open_interest_fp</code></td><td>39622231.36</td><td>39622240.47</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>volume_fp</code></td><td>83444119.44</td><td>83444128.55</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>notional_value_dollars</code></td><td>1.0</td><td>1.0000</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_bid</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>order book</td><td><code>best_yes_ask</code></td><td>0.01</td><td>0.01</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>ticker</code></td><td>KXBTCY-27JAN0100-B142500</td><td>KXBTCY-27JAN0100-B142500</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>event_ticker</code></td><td>KXBTCY-27JAN0100</td><td>KXBTCY-27JAN0100</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>status</code></td><td>active</td><td>active</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-yes">MATCH</span></td><td>market record</td><td><code>result</code></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500" target="_blank" rel="noreferrer">official API ↗</a></td></tr></tbody>
           </table>
         </div>

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <meta name="description" content="Simulated Kalshi demo trade ledger, strategy breakdown and equity curve." />
+    <title>Trades and strategies — Kalshi Monitor</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark">K</span
+          ><span><b>Market Desk</b><small>Kalshi · Demo monitor</small></span></a
+        >
+        <div class="side-label">Topics</div>
+        <nav class="side-nav" aria-label="Topics">
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a>
+          <a href="categories/elections.html"><span>◉</span> Elections</a>
+          <a href="categories/culture.html"><span>✳</span> Culture</a>
+          <a href="categories/crypto.html"><span>₿</span> Crypto</a>
+          <a href="categories/golf.html"><span>⛳</span> Golf</a>
+        </nav>
+        <div class="side-label">Research</div>
+        <nav class="side-nav" aria-label="Research">
+          <a href="live.html"><span>◈</span> Live desk</a>
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="resolutions.html"><span>✓</span> Resolved</a>
+          <a href="suggestions.html"><span>✦</span> Suggestions</a>
+          <a href="methodology.html"><span>⚙</span> Methodology</a>
+          <a href="review.html"><span>⚑</span> Flagged for review</a>
+        </nav>
+        <div class="sidebar-foot">
+          <span class="dot"></span><span>Public demo data</span
+          ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
+            >Open Kalshi demo ↗</a
+          >
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb">Workspace <span>/</span> Trades and strategies</div>
+          <div class="top-actions">
+            <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
+            <time id="updatedAt">Snapshot 2026-11-20T19:35:43Z</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795203343.6819024">23 min old</span>
+          </div>
+        </header>
+        <section class="page-heading">
+          <div><div class="eyebrow">SIMULATED EXECUTION · PAPER LEDGER</div>
+          <h1>Trades and strategies</h1>
+          <p>The simulated book: every trade the rule set opened, the strategy
+          that opened it, and how it resolved. Fees use Kalshi's published
+          quadratic taker formula.</p></div>
+          <span class="tag tag-purple">SIMULATED — NOT THE DEMO ACCOUNT</span>
+        </section>
+        <section class="stats-grid" aria-label="Portfolio summary">
+          <article class="stat-card"><span>Equity</span>
+            <strong>$9,676.92</strong>
+            <small>from $10,000.00</small></article>
+          <article class="stat-card"><span>Realised P&amp;L</span>
+            <strong>$0.00</strong>
+            <small>0 settled</small></article>
+          <article class="stat-card"><span>Win rate</span>
+            <strong>—</strong>
+            <small>0W / 0L</small></article>
+          <article class="stat-card"><span>Fees paid</span>
+            <strong>$51.28</strong>
+            <small>official quadratic fee</small></article>
+          <article class="stat-card"><span>Open positions</span>
+            <strong>4</strong>
+            <small>$774.76 exposure</small></article>
+        </section>
+        <div class="notice notice-warn">
+          <span>⚠</span>
+          <div><b>This is a paper ledger, not your Kalshi demo balance</b>
+          <p>Portfolio, order and fill endpoints on the demo exchange require
+          signed credentials that this repository does not hold, so no order is
+          ever sent and no demo-account balance is read. Every figure above is
+          produced by the simulator from live public prices and settled from
+          the official <code>result</code> field. Fee formula:
+          <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">official fee
+          schedule ↗</a>.</p></div>
+        </div>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">⌁</span><div>
+              <h2>Simulated equity curve</h2>
+              <p>One point per collector run, from the ledger's own equity
+              snapshot</p></div></div>
+          </div>
+          <svg class="equity-chart" viewBox="0 0 780 230" role="img" aria-label="Simulated equity curve" preserveAspectRatio="xMidYMid meet"><line x1="64" y1="196.0" x2="762" y2="196.0" class="eq-grid"/><text x="56" y="200.0" class="eq-label" text-anchor="end">$9,638</text><line x1="64" y1="151.0" x2="762" y2="151.0" class="eq-grid"/><text x="56" y="155.0" class="eq-label" text-anchor="end">$9,738</text><line x1="64" y1="106.0" x2="762" y2="106.0" class="eq-grid"/><text x="56" y="110.0" class="eq-label" text-anchor="end">$9,838</text><line x1="64" y1="61.0" x2="762" y2="61.0" class="eq-grid"/><text x="56" y="65.0" class="eq-label" text-anchor="end">$9,939</text><line x1="64" y1="16.0" x2="762" y2="16.0" class="eq-grid"/><text x="56" y="20.0" class="eq-label" text-anchor="end">$10,039</text><line x1="64" y1="33.4" x2="762" y2="33.4" class="eq-base"/><text x="762" y="28.4" class="eq-label" text-anchor="end">start $10,000</text><polyline points="64.0,33.4 77.1,33.4 97.5,33.4 113.8,33.4 131.3,33.4 165.6,33.4 187.6,33.4 197.8,33.4 211.6,33.4 220.7,33.4 229.8,33.4 301.3,33.4 307.3,33.4 315.8,39.5 323.2,73.2 329.3,73.2 334.9,73.2 344.3,73.2 435.5,95.6 541.8,95.6 653.5,95.6 696.4,73.2 710.1,95.6 723.2,78.9 741.2,173.2 762.0,178.6" class="eq-line"/><circle cx="64.0" cy="33.4" r="2.6" class="eq-dot"/><circle cx="77.1" cy="33.4" r="2.6" class="eq-dot"/><circle cx="97.5" cy="33.4" r="2.6" class="eq-dot"/><circle cx="113.8" cy="33.4" r="2.6" class="eq-dot"/><circle cx="131.3" cy="33.4" r="2.6" class="eq-dot"/><circle cx="165.6" cy="33.4" r="2.6" class="eq-dot"/><circle cx="187.6" cy="33.4" r="2.6" class="eq-dot"/><circle cx="197.8" cy="33.4" r="2.6" class="eq-dot"/><circle cx="211.6" cy="33.4" r="2.6" class="eq-dot"/><circle cx="220.7" cy="33.4" r="2.6" class="eq-dot"/><circle cx="229.8" cy="33.4" r="2.6" class="eq-dot"/><circle cx="301.3" cy="33.4" r="2.6" class="eq-dot"/><circle cx="307.3" cy="33.4" r="2.6" class="eq-dot"/><circle cx="315.8" cy="39.5" r="2.6" class="eq-dot"/><circle cx="323.2" cy="73.2" r="2.6" class="eq-dot"/><circle cx="329.3" cy="73.2" r="2.6" class="eq-dot"/><circle cx="334.9" cy="73.2" r="2.6" class="eq-dot"/><circle cx="344.3" cy="73.2" r="2.6" class="eq-dot"/><circle cx="435.5" cy="95.6" r="2.6" class="eq-dot"/><circle cx="541.8" cy="95.6" r="2.6" class="eq-dot"/><circle cx="653.5" cy="95.6" r="2.6" class="eq-dot"/><circle cx="696.4" cy="73.2" r="2.6" class="eq-dot"/><circle cx="710.1" cy="95.6" r="2.6" class="eq-dot"/><circle cx="723.2" cy="78.9" r="2.6" class="eq-dot"/><circle cx="741.2" cy="173.2" r="2.6" class="eq-dot"/><circle cx="762.0" cy="178.6" r="2.6" class="eq-dot"/><text x="64" y="220" class="eq-label">13:44</text><text x="762" y="220" class="eq-label" text-anchor="end">19:35</text></svg>
+          <div class="table-foot"><span>26 recorded points</span>
+          <span>Only observed points are drawn — no smoothing or extrapolation</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">⚙</span><div>
+              <h2>Strategy catalogue</h2>
+              <p>The rule set the simulator applies — our model, not a Kalshi
+              product</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Strategy</th><th>Category</th><th>Rule</th>
+                <th>Trades</th><th>Win rate</th><th>Realised</th><th>Fees</th></tr></thead>
+              <tbody><tr><td><b>Momentum follow</b><small class="ticker">momentum</small></td><td>swing</td><td>Enter in the direction of a &gt;= $0.10 swing when the post-swing price still leaves &gt;= 2 cents of modelled edge after fees. Holds to settlement.</td><td>0</td><td>—</td><td>$0.00</td><td>$0.00</td></tr><tr><td><b>Mean reversion</b><small class="ticker">mean-reversion</small></td><td>swing</td><td>Take the opposite side of a swing when the model&#x27;s shrunk fair value crosses back through 0.50.</td><td>0</td><td>—</td><td>$0.00</td><td>$0.00</td></tr><tr><td><b>Quiet value</b><small class="ticker">value</small></td><td>edge</td><td>No swing needed. Buy the side with the largest modelled edge after fees whenever the spread is tight and there is real book depth.</td><td>0</td><td>—</td><td>$0.00</td><td>$0.00</td></tr><tr><td><b>Resolution hold</b><small class="ticker">resolution-hold</small></td><td>carry</td><td>Buy the side already trading above 0.85 with a tight spread, betting on a clean yes/no resolution. Small payout, frequent wins, occasional total loss.</td><td>0</td><td>—</td><td>$0.00</td><td>$0.00</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">⇄</span><div>
+              <h2>Trade ledger</h2>
+              <p>Every simulated trade, in order</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>When (UTC)</th><th>Market</th><th>Strategy</th>
+                <th>Side</th><th>Action</th><th>Contracts</th><th>Price</th>
+                <th>Fee</th><th>Realised</th><th>Note</th></tr></thead>
+              <tbody><tr><td>2026-11-20 19:37</td><td><a href="https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG" target="_blank" rel="noreferrer">KXPGAR2LEAD-THRC26-GHIG</a></td><td>value</td><td>YES</td><td>open</td><td>2,343.38</td><td>$0.0800</td><td>$12.08</td><td>$0.00</td><td>net ROI 26% on a 0.05 spread</td></tr><tr><td>2026-11-20 19:27</td><td><a href="https://kalshi.com/markets/KXBTC15M/KXBTC15M-26NOV201430-30" target="_blank" rel="noreferrer">KXBTC15M-26NOV201430-30</a></td><td>value</td><td>YES</td><td>open</td><td>4,788.98</td><td>$0.0400</td><td>$12.88</td><td>$0.00</td><td>net ROI 40% on a 0.04 spread</td></tr><tr><td>2026-11-20 19:18</td><td><a href="https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64999.99" target="_blank" rel="noreferrer">KXBTCD-26NOV2017-T64999.99</a></td><td>value</td><td>YES</td><td>open</td><td>3,262.19</td><td>$0.0600</td><td>$12.88</td><td>$0.00</td><td>net ROI 38% on a 0.05 spread</td></tr><tr><td>2026-11-20 15:53</td><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500" target="_blank" rel="noreferrer">KXBTCY-27JAN0100-B87500</a></td><td>value</td><td>YES</td><td>open</td><td>5,000.00</td><td>$0.0400</td><td>$13.44</td><td>$0.00</td><td>net ROI 26% on a 0.03 spread</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">◷</span><div>
+              <h2>Open positions</h2>
+              <p>Marked to the latest observed price</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Topic</th><th>Strategy</th>
+                <th>Side</th><th>Contracts</th><th>Entry</th><th>Last</th>
+                <th>Unrealised</th></tr></thead>
+              <tbody><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500" target="_blank" rel="noreferrer">85,000 to 89,999.99</a><small class="ticker">KXBTCY-27JAN0100-B87500</small></td><td>crypto</td><td>value</td><td>YES</td><td>5,000.00</td><td>$0.0400</td><td>$0.0150</td><td>$-125.00</td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64999.99" target="_blank" rel="noreferrer">$65,000 or above</a><small class="ticker">KXBTCD-26NOV2017-T64999.99</small></td><td>crypto</td><td>value</td><td>YES</td><td>3,262.19</td><td>$0.0600</td><td>$0.0150</td><td>$-146.80</td></tr><tr><td><a href="https://kalshi.com/markets/KXBTC15M/KXBTC15M-26NOV201430-30" target="_blank" rel="noreferrer">Target Price: $58,037.85</a><small class="ticker">KXBTC15M-26NOV201430-30</small></td><td>crypto</td><td>value</td><td>YES</td><td>4,788.98</td><td>$0.0400</td><td>$0.0400</td><td>$0.00</td></tr><tr><td><a href="https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG" target="_blank" rel="noreferrer">Garrick Higgo</a><small class="ticker">KXPGAR2LEAD-THRC26-GHIG</small></td><td>golf</td><td>value</td><td>YES</td><td>2,343.38</td><td>$0.0800</td><td>$0.0800</td><td>$0.00</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">✓</span><div>
+              <h2>Settled positions</h2>
+              <p>How each simulated trade actually resolved</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Strategy</th><th>Side</th>
+                <th>Entry</th><th>Result</th><th>P&amp;L</th></tr></thead>
+              <tbody><tr><td colspan="6" class="empty-state">No simulated position has resolved yet.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▦</span><div>
+              <h2>Results by topic</h2>
+              <p>Which subject areas the rule set is actually good at</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Topic</th><th>Trades</th><th>Win rate</th>
+              <th>Realised</th><th>Expectancy</th></tr></thead>
+              <tbody><tr><td colspan="5" class="empty-state">No settled trade yet.</td></tr></tbody></table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▦</span><div>
+              <h2>Results by trade type</h2>
+              <p>Categorised by the kind of trade the strategy is</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Trade type</th><th>Trades</th><th>Win rate</th>
+              <th>Realised</th></tr></thead>
+              <tbody><tr><td>carry</td><td>0</td><td>—</td><td>$0.00</td></tr><tr><td>edge</td><td>0</td><td>—</td><td>$0.00</td></tr><tr><td>swing</td><td>0</td><td>—</td><td>$0.00</td></tr></tbody></table>
+          </div>
+        </section>
+        <footer class="site-footer">
+          <span>Simulated trading and public demo market data. Not investment advice.</span>
+          <span><a href="methodology.html">Methods &amp; sources</a>
+          <a href="review.html">Flagged for review</a></span>
+        </footer>
+      </main>
+    </div>
+    <script src="assets/alerts-view.js" defer></script>
+    <script src="assets/nav.js" defer></script>
+    <script src="assets/desk.js" defer></script>
+  </body>
+</html>

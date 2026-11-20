@@ -11,9 +11,10 @@ on:
         description: "Markets to track per topic"
         default: "150"
   push:
-    # main publishes the site; the working branch is included so the pipeline
-    # can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2"]
+    # main publishes the site; the working branches are included so the
+    # pipeline can be exercised before merge.
+    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2",
+               "arena/fb6cb424-trade2"]
 
 permissions:
   contents: write
@@ -72,8 +73,37 @@ jobs:
       - name: Rebuild static site data
         run: python3 -m site_build.build
 
+      - name: Render check (root pages must render offline with no errors)
+        run: |
+          npm ci --no-audit --no-fund
+          node test/root_render.mjs
+          # `npm ci` must not change the lock file; if it does, drop the
+          # drift so the rebase in the commit step is not blocked.
+          git checkout -- package-lock.json package.json || true
+
       - name: Link check
         run: python3 tools/linkcheck.py
+
+      # Added by session arena-dc732aa6 (R-D-01): the two scrolling chats, the
+      # price-basis badges and the snapshot-age label are rendered by
+      # assets/desk.js, which tools/rendercheck.mjs cannot execute (jsdom does
+      # not fetch external scripts). This step runs the page + script together
+      # against the published snapshot. It skips loudly if jsdom cannot be
+      # installed, so an infra problem never fails a collection run silently.
+      - name: Desk render check (browser path)
+        run: |
+          # jsdom is a declared dependency now; the install below is only a
+          # fallback for a runner that skipped npm install, and the step becomes
+          # a notice instead of a false failure if the registry is unreachable.
+          if ! node -e 'require.resolve("jsdom")' >/dev/null 2>&1; then
+            npm install --no-save --no-audit --no-fund jsdom >/dev/null 2>&1 || true
+            git checkout -- package.json package-lock.json 2>/dev/null || true
+          fi
+          if node -e 'require.resolve("jsdom")' >/dev/null 2>&1; then
+            node test/desk_render_dc732aa6.mjs
+          else
+            echo "::notice::jsdom unavailable — desk render check skipped"
+          fi
 
       - name: Commit data
         run: |

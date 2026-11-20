@@ -28,6 +28,9 @@
         <nav class="side-nav" aria-label="Research">
           <a href="live.html"><span>◈</span> Live desk</a>
           <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="resolutions.html"><span>✓</span> Resolved</a>
+          <a href="trades.html"><span>⇄</span> Trades</a>
+          <a href="suggestions.html"><span>✦</span> Suggestions</a>
           <a href="methodology.html"><span>⚙</span> Methodology</a>
           <a href="review.html"><span>⚑</span> Flagged for review</a>
         </nav>
@@ -43,7 +46,8 @@
           <div class="breadcrumb">Workspace <span>/</span> Overview</div>
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
-            <time id="updatedAt">Snapshot 2026-11-20T19:43:49Z</time>
+            <time id="updatedAt">Snapshot 2026-11-20T19:35:43Z</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795203343.6819024">23 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -55,6 +59,36 @@
           </div>
           <a class="button button-primary" href="live.html">◈ Open live desk</a>
         </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▤</span><div>
+              <h2>How to use this site</h2>
+              <p>Every page, one click away</p></div></div>
+          </div>
+          <div class="link-grid">
+            <a class="link-card" href="live.html"><b>Live desk</b><small>Two scrolling chats, the
+            price graph and the order book</small></a>
+            <a class="link-card" href="summary.html"><b>Executive summary</b><small>What this is,
+            what is live and what is simulated</small></a>
+            <a class="link-card" href="methodology.html"><b>Methodology</b><small>Every rule,
+            fee and verification step</small></a>
+            <a class="link-card" href="review.html"><b>Flagged for review</b><small>Irregularities
+            and unverified items, with sources</small></a>
+            <a class="link-card" href="categories/gas-prices.html"><b>Gas prices</b><small>Topic
+            page: markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/elections.html"><b>Elections</b><small>Topic
+            page: markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/culture.html"><b>Culture</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/crypto.html"><b>Crypto</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/golf.html"><b>Golf</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+          </div>
+          <div class="table-foot"><span>The two chats below are also on the
+          live desk</span><span>Swing chat = every ≥ $0.10 move · Model chat =
+          what the model would trade</span></div>
+        </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
             <strong>750</strong>
@@ -63,10 +97,10 @@
             <strong>0</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>3</strong>
+            <strong>4</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
-            <strong>$9,692.25</strong>
+            <strong>$9,676.92</strong>
             <small>Start $10,000.00</small></article>
           <article class="stat-card"><span>Resolved tracked</span>
             <strong>2,000</strong>
@@ -81,103 +115,95 @@
         </div>
         <section class="panel">
           <div class="panel-title">
-            <div><span class="section-icon">⌘</span><div>
-              <h2>How to use this site</h2>
-              <p>One desk, five topic pages, three reference pages. Everything
-              here is generated from the same verified snapshot.</p></div></div>
-          </div>
-          <div class="link-grid">
-            <a class="link-card" href="live.html"><span class="section-icon green">◈</span>
-              <b>Live desk</b>
-              <small>Price graph over seconds / minutes / hours, order-book depth
-              and the two scrolling alert chats.</small></a>
-            <a class="link-card" href="categories/gas-prices.html"><span class="section-icon">⌁</span>
-              <b>Gas prices</b>
-              <small>150 markets tracked ·
-              settled against AAA.</small></a>
-            <a class="link-card" href="categories/elections.html"><span class="section-icon">◉</span>
-              <b>Elections</b>
-              <small>150 markets tracked ·
-              nomination and primary markets.</small></a>
-            <a class="link-card" href="categories/culture.html"><span class="section-icon">✳</span>
-              <b>Culture</b>
-              <small>150 markets tracked ·
-              filed by Kalshi under Entertainment.</small></a>
-            <a class="link-card" href="categories/crypto.html"><span class="section-icon">₿</span>
-              <b>Crypto</b>
-              <small>150 markets tracked ·
-              price levels and 15-minute contracts.</small></a>
-            <a class="link-card" href="categories/golf.html"><span class="section-icon">⛳</span>
-              <b>Golf</b>
-              <small>150 markets tracked ·
-              PGA Tour and tournament markets.</small></a>
-            <a class="link-card" href="summary.html"><span class="section-icon">▤</span>
-              <b>Executive summary</b>
-              <small>What was built, what it measures, and the simulated
-              portfolio's results by strategy.</small></a>
-            <a class="link-card" href="methodology.html"><span class="section-icon">⚙</span>
-              <b>Methodology</b>
-              <small>Every rule, formula and endpoint, with the official source
-              for each one.</small></a>
-            <a class="link-card" href="review.html"><span class="section-icon amber">⚑</span>
-              <b>Flagged for review</b>
-              <small>Unverified values and data irregularities, each with a source
-              link so it can be checked in one click.</small></a>
-          </div>
-          <div class="table-foot"><span>Two further published views exist from
-          earlier work on this repository and are kept as independent
-          cross-checks of the same official API:
-          <a href="docs/index.html">docs/</a> and
-          <a href="kalshi-dashboard/index.html">kalshi-dashboard/</a>.</span></div>
-        </section>
-        <section class="panel">
-          <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
               <h2>Highest-dollar open events</h2>
-              <p>Ranked by open-interest value (official open_interest_fp ×
-              notional_value_dollars)</p></div></div>
+              <p>Grouped by topic, each topic ranked by open-interest value
+              (official open_interest_fp × notional_value_dollars)</p></div></div>
             <a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/events?status=open" target="_blank"
                rel="noreferrer">Events API ↗</a>
           </div>
+          <div class="topic-jump"><a href="categories/gas-prices.html">Gas prices</a> · <a href="categories/elections.html">Elections</a> · <a href="categories/culture.html">Culture</a> · <a href="categories/crypto.html">Crypto</a> · <a href="categories/golf.html">Golf</a></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Event / market</th><th>Topic</th><th>YES bid</th>
+              <thead><tr><th>Event / market</th><th>YES bid</th>
                 <th>YES ask</th><th>Open interest</th><th>OI value</th>
                 <th>Volume</th><th>Source</th></tr></thead>
-              <tbody><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">Raphael Warnock</a><small class="ticker">KXPRESNOMD-28-RW</small></td><td>elections</td><td>$0.0350</td><td>$0.0380</td><td>189,529,515.91</td><td>$189,529,515.91</td><td>414,925,093.53</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">Gretchen Whitmer</a><small class="ticker">KXPRESNOMD-28-GW</small></td><td>elections</td><td>$0.0050</td><td>$0.0060</td><td>169,497,438.62</td><td>$169,497,438.62</td><td>432,107,426.10</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">Stephen A. Smith</a><small class="ticker">KXPRESNOMD-28-SAS</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>162,254,359.41</td><td>$162,254,359.41</td><td>358,761,581.77</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-ESLO" target="_blank" rel="noreferrer">Elissa Slotkin</a><small class="ticker">KXPRESNOMD-28-ESLO</small></td><td>elections</td><td>$0.0080</td><td>$0.0090</td><td>150,321,118.34</td><td>$150,321,118.34</td><td>468,264,576.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-ESLO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID" target="_blank" rel="noreferrer">Hunter Biden</a><small class="ticker">KXPRESNOMD-28-HBID</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>140,195,261.09</td><td>$140,195,261.09</td><td>537,225,699.81</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-BOBA" target="_blank" rel="noreferrer">Barack Obama</a><small class="ticker">KXPRESNOMD-28-BOBA</small></td><td>elections</td><td>$0.0020</td><td>$0.0050</td><td>137,412,877.49</td><td>$137,412,877.49</td><td>418,777,567.24</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-BS" target="_blank" rel="noreferrer">Bernie Sanders</a><small class="ticker">KXPRESNOMD-28-BS</small></td><td>elections</td><td>$0.0040</td><td>$0.0050</td><td>126,693,212.93</td><td>$126,693,212.93</td><td>430,916,074.06</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JSTE" target="_blank" rel="noreferrer">Jon Stewart</a><small class="ticker">KXPRESNOMD-28-JSTE</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>116,960,569.97</td><td>$116,960,569.97</td><td>292,805,247.45</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JSTE">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-CBOO" target="_blank" rel="noreferrer">Cory Booker</a><small class="ticker">KXPRESNOMD-28-CBOO</small></td><td>elections</td><td>$0.0060</td><td>$0.0080</td><td>102,293,176.44</td><td>$102,293,176.44</td><td>248,523,137.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-CBOO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a><small class="ticker">KXPRESNOMD-28-AKLO</small></td><td>elections</td><td>$0.0020</td><td>$0.8030</td><td>100,653,977.00</td><td>$100,653,977.00</td><td>203,084,802.53</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JP" target="_blank" rel="noreferrer">Jared Polis</a><small class="ticker">KXPRESNOMD-28-JP</small></td><td>elections</td><td>$0.0100</td><td>$0.9450</td><td>89,344,735.06</td><td>$89,344,735.06</td><td>186,515,680.47</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JP">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JTAL" target="_blank" rel="noreferrer">James Talarico</a><small class="ticker">KXPRESNOMD-28-JTAL</small></td><td>elections</td><td>$0.0170</td><td>$0.0180</td><td>82,392,481.21</td><td>$82,392,481.21</td><td>311,522,912.03</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JTAL">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-KB" target="_blank" rel="noreferrer">Katie Britt</a><small class="ticker">KXPRESNOMR-28-KB</small></td><td>elections</td><td>$0.0030</td><td>$0.0050</td><td>78,984,651.31</td><td>$78,984,651.31</td><td>94,603,152.02</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-KB">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RGAL" target="_blank" rel="noreferrer">Ruben Gallego</a><small class="ticker">KXPRESNOMD-28-RGAL</small></td><td>elections</td><td>$0.0070</td><td>$0.0080</td><td>69,954,657.27</td><td>$69,954,657.27</td><td>143,448,146.09</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RGAL">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HCLI" target="_blank" rel="noreferrer">Hillary Clinton</a><small class="ticker">KXPRESNOMD-28-HCLI</small></td><td>elections</td><td>$0.0010</td><td>$1.0000</td><td>65,512,934.40</td><td>$65,512,934.40</td><td>151,138,724.32</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HCLI">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-EKIR" target="_blank" rel="noreferrer">Erika Kirk</a><small class="ticker">KXPRESNOMR-28-EKIR</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>58,983,357.39</td><td>$58,983,357.39</td><td>80,384,335.20</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-EKIR">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GR" target="_blank" rel="noreferrer">Gina Raimondo</a><small class="ticker">KXPRESNOMD-28-GR</small></td><td>elections</td><td>$0.0100</td><td>$1.0000</td><td>53,209,336.08</td><td>$53,209,336.08</td><td>123,253,702.79</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GR">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-MC" target="_blank" rel="noreferrer">Mark Cuban</a><small class="ticker">KXPRESNOMD-28-MC</small></td><td>elections</td><td>$0.0070</td><td>$0.0080</td><td>51,700,893.89</td><td>$51,700,893.89</td><td>132,982,437.91</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-MC">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RC" target="_blank" rel="noreferrer">Roy Cooper</a><small class="ticker">KXPRESNOMD-28-RC</small></td><td>elections</td><td>$0.0020</td><td>$0.0040</td><td>50,370,696.88</td><td>$50,370,696.88</td><td>152,827,310.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RC">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AYAN" target="_blank" rel="noreferrer">Andrew Yang</a><small class="ticker">KXPRESNOMD-28-AYAN</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>47,102,934.69</td><td>$47,102,934.69</td><td>141,755,488.28</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AYAN">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GPLA" target="_blank" rel="noreferrer">Graham Platner</a><small class="ticker">KXPRESNOMD-28-GPLA</small></td><td>elections</td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>44,108,150.17</td><td>$44,108,150.17</td><td>465,856,531.27</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GPLA">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-WM" target="_blank" rel="noreferrer">Wes Moore</a><small class="ticker">KXPRESNOMD-28-WM</small></td><td>elections</td><td>$0.0250</td><td>$0.0280</td><td>43,035,547.01</td><td>$43,035,547.01</td><td>143,968,219.70</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-WM">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-MO" target="_blank" rel="noreferrer">Michelle Obama</a><small class="ticker">KXPRESNOMD-28-MO</small></td><td>elections</td><td>$0.0060</td><td>$0.0080</td><td>42,611,274.00</td><td>$42,611,274.00</td><td>148,696,802.78</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-MO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-SHS" target="_blank" rel="noreferrer">Sarah Huckabee Sanders</a><small class="ticker">KXPRESNOMR-28-SHS</small></td><td>elections</td><td>$0.0080</td><td>$0.0090</td><td>40,078,833.31</td><td>$40,078,833.31</td><td>96,280,390.26</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-SHS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">125,000 to 129,999.99</a><small class="ticker">KXBTCY-27JAN0100-B127500</small></td><td>crypto</td><td>$0.0000</td><td>$0.0100</td><td>39,622,231.36</td><td>$39,622,231.36</td><td>83,444,119.44</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500">API ↗</a></td></tr></tbody>
+              
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/gas-prices.html">Gas prices</a>
+              <span class="topic-head-meta">Top 6 of
+                150 tracked markets ·
+                162 series in scope</span>
+            </th></tr>
+            <tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.70" target="_blank" rel="noreferrer">Above 4.70</a><small class="ticker">KXAAAGASM-26NOV30-4.70</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>58,062.52</td><td>$58,062.52</td><td>58,071.52</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.50" target="_blank" rel="noreferrer">Above 4.50</a><small class="ticker">KXAAAGASM-26NOV30-4.50</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>55,576.52</td><td>$55,576.52</td><td>55,597.52</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.80" target="_blank" rel="noreferrer">Above 4.80</a><small class="ticker">KXAAAGASM-26NOV30-4.80</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>55,567.52</td><td>$55,567.52</td><td>55,571.52</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.60" target="_blank" rel="noreferrer">Above 4.60</a><small class="ticker">KXAAAGASM-26NOV30-4.60</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>41,680.64</td><td>$41,680.64</td><td>41,680.64</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.60">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.40" target="_blank" rel="noreferrer">Above 4.40</a><small class="ticker">KXAAAGASM-26NOV30-4.40</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>41,675.64</td><td>$41,675.64</td><td>41,682.64</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.40">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXAAAGASM/KXAAAGASM-26NOV30-4.00" target="_blank" rel="noreferrer">Above 4.00</a><small class="ticker">KXAAAGASM-26NOV30-4.00</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>34,905.56</td><td>$34,905.56</td><td>38,038.72</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.00">API ↗</a></td></tr>
+          </tbody>
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/elections.html">Elections</a>
+              <span class="topic-head-meta">Top 6 of
+                150 tracked markets ·
+                1,450 series in scope</span>
+            </th></tr>
+            <tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">Raphael Warnock</a><small class="ticker">KXPRESNOMD-28-RW</small></td><td>$0.0350</td><td>$0.0380</td><td>189,529,515.91</td><td>$189,529,515.91</td><td>414,925,051.00</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">Gretchen Whitmer</a><small class="ticker">KXPRESNOMD-28-GW</small></td><td>$0.0050</td><td>$0.0060</td><td>169,497,438.62</td><td>$169,497,438.62</td><td>432,107,370.45</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">Stephen A. Smith</a><small class="ticker">KXPRESNOMD-28-SAS</small></td><td>$0.0020</td><td>$0.0030</td><td>162,254,359.41</td><td>$162,254,359.41</td><td>358,761,553.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-ESLO" target="_blank" rel="noreferrer">Elissa Slotkin</a><small class="ticker">KXPRESNOMD-28-ESLO</small></td><td>$0.0080</td><td>$0.0090</td><td>150,321,076.19</td><td>$150,321,076.19</td><td>468,264,534.00</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-ESLO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID" target="_blank" rel="noreferrer">Hunter Biden</a><small class="ticker">KXPRESNOMD-28-HBID</small></td><td>$0.0020</td><td>$0.0030</td><td>140,195,234.68</td><td>$140,195,234.68</td><td>537,225,656.95</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-BOBA" target="_blank" rel="noreferrer">Barack Obama</a><small class="ticker">KXPRESNOMD-28-BOBA</small></td><td>$0.0020</td><td>$0.0050</td><td>137,412,877.49</td><td>$137,412,877.49</td><td>418,777,521.03</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA">API ↗</a></td></tr>
+          </tbody>
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/culture.html">Culture</a>
+              <span class="topic-head-meta">Top 6 of
+                150 tracked markets ·
+                789 series in scope</span>
+            </th></tr>
+            <tr><td><a href="https://kalshi.com/markets/KXCRITICSFOREIGN/KXCRITICSFOREIGN-27-LAB" target="_blank" rel="noreferrer">La Bola Negra</a><small class="ticker">KXCRITICSFOREIGN-27-LAB</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>473,339.45</td><td>$473,339.45</td><td>671,773.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXCRITICSFOREIGN/KXCRITICSFOREIGN-27-FJO" target="_blank" rel="noreferrer">Fjord</a><small class="ticker">KXCRITICSFOREIGN-27-FJO</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>27,083.16</td><td>$27,083.16</td><td>27,083.16</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXCRITICSFOREIGN/KXCRITICSFOREIGN-27-ROS" target="_blank" rel="noreferrer">Rose</a><small class="ticker">KXCRITICSFOREIGN-27-ROS</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>22,222.21</td><td>$22,222.21</td><td>22,222.21</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPERFORMBONDSONG/KXPERFORMBONDSONG-35-COL" target="_blank" rel="noreferrer">Coldplay</a><small class="ticker">KXPERFORMBONDSONG-35-COL</small></td><td>$0.0100</td><td>$1.0000</td><td>14,278.02</td><td>$14,278.02</td><td>16,069.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-COL">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPERFORMBONDSONG/KXPERFORMBONDSONG-35-SAM" target="_blank" rel="noreferrer">Sam Fender</a><small class="ticker">KXPERFORMBONDSONG-35-SAM</small></td><td>$0.0100</td><td>$1.0000</td><td>11,740.00</td><td>$11,740.00</td><td>17,401.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-SAM">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPERFORMBONDSONG/KXPERFORMBONDSONG-35-LAD" target="_blank" rel="noreferrer">Lady Gaga</a><small class="ticker">KXPERFORMBONDSONG-35-LAD</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>11,128.00</td><td>$11,128.00</td><td>18,033.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-LAD">API ↗</a></td></tr>
+          </tbody>
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/crypto.html">Crypto</a>
+              <span class="topic-head-meta">Top 6 of
+                150 tracked markets ·
+                158 series in scope</span>
+            </th></tr>
+            <tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">125,000 to 129,999.99</a><small class="ticker">KXBTCY-27JAN0100-B127500</small></td><td>$0.0000</td><td>$0.0100</td><td>39,622,187.90</td><td>$39,622,187.90</td><td>83,444,075.98</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B142500" target="_blank" rel="noreferrer">140,000 to 144,999.99</a><small class="ticker">KXBTCY-27JAN0100-B142500</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>36,300,008.35</td><td>$36,300,008.35</td><td>134,091,736.11</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B47500" target="_blank" rel="noreferrer">45,000 to 49,999.99</a><small class="ticker">KXBTCY-27JAN0100-B47500</small></td><td>$0.0500</td><td>$0.0600</td><td>26,587,933.88</td><td>$26,587,933.88</td><td>80,178,762.45</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B42500" target="_blank" rel="noreferrer">40,000 to 44,999.99</a><small class="ticker">KXBTCY-27JAN0100-B42500</small></td><td>$0.0300</td><td>$0.0400</td><td>25,229,904.76</td><td>$25,229,904.76</td><td>89,207,396.05</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B42500">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B22500" target="_blank" rel="noreferrer">20,000 to 24,999.99</a><small class="ticker">KXBTCY-27JAN0100-B22500</small></td><td>$0.0000</td><td>$0.0100</td><td>24,990,935.03</td><td>$24,990,935.03</td><td>81,873,546.09</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B22500">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B122500" target="_blank" rel="noreferrer">120,000 to 124,999.99</a><small class="ticker">KXBTCY-27JAN0100-B122500</small></td><td>$0.0000</td><td>$0.0100</td><td>23,505,711.23</td><td>$23,505,711.23</td><td>162,214,720.56</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B122500">API ↗</a></td></tr>
+          </tbody>
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/golf.html">Golf</a>
+              <span class="topic-head-meta">Top 6 of
+                150 tracked markets ·
+                104 series in scope</span>
+            </th></tr>
+            <tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-TMOO" target="_blank" rel="noreferrer">Taylor Moore</a><small class="ticker">KXPGATOUR-THRC26-TMOO</small></td><td>$0.0030</td><td>$0.0050</td><td>1,151,994.42</td><td>$1,151,994.42</td><td>1,157,483.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-MAST27-MFIT" target="_blank" rel="noreferrer">Matt Fitzpatrick</a><small class="ticker">KXPGATOUR-MAST27-MFIT</small></td><td><span class="flag-badge">UNVERIFIED</span></td><td><span class="flag-badge">UNVERIFIED</span></td><td>826,086.18</td><td>$826,086.18</td><td>826,114.18</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-SSTR" target="_blank" rel="noreferrer">Sepp Straka</a><small class="ticker">KXPGATOUR-THRC26-SSTR</small></td><td>$0.0210</td><td>$0.0250</td><td>681,894.62</td><td>$681,894.62</td><td>761,467.46</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-KROY" target="_blank" rel="noreferrer">Kevin Roy</a><small class="ticker">KXPGATOUR-THRC26-KROY</small></td><td>$0.0020</td><td>$0.0030</td><td>576,800.92</td><td>$576,800.92</td><td>580,411.40</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-KROY">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-MPEN" target="_blank" rel="noreferrer">Marco Penge</a><small class="ticker">KXPGATOUR-THRC26-MPEN</small></td><td>$0.0050</td><td>$0.0060</td><td>419,786.51</td><td>$419,786.51</td><td>429,603.34</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MPEN">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-MPAV" target="_blank" rel="noreferrer">Matthieu Pavon</a><small class="ticker">KXPGATOUR-THRC26-MPAV</small></td><td>$0.0020</td><td>$0.0030</td><td>402,893.40</td><td>$402,893.40</td><td>409,417.16</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MPAV">API ↗</a></td></tr>
+          </tbody>
             </table>
           </div>
-          <div class="table-foot"><span>Updated 2026-11-20T19:43:49Z</span>
+          <div class="table-foot"><span>Updated 2026-11-20T19:35:43Z</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
-          <div class="table-foot"><span><span class="flag-badge">UNVERIFIED</span>
-          means the official API returns no quote for that market — its book is
-          empty or the resting size is zero. The value is left blank and
-          flagged rather than filled in.</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed"><div class="empty-state inline">No ≥ $0.10 swing observed in the current window yet. The feed fills as the collector compares successive snapshots.</div></div>
-        </section>
-        <section class="panel alert-panel model-panel">
-          <div class="panel-title">
-            <div><span class="section-icon violet">★</span><div>
-              <h2>Model shortlist — what the model would trade</h2>
-              <p>Selective filter over the same swings, priced from the order
-              book only</p></div></div>
-            <span class="count-badge">3</span>
-          </div>
-          <div class="chat-feed"><div class="chat-row model-pick"><time>19:45:47</time><span class="chat-delta up">★ 890.6%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RKHA" target="_blank" rel="noreferrer">Ro Khanna</a> <small>buy YES at $0.0160 · fair $0.1685 · edge $0.1425 after $0.0100 fee · level</small><small><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RKHA" target="_blank" rel="noreferrer">API ↗</a></small></span></div><div class="chat-row model-pick"><time>19:45:47</time><span class="chat-delta up">★ 18.8%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T62999.99" target="_blank" rel="noreferrer">$63,000 or above</a> <small>buy YES at $0.1600 · fair $0.2000 · edge $0.0300 after $0.0100 fee · level</small><small><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T62999.99" target="_blank" rel="noreferrer">API ↗</a></small></span></div><div class="chat-row model-pick"><time>19:45:47</time><span class="chat-delta up">★ 3.5%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T60499.99" target="_blank" rel="noreferrer">$60,500 or above</a> <small>buy YES at $0.7900 · fair $0.8375 · edge $0.0275 after $0.0200 fee · level</small><small><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T60499.99" target="_blank" rel="noreferrer">API ↗</a></small></span></div></div>
-          <div class="alert-note">3 pick(s) from 750 markets priced. The model takes the
-          book mid before and after a move, assumes half the move is an
-          overreaction, and only keeps a side that clears $0.02 of edge after
-          Kalshi's published taker fee <em>and</em> has real resting size
-          behind it. Every verdict links to the exact API response it used.
-          Full rules on the <a href="methodology.html">methodology page</a>.</div>
+        <section class="desk-grid two-chats">
+          <article class="panel alert-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">◉</span><div>
+                <h2>Swing chat — all events</h2>
+                <p>Every observed move of at least $0.10 either way</p></div></div>
+              <a class="source-link" href="live.html">Full live desk →</a>
+            </div>
+            <div class="chat-feed tall"><div class="empty-state inline">No ≥ $0.10 swing on a two-sided book in the current buffer. The feed fills as the collector compares successive snapshots. </div></div>
+            <div class="alert-note">Each row links to the Kalshi event page —
+            which carries Kalshi's own news feed for that event — and to a
+            news search for the event title. Neither asserts a cause.</div>
+          </article>
+          <article class="panel alert-panel model-chat">
+            <div class="panel-title">
+              <div><span class="section-icon violet">★</span><div>
+                <h2>Model shortlist — high ROI</h2>
+                <p>Only the swings the model scores as high ROI</p></div></div>
+              <a class="source-link" href="trades.html">How it is scored →</a>
+            </div>
+            <div class="chat-feed tall"><div class="chat-row"><time>19:37</time><span class="chat-delta up">★ 25.8%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG" target="_blank" rel="noreferrer">Garrick Higgo</a> <small>YES at $0.0800 · golf · no ≥ $0.10 swing yet</small></span></div><div class="chat-row"><time>19:37</time><span class="chat-delta up">★ 14.4%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-MGRE" target="_blank" rel="noreferrer">Max Greyserman</a> <small>YES at $0.0900 · golf · no ≥ $0.10 swing yet</small></span></div><div class="chat-row"><time>19:37</time><span class="chat-delta up">★ 9.4%</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-JSVE" target="_blank" rel="noreferrer">Jesper Svensson</a> <small>YES at $0.1400 · golf · no ≥ $0.10 swing yet</small></span></div></div>
+            <div class="alert-note">Rule-based edge after Kalshi's published
+            taker fee. Not a prediction of profit — outcomes are scored on the
+            <a href="trades.html">trades page</a>.</div>
+          </article>
         </section>
         <footer class="site-footer">
           <span>Simulated trading and public demo market data. Not investment advice.</span>

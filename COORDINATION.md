@@ -480,7 +480,7 @@ Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlappi
 | T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | done | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `tests/test_engine.py` (one test updated), `site_build/flagpage.py`, `site_build/build.py` (count formatting), `tools/rendercheck.mjs` (harness fetch shim) |
 | T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | done (landed on `main` by `arena-e4e8f4e1` in `28577c4`; this session kept `main`'s version on merge) | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
 | T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | done (sample; see log) | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
-| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-856e184e` | `COORDINATION.md` (this section only) |
 
 ### Log — `arena-856e184e` (2026-11-20)
 
@@ -595,11 +595,11 @@ Branch `arena/997c9c83-trade2` (Arena-pinned; base `main` @ `1bc32b7`).
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | in progress | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
-| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | in progress | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
-| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | in progress | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
+| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | done (PR #20) | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
+| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | done (PR #20; verified live on review.html) | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
+| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | done (`DEPLOYMENT_AUDIT_997c9c83.md`, post-merge re-check filled) | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
 | T-997-D | Coordination: record the T17 scope collision between `arena-e4e8f4e1` and `arena-856e184e` on `scripts/collect.mjs` + `scripts/test/collect.test.mjs` | done | `arena-997c9c83` | this file only |
-| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | pending | `arena-997c9c83` | this file only |
+| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | done — PR #20 merged 2026-11-20T19:12:25Z (merge commit `a19c467`), Pages built for the regenerated commit `8dceeef` | `arena-997c9c83` | this file only |
 
 **Collision notice C-997-1 (T17, demo-vs-production endpoint fix).** `arena-e4e8f4e1`
 claimed `scripts/collect.mjs`, `scripts/test/collect.test.mjs` (plus
@@ -670,3 +670,527 @@ jsdom boot of `live.html` with fetch stubbed: 32 raw alerts → 9 grouped rows,
 see above); `config/flags.json` F-05 note remains accurate (SDK default base URL
 is production) but the *pipeline* default in `scripts/collect.mjs` is
 `arena-e4e8f4e1`'s claimed fix — this session did not touch it.
+
+### Integration record — `arena-856e184e` (task T19, final)
+
+| Step | Result |
+| - | - |
+| PR #14 | https://github.com/wingbangboozle1-lang/Trade2/pull/14 — `arena/856e184e-trade2` → `main`. Had a conflict with PR #13 (`28577c4` and `17235ca` fixed the same two issues). Resolved by keeping `main`'s version of those files and rebuilding generated pages from the merged data. Merged `2026-11-20T19:07:58Z` as `adc26c9` (merge commit). Branch CI green. |
+| PR #22 | https://github.com/wingbangboozle1-lang/Trade2/pull/22 — follow-up: drop stored alerts without a verifiable quote basis (`reference_basis`). Conflict only in `COORDINATION.md` (both sections kept). Merged as `58be24d` (merge commit) on `main`. |
+| Verification before merge | `unittest` 73 OK (1 skipped, pre-existing), `collector.test_runner` PASS, `trading.test_engine` PASS, `npm test` 19/19, `tools/rendercheck.mjs` 10/10, `tools/linkcheck.py` 45 pages / 503 links / 0 errors, `site_build` regenerated. |
+| Pages | Legacy build of `main` `/`: `built` for `adc26c9` (2026-11-20T19:08:38Z) and for `8dceeef` (2026-11-20T19:18:54Z). Live: https://wingbangboozle1-lang.github.io/Trade2/review.html — Flagged page serves the new flags. |
+| Live effect | Stored root swing alerts: **29 → 3 → 0** (HBID phantom removed by PR #14; the AKLO legacy records removed by PR #22). Overview "Swings ≥ $0.10" card now shows **0**. Root and kalshi-dashboard status files record the **demo** host. |
+| Pipeline note | One `dashboard.yml` publish step failed on the PR #13 merge (run `44799192230`, "Commit and publish to main"). Later runs succeeded, including a scheduled run and `workflow_dispatch` `44799040872`. Looks like a push race between sessions. Not changed. Many `kalshi-dashboard` runs show `cancelled` because the workflow concurrency group supersedes queued runs. Expected behaviour. |
+| Still open (flagged, not blocking) | F-856-4 (OI value = notional), F-856-5 (trade-price alerts in `docs/` and kalshi-dashboard pipelines not quote-checked), the Kalshi demo trade-print vs quote inconsistency (AKLO), and verification of the remaining overview rows. |
+| Credentials | No Kalshi demo API key is configured, so the demo account was not read and no orders were placed. The brief asks for demo-account tracking and trade execution. Those need a demo key pair added as repo secrets, which the agent cannot create. |
+
+
+
+### 2026-11-20 — `arena-997c9c83` — integration record (T-997-E)
+
+| Step | Result |
+| - | - |
+| Branch state | Squashed onto `main` @ `dbdfa1d` (union of all boards PRs #1–#18 preserved verbatim; repeated COORDINATION.md add/add conflicts with concurrent sessions resolved as unions each time). |
+| PR | **#20** — https://github.com/wingbangboozle1-lang/Trade2/pull/20 — merged 2026-11-20T19:12:25Z, merge commit `a19c467c1f46e37cad810e1f4149bd7ea4034d68`, no approval wait per brief. |
+| Post-merge regeneration | Scheduled `kalshi-dashboard.yml` main run `44800499251` (success, 2m21s) regenerated the pages with the new `alerts-view.js` tag + flagged-page card; two dispatch runs cancelled by the `collect` concurrency group were harmless (cron covers main every ≤5 min). |
+| Pages | Built for `a19c467`, then **built** for regenerated commit `8dceeef` (verified `gh api repos/.../pages/builds/latest`). |
+| Live verification | Fetched with cache-buster: `review.html` renders the new standing limitation card with its official source; `assets/alerts-view.js` serves verbatim; `live.html`/`index.html` in the built commit load it before `desk.js`. Deployed-module + jsdom boot checks together cover the client behaviour; a human browser pass remains open for any session (flagged, does not block). |
+| Irregularities logged | C-997-1 (T17 double-claim — both claims since merged via PRs #13/#14, kept for the record); A-6 stale CDN copy right after a Pages build (cache-buster workaround, not repo content). No other session's work discarded; no shared outputs touched beyond the session's claimed scope. |
+
+---
+
+---
+
+---
+
+
+---
+
+## Session claim — `arena-fb6cb424` (2026-11-20)
+
+Branch `arena/fb6cb424-trade2` (base `main` @ `d6aaca4`). Scope is deliberately
+non-overlapping with the active sessions:
+
+* `arena-856e184e` owns `collector/alerts.py`, `collector/collector.py`,
+  `scripts/collect.mjs`, `tests/test_alerts_basis.py`, `VERIFICATION_856e184e.md`.
+* `arena-e4e8f4e1` owns `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md`,
+  `docs/summary.html`, `tools/rendercheck.mjs`, `scripts/collect.mjs`,
+  `config/flags.json`, `.github/workflows/dashboard.yml`, `site/pages/summary.html`.
+
+This session edits **only** `site_build/`, `assets/desk.js`,
+`assets/styles.css`, the root pages it generates (`index.html`, `live.html`,
+`summary.html`, `methodology.html`, `review.html`, `categories/*.html`, plus the
+new `resolutions.html`, `trades.html`, `suggestions.html`), and this board
+section. It does not edit `collector/`, `scripts/`, `config/`, `docs/`,
+`kalshi-dashboard/`, `site/`, `tests/`, or `tools/`.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| F20 | Fix integer formatting on stat cards (`750.00` → `750`) | done | `arena-fb6cb424` | `site_build/build.py` |
+| F21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| F22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | done | `arena-fb6cb424` | `site_build/build.py` |
+| F23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| F25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | done | `arena-fb6cb424` | `site_build/build.py` |
+| F26 | New page `suggestions.html`: how to make the site more live and interactive | done | `arena-fb6cb424` | `site_build/build.py` |
+| F27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | done | `arena-fb6cb424` | `site_build/build.py` |
+| F28 | Show snapshot age on every page so a stale view is never read as live | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | done | `arena-fb6cb424` | (read-only) |
+| F30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+
+
+---
+
+
+---
+
+| T20 | Fix integer formatting on stat cards (`750.00` → `750`) | done | `arena-fb6cb424` | `site_build/build.py` |
+| T21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| T22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | done | `arena-fb6cb424` | `site_build/build.py` |
+| T23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| T25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | done | `arena-fb6cb424` | `site_build/build.py` |
+| T26 | New page `suggestions.html`: how to make the site more live and interactive | done | `arena-fb6cb424` | `site_build/build.py` |
+| T27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | done | `arena-fb6cb424` | `site_build/build.py` |
+| T28 | Show snapshot age on every page so a stale view is never read as live | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | done | `arena-fb6cb424` | (read-only) |
+| T30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+
+### Scope extension (same session, same branch)
+
+Claimed in addition to the table above, and still non-overlapping with every
+other active session:
+
+| Path | Why |
+| - | --- |
+| `site_build/format.py` (new) | Shared formatters and link builders used by the builder and the new pages. |
+| `site_build/extras.py` (new) | The three new pages plus the resolution/topic mapping and the equity-curve chart. |
+| `site_build/flagpage.py` | The Flagged-for-Review generator: one new detection rule and three corrected/added standing items. |
+| `test/root_render.mjs` (new) | Offline render check for the root pages. `tools/rendercheck.mjs` is owned by `arena-e4e8f4e1`, which is repairing its jsdom setup, so this file is scoped to the root pages only and does not touch theirs. |
+| `.github/workflows/kalshi-dashboard.yml` | The root site's own pipeline. The new render check is now a CI gate, and this session's branch was added to the push trigger so the pipeline can be exercised before merge. No other active session owns this workflow. |
+| `VERIFICATION.md` | New section **H** with this session's line-by-line verification (14 entries, each with the URL that was opened). |
+| `summary.html` | The root site's executive-summary page. Its "At a glance" text described a browser-side collector the root pages do not load (finding H13); it now describes the architecture that actually runs. |
+
+### Work log — 2026-11-20, `arena-fb6cb424`
+
+**What was built.** The root site was live and healthy but had four gaps
+against the brief and two display defects:
+
+| Gap | Fix |
+| - | --- |
+| The brief asks for **two** scrolling chats — all events, and a selective filter the model likes as high ROI. Both existed on the live desk only. | The model shortlist chat is now on the landing page too, side by side with the all-events chat, and falls back to the current model picks when no swing clears the gate. |
+| The brief asks for "events and website links that may have caused a sharp jump in contract price, greater than or equal to $0.10 in either direction". Only the market link existed, and the Flagged page said no news link was possible. | Every ≥ $0.10 row now carries two extra links: the Kalshi **event** page (which carries Kalshi's own live news feed for that event, verified live in H6) and a **news search** for the event title (verified live in H8). Neither asserts a cause. The standing Flagged item was rewritten to match. |
+| The brief asks for events to be tracked until they resolve, yes or no. The topic pages' "how each event ended" table was **empty** on every topic. | Root cause: `GET /markets` returns market objects with no `series_ticker` (H3), so the collector's per-topic buckets stayed empty. The site now recovers the series from the market ticker prefix and publishes the in-scope settlements from the 2,000-record store — **328** at the 2026-11-20T19:11Z refresh (268 gas prices, 60 crypto; 80 YES, 248 NO). The count moves with each collector run; the figure above is the one current at that refresh — plus a new `resolutions.html` page. |
+| The brief asks for trade results "categorized by the type of trade" and strategies built from them. The breakdown existed only inside the summary page. | New `trades.html`: ledger, strategy catalogue, open and settled positions, results by topic and by trade type, and an SVG equity curve drawn from the ledger's own points. |
+| The brief asks for suggestions on making the site more live and interactive. There was none. | New `suggestions.html`: 14 prioritised items in four groups, each with what / why / effort / status, and the official Kalshi page where one exists. |
+| The brief asks to keep topics separate and the events inside a topic together. The overview table was one flat list, 25 rows of which 24 were a single elections series. | The overview is now grouped by topic with a separator row per topic, each topic ranked by open-interest value. |
+
+**Display defects found and fixed.** Stat cards printed whole counts with a
+decimal tail (`750.00`, `1.00`, `2,000.00`); a dedicated integer formatter now
+renders `750`, `1`, `2,000`, while fractional contract counts and volume keep
+their decimals (H10). The live desk's market table and both chats were
+rendered by JavaScript only, so they were empty with scripting off; all three
+are now pre-rendered server-side and the script only replaces them (H11).
+
+**Flagged, not silently fixed.** A new literal rule publishes "Same swing
+reported repeatedly" when one ticker appears three or more times in the alert
+buffer — the current snapshot repeats three tickers 29 times (H14). The
+underlying alert rule belongs to `arena-856e184e` and is **not** changed here.
+Two new standing items document the 0.0000/1.0000 "no resting size" convention
+(H2) and the ticker-prefix topic mapping (H3).
+
+**Verification performed.** `python3 -m unittest discover -s tests` → 42 OK
+(1 skipped). `python3 -m trading.test_engine` → ALL TRADING TESTS PASSED.
+`python3 -m collector.test_runner` → RUNNER TEST PASSED. `npm test` → 18/18.
+`node --check assets/desk.js` → OK. `node test/root_render.mjs` → RENDER CHECK
+PASSED, 13 root pages. `python3 tools/linkcheck.py` → 48 pages, 609 internal
+links, 0 errors. `python3 -m site_build.build` → clean, no exceptions.
+Live spot-checks against the official demo API and docs are recorded one by
+one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
+
+### Requests (files owned by another session — logged, not edited)
+
+| Request | Needed work | From | To | Status |
+| - | - | - | - | - |
+| R-FB-01 | `collector/collector.py` builds the per-topic resolution buckets from `rec["series_ticker"]`, but `GET /markets` market objects carry no such field (verified in `VERIFICATION.md` H3), so every bucket is empty and the topic pages' "how each event ended" table was blank. This session works around it at the site layer by recovering the series from the market ticker prefix. The same fallback inside the collector would make `data/live.json` correct at the source and let any other consumer use it. Source: <https://docs.kalshi.com/api-reference/market/get-markets>. | `arena-fb6cb424` | `arena-856e184e` (owner of `collector/collector.py`) | needs review |
+
+---
+
+### Merge record — `arena-fb6cb424` (2026-11-20)
+
+| Item | Result |
+| --- | --- |
+| Pull request | [#21 — feat(site): topic-grouped overview, dual landing chats, cause links, and three new research pages](https://github.com/wingbangboozle1-lang/Trade2/pull/21) |
+| Source branch / head | `arena/fb6cb424-trade2` at `eaa1258` (collect run [44801508534](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44801508534) passed on that head) |
+| Merge | Merge commit `be3bcfc` on `main`, 2026-11-20T19:23:00Z, `gh pr merge --merge`, no approval required |
+| GitHub Pages | Build for `be3bcfc` reported `built`; source `main` `/`; site https://wingbangboozle1-lang.github.io/Trade2/ serves the merged pages (overview, live desk, flagged page checked with `fetch_page`) |
+| Local checks on the merged head | 76 Python tests (1 skipped), trading engine, collector runner, 29 + 10 Node tests, offline render of 13 root pages, link check 48 pages / 621 links / 0 errors |
+| Sources | Kalshi official API and docs listed in PR #21 body and `VERIFICATION.md` section H (H1–H14) |
+| Irregularities | Published on `review.html` (Flagged for Review), with official source links; none block the merge |
+| Handoff notes | Collector commits to `main` every ~5 min and regenerates the same pages, so any branch that touches generated HTML conflicts on rebase; resolve by rebuilding from source. |
+
+
+---
+
+## Current session — `arena-c78c9b36`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | active |
+
+| # | Task | Status | Owner | File scope |
+| --- | --- | --- | --- | --- |
+| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | in progress | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
+
+**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `9f93a6a`, a collector refresh committed at 19:27:39Z after PR #21's root-site redesign and PR #27's coordination/Pages-deployment record. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 keeps detections as review items rather than fills, will flag repeated tickers when they actually occur, and will keep Culture + Entertainment provenance distinct from the Culture-only category query. PR #25's previous head passed collector CI, but the rebased head needs fresh checks.
+
+### 2026-11-20 — `arena-c78c9b36` — final-main integration record (PR #25)
+
+- Rebased T14 successively onto PR #21's merge (`be3bcfc`), PR #27's coordination/Pages-deployment record (`7bdff2f`), and the latest collector refresh (`9f93a6a`). The current main snapshot was collected at `2026-11-20T19:25:15Z` and committed at 19:27:39Z; it contains zero alert rows. Preserved the refreshed `data/live.json`, `assets/live.json`, portfolio state, resolutions store, and upstream pages/tests.
+- Retained the merged overview grouping, dual chats, cause/search links, resolutions/trades/suggestions pages, shared formatters and extras, desk scripts, and offline root-render test. T14 uses exact Decimal integrality checks for counts, keeps fractional count-like values at two decimals, and leaves quantity/price/money formatters separate. Culture topic discovery links both official Culture and Entertainment queries. Actual repeated tickers become review findings with orderbook links; alerts remain detections, not fills.
+- Rebuilt generated root pages from the latest main snapshot and kept the standing no-fill caution. No dynamic repeated-alert finding is fabricated for the current zero-row snapshot; stale "29 raw alert rows" copy is absent.
+- Local verification on the integrated code: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed. Fresh PR CI on this latest head, merge, and this PR's Pages build remain pending.
+## Board E — session `arena-5bec0ea3` (current Arena branch `arena/5bec0ea3-trade2`)
+
+Session ID `arena-5bec0ea3` · branch `arena/5bec0ea3-trade2` · base `main` @ `1bc32b74` (rebased onto `d6aaca4`, 2026-11-20). Claimed 2026-11-20T19:20Z. Scope chosen to be disjoint from every active claim above (`arena-e4e8f4e1`, `arena-856e184e`, `arena-93e9da14`, `arena-fb6cb424`, `arena-4f92a11c`, `arena-dc732aa6`): this session does **not** touch `collector/**`, `trading/**`, `site_build/**`, `scripts/**`, `assets/desk.js`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `docs/summary.html`, `tools/rendercheck.mjs`, or `kalshi-dashboard/**`.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T31 | Live layer for the `docs/` site: GitHub-runner capability probe (unauthenticated WS handshake? demo REST CORS?), browser auto-detect live mode with published-JSON fallback, live-mode badge + snapshot age, chart x-axis ranges (seconds/minutes/hours), liquidity depth panel | done | `arena-5bec0ea3` | `tools/live_probe.py` (new), `.github/workflows/live-probe.yml` (new), `docs/assets/live.js` (new), `docs/assets/app.js`, `docs/assets/style.css`, `docs/index.html`, `docs/data/capabilities.json` (generated by probe), `tests/test_docs_live.mjs` (new) |
+| T32 | Strategy lab: automated simulated-strategy backtests over recorded history; trade categorisation (strategy × signal × topic); per-strategy performance tables, equity curve; every row source-linked | done | `arena-5bec0ea3` | `tools/strategy_lab.py` (new), `tests/test_strategy_lab.py` (new), `STRATEGY_ANALYSIS.md` (new), `docs/strategies.html` (new) |
+| T33 | `docs/` resolutions page: every tracked event resolved YES/NO, grouped by topic, source-linked | done | `arena-5bec0ea3` | `docs/resolutions.html` (new), `docs/assets/app.js` (same owner as T31) |
+| T34 | Final integration after peer PRs land: run all suites + link check + row-source spot-checks against the official demo API, PR `arena/5bec0ea3-trade2` → `main`, merge, confirm Pages deploy, record here | in progress | `arena-5bec0ea3` | `COORDINATION.md` (this section only) |
+
+Notes for peers (no action needed from anyone):
+- `docs/**` (except `docs/summary.html`, owned by `arena-e4e8f4e1` T15) had no active owner and is the site of session c0205283, whose work is merged and idle; T31–T33 therefore extend it without touching any active claim. `docs/data/capabilities.json` is a **new** file written only by `.github/workflows/live-probe.yml`; `collector.yml` data commits are unaffected.
+- WebSocket reality check (verified 2026-11-20 from https://docs.kalshi.com/getting_started/quick_start_websockets): the WS handshake **requires** `KALSHI-ACCESS-KEY/SIGNATURE/TIMESTAMP` headers, which a browser `WebSocket` cannot set. A pure-browser WS live feed is therefore impossible without credentials/proxy; T31 probes this from GitHub runners (unrestricted egress) and records the verified result in `docs/data/capabilities.json` instead of assuming.
+- Open request echo: R-4f92-1/2 (T16/T17 double claims between `arena-e4e8f4e1`, `arena-856e184e`, `arena-93e9da14`) remain open for those sessions; this session will not resolve their file overlaps.
+
+### 2026-11-20 — `arena-5bec0ea3` — T31–T33 finished; T34 integration in progress
+
+**T31 (docs/ live layer) — done.** Sources: official WebSocket quick start
+(https://docs.kalshi.com/getting_started/quick_start_websockets — handshake
+requires `KALSHI-ACCESS-KEY/SIGNATURE/TIMESTAMP`, public channels: `ticker`,
+`trade`, `market_lifecycle_v2`; subscribe envelope `{"id","cmd":"subscribe",
+"params":{"channels":[...]}}`), official candlestick reference
+(https://docs.kalshi.com/api-reference/market/get-market-candlesticks — periods
+are 1/60/1440 **minutes**; there are no second-level official candles),
+official demo-environment page (https://docs.kalshi.com/getting_started/demo_env).
+Verification: `node tests/test_docs_live.mjs` (jsdom: LIVE mode with a mocked
+demo API, >= $0.10 swing fires one alert with an official market link, 120 s
+dedup + baseline reset stop re-alerts on sustained moves, SNAPSHOT fallback when
+the API is unreachable, no invented news links); `node --check` both JS files.
+Runtime behaviour against the *real* demo API (CORS headers, anonymous WS) is
+**verified by probe, not assumed**: `tools/live_probe.py` +
+`.github/workflows/live-probe.yml` record raw evidence in
+`docs/data/capabilities.json`; dispatched after merge (the workflow must exist
+on `main` to register). Until that probe lands, the site self-checks at runtime
+and defaults to SNAPSHOT with the reason shown in the badge. Irregularities:
+(b) the docs/ candle store's window keys `minutes`/`hours` are misleading — the
+stored `interval` values are 60/1440 minutes (hourly/daily candles); labels are
+now rendered from the interval value and the quirk is flagged in
+STRATEGY_ANALYSIS.md §10.
+
+**T32 (strategy lab) — done.** Sources: docs/data/portfolio.json,
+docs/data/candles.json, data/live.json, data/portfolio_state.json,
+kalshi-dashboard/data/trades.json (all repo-published ledgers), official fee
+schedule (https://kalshi.com/docs/kalshi-fee-schedule.pdf — taker
+fee = 0.07·C·P·(1−P) rounded up to the cent; exact Decimal maths, unit-tested
+against the schedule's 100 @ $0.50 → $1.75 example), official demo-env caveat.
+Verification: `python3 -m unittest tests.test_strategy_lab` (21 tests: fee
+rounding, zero-hold guard, aggregation maths, published-vs-recomputed
+cross-check, and output invariants — every table row carries an official source
+link or a blank `(unverified)` marker, no non-official hrefs). Outputs:
+`STRATEGY_ANALYSIS.md`, `docs/strategies.html`, `docs/data/strategy_lab.json`,
+regenerated on the post-rebase data (14 round-trips, 8 backtest trades).
+Irregularity found and flagged (not silently reconciled): the docs-sim book's
+published `stats.all.fees` (51.52) excludes the entry fee of the closed
+round-trip (recomputed entry+exit = 65.24) — published `net_pnl` is likewise
+net of exit fee only; the report's cross-check table lists it.
+
+**T33 (docs/resolutions.html) — done.** Sources: docs/data/resolutions.json
+(rows carry their official demo market URL + settlement-rules docs link),
+https://docs.kalshi.com/getting_started/market_settlement (winning side pays
+$1/contract on its outcome). Verification: jsdom test in
+tests/test_docs_live.mjs (grouped YES/NO tables, source links, no JS errors);
+site_smoke passes unchanged; linkcheck covers the new page.
+
+**T34 — integration evidence so far (pre-merge):** after rebasing onto `main`
+(union-resolved the COORDINATION.md add/add conflict; no peer content removed):
+`python3 -m unittest discover -s tests` 107 pass/1 skipped (the
+cryptography-gated signing test) · `npm test` 18/18 ·
+`python3 -m collector.test_runner` PASS · `python3 -m trading.test_engine` PASS ·
+`node test/site_smoke.mjs docs/data` ALL PASS · `python3 tools/linkcheck.py`
+50 pages / 664 internal links / 0 errors · `python3 tools/rowsource_check.py`:
+every published data row links a demo-host URL (`missing=0` across all tables;
+the listed blanks are flagged-blank values, per the rule) ·
+`node tests/test_docs_live.mjs` ALL PASS. PR + merge + Pages confirmation and
+the capability-probe dispatch are recorded in the follow-up record below.
+
+---
+
+# Board D — session `arena-79cc0bd5` (branch `arena/79cc0bd5-trade2`)
+
+Started 2026-11-20T19:05Z on base `1bc32b7` · final state rebased onto `be3bcfc`
+(PR #21 merge) · integration PR: **#26**.
+
+## Claim, and what the board said at the time
+
+Read `COORDINATION.md` and every active session branch before claiming. Avoided:
+`arena-856e184e` (`collector/alerts.py`, `collector/collector.py`,
+`tests/test_alerts_basis.py`, `scripts/collect.mjs`), `arena-e4e8f4e1`
+(`AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md`, `docs/summary.html`,
+`tools/rendercheck.mjs`), `arena-0b2d2a2a` (`AUDIT_ADDENDUM.md`). Claimed the
+**unclaimed root site generator** (`site_build/`) + a verification record + a CI
+gate: T20 number formatting, T21 trades/strategy analysis page, T22 snapshot
+freshness, T23 computed flagged-page detections, T24 interactivity roadmap,
+T25 line-by-line verification, T26 integration. Claim commit pushed before any
+code was edited.
+
+## Overlap discovered mid-flight — duplicates withdrawn, not merged
+
+PRs **#17–#25** landed while this session worked, and `0a9a98f` / `696ac39` /
+`4b62986` (PR #21) shipped a `site_build/format.py` + `site_build/extras.py`
+refactor that already implemented four of the six things this session had built
+(`count()`, an equity-curve **`trades.html`**, `resolutions.html`,
+`suggestions.html`, server-side `group_alerts`/`alert_spread`, `age_label` with
+`#snapshotAge` in the topbar, and a "Same swing reported repeatedly" flag).
+
+Resolution: `git reset --hard origin/main` and re-applied **only** the deltas
+that `main` did not have. This session's own duplicate files were **withdrawn**
+(`site_build/tradespage.py`, `trades.html`, `roadmap.html`, the extra pill, the
+count helper, its own dedup/spread detections) — no filename war, no overwritten
+work, and the site does not grow two pages answering one requirement.
+`tests/test_site_build.py` was dropped too, because PR #25 (`arena-c78c9b36`,
+open at the time of writing) claims exactly that filename; this session's tests
+live in `tests/test_site_contract.py` instead.
+
+## Kept (each with its official source, full detail in `VERIFICATION_79cc0bd5.md`)
+
+| # | Change | File | Verified against |
+| - | --- | --- | --- |
+| D1 | `num()` and `count()` returned a **silent blank** for a missing value while the module docstring promises an `UNVERIFIED` badge (and `esc`/`money`/`cents` comply) — a blank cell in a table is indistinguishable from a real zero | `site_build/format.py` | this repo's rule "leave it blank **and** flag it as unverified"; reproduced before, asserted after |
+| D2 | `trades.html`, `resolutions.html`, `suggestions.html` had **no topbar at all**: no breadcrumb, no snapshot-age marker, no `#livePill` for `desk.js` | `site_build/extras.py` | diffed against `build_overview`/`build_live`, which all open with `topbar(...)`; `grep -c livePill trades.html` 0 → 1 |
+| D3 | `methodology.html` stated settlement as "YES pays $1.00 per contract, NO pays nothing" — reads as if a NO position never pays | `site_build/build.py` | [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement), fetched this session |
+| D4 | New standing limitation: **taker fees use multiplier 1 for every series** instead of each series' own `fee_multiplier` | `site_build/flagpage.py` | [fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf) (`round up(M × 0.07 × C × P × (1−P))`, Non-Standard table lists `KXBTCY 0 0`) + demo [`GET /series/KXBTCY`](https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY) (`fee_multiplier: 1`) |
+| D5 | `tools/root_pages_render.mjs` + `.github/workflows/site-check.yml`: offline jsdom render of all 13 root pages with fetch stubbed, whole-tree link resolution, topbar/nav markup contract, read-only permissions so it can never block the publisher | `tools/`, `.github/workflows/` | ran green locally; it found D2 while being written |
+
+## Fee finding — checked in both directions before publishing it
+
+The suspicion was that the ledger over-charges, because the fee schedule lists
+`KXBTCY` at multiplier 0. **It does not**: the live demo series record returns
+`fee_multiplier: 1`, and `0.07 × 5000 × 0.04 × 0.96 = 13.44` reproduces the
+published `$13.44` exactly. So the number on the page is right for demo and was
+left alone; what is published instead is the *assumption* (M = 1 for every
+series, which is wrong for any fee-free or combo series and for production).
+Refusing to "fix" a correct number because a search result suggested it would
+have been the more expensive mistake.
+
+## Requests to other sessions
+
+| # | Request | To | Status |
+| - | --- | --- | --- |
+| R-79CC-1 | Thread `fee_multiplier` into the two `kalshi_fee(...)` sites in `collector/engine.py` (`topics.py` already caches it); the plumbing crosses `collector/collector.py`, which you claim | `arena-856e184e` | open |
+| R-79CC-2 | `extras.age_label` falls back to `time.mktime` (local time) when `generated_at_ts` is absent; `calendar.timegm` is correct for a `…Z` stamp. Harmless on UTC runners, and D2's pages now pass `generated_at_ts` explicitly, so this is a latent-risk note for the file's owner | `site_build/extras.py` owner | open |
+| R-79CC-3 | `tools/root_pages_render.mjs` asserts `#livePill` + `#snapshotAge` on every generated page, the nav target set, and `#feedAll`/`#feedModel` + the three `data-window` tabs on `live.html` — change the markup, update the contract in the same PR | all | open |
+| R-79CC-4 | Board task IDs now collide across sessions (`T20` used by this session, `arena-856e184e` and `arena-4f92a11c`; `T13`/`T16` likewise). Suggest prefixing with the session, e.g. `79CC-T20` | all | open |
+
+## Verification record
+
+`VERIFICATION_79cc0bd5.md` — §0 records the withdrawal honestly, §1 the five kept
+changes with sources, §2 seven live-API cross-checks of numbers already published
+(including V6, where the demo record shows `"custom_strike":{"demo strike":"demo
+strike"}` — Kalshi-side placeholder text, reported by the existing template
+detection and deliberately not "corrected"), §3 six unverified items, §4 the
+requests, §5 the gate results.
+
+**Gates on the final tree:** `unittest` 87 OK (1 skip) · `root_pages_render` ALL
+PASS (13 pages / 184 files) · `linkcheck` 48 pages, 621 links, 0 errors ·
+`collector.test_runner` PASS · `trading.test_engine` PASS · `npm test` 0 fail ·
+generator byte-idempotent across two runs.
+
+### Second rebase round (2026-11-20T19:3xZ) — same handling
+
+`main` had advanced again (`9f93a6a`, after PR #25 and #27 merged). `git rebase
+origin/main` conflicted on `COORDINATION.md` plus nine generated pages and
+nothing else — no source file of another session was in conflict, so all five
+kept deltas applied cleanly.
+
+| Conflict | Resolution |
+| - | - |
+| `COORDINATION.md` | union: the other session's section first, this board after a separator; nothing dropped |
+| `index.html`, `live.html`, `methodology.html`, `review.html`, `categories/*.html` | took **main's** committed version, then regenerated with `python3 -m site_build.build` so the pages are the product of merged code over merged data instead of a hand-picked side of a diff |
+
+Post-rebase gates on the merged tree: `unittest` 87 OK (1 skip) ·
+`root_pages_render` ALL PASS (13 pages / 185 files) · `linkcheck` 48 pages /
+621 links / 0 errors · `collector.test_runner` PASS · `trading.test_engine`
+PASS · `npm test` 29/29. Verified after the rebase that all five kept changes
+are still present in both the code and the rendered pages
+(`format.py` blank→badge, the three extras topbars, the settlement wording, the
+fee-multiplier flag, the gate tooling).
+
+### Third rebase round + one withdrawal (2026-11-20T19:4xZ)
+
+Rebased again onto `8b5d701` (PR #25, `arena-c78c9b36`). Two consequences worth
+recording, both resolved in the other sessions' favour:
+
+1. **My `count()` half of the blank-vs-badge fix was withdrawn.** PR #25 pins
+   `cnt(None) == ""` in `tests/test_site_build.py` (`cnt = count`). Two sessions
+   reaching opposite conclusions about the same line is a design question, not a
+   merge conflict, so the shipped rule is now: a missing **quantity** (a failed
+   API read) shows `UNVERIFIED`; a missing **count** (an empty KPI tile) stays
+   blank. Documented at `site_build/format.py` and asserted in
+   `tests/test_site_contract.py` so the split cannot drift.
+2. **`tests/test_site_build.py` was never touched by me** — it is PR #25's file;
+   my tests live in `tests/test_site_build.py`'s neighbour
+   `tests/test_site_contract.py`.
+
+Also: the seven HTML pages my code does not change were restored to `main`'s
+committed versions instead of shipping regenerated copies, so this PR's diff is
+five content pages and nothing else (`age_label` prints a build-time age, which
+would otherwise look like a data change). Gates after the final rebase:
+`unittest` **98 OK** (1 skip) · `root_pages_render` ALL PASS (13 pages / 186
+files) · `linkcheck` 48 pages / 621 links / 0 errors · `collector.test_runner`
+PASS · `trading.test_engine` PASS · `npm test` 29/29.
+
+### 2026-11-20T19:5xZ — delivered (PR #26 merged at `dbea89c`), plus one follow-up found on the live site
+
+**PR #26 merged into `main` at `dbea89c`** (merge commit, no squash — the three
+rebase rounds and their conflict handling stay auditable). Checks on the pushed
+head: `check` **pass** (my `site-check.yml`: unit tests, collector fixtures,
+trading engine, front-end syntax, offline render, links) and `collect` **pass**.
+GitHub Pages: build `dbea89ca6` **built**, `error: null`. Live confirmation was
+done by fetching `https://wingbangboozle1-lang.github.io/Trade2/methodology.html`
+and reading the settled text, not by trusting the build status.
+
+Delivered there: `format.py` missing-quantity → `UNVERIFIED` badge (with
+`count()` left blank, the split documented and tested) · topbars for
+`trades.html` / `resolutions.html` / `suggestions.html` · settlement wording
+corrected · the fee-multiplier standing limitation on `review.html` ·
+`tools/root_pages_render.mjs` + `.github/workflows/site-check.yml` ·
+`tests/test_site_contract.py` · `VERIFICATION_79cc0bd5.md`.
+
+**Follow-up (PR #28).** Reading that deployed page is what caught it:
+`methodology.html` claimed *"Fee-free series (multiplier 0) are respected via
+each series' own `fee_multiplier`"*, which is true of `trading/engine.py`
+(`:304`, `:387`) and false of `collector/engine.py:197/250` — the ledger whose
+numbers `trades.html` publishes. The sentence has been scoped to name both
+engines and link the Flagged page, so no claim is deleted and none is left
+unqualified. Lesson recorded in `VERIFICATION_79cc0bd5.md` §6: **fetch the
+deployed page after merging**, a diff review of your own PR cannot see another
+session's prose that merged green. R-79CC-1 (thread `fee_multiplier` through the
+collector engine) is still open with `arena-856e184e`; once it lands, K6's
+sentence and the standing flag should both be retired in the same PR.
+
+---
+
+| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | in progress | `arena-4f92a11c` | `COORDINATION.md` (this section only) |
+
+---
+
+# Board D — session `arena-dc732aa6`
+
+Session ID `arena-dc732aa6` · branch `arena/dc732aa6-trade2` · base `main` @ `1bc32b7`
+(= the published snapshot commit of 2026-11-20T18:53Z). Claimed 2026-11-20T19:05Z.
+
+Scope chosen after reading all four boards above: every prior task is merged and its
+pipelines are green, so this session works on **defects found by inspecting the
+deployed root desk data itself**, which no earlier board covers.
+
+| # | Task | Status | File scope |
+| - | - | - | - |
+| D1 | Swing-chat quality: stop the same ongoing move re-firing an alert on every collector run (29 buffered alerts, only 8 distinct moves); record the price basis of each alert so a trade price is never compared against a book mid | **merged** | `collector/alerts.py`, `collector/collector.py`, `tests/test_alert_quality_dc732aa6.py` |
+| D2 | Candidate-catalyst links: `collector/news.py` is written but **never called** in the root pipeline, so no ≥ $0.10 jump carries a link as the brief requires | **merged** | `collector/news.py`, `collector/collector.py`, `site_build/build.py` |
+| D3 | Landing-page correctness: integer counters render as `750.00` / `2,000.00` / `1.00`; second (model) chat lives only on `live.html`, not on the overview | **merged** | `site_build/build.py`, `assets/desk.js`, `assets/styles.css` |
+| D4 | "Suggestions to make the site more live" page (explicit brief item, absent from the root site) + Flagged-for-review refresh | **merged** | `site_build/build.py`, `site_build/flagpage.py` |
+| D5 | Line-by-line verification log for this session, PR → merge → Pages confirmation | **merged** | `VERIFICATION-dc732aa6.md`, `COORDINATION.md` |
+
+**Not touched** (owned by other sessions): `docs/**`, `kalshi-dashboard/**`, `scripts/**`,
+`config/**`, `EXECUTIVE_SUMMARY.md`, `README.md`, `trading/**`, `collector/engine.py`,
+`collector/kalshi_api.py`, `collector/runner.py`, `collector/discover.py`, `collector/topics.py`.
+
+Requests to other sessions:
+
+| # | Request | From | To | Status |
+| - | - | - | - | - |
+| R-DC-1 | `arena/e4e8f4e1` has unmerged commits touching `EXECUTIVE_SUMMARY.md` and `docs/summary.html`; this session will not edit either file. Please rebase and open a PR so the integration does not conflict. | arena-dc732aa6 | arena-e4e8f4e1 | open |
+| R-DC-2 | `kalshi-dashboard/data/status.json` reports `base_url: https://external-api.kalshi.com/trade-api/v2` — the **production** API, not the demo API named in the brief (`external-api.demo.kalshi.co`), and `alerts_total: 0` across 8 runs. Owned by `arena-5788e385`; logged here rather than edited. This session publishes it on the Flagged page. | arena-dc732aa6 | arena-5788e385 | open |
+
+**Accepted request R-D-01** from `arena-0b2d2a2a`: this session owns the fix
+(deduplicate by market + reference window, consistent depth-aware price rules with the
+price basis published on every alert, snapshot-age display, and a labelled
+code/data-quality item on Flagged for Review). `AUDIT_ADDENDUM.md` is left untouched and
+used as the evidence base; this session does not edit that file.
+
+
+### 2026-11-20 — `arena-dc732aa6` — Board D completion record
+
+Merge note (this record was written before PR #21 landed on `main`, then updated after
+rebasing onto it): `git pull --rebase` produced `UU` conflicts in `assets/desk.js`,
+`assets/styles.css`, `site_build/build.py`, `site_build/flagpage.py`, `suggestions.html`
+and every generated page, because `arena-fb6cb424` had integrated its own site layer.
+Resolution, in full: generated HTML was taken from the upstream side and **rebuilt**
+with `python3 -m site_build.build`; `suggestions.html` and the snapshot-age label were
+**dropped in favour of theirs** (two renderers for one feed is how the polled and
+pre-rendered views diverge); `assets/alerts-view.js` and `AUDIT_ADDENDUM.md` were not
+touched. Kept and re-applied on top of their architecture: the collector semantics,
+`safe_url`/`safeUrl` on every third-party href, the row-level basis/spread/depth/
+verdict/candidate-headline line, the published `high_roi_alerts` shortlist as the only
+model gate, the empty-feed link to `review.html#refused`, the no-2D-context guard, and
+the new book-vs-record table. Full table in `VERIFICATION-dc732aa6.md` §3a.
+
+Two display-only notes left for the owner of `extras.group_alerts` /
+`assets/alerts-view.js` (not edited here, per the board rules): the display grouping
+resets `repeat_count` to 1 on the first sighting, so a row already folded by the engine
+shows one fewer sighting than the engine counted; and its key is
+`ticker|direction|previous|current` while the engine's is `ticker|direction|bar_start`.
+The engine's buffer is unaffected.
+
+Checks after the merge: 119 python tests OK (1 pre-existing skip), `npm test` 29/29,
+`node test/desk_render_dc732aa6.mjs` 24/24, `tools/rendercheck.mjs` 13/13 pages,
+`tools/linkcheck.py` 48 pages / 621 links / 0 errors.
+
+All five rows are merged. Full evidence: **`VERIFICATION-dc732aa6.md`** (sources V1–V8,
+the line-by-line change table, and the list of values deliberately left blank).
+
+| Task | What shipped | Check |
+| - | - | - |
+| D1 | `fold_alerts()` — one row per (market, direction, reference bar); repeats fold and count; a later bar only opens a row when the move grows by ≥ $0.10; reversals always separate. Every alert states `reference_basis` (quote mid vs quote mid, or previous-snapshot mid), `spread`, `size_at_top`, `quality ∈ {executable, indicative}` + reason. The reference bar is the candle's **quote** closes; `price.close_dollars` is returned but never used as a basis, so a trade price is never compared with a mid. `suppressed_alerts` publishes what the rule refused. | 26 collector tests in `tests/test_alert_quality_dc732aa6.py` + the other session's 15 in `tests/test_alerts_basis.py` |
+| D2 | `collector/news.py` is now actually called (`attach_news`, capped at 6 lookups/run, ±6 h window, only for new/escalated rows, skipped for non-executable rows) and the generator prints each headline as a candidate link under "possible catalyst, not confirmed", or the explicit reason it is absent. | `TestNewsLookup` + `tests/test_site_render_dc732aa6.py` |
+| D3 | `cnt()`-style integer counters, the model shortlist chat on the overview, a per-topic swing feed, `×K sightings`, `pre-rule row` badge for legacy snapshots, snapshot age (`#snapAge`, amber past 10 min) in the topbar of every page, and a no-2D-context guard so a locked-down browser still gets the feeds. One renderer contract per side (`site_build/build.py` ↔ `assets/desk.js`), asserted against the same fixture. | `node test/desk_render_dc732aa6.mjs` 14/14 (real `live.html` + real `desk.js` in jsdom), `tools/rendercheck.mjs` 10/10 |
+| D4 | `suggestions.html` (six prioritised suggestions, each with the number that motivates it and what blocks it) + Flagged-for-review refresh: refused-moves table, consolidated repeat item, new **book-vs-record** table. | `python3 tools/linkcheck.py` 46 pages / 556 links / 0 errors |
+| D5 | PR + merge + Pages confirmation below. | `gh run list`, `gh api .../pages/builds/latest` |
+
+New irregularity found while doing this (Kalshi-side, **not** ours to fix, published on
+the flagged page rather than resolved silently): the demo **order book** and the demo
+**market record** disagree on the same market at the same instant — for
+`KXPRESNOMD-28-HBID` at 19:16Z the book implies a YES ask of `0.8110` (mid `0.4065`)
+while `yes_ask_dollars` reads `0.0030` (mid `0.0025`), a $0.4040 gap. That is exactly the
+mechanism behind the bogus −$0.4045 "swing" the `arena-0b2d2a2a` audit reported. Now
+measured by `alerts.book_record_divergence()` and rendered as `review.html#book-vs-record`
+with both endpoint links on every row.
+
+Requests handled: **R-D-01** (from `arena-0b2d2a2a`) is implemented engine-side; the
+client-side dedupe and wide-spread badge are kept as a second safety net, so its
+`assets/alerts-view.js` stays in place untouched. `AUDIT_ADDENDUM.md` was used as
+evidence and not edited. R-DC-1 and R-DC-2 stay open — `EXECUTIVE_SUMMARY.md`,
+`docs/**` and `kalshi-dashboard/**` were never edited by this session.
+
+Rebase note (for whoever integrates next): `git pull --rebase origin main` produced
+conflicts in `assets/desk.js`, `site_build/flagpage.py` and every generated page.
+Resolution: generated HTML was taken from the upstream side and **rebuilt** with
+`python3 -m site_build.build`; `desk.js` and `flagpage.py` were merged by hand (both
+sessions' alert-row labels were duplicated — the other session's `×N repeats` badge was
+kept only for rows without the new `quality` field, and the two overlapping "repeats"
+flagged items were consolidated into one). Rule for the next conflict here: never
+hand-merge generated markup, rebuild it.
+#### T34 integration record — `arena-5bec0ea3` (final)
+
+| Step | Result |
+| - | - |
+| Rebase | Branch rebased onto `main` twice during integration; `COORDINATION.md` add/add conflicts resolved as **unions** both times (no peer board content dropped). Strategy-lab outputs regenerated on the post-rebase data. |
+| PR | **#30** — https://github.com/wingbangboozle1-lang/Trade2/pull/30 — `docs/` live layer + strategy lab + resolutions page. Checks `collect` + `Site check` green; **merged** (merge commit, no approval wait per brief). Follow-up **#33** — https://github.com/wingbangboozle1-lang/Trade2/pull/33 — `fix(live-probe)`: the first probe run (44803879706) verified the API fine but its commit step failed because `git pull --rebase` refuses staged changes; fixed (commit-then-rebase, `HEAD:ref` push, 5 retries, artifact + step summary), **merged**. |
+| Pages | Legacy build of `main` `/` **built** after each merge (`gh api .../pages/builds/latest` → `status: built`). Verified live by fetch: <https://wingbangboozle1-lang.github.io/Trade2/docs/strategies.html> (all strategy/trade-type/topic/book tables, cross-check flag, backtests with per-row source links) and <https://wingbangboozle1-lang.github.io/Trade2/docs/resolutions.html> (300 resolved events, YES/NO, grouped by topic, every row source-linked). Root site and `/docs/` index untouched by this session and still live. |
+| Capability probe (post-merge dispatch on `main`, run 44804363290, success) | **Verified facts** now recorded in `docs/data/capabilities.json` with raw request/response evidence: (A) REST CORS for the Pages origin `https://wingbangboozle1-lang.github.io` is **enabled** — `access-control-allow-origin` echoed on both GET (200) and preflight (204), so the browser live layer runs in direct-API mode on the deployed site; (B) an anonymous browser-style WebSocket handshake is **rejected — `HTTP/1.1 401 Unauthorized`**, exactly as the official quick start states (handshake requires `KALSHI-ACCESS-*` headers, which browsers cannot send) — the site therefore never claims WS liveness; (C) `GET /markets/KXPRESNOMD-28-RW` → 200, 40 schema fields observed — `yes_bid_dollars`, `yes_ask_dollars`, `last_price_dollars`, `volume_fp`, `open_interest_fp`, `ticker`, `title`, `status`, `event_ticker` all confirmed, matching the live layer's field names 1:1. Re-run anytime via `gh workflow run live-probe.yml --ref main`. |
+| Verification after final merge | `python3 -m unittest discover -s tests` 107 pass / 1 skipped · `npm test` 18/18 · `python3 -m collector.test_runner` PASS · `python3 -m trading.test_engine` PASS · `node test/site_smoke.mjs docs/data` ALL PASS · `node tests/test_docs_live.mjs` ALL PASS · `python3 tools/linkcheck.py` 50 pages / 664 links / 0 errors · `python3 tools/rowsource_check.py` every published row links a demo-host URL (`missing=0`). |
+| Standing flagged items (non-blocking, published on the Flagged/limitations pages) | F-5b candle-window label quirk (`minutes`/`hours` keys = hourly/daily `interval`); F-5c docs-sim published `fees`/`net_pnl` exclude the closed trade's entry fee (cross-check table); F-5d live demo-account trading unverified (no credentials — never requested or stored); F-5e second-level charting needs live mode (official candles are 1-minute minimum); R-4f92-1/2 peer task-ID collisions remain open for those sessions. |

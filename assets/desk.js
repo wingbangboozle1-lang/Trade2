@@ -69,6 +69,14 @@
     });
   }
 
+  /* Third-party URLs (a news headline link comes from outside Kalshi) must not
+   * reach an href as javascript: or data:. The generator applies the same rule
+   * in site_build/format.py:safe_url, so both renderers agree. */
+  function safeUrl(value) {
+    var text = String(value === null || value === undefined ? "" : value).trim();
+    return /^https?:\/\//i.test(text) ? esc(text) : "";
+  }
+
   /* ------------------------------------------------------------------ */
   /* snapshot                                                            */
   /* ------------------------------------------------------------------ */
@@ -98,15 +106,32 @@
   }
 
   /* R-D-01 (arena-0b2d2a2a): show the snapshot age continuously, not only at
-   * sync time, so a stale view is never mistaken for a live one. */
+   * sync time, so a stale view is never mistaken for a live one.
+   *
+   * The age is rendered server-side into the #snapshotAge badge so it is
+   * correct with JavaScript disabled; this only keeps it ticking. The
+   * wording comes from AlertsView.ageLabel, the shared helper module, so
+   * there is one implementation and one unit-tested format. */
   function tickAge() {
     var el = document.getElementById("updatedAt");
-    if (!el || !state.lastSync) return;
+    if (el && state.lastSync) {
+      el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString();
+      el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
+    }
+    var badge = document.getElementById("snapshotAge");
+    if (!badge) return;
+    var ts = parseFloat(badge.getAttribute("data-generated-ts") || "");
+    if (!isFinite(ts) || ts <= 0) {
+      if (!state.lastSync) return;
+      ts = new Date(state.lastSync).getTime() / 1000;
+    }
+    var seconds = Math.max(0, Math.floor(Date.now() / 1000 - ts));
     var V = window.AlertsView;
-    var age = V ? V.ageLabel(state.lastSync) : "";
-    el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString() +
-      (age ? " · " + age : "");
-    el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
+    badge.textContent = V
+      ? V.ageLabel(new Date(ts * 1000).toISOString())
+      : (seconds < 90 ? seconds + "s old"
+                      : Math.floor(seconds / 60) + "m old");
+    badge.className = "snap-age" + (seconds < 900 ? " fresh" : "");
   }
 
   function startStream() {
@@ -145,6 +170,7 @@
     state.snapshot = payload;
     state.lastSync = payload.generated_at;
     connected();
+    tickAge();
     if (source === "poll" || source === "sse") banner("LIVE STREAM", "live");
     renderFeeds();
     renderDesk();
@@ -155,6 +181,24 @@
   /* ------------------------------------------------------------------ */
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
+
+  /* Kalshi's public event page carries Kalshi's own live news feed for that
+   * event, so it is the first place to look for something that may have
+   * moved the price. The second link is a news search built from the event
+   * title. Neither asserts a cause. */
+  function eventUrl(a) {
+    var series = a.series_ticker ||
+      String(a.event_ticker || "").split("-")[0] || "";
+    return "https://kalshi.com/markets/" + encodeURIComponent(series) + "/" +
+      encodeURIComponent(a.event_ticker || "");
+  }
+
+  function newsUrl(a) {
+    var label = String(a.topic || "").replace(/-/g, " ");
+    var q = (a.title || a.ticker || "") + " " + label + " Kalshi";
+    return "https://news.google.com/rss/search?q=" + encodeURIComponent(q) +
+      "&hl=en-US&gl=US&ceid=US:en";
+  }
 
   function alertRow(a, isModel) {
     var up = a.direction === "up";
@@ -172,18 +216,63 @@
         " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
         'this midpoint is not an executable price.">wide spread · not executable</span> ';
     }
+    /* The collector stamps a verdict on every row it writes; a row without one
+     * predates the rule and says so instead of being assumed executable. */
+    if (a.quality === "executable") {
+      badges += '<span class="tag tag-yes" title="Both sides quoted, and the YES ' +
+        "spread is tighter than the $0.10 threshold, so the midpoint sits inside " +
+        'a range a trader could transact in.">executable</span> ';
+    } else if (a.quality === "indicative") {
+      badges += '<span class="flag-badge" title="' + esc(a.quality_reason || "") +
+        '">indicative · not executable</span> ';
+    } else if (a.quality === undefined || a.quality === null) {
+      badges += '<span class="tag tag-grey" title="Written before the collector ' +
+        "stated a price basis per row; no executability claim is made either " +
+        'way.">pre-rule row</span> ';
+    }
+    /* What the two subtracted numbers are, and whether anything was resting at
+     * the level when the move printed. */
+    var extra = a.reference_basis ? " · " + esc(a.reference_basis) : "";
+    if (a.spread !== null && a.spread !== undefined) {
+      extra += " · YES spread " + money(a.spread, 4) +
+        (a.size_at_top !== null && a.size_at_top !== undefined
+          ? " · " + num(a.size_at_top) + " contracts at the level"
+          : " · no resting size at the level");
+    }
+    /* Headlines the collector found within six hours either side of the move:
+     * candidates, never a claimed cause. */
+    var heads = [], newsList = a.news || [];
+    for (var hi = 0; hi < newsList.length && hi < 2; hi++) {
+      var href = safeUrl(newsList[hi].url);
+      var label = String(newsList[hi].title || "").trim();
+      if (href && label) {
+        heads.push('<a href="' + href + '" target="_blank" rel="noreferrer noopener">' +
+          esc(label) + " ↗</a>");
+      }
+    }
+    var newsWhy = String(a.news_status || "no news lookup recorded for this row");
+    var newsHtml = heads.length
+      ? '<span class="cause-links"><span class="cause-label">candidate headline, ' +
+        'not confirmed:</span>' + heads.join(" ") + "</span>"
+      : '<span class="cause-links"><span class="cause-none" title="' + esc(newsWhy) +
+        '">no verified news link · ' + esc(newsWhy) + "</span></span>";
     row.innerHTML =
       "<time>" + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
       (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
       '<span class="chat-body">' +
-      '<a href="' + esc(a.market_url || "#") + '" target="_blank" rel="noreferrer">' +
+      '<a href="' + (safeUrl(a.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
       esc(a.title || a.ticker) + "</a>" +
       "<small>" + money(a.previous) + " → " + money(a.current) +
       " · " + esc(a.topic) +
       (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small>" +
+      extra + "</small>" +
       (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
+      newsHtml +
+      '<span class="cause-links">' +
+      '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
+      '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
+      "</span>" +
       "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
@@ -252,15 +341,49 @@
      * non-executable. Display-only: the raw rows stay in the snapshot. */
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
+    /* Order-book model side-car (picks + verdicts per alerted market). */
     var shortlist = s.shortlist || {};
+
+    /* Model shortlist: the swings on markets this project's model likes as high
+     * ROI. The collector publishes that list (high_roi_alerts) through one gate,
+     * so the polled view and the pre-rendered view cannot disagree about which
+     * rows belong in it. The fallback below exists for snapshots written before
+     * that field shipped and reads the published threshold rather than inventing
+     * a second one. */
+    var model = s.high_roi_alerts;
+    if (!Array.isArray(model) || !model.length) {
+      var gate = (s.model_gate && s.model_gate.min_net_roi != null)
+        ? Number(s.model_gate.min_net_roi) : 0.05;
+      var scoreByTicker = {};
+      (s.signals || []).forEach(function (sig) {
+        if (sig && sig.net_roi !== null && sig.net_roi !== undefined &&
+            Number(sig.net_roi) >= gate) scoreByTicker[sig.ticker] = sig;
+      });
+      var rawModel = raw
+        .filter(function (a) { return !!scoreByTicker[a.ticker]; })
+        .map(function (a) {
+          var out = Object.assign({}, a);
+          out.model_net_roi = scoreByTicker[a.ticker].net_roi;
+          return out;
+        });
+      model = rawModel;
+    }
+    if (V) model = V.dedupeAlerts(model);
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
     if (feedAll) {
       feedAll.innerHTML = "";
       if (!all.length) {
-        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move observed ' +
-          "yet. The feed fills as successive snapshots are compared.</div>";
+        var refusedN = (s.suppressed_alerts || []).length;
+        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
+          "two-sided book in the current buffer. " +
+          (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
+            " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
+            ' listed with the reason on <a href="review.html#refused">Flagged for ' +
+            "review</a>. " :
+            "The feed fills as the collector compares successive snapshots. ") +
+          "</div>";
       } else if (raw.length > all.length) {
         feedAll.appendChild(feedNote(all, raw));
       }
@@ -275,28 +398,24 @@
     var modelCount = 0;
     if (feedModel) {
       feedModel.innerHTML = "";
+      /* Order-book model rows first (picks + a verdict for every alert), then
+       * any high-ROI alert row on a market the book model did not price, so
+       * the two model views never show the same ticker twice. */
       var rows = modelRows(shortlist);
-      if (!rows.length) {
-        // Fallback for snapshots taken before the order-book model existed.
-        var scoreByTicker = {};
-        (s.signals || []).forEach(function (sig) {
-          scoreByTicker[sig.ticker] = sig;
-        });
-        all.filter(function (a) {
-          var sig = scoreByTicker[a.ticker];
-          return sig && sig.net_roi >= 0.05;
-        }).forEach(function (a) {
-          feedModel.appendChild(alertRow(a, true));
-          modelCount += 1;
-        });
-      } else {
+      var covered = {};
+      (shortlist.picks || []).forEach(function (p) { covered[p.ticker] = 1; });
+      (shortlist.verdicts || []).forEach(function (v) { covered[v.ticker] = 1; });
+      var extra = (model || []).filter(function (a) { return !covered[a.ticker]; });
+      if (rows.length || extra.length) {
         rows.forEach(function (row) { feedModel.appendChild(row); });
-        modelCount = (shortlist.picks || []).length;
-      }
-      if (!modelCount) {
+        extra.slice(0, 200).forEach(function (a) {
+          feedModel.appendChild(alertRow(a, true));
+        });
+        modelCount = rows.length + extra.length;
+      } else {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
           "model's gates right now. This is normal — an empty shortlist is an " +
-          "honest answer, and the verdicts below say why.</div>";
+          "honest answer, and the verdicts say why.</div>";
       }
     }
     var ac = document.getElementById("allCount");
@@ -375,7 +494,7 @@
       var tr = document.createElement("tr");
       tr.className = "clickable";
       tr.innerHTML =
-        '<td><a href="' + esc(e.market_url) + '" target="_blank" rel="noreferrer">' +
+        '<td><a href="' + (safeUrl(e.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
         esc(e.title) + '</a><small class="ticker">' + esc(e.ticker) + "</small></td>" +
         "<td>" + esc(e.topic) + "</td>" +
         "<td>" + money(e.yes_bid) + "</td>" +
@@ -530,7 +649,14 @@
     canvas.height = h * dpr();
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
-    var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext && canvas.getContext("2d");
+    if (!ctx) {
+      /* No 2D context (hardened browser, or canvas blocked by policy): the
+       * numbers under the chart are still worth showing, and the chat feeds
+       * must not go down with the picture. */
+      chartMetrics(points);
+      return;
+    }
     ctx.setTransform(dpr(), 0, 0, dpr(), 0, 0);
     ctx.clearRect(0, 0, w, h);
 
@@ -555,8 +681,7 @@
       ctx.textAlign = "center";
       ctx.font = "13px system-ui, sans-serif";
       ctx.fillText("No price observations in this window yet", w / 2, h / 2);
-      var p0 = document.getElementById("chartPrice");
-      if (p0) p0.textContent = "—";
+      chartMetrics([]);
       return;
     }
 
@@ -599,9 +724,22 @@
     ctx.textAlign = "right";
     ctx.fillText(new Date(t1 * 1000).toLocaleTimeString(), pad.l + plotW, h - 8);
 
+    chartMetrics(points);
+  }
+
+  /* The numbers under the chart, rendered whether or not the picture could be
+   * drawn: a browser without a 2D context still gets the price, the change and
+   * the depth line. */
+  function chartMetrics(points) {
     var priceEl = document.getElementById("chartPrice");
-    if (priceEl) priceEl.textContent = money(last.mid);
     var changeEl = document.getElementById("chartChange");
+    if (!points || !points.length) {
+      if (priceEl) priceEl.textContent = "—";
+      if (changeEl) { changeEl.textContent = "—"; changeEl.className = ""; }
+      return;
+    }
+    var last = points[points.length - 1];
+    if (priceEl) priceEl.textContent = money(last.mid);
     if (changeEl) {
       var delta = last.mid - points[0].mid;
       changeEl.textContent = (delta >= 0 ? "+" : "−") + Math.abs(delta).toFixed(4);
@@ -671,6 +809,7 @@
       banner("SNAPSHOT MODE", "");
       pollSnapshot();
     }
+    tickAge();
     fetchSnapshot().then(function (payload) {
       if (payload) applySnapshot(payload, "poll");
     });
