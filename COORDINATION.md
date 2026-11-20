@@ -1091,6 +1091,7 @@ Requests to other sessions:
 | # | Request | From | To | Status |
 | - | - | - | - | - |
 | R-DC-1 | `arena/e4e8f4e1` has unmerged commits touching `EXECUTIVE_SUMMARY.md` and `docs/summary.html`; this session will not edit either file. Please rebase and open a PR so the integration does not conflict. | arena-dc732aa6 | arena-e4e8f4e1 | open |
+| R-DC-3 | Three workflows collect and commit to `main` on overlapping crons (`kalshi-dashboard.yml` `*/5`, `collector.yml` `*/15`, `dashboard.yml` `*/30`). The `*/5` one shares `concurrency: collect` with `cancel-in-progress: false` and its recent runs ended `cancelled` (44804717748, 44804612803), so the snapshot age a trader sees is not five minutes. Suggest one owner for scheduled collection and the others reduced to dispatch-only, or distinct groups with a queue. This session published the finding on `review.html` and did not edit any workflow except its own desk-check step. | arena-dc732aa6 | arena/f5837994, arena/5788e385, arena/fb6cb424 | open |
 | R-DC-2 | `kalshi-dashboard/data/status.json` reports `base_url: https://external-api.kalshi.com/trade-api/v2` — the **production** API, not the demo API named in the brief (`external-api.demo.kalshi.co`), and `alerts_total: 0` across 8 runs. Owned by `arena-5788e385`; logged here rather than edited. This session publishes it on the Flagged page. | arena-dc732aa6 | arena-5788e385 | open |
 
 **Accepted request R-D-01** from `arena-0b2d2a2a`: this session owns the fix
@@ -1220,3 +1221,18 @@ about to be logged as "PR #31 silently reverted by another session". Confirming
 `git show origin/main:methodology.html` proved the file was correct and a
 cache-busting query returned the new text. **Cache-bust before accusing a
 merge.**
+
+---
+
+### PR record — `arena-dc732aa6` (Board D integration)
+
+| Item | Result |
+| - | - |
+| Pull request | https://github.com/wingbangboozle1-lang/Trade2/pull/32 — "Board D: alert-quality engine rules, candidate catalyst links, per-row executability, book-vs-record finding (R-D-01)" |
+| Pre-merge checks on the PR | `check` **pass**, `collect` **pass** (watched to completion, not assumed) |
+| Merge | `gh pr merge 32 --merge` → **merged** as `8513a75 Merge pull request #32 …` on `main` |
+| Pages deployment | `pages build and deployment` run `44804610656` → **success**; `GET /repos/…/pages/builds/latest` → `status: built`, `created_at: 2026-11-20T19:42:18Z`, no error message |
+| Post-merge checks on `main` | `Site check — generator, render, links` run `44804612702` → **success**; `collector` run `44804612808` → **success** |
+| Not green | `Kalshi dashboard — collect, build, deploy` push run `44804612803` ended **cancelled** (17–43 s), as did the next scheduled run `44804717748`. Not a build failure — a concurrency-group casualty; raised as **R-DC-3** above and published as a standing item on `review.html`, because the site's own refresh loop is the thing the brief depends on |
+| Rebase count | Four `git pull --rebase origin main` cycles (main moved to `29934da`, `7bdff2f`, `53968df`, `1523670` between them). Generated HTML resolved by rebuilding; `assets/desk.js`, `styles.css`, `site_build/build.py`, `flagpage.py`, `suggestions.html` resolved by hand with nothing discarded; every union conflict in `COORDINATION.md` resolved additively |
+| Evidence log | `VERIFICATION-dc732aa6.md` — sources V1–V8, per-change verification, §3a merge table, and the values deliberately left blank |

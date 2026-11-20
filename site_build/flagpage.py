@@ -346,6 +346,28 @@ STANDING = [
         "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
     },
     {
+        "title": "Three scheduled workflows collect the same data, and the most "
+                 "frequent one rarely runs",
+        "body": ("Verified from the repository and the Actions API, not inferred. "
+                 "Three workflows collect from the demo API and commit to `main`: "
+                 "`kalshi-dashboard.yml` (cron `*/5`), `collector.yml` (`*/15`) and "
+                 "`dashboard.yml` (`*/30`). The `*/5` one groups its runs under "
+                 "`concurrency: collect` with `cancel-in-progress: false`, and on a "
+                 "repository this busy a run in that group spends longer than five "
+                 "minutes than not — so new runs replace queued ones instead of "
+                 "waiting. Two runs of it on 2026-11-20 ended `cancelled` after 17 s "
+                 "and 43 s (runs 44804717748 and 44804612803), while the `collector` "
+                 "workflow triggered by the same merge completed in 19 s. Consequence "
+                 "for a trader: the published snapshot's age is what the top bar shows, "
+                 "not five minutes. Reading of the queueing behaviour above is this "
+                 "project's interpretation of the workflow configuration and the two "
+                 "cancelled runs, not a confirmed GitHub guarantee — see the "
+                 "concurrency documentation for the rule."),
+        "source": ("https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804717748",
+                   "https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804612803",
+                   "https://github.com/wingbangboozle1-lang/Trade2/blob/main/.github/workflows/kalshi-dashboard.yml"),
+    },
+    {
         "title": "Fee-schedule rounding prose and its own table disagree",
         "body": ("The fee PDF says to round so that 'fee + positionCost is rounded to "
                  "a centicent', but its published table is reproduced exactly by "
