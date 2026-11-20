@@ -104,3 +104,57 @@ against every row of Kalshi's published fee table by an automated test.
 | G3 | WebSocket streaming in the running site | The handshake requires the same signed headers as REST. Polling is used instead; the endpoint and channels are documented and linked. |
 | G4 | Attribution of a price move to a specific news article | Deliberately not attempted: no official source maps articles to moves. |
 | G5 | A complete census of every Kalshi market | Each run tracks a bounded, ranked slice (top markets per topic) and reports the counts it read. |
+
+---
+
+## H. Verification pass — session `arena-dd1da6b5` (2026-11-20)
+
+Every row below was re-checked by opening the URL in the "Source" column and
+reading the response. Nothing is inferred.
+
+### H1. Published table rows re-checked against the official demo API
+
+| # | Published on the site | Source opened | Result |
+| - | --------------------- | ------------- | ------ |
+| H1.1 | `KXPRESNOMD-28-RW` YES bid `$0.0310`, YES ask `$0.0330`, open interest `189,529,515.91` | <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW> | **Verified.** `yes_bid_dollars` = `0.0310`, `yes_ask_dollars` = `0.0330`, `open_interest_fp` = `189529515.91`, `notional_value_dollars` = `1.0000`. The site's implied ask (`1.00 − best NO bid` = `1.00 − 0.9670`) equals the official `yes_ask_dollars`. |
+| H1.2 | `KXPRESNOMD-28-SAS` YES bid/ask shown as UNVERIFIED | <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS> | **Verified as UNVERIFIED.** The official record carries `yes_bid_dollars` = `0.0000` and `yes_ask_dollars` = `1.0000` with `yes_bid_size_fp` = `0.00` and `yes_ask_size_fp` = `0.00` — i.e. no resting size on either side, so there is no quote. The site leaves the value blank and flags it rather than printing a $0.00 bid. |
+| H1.3 | `KXAAAGASM-26NOV30-3.60` YES bid `$0.0500`, YES ask `$0.0600`, bid depth `13,100.54` | <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.60> | **Verified.** `yes_bid_dollars` = `0.0500` (`yes_bid_size_fp` = `3338.33`), `yes_ask_dollars` = `0.0600` (`yes_ask_size_fp` = `2779.58`), `no_bid_dollars` = `0.9400` so the implied YES ask `1.00 − 0.9400` = `0.0600` matches, `open_interest_fp` = `6282.92`, `volume_fp` = `7352.02`. |
+| H1.4 | `KXPRESNOMD-28-AKLO` YES bid `$0.0020`, YES ask `$0.0030` | <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO> and <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO/orderbook> | **Verified.** Market record: `yes_bid_dollars` = `0.0020` (`yes_bid_size_fp` = `83333.33`), `yes_ask_dollars` = `0.0030` (`yes_ask_size_fp` = `55554.03`), `open_interest_fp` = `100653948.08`. Order book: best YES bid `0.0020` × `83333.33`, best NO bid `0.9970`, so the implied YES ask is `0.0030`. |
+
+### H2. The demo feed prints alternating trades on a book that never moves
+
+This is the finding that changed how the model is built, so it is recorded in
+full with the responses that show it.
+
+| # | Claim | Source opened | Result |
+| - | ----- | ------------- | ------ |
+| H2.1 | On `KXPRESNOMD-28-AKLO` the traded price alternates between $0.8030 and $0.0030 every minute | <https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&end_ts=1795200500&period_interval=1> | **Verified.** `price.close_dollars` runs 0.8030, 0.0030, 0.8030, 0.0030, 0.8030 … across consecutive one-minute candles. |
+| H2.2 | The quoted book on that market does not move at all | same candlestick response | **Verified.** In every one-minute candle `yes_bid.close_dollars` = `0.0020` and `yes_ask.close_dollars` = `0.0030`. The live order book (H1.4) agrees: bid `0.0020`, NO bid `0.9970`. |
+| H2.3 | A $0.10 swing measured against the traded price can therefore be a print, not a market move | H2.1 + H2.2 combined | **Verified.** The alert stream compares a traded price with a book mid. On this market the two differ by $0.80 while the market has not moved at all. |
+| H2.4 | The model therefore refuses to price a move the book did not confirm | `collector/shortlist.py`, `tests/test_shortlist.py` | **Verified.** Gate 6 of the published model. On the 2026-11-20T18:41:08Z snapshot the model rejected all three alerted tickers with the reason "the book has not moved since the previous snapshot", and the rejection is published on the Flagged for Review page. |
+| H2.5 | A market whose book *did* move by $0.10 is priced from the book only | `tests/test_shortlist.py::TestBuild::test_build_prices_a_book_move_and_rejects_a_print_only_move` | **Verified.** A book mid moving 0.50 → 0.30 produces fair value 0.40 and a YES edge of $0.09 at a $0.31 ask. |
+
+### H3. Model, fee and news checks
+
+| # | Claim | Source | Result |
+| - | ----- | ------ | ------ |
+| H3.1 | Kalshi's published taker fee is `0.07 × C × P × (1 − P)` | <https://kalshi.com/docs/kalshi-fee-schedule.pdf> | **Verified.** All 42 published table rows are asserted by `tests/test_engine.py`. The shortlist uses the same function, so its net edge is the same arithmetic. |
+| H3.2 | The order book returns bids only, ascending, best bid last | <https://docs.kalshi.com/getting_started/orderbook_responses> | **Verified.** The live AKLO book confirms it: `yes_dollars` = `[["0.0010", …], ["0.0020", …]]`, so the best bid is the last element (`0.0020`). |
+| H3.3 | Candlesticks accept only `period_interval` 1, 60 or 1440 | <https://docs.kalshi.com/api-reference/market/get-market-candlesticks> | **Verified.** Enforced in `collector/kalshi_api.py` and used by the verification tool with `period_interval=1`. |
+| H3.4 | Candidate headlines can be fetched for a swing | <https://news.google.com/rss/search?q=Amy+Klobuchar+presidential+nominee&hl=en-US&gl=US&ceid=US:en> | **Verified.** The feed returns items with `title`, `link`, `source` and `pubDate`. Headlines are labelled *candidates* on the site because temporal proximity is not causation, and a headline is never presented as the confirmed cause of a move. |
+| H3.5 | A headline is matched to a swing by keyword and publish time only | `collector/news.py` | **Verified** as described. No official source maps an article to a Kalshi price move, so no stronger claim is made. |
+
+### H4. Automated re-check
+
+| # | Item | Result |
+| - | ---- | ------ |
+| H4.1 | `tools/verify_snapshot.py` re-opens every published market and series response and compares each field with what the site shows | **Verified** by the run recorded on the Methodology page. Each comparison is classified `match`, `drift` (inside the stated tolerance), `mismatch` or `unverified` (the response could not be read), and the exact URL is recorded for each row. |
+| H4.2 | Integer counters are printed as integers | **Verified.** `Markets tracked 750`, `Open positions 1`, `Resolved tracked 2,000` — previously `750.00`, `1.00`, `2000.00`. |
+| H4.3 | The site has no broken internal links and every page still renders | **Verified.** `tools/linkcheck.py`: 45 pages, 525 internal links, 0 errors. |
+
+### H5. Corrections made to earlier sections of this log
+
+| # | Earlier text | Now |
+| - | ------------ | --- |
+| H5.1 | G4 said attribution of a move to a news article was "deliberately not attempted". | Still true of *attribution*. What the site now does is attach **candidate** headlines found by keyword and publish time, labelled as candidates, alongside the official Kalshi market link. |
+| H5.2 | F2 described large open interest against 1–2 cent bids as an irregularity. | Still true, and now joined by H2.1–H2.3: on some demo markets the *traded* price alternates while the book is flat, so a price-based swing on those markets is an artefact of the feed rather than a market move. |

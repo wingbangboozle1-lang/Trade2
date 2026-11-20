@@ -61,6 +61,9 @@ jobs:
         run: python3 -m collector.news --window-hours 24
 
       - name: Verify the snapshot against the official API
+        # A mismatch is reported on the Flagged for Review page and in
+        # data/verification.json; it must not stop the site from publishing.
+        continue-on-error: true
         run: python3 tools/verify_snapshot.py --per-topic 3
 
       - name: Rebuild static site data

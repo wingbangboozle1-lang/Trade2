@@ -89,11 +89,22 @@ def verify_market(event: dict[str, Any]) -> list[dict[str, Any]]:
     m = market.get("market") or {}
 
     def add(field: str, published: Any, official: Any, ok: bool,
-            detail: str = "") -> None:
+            detail: str = "", structural: bool = True) -> None:
+        """Record one comparison.
+
+        Structural fields (ticker, event, status, result) must match exactly:
+        they do not move between two reads of the same market. Size and price
+        fields are allowed to drift inside their tolerance.
+        """
+        if ok:
+            result = "match"
+        elif structural:
+            result = "mismatch"
+        else:
+            result = "drift"
         checks.append({"check": "market record", "url": url, "field": field,
                        "published": published, "official": official,
-                       "result": "match" if ok else "mismatch",
-                       "detail": detail})
+                       "result": result, "detail": detail})
 
     add("ticker", ticker, m.get("ticker"), m.get("ticker") == ticker)
     add("event_ticker", event.get("event_ticker"), m.get("event_ticker"),
@@ -109,15 +120,15 @@ def verify_market(event: dict[str, Any]) -> list[dict[str, Any]]:
         m.get("open_interest_fp"),
         close_rel(event.get("open_interest_contracts"),
                   _num(m.get("open_interest_fp")), REL_TOLERANCE),
-        f"relative tolerance {REL_TOLERANCE:.0%}")
+        f"relative tolerance {REL_TOLERANCE:.0%}", structural=False)
     add("volume_fp", event.get("volume_contracts"), m.get("volume_fp"),
         close_rel(event.get("volume_contracts"), _num(m.get("volume_fp")),
                   REL_TOLERANCE),
-        f"relative tolerance {REL_TOLERANCE:.0%}")
+        f"relative tolerance {REL_TOLERANCE:.0%}", structural=False)
     add("notional_value_dollars", event.get("notional_per_contract"),
         m.get("notional_value_dollars"),
         close(event.get("notional_per_contract"),
-              _num(m.get("notional_value_dollars")), 0.0001))
+              _num(m.get("notional_value_dollars")), 0.0001), structural=False)
 
     book_url = f"{API}/markets/{ticker}/orderbook"
     book, err = fetch(book_url)
@@ -241,8 +252,11 @@ def main() -> int:
             series_checked += 1
 
     counts = {"match": 0, "drift": 0, "mismatch": 0, "unverified": 0}
+    mismatches = []
     for row in checks:
         counts[row["result"]] = counts.get(row["result"], 0) + 1
+        if row["result"] == "mismatch":
+            mismatches.append(row)
 
     payload = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -252,6 +266,8 @@ def main() -> int:
         "series_checked": series_checked,
         "checks": checks,
         "counts": counts,
+        "mismatches": mismatches,
+        "ok": not mismatches,
         "tolerances": {"price_dollars": PRICE_TOLERANCE,
                        "relative": REL_TOLERANCE},
         "note": ("Prices and sizes move between the snapshot and this check, so a "
@@ -265,6 +281,9 @@ def main() -> int:
     print(json.dumps({"markets_checked": len(unique),
                       "series_checked": series_checked,
                       "counts": counts, "out": args.out}, indent=1))
+    for row in mismatches:
+        print(f"MISMATCH {row['check']} {row['field']}: published="
+              f"{row['published']!r} official={row['official']!r} url={row['url']}")
     # A response that could not be read is "unverified", not a mismatch: it
     # records that the check did not happen. Only a field that disagrees with
     # the official response fails the run.

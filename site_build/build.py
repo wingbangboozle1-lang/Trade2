@@ -475,6 +475,42 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
     label = topic.get("label") or slug.replace("-", " ").title()
     events = [e for e in live.get("events", []) if e.get("topic") == slug]
     resolutions = (live.get("resolutions") or {}).get(slug, [])
+    news = live.get("news") or {}
+    shortlist = live.get("shortlist") or {}
+
+    topic_alerts = [a for a in (live.get("alerts") or []) if a.get("topic") == slug]
+    swing_rows = []
+    for a in topic_alerts[:20]:
+        arrow = "▲" if a.get("direction") == "up" else "▼"
+        cls = "up" if a.get("direction") == "up" else "down"
+        swing_rows.append(
+            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
+            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
+            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
+            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))}</small>'
+            f'{news_links(a, news)}</span></div>')
+    if not swing_rows:
+        swing_rows.append('<div class="empty-state inline">No ≥ $0.10 swing has '
+                          "been observed in this topic yet.</div>")
+
+    topic_verdicts = [v for v in (shortlist.get("verdicts") or [])
+                       if v.get("topic") == slug]
+    verdict_rows = []
+    for verdict in topic_verdicts[:20]:
+        picked = verdict.get("verdict") == "picked"
+        verdict_rows.append(
+            f'<div class="chat-row model-verdict {"picked" if picked else "passed"}">'
+            f'<span class="chat-delta {"up" if picked else "flat"}">'
+            f'{"★ picked" if picked else "— passed"}</span>'
+            f'<span class="chat-body"><a href="{html.escape(verdict.get("market_url") or "")}" '
+            f'target="_blank" rel="noreferrer">{esc(verdict.get("title"))}</a> '
+            f'<small>{html.escape(verdict.get("reason") or "")}</small>'
+            f'<small><a class="source-link" href="{html.escape(verdict.get("source_url") or "")}" '
+            f'target="_blank" rel="noreferrer">API ↗</a></small></span></div>')
+    if not verdict_rows:
+        verdict_rows.append('<div class="empty-state inline">The model has not '
+                            "priced a market in this topic yet.</div>")
 
     market_rows = []
     for e in events[:60]:
@@ -598,6 +634,25 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
               <tbody>{''.join(series_rows) or '<tr><td colspan="5" class="empty-state">None matched</td></tr>'}</tbody>
             </table>
           </div>
+        </section>
+        <section class="panel alert-panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">◉</span><div>
+              <h2>Swings in this topic</h2>
+              <p>Every observed move of at least $0.10, with candidate headlines</p>
+              </div></div>
+            <a class="source-link" href="../live.html">Full live desk →</a>
+          </div>
+          <div class="chat-feed">{''.join(swing_rows)}</div>
+        </section>
+        <section class="panel alert-panel model-panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">★</span><div>
+              <h2>Model's view of this topic</h2>
+              <p>What the model picked, and why it passed on the rest</p></div></div>
+            <a class="source-link" href="../methodology.html">How the model works →</a>
+          </div>
+          <div class="chat-feed">{''.join(verdict_rows)}</div>
         </section>"""
 
 

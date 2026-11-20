@@ -89,7 +89,19 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
-    # 4. A published swing that the order book does not confirm.
+    # 4. A published value that the automated re-check could not confirm.
+    for row in ((live.get("verification") or {}).get("mismatches") or []):
+        issues.append({
+            "kind": "Published value disagrees with the official API",
+            "topic": None,
+            "ticker": row.get("field"),
+            "detail": (f"the re-check read {row.get('official')!r} from the official "
+                       f"response while the site publishes {row.get('published')!r}"
+                       + (f" — {row.get('detail')}" if row.get("detail") else "")),
+            "source": row.get("url"),
+        })
+
+    # 5. A published swing that the order book does not confirm.
     # The Kalshi demo feed prints alternating trades on some markets while the
     # quoted book stays flat. A price move the book did not make is a trade
     # print, not a change in the market, so it is flagged here rather than
