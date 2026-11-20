@@ -1,12 +1,12 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 9944.94,
+  "cash": 9793.05,
   "daily_loss_cap": 150.0,
-  "equity": 11120.75,
-  "fees_paid": 15.66,
-  "open_positions": 6,
-  "realized_pnl": -41.22,
+  "equity": 11168.54,
+  "fees_paid": 7.27,
+  "open_positions": 7,
+  "realized_pnl": 0.0,
   "starting_cash": 10000.0
  },
  "credentials": "none \u2014 no orders are sent (FL-01); all fills are simulated against real demo order books",
@@ -75,9 +75,14 @@
    "cash": 9944.94,
    "equity": 11120.75,
    "ts": "2026-11-20T19:44:12.980928+00:00"
+  },
+  {
+   "cash": 9793.05,
+   "equity": 11168.54,
+   "ts": "2026-11-20T20:31:13.409123+00:00"
   }
  ],
- "generated_at": "2026-11-20T19:44:12.980931+00:00",
+ "generated_at": "2026-11-20T20:31:13.409126+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -96,7 +101,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 9,
+   "open_periods": 10,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
@@ -111,7 +116,7 @@
    "contracts": 1176,
    "entry_cost": 199.92,
    "entry_fee": 11.62,
-   "open_periods": 6,
+   "open_periods": 7,
    "opened_at": "2026-11-20T15:18:44.327370+00:00",
    "reason": "book edge fair=0.467 vs price=0.170 spread=0.030 net=+0.257",
    "side": "yes",
@@ -126,7 +131,7 @@
    "contracts": 10000,
    "entry_cost": 200.0,
    "entry_fee": 13.72,
-   "open_periods": 2,
+   "open_periods": 3,
    "opened_at": "2026-11-20T18:39:58.470501+00:00",
    "reason": "high-ROI: net edge +0.043 >= 0.02 (revert 30%x0.21 - fee 0.010 - spread 0.010)",
    "side": "yes",
@@ -141,7 +146,7 @@
    "contracts": 909,
    "entry_cost": 199.98,
    "entry_fee": 10.92,
-   "open_periods": 2,
+   "open_periods": 3,
    "opened_at": "2026-11-20T18:39:58.470523+00:00",
    "reason": "book edge fair=0.276 vs price=0.220 spread=0.010 net=+0.026",
    "side": "yes",
@@ -156,7 +161,7 @@
    "contracts": 259,
    "entry_cost": 199.43,
    "entry_fee": 3.22,
-   "open_periods": 1,
+   "open_periods": 2,
    "opened_at": "2026-11-20T19:04:28.360641+00:00",
    "reason": "high-ROI: net edge +0.081 >= 0.02 (revert 30%x0.37 - fee 0.020 - spread 0.010)",
    "side": "no",
@@ -171,7 +176,7 @@
    "contracts": 5000,
    "entry_cost": 200.0,
    "entry_fee": 13.44,
-   "open_periods": 0,
+   "open_periods": 1,
    "opened_at": "2026-11-20T19:44:12.980917+00:00",
    "reason": "high-ROI: net edge +0.034 >= 0.02 (revert 30%x0.18 - fee 0.010 - spread 0.010)",
    "side": "no",
@@ -180,6 +185,21 @@
    "strategy": "roi_edge",
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "topic": "gas-prices"
+  },
+  {
+   "avg_price": 0.48,
+   "contracts": 416,
+   "entry_cost": 199.68,
+   "entry_fee": 7.27,
+   "open_periods": 0,
+   "opened_at": "2026-11-20T20:31:13.409108+00:00",
+   "reason": "book edge fair=0.555 vs price=0.480 spread=0.010 net=+0.045",
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto"
   }
  ],
  "source_urls": {
@@ -230,20 +250,20 @@
   }
  },
  "this_run": {
-  "equity": 11120.75,
+  "equity": 11168.54,
   "marks": {
    "KXAAAGASM-26NOV30-3.50": 0.5,
+   "KXAAAGASW-26NOV23-3.6200": 0.04,
    "KXAAAGASW-26NOV23-3.6400": 0.02,
    "KXBTCMINY-27JAN01-50000.00": 0.77,
-   "KXPRESNOMD-28-AKLO": 0.803,
    "KXPRESNOMR-28-MR": 0.22,
    "KXRT-FUR-85": 0.15
   },
   "opened": [
    {
-    "signal": "high-roi-fade",
+    "signal": "book-undervalued-yes",
     "strategy": "roi_edge",
-    "ticker": "KXAAAGASW-26NOV23-3.6200"
+    "ticker": "KXBTCMINY-27JAN01-55000.00"
    }
   ]
  },
@@ -437,6 +457,25 @@
    "topic": "gas-prices",
    "trade_type": "roi_edge|high-roi-fade|no",
    "ts": "2026-11-20T19:44:12.980919+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 416,
+   "exit_reason": null,
+   "fee": 7.27,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.48,
+   "reason": "book edge fair=0.555 vs price=0.480 spread=0.010 net=+0.045",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T20:31:13.409113+00:00"
   }
  ]
 }

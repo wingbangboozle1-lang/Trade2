@@ -1,49 +1,28 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1",
-   "delta": 0.8,
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795203037&end_ts=1795206637&period_interval=1",
+   "delta": 0.857,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
    "flags": [
     "news-unverified:no headline within window (link left blank)"
    ],
-   "from": 0.003,
+   "from": 0.005,
    "headlines": [],
    "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
-   "t": 1795200300,
-   "t_iso": "2026-11-20T18:45:00+00:00",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
+   "t": 1795204020,
+   "t_iso": "2026-11-20T19:47:00+00:00",
    "threshold": 0.1,
-   "ticker": "KXPRESNOMD-28-AKLO",
-   "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
-   "to": 0.803,
+   "ticker": "KXPRESNOMD-28-BOBA",
+   "title": "Will Barack Obama be the Democratic Presidential nominee in 2028?",
+   "to": 0.862,
    "topic": "elections",
    "window": "seconds"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
-   "delta": -0.21,
-   "direction": "down",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.28,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
-   "t": 1795150800,
-   "t_iso": "2026-11-20T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXAAAGASW-26NOV23-3.6400",
-   "title": "Will average **gas prices** be above $3.6400?",
-   "to": 0.07,
-   "topic": "gas-prices",
-   "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -98,7 +77,28 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
+   "delta": -0.21,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.28,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "title": "Will average **gas prices** be above $3.6400?",
+   "to": 0.07,
+   "topic": "gas-prices",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794947437&end_ts=1795206637&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -132,7 +132,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T19:44:12.930483+00:00",
+ "generated_at": "2026-11-20T20:31:13.353365+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
