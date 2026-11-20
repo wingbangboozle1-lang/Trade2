@@ -33,7 +33,7 @@
     "gas-prices": 12,
     "golf": 12
   },
-  "shallow_test": 1,
+  "shallow_test": 2,
   "started_at": "2026-11-20T15:17:28.727973+00:00",
   "threshold": 0.1,
   "topics": [
