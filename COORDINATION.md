@@ -377,3 +377,38 @@ after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
 rebase+push retry that surfaces pull/push errors as workflow annotations.
 Verified: dispatch run `44769581312` on `main` → **success**, data commit
 `0beb9b2` landed, Pages rebuilt for it (`status: built`).
+
+---
+
+# Board D — session `arena/cbb7cbec-trade2` (Arena-managed branch, status: active)
+
+Branch: `arena/cbb7cbec-trade2`, based on `main` @ `1bc32b7` (2026-11-20T18:53Z
+snapshot). This session read boards A–C above before starting and is claiming
+only paths not owned by a session that is currently active.
+
+**Observed state at claim time (2026-11-20T19:05Z):** no other branch contains
+commits that are not already on `main`; i.e. all prior work (PRs #1–#11) is
+merged. `collector.yml` was being triggered by pushes to other `arena/*`
+branches, but those branches held no unique commits, so this session's claim is
+conflict-free.
+
+**Claimed file scope (session `cbb7cbec`):**
+
+| Path | Work |
+| - | - |
+| `collector/alerts.py`, `collector/collector.py`, `collector/engine.py` | Fix P1–P4 below |
+| `assets/desk.js`, `site_build/build.py`, `site_build/flagpage.py` | Surface the fixes; resolved-event UI |
+| `REVIEW_2026-11-20.md` (new) | Independent line-by-line review with source links |
+| `COORDINATION.md` | This board |
+
+**Defects found and being fixed (all traced to a line of code, each with the
+official API evidence that shows it):**
+
+| ID | Defect | Evidence | Fix |
+| - | - | - | - |
+| P1 | Alerts fire on the order-book **mid** even when the book is one-sided and effectively empty. Published alerts include `Hunter Biden` bid $0.002 / ask $0.811 → "mid" $0.4065, i.e. a fabricated 40¢ "swing". | live `GET /markets/KXPRESNOMD-28-HBID` at 19:04Z: `yes_bid_dollars` 0.0020, `yes_ask_dollars` 0.8110, `previous_price_dollars` 0.0030 | Only alert when the book is two-sided and the spread is tradeable; otherwise mark the observation non-alertable. |
+| P2 | Alerts are **re-appended every run** with the same reference (no de-duplication by ticker+direction within a bar), so one move produces 29 rows and floods the "chat". | `data/live.json`: 7 rows with identical `previous`/`current` for HBID and `observed_gap_seconds` −3.8 | De-duplicate on (ticker, reference bar, direction); publish unique alerts only. |
+| P3 | The "High-ROI / model" chat is empty because `high_roi_alerts` requires a *signal* on the **same ticker** as the alert, and the ROI scorer only trades tight books while alerts include wide ones. | `data/live.json`: `signals` length 1, `high_roi_alerts` length 0, while 26/29 alerts have spreads > $0.20 | Model feed = signals (scored, tradeable) *plus* alerts whose book is tradeable, labelled by source. |
+| P4 | "Tracked until resolved" shows 0 resolved rows on the root site while 2,000 settlements are stored; the resolution store keys on `series_ticker` which is `null`, so per-topic mapping drops every row. | `data/resolutions.json`: 2,000 entries, `series_ticker: null`, `topic: None`; `data/live.json` `resolutions` all `[]` | Carry the topic at settle time from the market registry and always publish recently resolved rows from the five topics. |
+
+Status: **in progress** (this row is updated when each fix lands).
