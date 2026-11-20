@@ -14,8 +14,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795189980.8287103,
    "entry_fee": 13.44,
-   "current_price": 0.04,
-   "unrealized": 0.0,
+   "current_price": 0.025,
+   "unrealized": -75.0,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -124,6 +124,12 @@
   {
    "ts": 1795189872.0178175,
    "equity": 9986.56,
+   "realized": 0,
+   "open": 200.0
+  },
+  {
+   "ts": 1795190094.611396,
+   "equity": 9911.56,
    "realized": 0,
    "open": 200.0
   }
