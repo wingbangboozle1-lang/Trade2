@@ -124,6 +124,7 @@
     const w = canvas.clientWidth || 600, h = canvas.clientHeight || 240;
     canvas.width = w * dpr; canvas.height = h * dpr;
     const c = canvas.getContext("2d");
+    if (!c) return; // no canvas context (headless/unsupported): skip drawing
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, w, h);
     if (!pts || pts.length < 2) {
@@ -182,6 +183,7 @@
     const w = canvas.clientWidth || 600, h = canvas.clientHeight || 200;
     canvas.width = w * dpr; canvas.height = h * dpr;
     const c = canvas.getContext("2d");
+    if (!c) return; // no canvas context (headless/unsupported): skip drawing
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     c.clearRect(0, 0, w, h);
     const yes = (book && book.yes_levels) || [], no = (book && book.no_levels) || [];

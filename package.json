@@ -1,0 +1,27 @@
+{
+  "name": "trade2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wingbangboozle1-lang/Trade2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wingbangboozle1-lang/Trade2/issues"
+  },
+  "homepage": "https://github.com/wingbangboozle1-lang/Trade2#readme",
+  "dependencies": {
+    "jsdom": "^31.0.1"
+  }
+}

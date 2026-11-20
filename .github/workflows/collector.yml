@@ -1,9 +1,12 @@
 name: collector
 
-# Collects live Kalshi demo data, runs the paper-trading engine, and (on schedule
-# or manual runs) commits the refreshed JSON the GitHub Pages site reads.
+# Push runs: fast verification only (tests + site smoke) — they never touch the API
+# and never commit, so a data commit can't trigger a loop and two runs never fight
+# over Kalshi's unauthenticated rate limits.
 #
-# Push runs never commit (prevents a commit loop); scheduled/dispatch runs commit.
+# Schedule (every 15 min, default branch) and manual runs: collect live demo data,
+# run the paper-trading engine, and commit refreshed docs/data JSON that the
+# GitHub Pages site reads.
 on:
   push:
     branches:
@@ -34,13 +37,21 @@ jobs:
           python3 -m collector.test_runner
           python3 -m py_compile collector/*.py trading/*.py
 
+      - name: Site smoke test (jsdom: every page renders with fixture data)
+        run: |
+          npm install --no-audit --no-fund
+          python3 test/gen_fixtures.py /tmp/fixture-data
+          node test/site_smoke.mjs /tmp/fixture-data
+
       - name: Probe demo API connectivity
+        if: github.event_name != 'push'
         run: |
           code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' \
             'https://external-api.demo.kalshi.co/trade-api/v2/exchange/status' || echo curl_failed)
           echo "::notice::Kalshi demo API probe HTTP $code"
 
       - name: Collect demo data (with headline lookup for >=$0.10 swings)
+        if: github.event_name != 'push'
         run: |
           set -o pipefail
           python3 -u -m collector.runner --news \
@@ -48,6 +59,7 @@ jobs:
             | sed -u 's/^/[collector] /; s/^/::notice::/'
 
       - name: Run simulated trading engine
+        if: github.event_name != 'push'
         run: python3 -m trading.engine
 
       - name: Commit refreshed data (schedule/dispatch only)
@@ -65,6 +77,7 @@ jobs:
           fi
 
       - name: Upload data snapshot artifact
+        if: github.event_name != 'push'
         uses: actions/upload-artifact@v4
         with:
           name: kalshi-data

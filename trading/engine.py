@@ -135,7 +135,11 @@ class Engine:
     def __init__(self, state: Optional[Dict] = None) -> None:
         state = state or {}
         self.cash: float = float(state.get("cash", START_CASH))
-        self.positions: Dict[str, Dict] = dict(state.get("positions", {}))
+        raw_pos = state.get("positions", {})
+        if isinstance(raw_pos, list):  # JSON round-trip stores positions as a list
+            self.positions = {p["ticker"]: p for p in raw_pos if isinstance(p, dict) and p.get("ticker")}
+        else:
+            self.positions = dict(raw_pos)
         self.trades: List[Dict] = list(state.get("trades", []))
         self.equity_curve: List[Dict] = list(state.get("equity_curve", []))
         self.fees_paid: float = float(state.get("fees_paid", 0.0))

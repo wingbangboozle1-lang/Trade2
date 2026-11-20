@@ -49,7 +49,8 @@ class KalshiClient:
         self.base = base.rstrip("/")
         self.timeout = timeout
         self.max_retries = max_retries
-        self.min_interval = min_interval
+        self.min_interval = min_interval      # floor for the adaptive pace
+        self._interval = min_interval         # current pacing (grows on 429, decays on success)
         self._last_call = 0.0
         self.requests: List[Dict[str, Any]] = []
         self.log = logger or (lambda *a, **k: None)
@@ -57,8 +58,8 @@ class KalshiClient:
     # ------------------------------------------------------------------ http
     def _throttle(self) -> None:
         gap = time.monotonic() - self._last_call
-        if gap < self.min_interval:
-            time.sleep(self.min_interval - gap)
+        if gap < self._interval:
+            time.sleep(self._interval - gap)
         self._last_call = time.monotonic()
 
     def get(self, path: str, **params: Any) -> Dict[str, Any]:
@@ -75,6 +76,8 @@ class KalshiClient:
                 with urllib.request.urlopen(req, timeout=self.timeout) as resp:
                     raw = resp.read().decode("utf-8")
                     self.requests.append({"url": url, "status": resp.status, "ts": int(time.time())})
+                    # success -> gently speed back up toward the floor interval
+                    self._interval = max(self.min_interval, self._interval * 0.9)
                     return json.loads(raw) if raw.strip() else {}
             except urllib.error.HTTPError as exc:  # 429 / 5xx -> backoff
                 body = ""
@@ -85,6 +88,10 @@ class KalshiClient:
                 self.requests.append({"url": url, "status": exc.code, "ts": int(time.time()), "error": body[:200]})
                 if exc.code in (429, 500, 502, 503, 504):
                     last_err = KalshiError(url, exc.code, body)
+                    if exc.code == 429:
+                        # back off AND slow the whole run down, not just this request
+                        self._interval = min(6.0, max(self._interval * 1.6, 1.5))
+                        self.log(f"warn: 429 rate limited; pacing now {self._interval:.1f}s/req url={url}")
                     time.sleep(min(30.0, 1.5 * (2**attempt)))
                     continue
                 raise KalshiError(url, exc.code, body)
