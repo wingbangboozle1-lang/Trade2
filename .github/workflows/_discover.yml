@@ -1,0 +1,16 @@
+name: _discover
+on: [push, workflow_dispatch]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: discover
+        run: python3 collector/discover.py 2>&1 | tail -40
+      - name: commit
+        run: |
+          git config user.name bot; git config user.email bot@users.noreply.github.com
+          git add -f data/discovery.json; git commit -m "chore: discovery snapshot [skip ci]" || true
+          git push || (git pull --rebase && git push)
