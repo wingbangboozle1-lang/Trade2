@@ -98,15 +98,32 @@
   }
 
   /* R-D-01 (arena-0b2d2a2a): show the snapshot age continuously, not only at
-   * sync time, so a stale view is never mistaken for a live one. */
+   * sync time, so a stale view is never mistaken for a live one.
+   *
+   * The age is rendered server-side into the #snapshotAge badge so it is
+   * correct with JavaScript disabled; this only keeps it ticking. The
+   * wording comes from AlertsView.ageLabel, the shared helper module, so
+   * there is one implementation and one unit-tested format. */
   function tickAge() {
     var el = document.getElementById("updatedAt");
-    if (!el || !state.lastSync) return;
+    if (el && state.lastSync) {
+      el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString();
+      el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
+    }
+    var badge = document.getElementById("snapshotAge");
+    if (!badge) return;
+    var ts = parseFloat(badge.getAttribute("data-generated-ts") || "");
+    if (!isFinite(ts) || ts <= 0) {
+      if (!state.lastSync) return;
+      ts = new Date(state.lastSync).getTime() / 1000;
+    }
+    var seconds = Math.max(0, Math.floor(Date.now() / 1000 - ts));
     var V = window.AlertsView;
-    var age = V ? V.ageLabel(state.lastSync) : "";
-    el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString() +
-      (age ? " · " + age : "");
-    el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
+    badge.textContent = V
+      ? V.ageLabel(new Date(ts * 1000).toISOString())
+      : (seconds < 90 ? seconds + "s old"
+                      : Math.floor(seconds / 60) + "m old");
+    badge.className = "snap-age" + (seconds < 900 ? " fresh" : "");
   }
 
   function startStream() {
@@ -145,6 +162,7 @@
     state.snapshot = payload;
     state.lastSync = payload.generated_at;
     connected();
+    tickAge();
     if (source === "poll" || source === "sse") banner("LIVE STREAM", "live");
     renderFeeds();
     renderDesk();
@@ -155,6 +173,24 @@
   /* ------------------------------------------------------------------ */
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
+
+  /* Kalshi's public event page carries Kalshi's own live news feed for that
+   * event, so it is the first place to look for something that may have
+   * moved the price. The second link is a news search built from the event
+   * title. Neither asserts a cause. */
+  function eventUrl(a) {
+    var series = a.series_ticker ||
+      String(a.event_ticker || "").split("-")[0] || "";
+    return "https://kalshi.com/markets/" + encodeURIComponent(series) + "/" +
+      encodeURIComponent(a.event_ticker || "");
+  }
+
+  function newsUrl(a) {
+    var label = String(a.topic || "").replace(/-/g, " ");
+    var q = (a.title || a.ticker || "") + " " + label + " Kalshi";
+    return "https://news.google.com/rss/search?q=" + encodeURIComponent(q) +
+      "&hl=en-US&gl=US&ceid=US:en";
+  }
 
   function alertRow(a, isModel) {
     var up = a.direction === "up";
@@ -184,6 +220,10 @@
       (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
       "</small>" +
       (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
+      '<span class="cause-links">' +
+      '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
+      '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
+      "</span>" +
       "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
@@ -610,6 +650,7 @@
       banner("SNAPSHOT MODE", "");
       pollSnapshot();
     }
+    tickAge();
     fetchSnapshot().then(function (payload) {
       if (payload) applySnapshot(payload, "poll");
     });

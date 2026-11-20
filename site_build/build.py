@@ -19,78 +19,29 @@ from __future__ import annotations
 import html
 import json
 import os
+import time
 from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
-from . import flagpage
+from . import extras, flagpage
+from .format import (API, count, cents, esc, kalshi_event_url,
+                     kalshi_market_url, money, news_search_url, num, pct,
+                     result_chip)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-API = "https://external-api.demo.kalshi.co/trade-api/v2"
 SITE = "https://wingbangboozle1-lang.github.io/Trade2"
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
 TOPIC_FILE = {t: t for t in TOPIC_ORDER}
 
+# ``cnt`` was the name another session gave the same integer formatter; it is
+# kept as an alias so both names resolve to the one implementation.
+cnt = count
 
-def esc(value: Any) -> str:
-    if value is None or value == "":
-        return '<span class="flag-badge">UNVERIFIED</span>'
-    return html.escape(str(value))
-
-
-def money(value: Any, places: int = 2) -> str:
-    if value is None or value == "":
-        return '<span class="flag-badge">UNVERIFIED</span>'
-    try:
-        return f"${float(value):,.{places}f}"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
-def cents(value: Any) -> str:
-    if value is None or value == "":
-        return '<span class="flag-badge">UNVERIFIED</span>'
-    try:
-        return f"${float(value):.4f}"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
-def num(value: Any) -> str:
-    if value is None or value == "":
-        return ""
-    try:
-        return f"{float(value):,.2f}"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
-def cnt(value: Any) -> str:
-    """Whole-number count (markets, positions, trades). Never shown as 750.00."""
-    if value is None or value == "":
-        return ""
-    try:
-        return f"{int(round(float(value))):,}"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
-def pct(value: Any) -> str:
-    if value is None or value == "":
-        return ""
-    try:
-        return f"{float(value) * 100:.1f}%"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
-def result_chip(result: str) -> str:
-    r = (result or "").lower()
-    if r == "yes":
-        return '<span class="tag tag-yes">YES</span>'
-    if r == "no":
-        return '<span class="tag tag-no">NO</span>'
-    return '<span class="flag-badge">UNVERIFIED</span>'
+DATA_DIR = os.path.join(ROOT, "data")
+RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
+SERIES_CACHE_PATH = os.path.join(DATA_DIR, "series_cache.json")
+PORTFOLIO_STATE_PATH = os.path.join(DATA_DIR, "portfolio_state.json")
 
 
 def nav(active: str, prefix: str = "") -> str:
@@ -112,6 +63,9 @@ def research_nav(active: str, prefix: str = "") -> str:
     items = [("live.html", "Live desk", "◈"),
              ("index.html", "Overview", "◫"),
              ("summary.html", "Executive summary", "▤"),
+             ("resolutions.html", "Resolved", "✓"),
+             ("trades.html", "Trades", "⇄"),
+             ("suggestions.html", "Suggestions", "✦"),
              ("methodology.html", "Methodology", "⚙"),
              ("review.html", "Flagged for review", "⚑")]
     out = []
@@ -173,12 +127,19 @@ def page(title: str, active: str, body: str, prefix: str = "",
 """
 
 
-def topbar(crumb: str, generated: str, prefix: str = "") -> str:
+def topbar(crumb: str, generated: str, prefix: str = "",
+           generated_at_ts: Any = None) -> str:
+    age = extras.age_label(generated, generated_at_ts)
+    age_html = (f'<span class="snap-age" id="snapshotAge" '
+                f'data-generated-ts="{html.escape(str(generated_at_ts or ""))}">'
+                f'{html.escape(age)}</span>'
+                if age else "")
     return f"""        <header class="topbar">
           <div class="breadcrumb">Workspace <span>/</span> {html.escape(crumb)}</div>
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot {html.escape(generated or '')}</time>
+            {age_html}
           </div>
         </header>"""
 
@@ -187,53 +148,148 @@ def topbar(crumb: str, generated: str, prefix: str = "") -> str:
 # Overview
 # ---------------------------------------------------------------------------
 
+def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
+    """One row of a swing chat.
+
+    Every ≥ $0.10 move carries two extra links: the Kalshi event page (which
+    shows Kalshi's own live news feed for that event) and a news search built
+    from the event title. Neither asserts a cause — they are places to look.
+    """
+    arrow = "▲" if a.get("direction") == "up" else "▼"
+    cls = "up" if a.get("direction") == "up" else "down"
+    ticker = a.get("ticker") or ""
+    title = a.get("title") or ticker
+    topic = a.get("topic") or ""
+    topic_label = extras.TOPIC_LABEL.get(topic, topic)
+    market_url = a.get("market_url") or kalshi_market_url(
+        ticker, a.get("series_ticker"), a.get("event_ticker"))
+    event_url = kalshi_event_url(a.get("event_ticker"), a.get("series_ticker"))
+    news_url = news_search_url(title, topic_label)
+    roi = f" · net ROI {pct(model_roi)}" if model_roi is not None else ""
+    badges = ""
+    repeats = int(a.get("repeat_count") or 1)
+    if repeats > 1:
+        badges += (f'<span class="tag tag-purple" title="The same step fired '
+                   f'again on later snapshots; identical rows are grouped.">'
+                   f'×{repeats} repeats</span> ')
+    if a.get("wide_spread"):
+        badges += ('<span class="flag-badge" title="The quoted YES spread is at '
+                   'least $0.10, so this midpoint is not an executable price.">'
+                   'wide spread · not executable</span> ')
+    badge_html = (f'<span class="chat-badges">{badges}</span>' if badges else "")
+    return (
+        f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
+        f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+        f'<span class="chat-body"><a href="{html.escape(market_url)}" '
+        f'target="_blank" rel="noreferrer">{esc(title)}</a> '
+        f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
+        f'{esc(topic)}{roi}</small>'
+        f'{badge_html}'
+        f'<span class="cause-links">'
+        f'<a href="{html.escape(event_url)}" target="_blank" rel="noreferrer">'
+        f'Event page ↗</a>'
+        f'<a href="{html.escape(news_url)}" target="_blank" rel="noreferrer">'
+        f'News search ↗</a></span>'
+        f'</span></div>'
+    )
+
+
 def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
-    events = live.get("events", [])[:25]
+    events = live.get("events", [])
     portfolio = live.get("portfolio", {})
-    alerts = live.get("alerts", [])[:12]
+    alerts = live.get("alerts", [])
     exchange = live.get("exchange", {})
+    signals = {s.get("ticker"): s for s in (live.get("signals") or [])
+               if s.get("ticker")}
 
-    rows = []
+    # -- highest-dollar events, grouped by topic --------------------------
+    # Topics stay separate and the events inside a topic stay together, so a
+    # trader reads one subject at a time instead of one long mixed list.
+    by_topic: dict[str, list[dict[str, Any]]] = {t: [] for t in TOPIC_ORDER}
     for e in events:
-        rows.append(
-            "<tr>"
-            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
-            f'rel="noreferrer">{esc(e.get("title"))}</a>'
-            f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
-            f"<td>{esc(e.get('topic'))}</td>"
-            f"<td>{cents(e.get('yes_bid'))}</td>"
-            f"<td>{cents(e.get('yes_ask'))}</td>"
-            f"<td>{num(e.get('open_interest_contracts'))}</td>"
-            f"<td>{money(e.get('open_interest_notional'))}</td>"
-            f"<td>{num(e.get('volume_contracts'))}</td>"
-            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-            f'href="{API}/markets/{html.escape(e.get("ticker",""))}">API ↗</a></td>'
-            "</tr>"
-        )
-    if not rows:
-        rows.append('<tr><td colspan="8" class="empty-state">'
-                    "No snapshot yet — the collector has not completed a run.</td></tr>")
+        slug = e.get("topic")
+        if slug in by_topic:
+            by_topic[slug].append(e)
+    for slug in by_topic:
+        by_topic[slug].sort(
+            key=lambda r: r.get("open_interest_notional") or 0, reverse=True)
 
-    alert_rows = []
-    for a in alerts:
-        arrow = "▲" if a.get("direction") == "up" else "▼"
-        cls = "up" if a.get("direction") == "up" else "down"
-        alert_rows.append(
-            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
-            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
-            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
-            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
-            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-            f'{esc(a.get("topic"))}</small></span></div>'
-        )
+    topic_blocks = []
+    for slug in TOPIC_ORDER:
+        rows = []
+        for e in by_topic[slug][:6]:
+            rows.append(
+                "<tr>"
+                f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+                f'rel="noreferrer">{esc(e.get("title"))}</a>'
+                f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
+                f"<td>{cents(e.get('yes_bid'))}</td>"
+                f"<td>{cents(e.get('yes_ask'))}</td>"
+                f"<td>{num(e.get('open_interest_contracts'))}</td>"
+                f"<td>{money(e.get('open_interest_notional'))}</td>"
+                f"<td>{num(e.get('volume_contracts'))}</td>"
+                f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+                f'href="{API}/markets/{html.escape(e.get("ticker",""))}">API ↗</a></td>'
+                "</tr>")
+        if not rows:
+            rows.append('<tr><td colspan="7" class="empty-state">'
+                        "No open market from this topic in the current "
+                        "snapshot.</td></tr>")
+        topic_meta = (live.get("topics") or {}).get(slug, {})
+        topic_blocks.append(f"""
+          <tbody class="topic-group">
+            <tr class="topic-head"><th colspan="7">
+              <a href="categories/{slug}.html">{html.escape(extras.TOPIC_LABEL.get(slug, slug))}</a>
+              <span class="topic-head-meta">Top {count(len(by_topic[slug][:6]))} of
+                {count(topic_meta.get("tracked_market_count"))} tracked markets ·
+                {count(topic_meta.get("series_count"))} series in scope</span>
+            </th></tr>
+            {''.join(rows)}
+          </tbody>""")
+    if not events:
+        topic_blocks.append('<tbody><tr><td colspan="7" class="empty-state">'
+                            "No snapshot yet — the collector has not completed "
+                            "a run.</td></tr></tbody>")
+
+    topic_jump = " · ".join(
+        f'<a href="categories/{slug}.html">{html.escape(extras.TOPIC_LABEL.get(slug, slug))}</a>'
+        for slug in TOPIC_ORDER)
+
+    # -- the two chats -----------------------------------------------------
+    # Grouped with the same rule the browser uses (assets/alerts-view.js), so
+    # the server-rendered feed and the live one agree.
+    grouped = extras.group_alerts(alerts)
+    alert_rows = [alert_chat_row(a) for a in grouped[:14]]
     if not alert_rows:
         alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
                           "in the current window yet. The feed fills as the "
                           "collector compares successive snapshots.</div>")
 
+    model_rows = []
+    for a in grouped:
+        sig = signals.get(a.get("ticker"))
+        if sig and (sig.get("net_roi") or 0) >= 0.05:
+            model_rows.append(alert_chat_row(a, sig.get("net_roi")))
+    if not model_rows:
+        picks = sorted(signals.values(),
+                       key=lambda s: s.get("score") or 0, reverse=True)[:8]
+        for sig in picks:
+            model_rows.append(
+                f'<div class="chat-row"><time>{html.escape((sig.get("ts") and time.strftime("%H:%M", time.gmtime(sig["ts"])) or ""))}</time>'
+                f'<span class="chat-delta up">★ {pct(sig.get("net_roi"))}</span>'
+                f'<span class="chat-body"><a href="{html.escape(sig.get("market_url",""))}" '
+                f'target="_blank" rel="noreferrer">{esc(sig.get("title"))}</a> '
+                f'<small>{esc((sig.get("side") or "").upper())} at '
+                f'{cents(sig.get("executable_price"))} · {esc(sig.get("topic"))} · '
+                f'no ≥ $0.10 swing yet</small></span></div>')
+    if not model_rows:
+        model_rows.append('<div class="empty-state inline">Nothing clears the '
+                           "model's net-ROI gate right now. An empty feed is an "
+                           "honest answer.</div>")
+
     status = "trading" if exchange.get("trading_active") else "not trading"
-    return f"""{topbar("Overview", generated)}
+    return f"""{topbar("Overview", generated, generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div>
             <div class="eyebrow">KALSHI DEMO · LIVE MONITOR</div>
@@ -245,19 +301,19 @@ def build_overview(live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{cnt(live.get("observation_count"))}</strong>
+            <strong>{count(live.get("observation_count"))}</strong>
             <small>This snapshot</small></article>
           <article class="stat-card"><span>Swings ≥ $0.10</span>
-            <strong>{len(live.get("alerts", []))}</strong>
+            <strong>{count(len(live.get("alerts", [])))}</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>{cnt(portfolio.get("open_positions"))}</strong>
+            <strong>{count(portfolio.get("open_positions"))}</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
             <strong>{money(portfolio.get("equity"))}</strong>
             <small>Start {money(portfolio.get("starting_bankroll"))}</small></article>
           <article class="stat-card"><span>Resolved tracked</span>
-            <strong>{cnt(live.get("resolutions_count"))}</strong>
+            <strong>{count(live.get("resolutions_count"))}</strong>
             <small>YES/NO from official result</small></article>
         </section>
         <div class="notice notice-info">
@@ -271,30 +327,48 @@ def build_overview(live: dict[str, Any]) -> str:
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
               <h2>Highest-dollar open events</h2>
-              <p>Ranked by open-interest value (official open_interest_fp ×
-              notional_value_dollars)</p></div></div>
+              <p>Grouped by topic, each topic ranked by open-interest value
+              (official open_interest_fp × notional_value_dollars)</p></div></div>
             <a class="source-link" href="{API}/events?status=open" target="_blank"
                rel="noreferrer">Events API ↗</a>
           </div>
+          <div class="topic-jump">{topic_jump}</div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Event / market</th><th>Topic</th><th>YES bid</th>
+              <thead><tr><th>Event / market</th><th>YES bid</th>
                 <th>YES ask</th><th>Open interest</th><th>OI value</th>
                 <th>Volume</th><th>Source</th></tr></thead>
-              <tbody>{''.join(rows)}</tbody>
+              {''.join(topic_blocks)}
             </table>
           </div>
           <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed">{''.join(alert_rows)}</div>
+        <section class="desk-grid two-chats">
+          <article class="panel alert-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">◉</span><div>
+                <h2>Swing chat — all events</h2>
+                <p>Every observed move of at least $0.10 either way</p></div></div>
+              <a class="source-link" href="live.html">Full live desk →</a>
+            </div>
+            <div class="chat-feed tall">{''.join(alert_rows)}</div>
+            <div class="alert-note">Each row links to the Kalshi event page —
+            which carries Kalshi's own news feed for that event — and to a
+            news search for the event title. Neither asserts a cause.</div>
+          </article>
+          <article class="panel alert-panel model-chat">
+            <div class="panel-title">
+              <div><span class="section-icon violet">★</span><div>
+                <h2>Model shortlist — high ROI</h2>
+                <p>Only the swings the model scores as high ROI</p></div></div>
+              <a class="source-link" href="trades.html">How it is scored →</a>
+            </div>
+            <div class="chat-feed tall">{''.join(model_rows)}</div>
+            <div class="alert-note">Rule-based edge after Kalshi's published
+            taker fee. Not a prediction of profit — outcomes are scored on the
+            <a href="trades.html">trades page</a>.</div>
+          </article>
         </section>"""
 
 
@@ -302,12 +376,14 @@ def build_overview(live: dict[str, Any]) -> str:
 # Topic pages
 # ---------------------------------------------------------------------------
 
-def build_topic(slug: str, live: dict[str, Any]) -> str:
+def build_topic(slug: str, live: dict[str, Any],
+               resolutions: list[dict[str, Any]] | None = None) -> str:
     generated = live.get("generated_at", "")
     topic = (live.get("topics") or {}).get(slug, {})
     label = topic.get("label") or slug.replace("-", " ").title()
     events = [e for e in live.get("events", []) if e.get("topic") == slug]
-    resolutions = (live.get("resolutions") or {}).get(slug, [])
+    if resolutions is None:
+        resolutions = (live.get("resolutions") or {}).get(slug, [])
 
     market_rows = []
     for e in events[:60]:
@@ -365,7 +441,7 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
             f'href="{API}/series/{html.escape(s.get("ticker",""))}">API ↗</a></td>'
             "</tr>")
 
-    return f"""{topbar(label, generated, "")}
+    return f"""{topbar(label, generated, "", live.get("generated_at_ts"))}
         <section class="category-hero">
           <div class="eyebrow">TOPIC MONITOR · KALSHI DEMO</div>
           <h1>{html.escape(label)}</h1>
@@ -442,7 +518,58 @@ def build_live(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
     payload = json.dumps(live, default=str).replace("</", "<\\/")
-    return f"""{topbar("Live desk", generated)}
+
+    # Pre-render the desk so it is useful with JavaScript disabled. The JS
+    # layer replaces these blocks when it boots; until then, and for readers
+    # who never enable it, the table and both chats still carry real data.
+    signals = {s.get("ticker"): s for s in (live.get("signals") or [])
+               if s.get("ticker")}
+    alerts = extras.group_alerts(live.get("alerts") or [])
+    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
+        '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
+        "feed fills as successive snapshots are compared.</div>")
+    model_rows = []
+    for a in alerts:
+        sig = signals.get(a.get("ticker"))
+        if sig and (sig.get("net_roi") or 0) >= 0.05:
+            model_rows.append(alert_chat_row(a, sig.get("net_roi")))
+    if not model_rows:
+        model_html = ('<div class="empty-state inline">Nothing clears the '
+                      "model's net-ROI gate right now. An empty feed is an "
+                      "honest answer.</div>")
+    else:
+        model_html = "".join(model_rows[:40])
+
+    desk_rows = []
+    for e in (live.get("events") or [])[:40]:
+        liq = e.get("liquidity") or {}
+        sig = signals.get(e.get("ticker"))
+        side_cell = "—"
+        roi_cell = "—"
+        if sig:
+            side_cell = ('<span class="tag tag-yes">'
+                         + html.escape(str(sig.get("side") or "").upper())
+                         + "</span>")
+            roi_cell = pct(sig.get("net_roi"))
+        desk_rows.append(
+            "<tr>"
+            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+            f'rel="noreferrer">{esc(e.get("title"))}</a>'
+            f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
+            f"<td>{esc(e.get('topic'))}</td>"
+            f"<td>{cents(e.get('yes_bid'))}</td>"
+            f"<td>{cents(e.get('yes_ask'))}</td>"
+            f"<td>{cents(liq.get('spread'))}</td>"
+            f"<td>{num(liq.get('yes_bid_contracts'))}</td>"
+            f"<td>{money(e.get('open_interest_notional'))}</td>"
+            f"<td>{side_cell}</td>"
+            f"<td>{roi_cell}</td>"
+            "</tr>")
+    if not desk_rows:
+        desk_rows.append('<tr><td colspan="9" class="empty-state">No market '
+                         "rows in this snapshot.</td></tr>")
+
+    return f"""{topbar("Live desk", generated, "", live.get("generated_at_ts"))}
         <section class="page-heading">
           <div>
             <div class="eyebrow">REAL-TIME · SIMULATED BOOK</div>
@@ -501,7 +628,7 @@ def build_live(live: dict[str, Any]) -> str:
                 <h2>All events</h2><p>Every swing ≥ $0.10, newest first</p></div></div>
               <span class="count-badge" id="allCount">0</span>
             </div>
-            <div class="chat-feed tall" id="feedAll" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedAll" aria-live="polite">{feed_all}</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
@@ -510,7 +637,7 @@ def build_live(live: dict[str, Any]) -> str:
                 <p>Filtered to signals the model scores as high ROI</p></div></div>
               <span class="count-badge" id="modelCount">0</span>
             </div>
-            <div class="chat-feed tall" id="feedModel" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedModel" aria-live="polite">{model_html}</div>
             <div class="alert-note">Rule-based edge after Kalshi's published taker
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
@@ -528,7 +655,7 @@ def build_live(live: dict[str, Any]) -> str:
               <thead><tr><th>Market</th><th>Topic</th><th>YES bid</th><th>YES ask</th>
                 <th>Spread</th><th>Bid depth</th><th>OI value</th><th>Model side</th>
                 <th>Net ROI</th></tr></thead>
-              <tbody id="deskRows"></tbody>
+              <tbody id="deskRows">{''.join(desk_rows)}</tbody>
             </table>
           </div>
         </section>
@@ -540,7 +667,7 @@ def build_live(live: dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 def build_methodology(live: dict[str, Any]) -> str:
-    return f"""{topbar("Methodology", live.get("generated_at", ""))}
+    return f"""{topbar("Methodology", live.get("generated_at", ""), "", live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">HOW EVERY NUMBER IS PRODUCED</div>
           <h1>Methodology</h1>
@@ -724,6 +851,9 @@ def build_performance_section(live: dict[str, Any]) -> str:
 
 def main() -> dict[str, Any]:
     live = load_json(LIVE_PATH, {})
+    resolutions_store = load_json(RESOLUTIONS_PATH, {"resolutions": {}})
+    series_cache = load_json(SERIES_CACHE_PATH, {})
+    portfolio_state = load_json(PORTFOLIO_STATE_PATH, {})
     written = []
 
     def write(path: str, content: str) -> None:
@@ -738,6 +868,21 @@ def main() -> dict[str, Any]:
                 fh.write(content)
         written.append(path)
 
+    # Resolutions, grouped by topic. The market objects returned by
+    # GET /markets carry no series_ticker, so the collector's own per-topic
+    # buckets stay empty; the series ticker is recovered from the market
+    # ticker prefix, which is Kalshi's documented naming convention.
+    series_map = extras.series_topic_map(series_cache)
+    resolved_by_topic: dict[str, list[dict[str, Any]]] = {
+        slug: [] for slug in TOPIC_ORDER}
+    for rec in (resolutions_store.get("resolutions") or {}).values():
+        slug = extras.resolution_topic(rec, series_map)
+        if slug in resolved_by_topic:
+            resolved_by_topic[slug].append(rec)
+    for slug in resolved_by_topic:
+        resolved_by_topic[slug].sort(
+            key=lambda r: r.get("settlement_ts") or "", reverse=True)
+
     overview = build_overview(live)
     write("index.html", page("Kalshi Monitor — Overview", "index.html", overview,
                              description="Live Kalshi demo market monitor across gas "
@@ -746,10 +891,30 @@ def main() -> dict[str, Any]:
     for slug in TOPIC_ORDER:
         write(f"categories/{slug}.html",
               page(f"{slug.replace('-', ' ').title()} — Kalshi Monitor",
-                   f"categories/{slug}.html", build_topic(slug, live), prefix="../"))
+                   f"categories/{slug}.html",
+                   build_topic(slug, live, resolved_by_topic.get(slug, [])),
+                   prefix="../"))
 
     write("live.html", page("Live desk — Kalshi Monitor", "live.html",
                             build_live(live)))
+
+    write("resolutions.html",
+          page("Resolved events — Kalshi Monitor", "resolutions.html",
+               extras.build_resolutions(live, resolutions_store, series_map),
+               description="Every tracked Kalshi demo market that has settled, "
+                           "with the official YES or NO result."))
+
+    write("trades.html",
+          page("Trades and strategies — Kalshi Monitor", "trades.html",
+               extras.build_trades(live, portfolio_state),
+               description="Simulated Kalshi demo trade ledger, strategy "
+                           "breakdown and equity curve."))
+
+    write("suggestions.html",
+          page("Suggestions — Kalshi Monitor", "suggestions.html",
+               extras.build_suggestions(live),
+               description="Prioritised ways to make the Kalshi monitor more "
+                           "live and interactive."))
 
     perf = build_performance_section(live)
     try:
@@ -776,7 +941,8 @@ def main() -> dict[str, Any]:
     # Write a machine-readable copy next to the site so the JS can fetch it
     # without hitting the Pages JSON mime restrictions.
     write("assets/live.json", json.dumps(live, default=str, indent=1))
-    return {"written": written, "generated_at": live.get("generated_at")}
+    return {"written": written, "generated_at": live.get("generated_at"),
+            "resolutions_by_topic": {k: len(v) for k, v in resolved_by_topic.items()}}
 
 
 if __name__ == "__main__":
