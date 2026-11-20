@@ -82,8 +82,20 @@ jobs:
             echo "No data changes."
           else
             git commit -m "data: collector run $(date -u +%Y-%m-%dT%H:%MZ)"
-            git pull --rebase origin "${GITHUB_REF_NAME}"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            # Several sessions' collectors push to main; retry the rebase+push
+            # on race instead of failing the whole collection run.
+            for attempt in 1 2 3; do
+              if git pull --rebase origin "${GITHUB_REF_NAME}" && \
+                 git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                echo "pushed on attempt $attempt"
+                break
+              fi
+              if [ "$attempt" = 3 ]; then
+                echo "push failed after 3 attempts"
+                exit 1
+              fi
+              sleep 5
+            done
           fi
 
       - name: Upload data snapshot artifact
