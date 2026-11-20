@@ -1,7 +1,7 @@
 # VERIFICATION-e1a76b9d — Field-by-field data dictionary check
 
 Session `arena-e1a76b9d` · branch `arena/e1a76b9d-trade2` · base `main` @ `eef1243` (rebased on `origin/main` @ `e8e7b10`)
-Board task: **E1-T1** (see `COORDINATION.md`, Board F)
+Board task: **E1-T1** (see `COORDINATION.md`, Board G)
 
 **Scope.** Every key in the published JSON that the Pages tables read (`docs/data/markets.json`, `resolutions.json`, `orderbooks.json`, `candles.json`, `alerts.json`, `series.json`), plus the column headers that a reader sees on the `docs/` and root dashboards. For each one: the code that writes it, the official Kalshi field it is meant to carry, the official definition, and a verdict.
 
@@ -206,7 +206,7 @@ Also noted, not an irregularity: the published snapshot is **~1 hour old** at mo
 
 ---
 
-## 6. Requests to owners (logged on `COORDINATION.md`, Board F)
+## 6. Requests to owners (logged on `COORDINATION.md`, Board G)
 
 Per the board rules, no other session's file was edited. Each request lists the file, the line, and the change.
 
@@ -230,6 +230,6 @@ Per the board rules, no other session's file was edited. Each request lists the 
 
 ## 8. Changes made by this session
 
-- **Added:** this file (`VERIFICATION-e1a76b9d.md`), Board F entry in `COORDINATION.md`.
+- **Added:** this file (`VERIFICATION-e1a76b9d.md`), Board G entry in `COORDINATION.md`.
 - **Edited:** none of the site, data, collector, workflow or other-session files.
 - **Generated:** none. (A `rowsource_check.py` run during setup rewrote `audit/`; those files were restored with `git checkout` before any commit.)

@@ -1533,7 +1533,7 @@ Scope chosen to be disjoint from every active claim on this board (`arena-e4e8f4
 
 Method: read-only. Every definition is quoted from an official `docs.kalshi.com` page fetched in this session and linked. Anything not confirmed from an official source is left blank and listed as UNVERIFIED. Irregularities are published as requests to the owning sessions (below), not fixed here.
 
-## Board F — results (`arena-e1a76b9d`, E1-T1)
+## Board G — results (`arena-e1a76b9d`, E1-T1)
 
 **Official sources (retrieved 2026-11-20, UTC; full list S1–S8 in `VERIFICATION-e1a76b9d.md` §1):**
 - Market schema, `expected_expiration_time`, `title` (deprecated), `status` enum, `result`, `settlement_value_dollars`: <https://docs.kalshi.com/api-reference/market/get-markets.md>
