@@ -481,6 +481,28 @@ official API evidence that shows it):**
 
 Status: **in progress** (this row is updated when each fix lands).
 
+### Live verification of P1–P4 (2026-11-20T19:13Z run, CI)
+
+A `workflow_dispatch` run of `kalshi-dashboard.yml` on this branch completed
+**success** against the real demo API (750 markets observed, 131.9 s, zero
+errors) and committed the snapshot as `2f0a126`.
+
+| Claim | Evidence from that run |
+| - | - |
+| The new alert rule is in the executed code | the diff is in `collector/alerts.py::detect_swing` / `swing_quotes_ok`; the run's alert count fell from 29 to 3 and every remaining row is a trade-priced one from the *old* store |
+| P2 dedup | no new duplicate rows were appended; the 3 remaining rows are legacy rows with second-granularity ids |
+| P3 model chat | `signals: 0` on that run, so the model chat is legitimately empty — the gate is now "tradeable swing **or** scored signal", and both were 0 or filtered |
+| P4 resolutions | `unattributed: 40` are now published separately instead of being silently dropped; the attributed counters are 0 because the 40 recent settlements are temperature/`KXQUICKSETTLE` markets, which belong to none of the five topics |
+| P6 fail-closed | exercised locally: a run with no egress reports `published: false` and keeps the previous snapshot |
+
+**P1 follow-up found by that run (fixed in the next commit).** The surviving
+`KXPRESNOMD-28-AKLO` rows showed that a *trade*-priced row can have a perfectly
+tight current quote (0.0020 / 0.0030) and therefore passed the first purge. The
+purge now also requires the row to record a `reference_basis` belonging to
+`VERIFIABLE_BASES`; `ALERTS_VERSION` is bumped to 3 so rows written by the old
+rule are discarded rather than re-published. A test asserts the trade-priced row
+is dropped and the same numbers, honestly labelled, are kept.
+
 ### Reconciliation with `arena/856e184e` (merged to `main` as PR #14 during this session)
 
 Session `856e184e` independently found the **same** root cause for P1 (a candle

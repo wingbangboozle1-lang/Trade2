@@ -208,13 +208,35 @@ def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
     return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
 
 
-def alert_record_valid(alert: dict[str, Any]) -> bool:
-    """Re-check a stored alert against the current quote rule.
+VERIFIABLE_BASES = ("candle_quote_mid", "previous_snapshot_mid")
 
-    Used to purge alerts written before the quote rule existed (for example a
-    \"0.811 -> 0.4065\" move that was only the midpoint of a 0.002/0.811 book).
+
+def alert_record_valid(alert: dict[str, Any]) -> bool:
+    """Re-check a stored alert before publishing it again.
+
+    Two checks, both mechanical:
+
+    1. the *current* quote must be two-sided and tighter than
+       ``ALERT_MAX_SPREAD`` (``swing_quotes_ok``);
+    2. the row must record the basis its reference was measured from, and that
+       basis must be one of the two the code can produce
+       (``VERIFIABLE_BASES``). A row with no basis was written before the rule
+       existed, and a row whose basis names a trade price is not a price move.
+
+    Why the basis and not the numbers: a genuine 10-cent move is, by definition,
+    further than 5 cents from the *new* book, so "does the old value sit inside
+    the current quote" would reject every real alert. The basis is the only
+    field that distinguishes a quote reference from a trade reference, so it is
+    the field that is required.
+
+    This is what removes the row `KXPRESNOMD-28-AKLO:1795200068` (0.803 ->
+    0.0025, current quote 0.0020/0.0030, no basis): its current quote is tight
+    enough to pass check 1, and only check 2 catches it. Its 0.803 was the
+    hourly trade print, which is exactly the comparison the fix forbids.
     """
-    return swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask"))
+    if not swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask")):
+        return False
+    return alert.get("reference_basis") in VERIFIABLE_BASES
 
 
 def detect_swing(previous: Observation | None, current: Observation,

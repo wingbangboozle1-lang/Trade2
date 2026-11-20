@@ -131,8 +131,25 @@ class QuoteRule(unittest.TestCase):
         self.assertFalse(alert_record_valid(phantom))
 
     def test_stored_tight_record_is_kept(self):
-        good = {"yes_bid": 0.51, "yes_ask": 0.53}
+        good = {"yes_bid": 0.51, "yes_ask": 0.53, "previous": 0.41,
+                "reference_basis": "candle_quote_mid"}
         self.assertTrue(alert_record_valid(good))
+        # A row that records no basis cannot be re-verified and is dropped.
+        self.assertFalse(alert_record_valid({"yes_bid": 0.51, "yes_ask": 0.53}))
+
+    def test_trade_priced_row_is_purged_even_with_a_tight_current_quote(self):
+        """The row that survived the first purge (KXPRESNOMD-28-AKLO).
+
+        Its current quote (0.0020 / 0.0030) is tight, so only the missing basis
+        reveals that 0.803 was a trade print, not a quote mid.
+        """
+        row = {"id": "KXPRESNOMD-28-AKLO:1795200068", "previous": 0.803,
+               "current": 0.0025, "yes_bid": 0.002, "yes_ask": 0.003,
+               "reference_basis": None}
+        self.assertFalse(alert_record_valid(row))
+        # The same numbers, honestly labelled, are a legitimate quote move.
+        row["reference_basis"] = "candle_quote_mid"
+        self.assertTrue(alert_record_valid(row))
 
 
 class CandleReferenceBasis(unittest.TestCase):

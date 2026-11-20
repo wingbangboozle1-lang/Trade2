@@ -38,7 +38,10 @@ HISTORY_PATH = os.path.join(DATA_DIR, "history.json")
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
 VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 
-ALERTS_VERSION = 2       # bump to discard alerts written by an older rule set
+# Bump whenever the alert rule changes. v3 (2026-11-20): the reference must be a
+# candle *quote* mid and every stored row must record its basis, so rows written
+# by the earlier trade-price rule are discarded instead of re-published.
+ALERTS_VERSION = 3
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
