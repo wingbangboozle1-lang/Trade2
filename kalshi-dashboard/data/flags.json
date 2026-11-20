@@ -1,0 +1,318 @@
+{
+  "flags": [
+    {
+      "id": "F-01",
+      "type": "irregularity",
+      "title": "Market status words differ between the filter and the response",
+      "detail": "The GET /markets status filter uses unopened / open / paused / closed / settled, but the Market.status field in responses uses initialized / inactive / active / closed / determined / disputed / amended / finalized. The dashboard treats status 'active' as tradable (the response value). Confirm this mapping with Kalshi before relying on status filters.",
+      "links": [
+        {
+          "label": "SDK: dist/models/market.d.ts (MarketStatusEnum)",
+          "url": "https://www.npmjs.com/package/kalshi-typescript"
+        },
+        {
+          "label": "SDK docs: docs/MarketApi.md (getMarkets status filter)",
+          "url": "https://www.npmjs.com/package/kalshi-typescript"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-02",
+      "type": "irregularity",
+      "title": "Fee rounding wording vs. the fee table",
+      "detail": "The fee schedule says 'round up such that the fee + positionCost is rounded to a centicent', but every table value is a whole-cent amount. The code rounds the fee up to the whole cent. All 21 General Trading Fees Table rows (1-contract and 100-contract columns) match, and the test passes. Ask Kalshi to confirm the rounding rule for fractional-cent positions.",
+      "links": [
+        {
+          "label": "Kalshi Fee Schedule (PDF)",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-03",
+      "type": "irregularity",
+      "title": "Fee schedule PDF text layer is scrambled in parts",
+      "detail": "The Non-Standard Fees table (MLB, NCAA, NFL, NBA and other series pages) is garbled in the extracted text (for example overlapping titles such as 'WRoeoskteiernof'). The dashboard does not hard-code those multipliers. It reads fee_type and fee_multiplier for each series from the live API. A human should open the PDF and compare any series used for trading.",
+      "links": [
+        {
+          "label": "Kalshi Fee Schedule (PDF)",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-04",
+      "type": "irregularity",
+      "title": "SDK package metadata has placeholders",
+      "detail": "The kalshi-typescript npm metadata lists repository and homepage as https://github.com/GIT_USER_ID/GIT_REPO_ID, which are unfilled template placeholders. The package is published by a maintainer named 'kalshi' (npm metadata), so the publisher is plausibly Kalshi, but the source repository could not be confirmed from the package metadata.",
+      "links": [
+        {
+          "label": "kalshi-typescript on npm",
+          "url": "https://www.npmjs.com/package/kalshi-typescript"
+        },
+        {
+          "label": "Kalshi GitHub organisation",
+          "url": "https://github.com/Kalshi"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-05",
+      "type": "irregularity",
+      "title": "SDK default base URL is production, not demo",
+      "detail": "The official SDK's default BASE_PATH is https://external-api.kalshi.com/trade-api/v2 (production). Code copied from SDK examples without a base override calls production, while the project brief names demo hosts. Keys are environment-specific (S3, S6).",
+      "links": [
+        {
+          "label": "SDK dist/base.js (BASE_PATH)",
+          "url": "https://www.npmjs.com/package/kalshi-typescript"
+        },
+        {
+          "label": "API environments",
+          "url": "https://docs.kalshi.com/getting_started/api_environments"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-06",
+      "type": "unverified",
+      "title": "Rate limit for unauthenticated public requests is not stated",
+      "detail": "The rate-limit page says unauthenticated requests have separate limits and to back off on 429, but gives no number. The collector limits itself to about 7 requests per second, retries on 429/5xx with backoff, and runs about every 30 minutes. Its real headroom is unverified.",
+      "links": [
+        {
+          "label": "Rate limits and tiers",
+          "url": "https://docs.kalshi.com/getting_started/rate_limits"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-07",
+      "type": "decision",
+      "title": "Market data comes from PRODUCTION, not the demo host",
+      "detail": "The brief asks to track live events on Kalshi, and public market-data endpoints need no key. The dashboard reads production public data from external-api.kalshi.com. Demo prices 'may not be reflective of those in real markets' (S4). Set the KALSHI_BASE secret/variable to https://external-api.demo.kalshi.co/trade-api/v2 to switch the dashboard to demo data. Please confirm which you want.",
+      "links": [
+        {
+          "label": "Demo environment",
+          "url": "https://docs.kalshi.com/getting_started/demo_env"
+        },
+        {
+          "label": "API environments",
+          "url": "https://docs.kalshi.com/getting_started/api_environments"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-08",
+      "type": "blocker",
+      "title": "Demo-account portfolio and trade execution are NOT connected",
+      "detail": "Reading the demo account and placing demo orders need a demo API key pair created in Kalshi account settings. Those keys were not provided and cannot be created from this session, so no balance, positions or orders are shown, and no orders have been placed. Add repository secrets KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY to enable the portfolio view. The signing code follows the official spec (S6) and is tested offline.",
+      "links": [
+        {
+          "label": "API keys (create, sign, use)",
+          "url": "https://docs.kalshi.com/getting_started/api_keys"
+        },
+        {
+          "label": "Demo environment",
+          "url": "https://docs.kalshi.com/getting_started/demo_env"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-09",
+      "type": "blocker",
+      "title": "Second-level price ticks need a streaming server",
+      "detail": "The site refreshes about every 30 minutes through a scheduled collector, so the time axis can show minutes and hours but not seconds. The WebSocket API requires an API key (S8), and GitHub Pages is static, so true per-second charts need a small always-on service that holds the key. This is a suggestion on the Suggestions page, not built here.",
+      "links": [
+        {
+          "label": "WebSocket connection",
+          "url": "https://docs.kalshi.com/websockets/websocket-connection"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-10",
+      "type": "unverified",
+      "title": "Cause links for ≥ $0.10 moves are NOT determined",
+      "detail": "The brief asks for news or website links that may have caused each sharp move. Nothing in the Kalshi API identifies a cause, and no news source was connected. Alerts carry the official market and rules links only, marked 'cause link: not determined'. Adding causes would need manual review.",
+      "links": [
+        {
+          "label": "Market detail endpoint (source of each alert)",
+          "url": "https://docs.kalshi.com/api-reference/market/get-market"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-11",
+      "type": "unverified",
+      "title": "Settlement sources and resolution rules are shown as published by Kalshi, not checked",
+      "detail": "Each series' settlement_sources, contract_url and contract_terms_url are displayed as returned by the API. The gas series (KXAAAGASM) settlement source in particular was not read; check its published rules before trading on it.",
+      "links": [
+        {
+          "label": "Kalshi Fee Schedule (PDF), KXAAAGASM 'US gas price' row",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-12",
+      "type": "unverified",
+      "title": "'Est. 24h $ volume' is a derived estimate, not an official Kalshi dollar figure",
+      "detail": "Computed as volume_24h_fp × notional_value_dollars, both official fields. The formula is ours and is labeled 'derived' on each page.",
+      "links": [
+        {
+          "label": "Market schema (volume_24h_fp, notional_value_dollars)",
+          "url": "https://www.npmjs.com/package/kalshi-typescript"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-13",
+      "type": "decision",
+      "title": "'High-ROI' is a placeholder rule, not your model",
+      "detail": "No model was provided. The dashboard uses a transparent rule (entry ≤ 40¢, spread ≤ 5¢, 24h volume ≥ 100 contracts) defined in config/topics.json. Replace it with your model's outputs when available. The rule is not a prediction and makes no claim about profitability.",
+      "links": [
+        {
+          "label": "config/topics.json in this repository",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/arena/5788e385-trade2/config/topics.json"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-14",
+      "type": "unverified",
+      "title": "Topic series list is partly from keyword discovery",
+      "detail": "The curated series tickers (for example KXAAAGASM, KXPGATOUR, KXEMMYCACTO) come from the fee schedule. Other series are added when their live title, tags or category contains a keyword. Each matched series shows its reason on its topic page. A reviewer should check any unexpected series.",
+      "links": [
+        {
+          "label": "config/topics.json",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/arena/5788e385-trade2/config/topics.json"
+        },
+        {
+          "label": "Kalshi Fee Schedule (PDF)",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-15",
+      "type": "unverified",
+      "title": "Live numbers were not checked from the build sandbox",
+      "detail": "The sandbox network does not allow Kalshi hosts, so every live value on the site comes from the GitHub Actions run. Each table row links to the JSON it came from, and status.json lists any endpoint errors. Spot-check a few rows against the linked JSON after the first run.",
+      "links": [
+        {
+          "label": "API environments",
+          "url": "https://docs.kalshi.com/getting_started/api_environments"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-16",
+      "type": "unverified",
+      "title": "Third-party fee articles were not used",
+      "detail": "Several web articles repeat the fee formula and claim things like '~160 series charge maker fees'. The count was not verified against the official schedule, so no third-party claim is used anywhere on the site.",
+      "links": [
+        {
+          "label": "Kalshi Fee Schedule (PDF), the official source",
+          "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-17",
+      "type": "unverified",
+      "title": "Kalshi Developer Agreement and terms were not read",
+      "detail": "The API docs link to the Developer Agreement, which governs API use and automated trading. It was not read in this session. Read it before enabling any automated trading against a real account.",
+      "links": [
+        {
+          "label": "Developer Agreement (linked from the docs welcome page)",
+          "url": "https://kalshi.com/developer-agreement"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-18",
+      "type": "irregularity",
+      "title": "README on main was rewritten by another session; this session did not change it",
+      "detail": "README.md on main (from session ba6888b7) is a full project README. Three sessions claim the file (COORDINATION.md, request R-5788-1). This session left it unchanged. Its text says the browser polls the demo API every 15 seconds; that CORS behaviour is unverified and the text is out of date with the 30-minute collector.",
+      "links": [
+        {
+          "label": "COORDINATION.md (conflict log)",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/COORDINATION.md"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-19",
+      "type": "irregularity",
+      "title": "Pages source cannot be switched to an Actions build with this token",
+      "detail": "GitHub Pages is legacy build from main / (verified via gh API). Earlier attempts to change the Pages source returned HTTP 403 (recorded by ba6888b7). This session publishes its dashboard into kalshi-dashboard/ via a scheduled workflow that commits to main, so the root site is not replaced.",
+      "links": [
+        {
+          "label": "Pages settings (API)",
+          "url": "https://api.github.com/repos/wingbangboozle1-lang/Trade2/pages"
+        },
+        {
+          "label": "Live site (legacy build)",
+          "url": "https://wingbangboozle1-lang.github.io/Trade2/"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-20",
+      "type": "irregularity",
+      "title": "Demo portfolio snapshot would be published in the public repository",
+      "detail": "When KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY secrets are set, the workflow writes the demo balance and positions to kalshi-dashboard/data/portfolio.json and commits it to the public repo. Demo funds only, but the data is public. Owner should confirm this is acceptable, or the snapshot should be kept out of git. The trades page does not yet read the snapshot file; its portfolio section is static text that says the account is not connected, even after the secrets are set.",
+      "links": [
+        {
+          "label": "API key management",
+          "url": "https://docs.kalshi.com/getting_started/api_keys"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-21",
+      "type": "irregularity",
+      "title": "Collector can stop early and keep the previous snapshot",
+      "detail": "scripts/collect.mjs fails closed: a circuit breaker stops after 6 consecutive network errors, and a 12-minute run deadline applies. In that case nothing is written, the previous committed snapshot stays online, and the workflow reports a warning. The first live run from GitHub Actions has not yet completed, so real collection behaviour is unverified.",
+      "links": [
+        {
+          "label": "Rate limits",
+          "url": "https://docs.kalshi.com/getting_started/rate_limits"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-22",
+      "type": "unverified",
+      "title": "Dashboard rendering tested only in jsdom, not in a real browser",
+      "detail": "The page scripts were run in jsdom against synthetic collector output (all topic pages, alerts, trades and the flags page render without errors). No headless browser was available in this sandbox. Chart layout, scrolling chats, and the time-window selector still need a real-browser check.",
+      "links": [
+        {
+          "label": "Dashboard source",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/site/assets/app.js"
+        }
+      ],
+      "status": "open"
+    }
+  ]
+}

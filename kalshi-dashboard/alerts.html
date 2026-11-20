@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live alerts — Kalshi topic dashboard</title>
+<meta name="description" content="Live Kalshi prices, liquidity, price-move alerts, resolved outcomes and simulated trades for gas prices, elections, culture, crypto and golf. Read-only public data.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="alerts">
+<header class="top"><div class="row"><a class="brand" href="index.html">Kalshi topic dashboard</a><nav><a href="index.html">Home</a><a href="gas.html">Gas prices</a><a href="elections.html">Elections</a><a href="culture.html">Culture</a><a href="crypto.html">Crypto</a><a href="golf.html">Golf</a><a href="alerts.html">Live alerts</a><a href="trades.html">Trades & analysis</a><a href="resolved.html">Resolved</a><a href="summary.html">Executive summary</a><a href="suggestions.html">Suggestions</a><a href="sources.html">Sources</a><a href="flagged.html">⚠ Flagged for review</a></nav></div></header>
+<main>
+<div id="stale" class="stale" style="display:none"></div>
+<div id="status-bar" class="status-bar"></div>
+<div id="app"></div>
+
+</main>
+<footer>
+<p>Data: Kalshi public Trade API (read-only), fetched by a scheduled GitHub Actions job. Not financial advice. Simulated trades are paper trades. Every value links to its official source; unverified items are on <a href="flagged.html">Flagged for review</a>. Fee formulas: <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">Kalshi Fee Schedule (PDF)</a>.</p>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
