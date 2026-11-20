@@ -120,10 +120,11 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
 
     ``GET /series/{series_ticker}/markets/{ticker}/candlesticks`` returns OHLC
     per period (https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md).
-    We take the most recent *completed* 1-minute candle that passes the
-    integrity check and use its quoted mid and timestamp as the baseline for the
-    $0.10 swing test, so a gradual move still alerts instead of being swallowed
-    between two snapshots.
+    We take the most recent *completed* 1-minute candle whose own quote passes
+    the integrity check and use its quote closes (yes_bid and yes_ask) as the
+    baseline for the $0.10 swing test, so a gradual move still alerts instead of
+    being swallowed between two snapshots. The baseline is a quote mid with its
+    spread, never a last-trade price.
 
     Returns None when no candle in the window is a usable reference, in which
     case the caller falls back to the previous stored observation.
@@ -223,9 +224,12 @@ def candle_reference(candles: list[dict[str, Any]], now: int) -> dict[str, Any] 
         mid = round((bid + ask) / 2.0, 4)
         if not (0.0 < mid < 1.0):
             continue
+        # ``spread`` is the field the swing rule takes (it must be tighter than
+        # ALERT_MAX_SPREAD); the quote and the print travel with it so the alert
+        # record can be re-checked later without another API call.
         return {"mid": mid, "ts": float(candle["end_period_ts"]),
-                "bid": bid, "ask": ask, "print": print_price,
-                "quote_width": width}
+                "spread": width, "quote_width": width,
+                "bid": bid, "ask": ask, "print": print_price}
     return None
 
 
@@ -240,6 +244,11 @@ def _candle_side(candle: dict[str, Any], key: str) -> float | None:
     if value is None or not (0.0 <= value <= 1.0):
         return None
     return value
+
+
+def _candle_close(candle: dict[str, Any], side: str) -> float | None:
+    """``close_dollars`` of a candle's ``yes_bid`` or ``yes_ask`` block."""
+    return _candle_side(candle, side)
 
 
 def series_of(ticker: str, recorded: Any = None) -> str:
@@ -463,6 +472,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             prev, obs,
             reference=(ref or {}).get("mid"),
             reference_ts=(ref or {}).get("ts"),
+            reference_spread=(ref or {}).get("spread"),
             reference_quote=(({k: ref.get(k) for k in ("bid", "ask", "print", "ts",
                                                        "quote_width")}
                               if ref else None)),
@@ -473,12 +483,17 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     existing = alerts_store.get("alerts", [])
     merged = new_alerts + [a for a in existing
                            if a.get("id") not in {n["id"] for n in new_alerts}]
-    # A stored alert can predate the current integrity rule; re-check it here
-    # rather than republishing it. Suppressed rows are not deleted: they are kept
-    # (bounded) in the snapshot so the Flagged-for-review page can show exactly
-    # what was held back, with the API link that proves it.
-    suppressed = [a for a in merged if not alerts.is_publishable(a)]
-    merged = [a for a in merged if alerts.is_publishable(a)][:MAX_ALERTS]
+    # A stored alert can predate the current quote rule. Both rules must agree
+    # before a row is republished: alert_record_valid() checks the quote basis
+    # (the reference must be a quote mid, not a trade print), is_publishable()
+    # checks that both ends of the move are verifiable market prices. Rows that
+    # fail either are held back rather than deleted, so the Flagged-for-review
+    # page can show exactly what was suppressed together with the API link.
+    def _keep(a: dict[str, Any]) -> bool:
+        return alerts.alert_record_valid(a) and alerts.is_publishable(a)
+
+    suppressed = [a for a in merged if not _keep(a)]
+    merged = [a for a in merged if _keep(a)][:MAX_ALERTS]
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
@@ -649,6 +664,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "events_by_topic": ranked_by_topic,
         "top_per_topic": TOP_PER_TOPIC,
         "alerts": merged,
+        "alerts_suppressed": suppressed[:MAX_SUPPRESSED],
+        "alerts_publishable": len(merged),
+        "alerts_suppressed_count": len(suppressed),
         "model_gate": alerts.HIGH_ROI_GATE,
         # Same rule as the browser chat: a swing on a market whose modelled net
         # ROI clears the single published gate. Previously this used a score

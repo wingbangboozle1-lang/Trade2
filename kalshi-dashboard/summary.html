@@ -49,9 +49,9 @@
   <li>WebSocket connections require an API key, so live streaming cannot run from a static site <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">[S8]</a>.</li>
 </ul>
 
-<h2>Decisions to confirm</h2>
+<h2>Operating limits and model choices</h2>
 <ul class="clean">
-  <li><strong>Market data source:</strong> production public data, not demo, because the brief asks to track live Kalshi events. Demo prices may not reflect real markets <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">[S4]</a>. Switch by setting the <code>KALSHI_BASE</code> variable (F-07).</li>
+  <li><strong>Market data source:</strong> this collector is locked to Kalshi's documented demo REST hosts only. Production and custom hosts are rejected before any request; each snapshot records its exact base URL. Demo prices may not reflect real markets <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">[S4]</a>. A successful demo collection is required before any prior production snapshot can be treated as current (F-07).</li>
   <li><strong>High-ROI picks:</strong> a transparent rule (entry ≤ 40¢, spread ≤ 5¢, 24h volume ≥ 100), not a predictive model. Replace it with your model (F-13).</li>
 </ul>
 

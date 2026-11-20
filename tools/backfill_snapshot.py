@@ -35,10 +35,10 @@ from typing import Any
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from collector.alerts import is_publishable
-from collector.collector import (LIVE_PATH, MAX_SUPPRESSED, RESOLUTIONS_PATH,
-                                 TOP_PER_TOPIC, load_json, resolutions_by_topic,
-                                 save_json)
+from collector.alerts import alert_record_valid, is_publishable
+from collector.collector import (DATA_DIR, LIVE_PATH, MAX_SUPPRESSED,
+                                 RESOLUTIONS_PATH, TOP_PER_TOPIC, load_json,
+                                 resolutions_by_topic, save_json)
 
 SERIES_CACHE = os.path.join(ROOT, "data", "series_cache.json")
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
@@ -76,9 +76,25 @@ def rebuild(live: dict[str, Any], res_map: dict[str, dict[str, Any]],
 
     # 3. alert integrity: apply the current gate to the stored buffer and keep
     #    the held-back rows visible for review instead of deleting them.
-    stored = out.get("alerts") or []
-    out["alerts"] = [a for a in stored if is_publishable(a)]
-    held = [a for a in stored if not is_publishable(a)]
+    def keep(a):
+        # Same two rules the collector applies (quote basis + two-sidedness).
+        return alert_record_valid(a) and is_publishable(a)
+
+    # Candidates come from both the published snapshot and the alert store, so a
+    # second run does not forget rows the first run already held back. The store
+    # is the collector's own buffer (data/alerts.json) and may predate this rule.
+    store_alerts = (load_json(os.path.join(DATA_DIR, "alerts.json"), {})
+                    .get("alerts") or [])
+    candidates: list[dict] = []
+    seen_ids: set[str] = set()
+    for a in (out.get("alerts") or []) + (out.get("alerts_suppressed") or []) \
+            + store_alerts:
+        key = a.get("id") or f"{a.get('ticker')}:{a.get('ts')}"
+        if key not in seen_ids:
+            seen_ids.add(key)
+            candidates.append(a)
+    out["alerts"] = [a for a in candidates if keep(a)]
+    held = [a for a in candidates if not keep(a)]
 
     # Rows written before the gate existed carry no baseline quote, so they
     # cannot be re-checked. They are logged as unverifiable rather than either

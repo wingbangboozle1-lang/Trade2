@@ -32,10 +32,10 @@ for (const page of pages) {
     virtualConsole: vc,
   });
   const w = dom.window;
-  // jsdom ships no fetch. The pages call it only to top themselves up from the
-  // published snapshot; the pre-rendered HTML is what this check is about, so a
-  // rejecting stub is the honest stand-in for "offline browser".
-  w.fetch = () => Promise.reject(new Error("offline render check"));
+  // This checker must be hermetic: jsdom ships no fetch, so stub it out and stop
+  // the desk's optional polling from reaching the network while still
+  // exercising its inline-snapshot path.
+  w.fetch = async () => ({ ok: false, json: async () => null });
   w.EventSource = undefined;
   w.HTMLCanvasElement.prototype.getContext = () =>
     new Proxy({}, { get: (t, k) => (k === "canvas" ? {} : () => {}), set: () => true });

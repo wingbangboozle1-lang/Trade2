@@ -68,6 +68,7 @@ class TestSwingIntegrity(unittest.TestCase):
         """The rule must keep firing on real moves."""
         current = obs("KXTEST-1", 0.4000, 0.4400)   # 0.44 - 0.40 = 0.04 wide
         alert = detect_swing(None, current, reference=0.3000,
+                             reference_spread=0.02,
                              reference_quote={"bid": 0.29, "ask": 0.31,
                                               "print": 0.30})
         self.assertIsNotNone(alert)
@@ -80,21 +81,18 @@ class TestSwingIntegrity(unittest.TestCase):
         current = obs("KXTEST-2", 0.4900, 0.5100)   # mid 0.50
         ref = {"bid": 0.39, "ask": 0.41, "print": 0.40}
         self.assertIsNone(detect_swing(None, current, reference=0.41,
-                                       reference_quote=ref))
+                                       reference_spread=0.02, reference_quote=ref))
         self.assertIsNotNone(detect_swing(None, current, reference=0.40,
-                                          reference_quote=ref))
+                                          reference_spread=0.02, reference_quote=ref))
         self.assertEqual(SWING_THRESHOLD, 0.10)
 
-    def test_one_sided_quote_is_recorded_but_not_published(self):
-        """A quote with no opposite side cannot be checked, so it is held back."""
+    def test_one_sided_quote_never_raises_an_alert(self):
+        """A quote with no opposite side cannot be checked, so it is not a move."""
         current = obs("KXTEST-3", None, 0.6000)
-        alert = detect_swing(None, current, reference=0.3000,
-                             reference_quote={"bid": 0.29, "ask": 0.31,
-                                              "print": 0.30})
-        self.assertIsNotNone(alert)
-        self.assertFalse(alert["two_sided_quote"])
-        self.assertIsNone(alert["quote_width"])
-        self.assertFalse(is_publishable(alert))
+        self.assertIsNone(detect_swing(None, current, reference=0.3000,
+                                       reference_spread=0.02,
+                                       reference_quote={"bid": 0.29, "ask": 0.31,
+                                                        "print": 0.30}))
 
     def test_observe_keeps_full_spread_as_no_quote(self):
         """Documented empty-market shape: 0 bid / 1 ask is not a 0.50 mid."""
@@ -162,6 +160,7 @@ class TestCandleReferenceIntegrity(unittest.TestCase):
         ref = candle_reference(normal, now=1795200068)
         self.assertIsNotNone(ref)
         self.assertAlmostEqual(ref["mid"], 0.41, places=4)
+        self.assertAlmostEqual(ref["spread"], 0.02, places=4)
         self.assertAlmostEqual(ref["quote_width"], 0.02, places=4)
 
     def test_unfinished_bar_is_not_used(self):
@@ -202,6 +201,12 @@ class TestPublishability(unittest.TestCase):
         a = self.alert(0.59, 0.61, 0.39, 0.41)
         a.pop("reference_quote")
         self.assertFalse(is_publishable(a))
+
+    def test_wide_destination_never_becomes_an_alert(self):
+        """The gate lives in detect_swing as well as in the record check."""
+        phantom = obs("KXPRESNOMD-28-HBID", 0.002, 0.811)
+        self.assertIsNone(detect_swing(None, phantom, reference=0.4065,
+                                       reference_spread=0.809))
 
     def test_published_buffer_respects_the_gate(self):
         """Whatever the collector published must pass the gate it publishes."""

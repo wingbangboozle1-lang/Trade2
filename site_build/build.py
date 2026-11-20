@@ -61,21 +61,21 @@ def cents(value: Any) -> str:
         return esc(value)
 
 
-def inum(value: Any) -> str:
-    """Whole-number count. Counts are not money: no trailing .00."""
-    if value is None or value == "":
-        return '<span class="flag-badge">UNVERIFIED</span>'
-    try:
-        return f"{int(round(float(value))):,}"
-    except (TypeError, ValueError):
-        return esc(value)
-
-
 def num(value: Any) -> str:
     if value is None or value == "":
         return ""
     try:
         return f"{float(value):,.2f}"
+    except (TypeError, ValueError):
+        return esc(value)
+
+
+def cnt(value: Any) -> str:
+    """Whole-number count (markets, positions, trades). Never shown as 750.00."""
+    if value is None or value == "":
+        return ""
+    try:
+        return f"{int(round(float(value))):,}"
     except (TypeError, ValueError):
         return esc(value)
 
@@ -175,6 +175,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
         </footer>
       </main>
     </div>
+    <script src="{prefix}assets/alerts-view.js" defer></script>
     <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
@@ -273,8 +274,8 @@ def build_overview(live: dict[str, Any]) -> str:
     # Resolutions across the five topics, newest first.
     resolution_rows = []
     all_resolutions = []
-    for slug, rows in (live.get("resolutions") or {}).items():
-        for r in rows or []:
+    for slug, bucket_res in (live.get("resolutions") or {}).items():
+        for r in bucket_res or []:
             all_resolutions.append({**r, "topic": r.get("topic", slug)})
     all_resolutions.sort(key=lambda r: r.get("settlement_ts") or "", reverse=True)
     for r in all_resolutions[:20]:
@@ -330,20 +331,20 @@ def build_overview(live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{inum(live.get("observation_count"))}</strong>
+            <strong>{cnt(live.get("observation_count"))}</strong>
             <small>This snapshot</small></article>
           <article class="stat-card"><span>Swings ≥ $0.10</span>
             <strong>{len(live.get("alerts", []))}</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>{inum(portfolio.get("open_positions"))}</strong>
+            <strong>{cnt(portfolio.get("open_positions"))}</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
             <strong>{money(portfolio.get("equity"))}</strong>
             <small>Start {money(portfolio.get("starting_bankroll"))}</small></article>
           <article class="stat-card"><span>Resolutions in a topic</span>
-            <strong>{inum(attributed)}</strong>
-            <small>of {inum(live.get("resolutions_count"))} stored · YES/NO from
+            <strong>{cnt(attributed)}</strong>
+            <small>of {cnt(live.get("resolutions_count"))} stored · YES/NO from
             the official result field</small></article>
         </section>
         <div class="notice notice-info">
@@ -372,8 +373,8 @@ def build_overview(live: dict[str, Any]) -> str:
             </table>
           </div>
           <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}
-          · {inum(attributed)} of {inum(live.get("resolutions_count"))} stored
-          settlements belong to a tracked topic ({inum(unattributed)} are from
+          · {cnt(attributed)} of {cnt(live.get("resolutions_count"))} stored
+          settlements belong to a tracked topic ({cnt(unattributed)} are from
           series outside the five topics and are listed on
           <a href="review.html">Flagged for review</a>)</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
@@ -385,8 +386,8 @@ def build_overview(live: dict[str, Any]) -> str:
               <p>The official <code>result</code> field (YES or NO) with its
               settlement value, newest first, for markets whose series belongs
               to one of the five topics</p></div></div>
-            <span class="source-link">{inum(attributed)} resolutions from
-            {inum(live.get("resolutions_count"))} stored</span>
+            <span class="source-link">{cnt(attributed)} resolutions from
+            {cnt(live.get("resolutions_count"))} stored</span>
           </div>
           <div class="table-wrap">
             <table>
@@ -504,13 +505,13 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid">
           <article class="stat-card"><span>Series in scope</span>
-            <strong>{inum(topic.get("series_count"))}</strong><small>Matched live</small></article>
+            <strong>{cnt(topic.get("series_count"))}</strong><small>Matched live</small></article>
           <article class="stat-card"><span>Open events</span>
-            <strong>{inum(topic.get("event_count"))}</strong><small>This snapshot</small></article>
+            <strong>{cnt(topic.get("event_count"))}</strong><small>This snapshot</small></article>
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{inum(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
+            <strong>{cnt(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
           <article class="stat-card"><span>Resolved captured</span>
-            <strong>{inum(len(resolutions))}</strong><small>YES/NO logged</small></article>
+            <strong>{cnt(len(resolutions))}</strong><small>YES/NO logged</small></article>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -528,7 +529,7 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
               <tbody>{''.join(market_rows)}</tbody>
             </table>
           </div>
-          <div class="table-foot"><span>{inum(topic.get("market_count"))} markets matched;
+          <div class="table-foot"><span>{cnt(topic.get("market_count"))} markets matched;
           top {len(events)} shown</span><span>Bid depth = resting YES bid contracts</span></div>
         </section>
         <section class="panel">
@@ -860,15 +861,15 @@ def build_performance_section(live: dict[str, Any]) -> str:
             "<tr>"
             f"<td><b>{html.escape(s.get('label', slug))}</b>"
             f"<small class=\"ticker\">{html.escape(s.get('description',''))}</small></td>"
-            f"<td>{num(a.get('trades'))}</td><td>{num(a.get('wins'))}</td>"
-            f"<td>{num(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
+            f"<td>{cnt(a.get('trades'))}</td><td>{cnt(a.get('wins'))}</td>"
+            f"<td>{cnt(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
             f"<td>{money(a.get('realized'))}</td><td>{money(a.get('expectancy'))}</td>"
             f"<td>{pct(a.get('roi_on_cost'))}</td><td>{money(a.get('fees'))}</td></tr>")
     topic_rows = []
     for slug, a in (p.get("by_topic") or {}).items():
         topic_rows.append(
             "<tr>"
-            f"<td>{html.escape(slug)}</td><td>{num(a.get('trades'))}</td>"
+            f"<td>{html.escape(slug)}</td><td>{cnt(a.get('trades'))}</td>"
             f"<td>{pct(a.get('win_rate'))}</td><td>{money(a.get('realized'))}</td>"
             f"<td>{money(a.get('expectancy'))}</td></tr>")
     settled_rows = []
@@ -901,10 +902,10 @@ def build_performance_section(live: dict[str, Any]) -> str:
               <small>from {money(p.get('starting_bankroll'))}</small></article>
             <article class="stat-card"><span>Realised P&amp;L</span>
               <strong>{money(p.get('realized_pnl'))}</strong>
-              <small>{num(overall.get('trades'))} settled</small></article>
+              <small>{cnt(overall.get('trades'))} settled</small></article>
             <article class="stat-card"><span>Win rate</span>
               <strong>{pct(overall.get('win_rate'))}</strong>
-              <small>{num(overall.get('wins'))}W / {num(overall.get('losses'))}L</small></article>
+              <small>{cnt(overall.get('wins'))}W / {cnt(overall.get('losses'))}L</small></article>
             <article class="stat-card"><span>Fees paid</span>
               <strong>{money(p.get('fees_paid'))}</strong>
               <small>official quadratic fee</small></article>

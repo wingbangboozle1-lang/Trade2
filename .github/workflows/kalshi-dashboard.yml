@@ -39,9 +39,15 @@ jobs:
         run: python3 -m unittest discover -s tests -v
 
       - name: Syntax check the front-end
-        run: node --check assets/desk.js && node --check assets/app.js
+        run: |
+          node --check assets/alerts-view.js
+          node --check assets/app.js
+          node --check assets/desk.js
+          node --test test/alerts-view.test.mjs
 
       - name: Front-end runtime check (jsdom)
+        # Runs the built pages with a hermetic fetch stub: the desk must boot and
+        # render without throwing and without leaking undefined/NaN.
         run: |
           npm install --no-audit --no-fund --no-save jsdom
           node tools/rendercheck.mjs

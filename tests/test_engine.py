@@ -168,14 +168,18 @@ class TestSwing(unittest.TestCase):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
         self.assertIsNone(detect_swing(prev, cur))
         # ...but against the bar's opening price of 0.30 it is a 14c swing.
-        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0)
+        # The reference is a candle *quote* mid, so it must carry its own tight
+        # spread (see VERIFICATION_856e184e.md, T16). Without it, no alert.
+        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0,
+                             reference_spread=0.02)
         self.assertIsNotNone(alert)
         self.assertAlmostEqual(alert["abs_delta"], 0.14)
         self.assertEqual(alert["previous"], 0.30)
 
     def test_reference_bar_still_respects_the_threshold(self):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
-        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0))
+        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0,
+                                       reference_spread=0.02))
 
     def test_missing_quote_never_fires(self):
         prev = self.base(0.40)
@@ -351,6 +355,40 @@ class TestExits(unittest.TestCase):
         p.close("X", 0.60, 2.0, "test")
         closed = [x for x in p.positions.values() if x.status == "stopped"][0]
         self.assertGreater(closed.exit_fee, 0)
+
+    def test_no_side_uses_no_value_for_the_swing_test(self):
+        # Regression: a NO position's value is 1 - YES mid. Comparing the NO
+        # entry price to the YES mid read a 5c LOSS as a 45c WIN and forced an
+        # early exit at a loss.
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.30, side="no"), "value")
+        # YES mid 0.75 -> NO value 0.25, down 0.05 from a 0.30 entry: hold.
+        decisions = exit_signals(p, {"X": self.obs(0.75, 0.74, 0.76)})
+        self.assertEqual(decisions, [])
+
+    def test_no_side_take_profit_fires_on_a_real_gain(self):
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.40, side="no"), "value")
+        # YES mid 0.20 -> NO value 0.80, up 0.40 from a 0.40 entry: take profit.
+        decisions = exit_signals(p, {"X": self.obs(0.20, 0.19, 0.21)})
+        self.assertEqual(len(decisions), 1)
+        pos, price, why = decisions[0]
+        # We sell NO at the NO bid = 1 - YES ask.
+        self.assertAlmostEqual(price, 0.79)
+        p.close("X", price, 2.0, why)
+        self.assertGreater(p.positions[pos.position_id].realized, 0)
+
+    def test_no_side_equity_uses_held_side_value(self):
+        p = Portfolio()
+        pos = p.open(self.signal(price=0.30, side="no"), "value")
+        # YES mid 0.75 -> the NO contract is worth 0.25, not the YES mid 0.75.
+        p.mark("X", 0.75)
+        self.assertAlmostEqual(pos.current_price, 0.25)
+        expected = p.bankroll + pos.contracts * 0.25
+        self.assertAlmostEqual(p.equity, expected, places=2)
+        self.assertLess(p.equity, 10_000.0)  # a losing position reduces equity
 
 
 class TestStrategyGate(unittest.TestCase):
