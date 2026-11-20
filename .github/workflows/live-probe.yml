@@ -1,0 +1,46 @@
+# Capability probe for the docs/ live layer (task T31, session arena-5bec0ea3).
+#
+# GitHub runners have unrestricted egress (this sandbox does not), so this is
+# where browser-facing facts about the Kalshi demo API are actually verified:
+#   - REST CORS for a GitHub Pages origin
+#   - anonymous WebSocket handshake (browsers cannot send KALSHI-ACCESS-* headers)
+#   - one live market GET (shape evidence)
+# Results are committed to docs/data/capabilities.json and consumed by
+# docs/assets/live.js to pick the honest live mode. Trigger manually
+# (workflow_dispatch) so no push loops are created.
+
+name: live capability probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run live probe (CORS + anonymous WS + reachability)
+        run: python3 tools/live_probe.py --root .
+
+      - name: Commit capabilities
+        run: |
+          git config user.name "kalshi-live-probe[bot]"
+          git config user.email "kalshi-live-probe[bot]@users.noreply.github.com"
+          git add docs/data/capabilities.json
+          if git diff --cached --quiet; then
+            echo "capabilities.json unchanged"
+            exit 0
+          fi
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && \
+            git commit -m "chore(live): record API capability probe $(date -u +%FT%TZ)" && \
+            git push origin "${GITHUB_REF_NAME}" && exit 0
+            sleep 3
+          done
+          echo "::error::capability probe commit failed after 3 attempts"
+          exit 1
