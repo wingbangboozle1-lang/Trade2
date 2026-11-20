@@ -160,7 +160,8 @@
     var up = a.direction === "up";
     var when = (a.iso || "").slice(11, 19) || hhmmss(a.ts);
     var row = document.createElement("div");
-    row.className = "chat-row" + (up ? " up" : " down");
+    row.className = "chat-row" + (up ? " up" : " down") +
+      (a.kind === "signal" ? " chat-row-signal" : "");
     var badges = "";
     if (Number(a.repeat_count) > 1) {
       badges += '<span class="tag tag-purple" title="The same ' +
@@ -172,17 +173,32 @@
         " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
         'this midpoint is not an executable price.">wide spread · not executable</span> ';
     }
+    var headlines = (a.headlines || []).slice(0, 2).map(function (h) {
+      return '<a class="chat-news-link" href="' + esc(h.url) + '" target="_blank" ' +
+        'rel="noreferrer" title="Candidate catalyst — timing only, not a proven cause">' +
+        esc(h.source ? h.source + ": " + h.title : h.title) + "</a>";
+    }).join("");
+    var news = "";
+    if (headlines) {
+      news = '<span class="chat-news">📰 ' + headlines + "</span>";
+    } else if (a.news_status === "no-headlines-found") {
+      news = '<span class="chat-news none">📰 no headline published in the window</span>';
+    } else if (a.news_status === "unavailable" || a.news_status === "no-query") {
+      news = '<span class="chat-news none">📰 lookup unavailable — link left blank</span>';
+    }
     row.innerHTML =
       "<time>" + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
       (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
       '<span class="chat-body">' +
+      (a.kind === "signal" ? '<span class="chat-kind">model watch</span>' : "") +
       '<a href="' + esc(a.market_url || "#") + '" target="_blank" rel="noreferrer">' +
       esc(a.title || a.ticker) + "</a>" +
       "<small>" + money(a.previous) + " → " + money(a.current) +
       " · " + esc(a.topic) +
-      (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small>" +
+      (isModel ? " · net ROI " + pct(a.model_net_roi) +
+        " · score " + pct(a.model_score) : "") +
+      "</small>" + news +
       (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
       "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
@@ -200,21 +216,29 @@
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
 
-    // Model shortlist: alerts on markets the model scored as high ROI.
     var scoreByTicker = {};
     (s.signals || []).forEach(function (sig) {
       scoreByTicker[sig.ticker] = sig;
     });
-    var rawModel = raw
-      .filter(function (a) {
+    /* The collector decides model membership from one published gate and ships
+     * it as `model_shortlist`, so the two chats can never disagree about what
+     * the model likes. Snapshots older than that field fall back to the same
+     * rule applied client-side; repeated rows are grouped either way. */
+    var rawModel;
+    if (Array.isArray(s.model_shortlist)) {
+      rawModel = s.model_shortlist;
+    } else if (Array.isArray(s.high_roi_alerts)) {
+      rawModel = s.high_roi_alerts;
+    } else {
+      rawModel = raw.filter(function (a) {
         var sig = scoreByTicker[a.ticker];
         return sig && sig.net_roi >= 0.05;
-      })
-      .map(function (a) {
+      }).map(function (a) {
         var out = Object.assign({}, a);
         out.model_net_roi = scoreByTicker[a.ticker].net_roi;
         return out;
       });
+    }
     var model = V ? V.dedupeAlerts(rawModel) : rawModel;
 
     var feedAll = document.getElementById("feedAll");
@@ -233,8 +257,8 @@
       feedModel.innerHTML = "";
       if (!model.length) {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
-          "model's net-ROI gate right now. This is normal — an empty feed is an " +
-          "honest answer.</div>";
+          "model's score gate (net ROI ≥ " + pct(s.model_gate) + " after Kalshi's taker " +
+          "fee) right now. An empty shortlist is the honest answer, not a loading state.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
     }
@@ -358,6 +382,7 @@
     loadSeries(ticker, series || (found && found.series_ticker) || "").then(function () {
       drawChart();
     });
+    renderMoves(ticker);
     pollBook(ticker);
   }
 
@@ -546,6 +571,49 @@
       changeEl.textContent = (delta >= 0 ? "+" : "−") + Math.abs(delta).toFixed(4);
       changeEl.className = delta >= 0 ? "pos" : "neg";
     }
+  }
+
+  /* "What moved this market" — the ≥ $0.10 swings recorded for the market on
+   * screen, each with the candidate catalyst link found at that timestamp (or an
+   * explicit statement that none was found / the lookup was unavailable).
+   * Timing is not causation and the panel says so. */
+  function renderMoves(ticker) {
+    var host = document.getElementById("chartMoves");
+    if (!host) return;
+    var s = state.snapshot || {};
+    var moves = (s.alerts || []).filter(function (a) { return a.ticker === ticker; });
+    var gate = Number(s.swap_threshold_dollars || 0.1);
+    if (!moves.length) {
+      host.innerHTML = '<div class="empty-state inline">No ≥ $' + gate.toFixed(2) +
+        " move has been recorded for this market by this desk. Alerts appear only " +
+        "from observations the collector actually took — nothing is back-filled.</div>";
+      return;
+    }
+    host.innerHTML = moves.slice(0, 12).map(function (a) {
+      var up = a.direction === "up";
+      var news = (a.headlines || []).slice(0, 2).map(function (h) {
+        return '<a href="' + esc(h.url) + '" target="_blank" rel="noreferrer">' +
+          esc(h.source ? h.source + " — " + h.title : h.title) +
+          "</a><small>" + esc((h.published || "").slice(0, 16).replace("T", " ")) +
+          " · candidate, unverified as a cause</small>";
+      }).join("");
+      if (!news) {
+        news = "<small>" + (a.news_status === "no-headlines-found"
+          ? "no headline published in the ±6 h window"
+          : a.news_status ? "headline lookup: " + esc(a.news_status)
+                          : "headline lookup not run for this row") + "</small>";
+      }
+      return '<div class="move-row ' + (up ? "up" : "down") + '">' +
+        '<time>' + esc((a.iso || "").slice(0, 16).replace("T", " ")) + "</time>" +
+        '<b class="' + (up ? "pos" : "neg") + '">' + (up ? "▲ +" : "▼ −") +
+        Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</b>" +
+        '<span class="move-body"><a href="' + esc(a.market_url || "#") +
+        '" target="_blank" rel="noreferrer">' + esc(a.title || a.ticker) + "</a>" +
+        "<small>" + money(a.previous) + " → " + money(a.current) +
+        (a.model_net_roi != null ? " · model net ROI " + pct(a.model_net_roi) : "") +
+        "</small>" + (news ? '<span class="move-news">' + news + "</span>" : "") +
+        "</span></div>";
+    }).join("");
   }
 
   function renderBookMetrics(book) {

@@ -133,6 +133,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
     <meta name="description" content="{html.escape(description)}" />
     <title>{html.escape(title)}</title>
     <link rel="stylesheet" href="{prefix}assets/styles.css" />
+    <link rel="stylesheet" href="{prefix}assets/desk.css" />
   </head>
   <body>
     <div class="shell">
@@ -187,11 +188,80 @@ def topbar(crumb: str, generated: str, prefix: str = "") -> str:
 # Overview
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Chat rows (shared by the overview preview and the live desk pre-render)
+# ---------------------------------------------------------------------------
+
+def chat_row(a: dict[str, Any], is_model: bool = False) -> str:
+    """One scrolling-chat line, identical in structure to what desk.js renders
+    live, so the pre-rendered page and the running feed never disagree."""
+    up = a.get("direction") == "up"
+    arrow = "▲" if up else "▼"
+    cls = "up" if up else "down"
+    heads = a.get("headlines") or []
+    if heads:
+        note = ("Candidate catalyst: published near this move. "
+                "Timing is not causation - not verified as the cause.")
+        links = " · ".join(
+            '<a class="chat-news-link" href="{u}" target="_blank" rel="noreferrer" '
+            'title="{t}">{label}</a>'.format(
+                u=html.escape(h.get("url", ""), quote=True),
+                t=html.escape(note, quote=True),
+                label=esc(h.get("source") or h.get("title")))
+            for h in heads[:2])
+        news = f'<span class="chat-news">📰 {links}</span>'
+    elif a.get("news_status") == "no-headlines-found":
+        news = ('<span class="chat-news none">📰 no headline published in the '
+                "±6 h window</span>")
+    elif a.get("news_status"):
+        news = (f'<span class="chat-news none">📰 headline lookup: '
+                f'{html.escape(str(a.get("news_status")))}</span>')
+    else:
+        news = ""
+    model_bit = ""
+    if is_model and a.get("model_net_roi") is not None:
+        model_bit = (f' · model net ROI {pct(a.get("model_net_roi"))}'
+                     f' · score {pct(a.get("model_score"))}')
+    kind = ('<span class="chat-kind">model watch</span>'
+            if a.get("kind") == "signal" else "")
+    when = (a.get("iso") or "")[11:19]
+    return (
+        f'<div class="chat-row {cls}{" chat-row-signal" if a.get("kind") == "signal" else ""}">'
+        f"<time>{html.escape(when)}</time>"
+        f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+        f'<span class="chat-body">{kind}'
+        f'<a href="{html.escape(a.get("market_url", ""))}" target="_blank" '
+        f'rel="noreferrer">{esc(a.get("title"))}</a>'
+        f'<span class="ticker">{esc(a.get("ticker"))}</span>'
+        f"<small>{cents(a.get('previous'))} → {cents(a.get('current'))} · "
+        f"{esc(a.get('topic'))}{model_bit}</small>{news}</span></div>"
+    )
+
+
+def chat_panel(title: str, subtitle: str, rows: list[dict[str, Any]],
+               is_model: bool, empty_text: str, icon: str,
+               foot: str = "") -> str:
+    body = "".join(chat_row(a, is_model) for a in rows[:30]) or (
+        f'<div class="empty-state inline">{empty_text}</div>')
+    note = (f'<div class="alert-note">{foot}</div>' if foot else "")
+    return f"""<article class="panel chat-panel{' model-chat' if is_model else ''}">
+          <div class="panel-title">
+            <div><span class="section-icon{' violet' if is_model else ' amber'}">{icon}</span><div>
+              <h2>{html.escape(title)}</h2>
+              <p>{html.escape(subtitle)}</p></div></div>
+            <span class="count-badge">{len(rows)}</span>
+          </div>
+          <div class="chat-feed">
+            {body}
+          </div>
+          {note}
+        </article>"""
+
+
 def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     events = live.get("events", [])[:25]
     portfolio = live.get("portfolio", {})
-    alerts = live.get("alerts", [])[:12]
     exchange = live.get("exchange", {})
 
     rows = []
@@ -215,22 +285,8 @@ def build_overview(live: dict[str, Any]) -> str:
         rows.append('<tr><td colspan="8" class="empty-state">'
                     "No snapshot yet — the collector has not completed a run.</td></tr>")
 
-    alert_rows = []
-    for a in alerts:
-        arrow = "▲" if a.get("direction") == "up" else "▼"
-        cls = "up" if a.get("direction") == "up" else "down"
-        alert_rows.append(
-            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
-            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
-            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
-            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
-            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-            f'{esc(a.get("topic"))}</small></span></div>'
-        )
-    if not alert_rows:
-        alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
-                          "in the current window yet. The feed fills as the "
-                          "collector compares successive snapshots.</div>")
+    alerts_all = live.get("alerts", [])
+    model_all = live.get("model_shortlist") or live.get("high_roi_alerts") or []
 
     status = "trading" if exchange.get("trading_active") else "not trading"
     return f"""{topbar("Overview", generated)}
@@ -287,15 +343,29 @@ def build_overview(live: dict[str, Any]) -> str:
           <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed">{''.join(alert_rows)}</div>
-        </section>"""
+        <section class="desk-grid two-chats">
+          {chat_panel("Swing chat — all events",
+                      "Every observed move of at least $0.10 either way",
+                      alerts_all, False,
+                      "No ≥ $0.10 swing observed in the current window yet. The feed "
+                      "fills as the collector compares successive snapshots.",
+                      "◉",
+                      f'Rule: |Δ YES mid| ≥ ${money(live.get("swap_threshold_dollars"), 2)} '
+                      f'between successive observations, or across the 5-minute reference '
+                      f'bar. <a href="methodology.html">Methodology →</a>')}
+          {chat_panel("Model shortlist — high ROI only",
+                      "Swings, and watch flags, the model scores above the gate",
+                      model_all, True,
+                      f"Nothing clears the model's score gate "
+                      f"(net ROI ≥ {pct(live.get('model_gate'))} after Kalshi's taker fee) "
+                      f"right now. An empty shortlist is the honest answer.",
+                      "★",
+                      f'Gate {pct(live.get("model_gate"))} net ROI after fees; flags expire '
+                      f'after 6 h or when the market settles. <a href="methodology.html">'
+                      f'Model rules →</a>')}
+        </section>
+        <div class="table-foot"><span><a class="source-link" href="live.html">
+          Open the live desk (chart + depth + streaming chats) →</a></span></div>"""
 
 
 # ---------------------------------------------------------------------------
@@ -481,6 +551,18 @@ def build_live(live: dict[str, Any]) -> str:
             <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
+          <article class="panel moves-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">⚑</span><div>
+                <h2>What moved this market</h2>
+                <p>≥ $0.10 swings recorded by this desk for the market on screen,
+                with the headline published nearest the move — a candidate, never
+                a proven cause</p></div></div>
+            </div>
+            <div id="chartMoves" class="move-list">
+              <div class="empty-state inline">Select a market to see its swings.</div>
+            </div>
+          </article>
           <article class="panel depth-panel">
             <div class="panel-title">
               <div><span class="section-icon amber">▤</span><div>
@@ -565,8 +647,10 @@ def build_methodology(live: dict[str, Any]) -> str:
                   <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
                 <tr><td>Candlesticks</td><td><code>GET /series/{{s}}/markets/{{t}}/candlesticks</code></td>
                   <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
-                <tr><td>Settlement results</td><td><code>GET /markets?status=settled</code> → <code>result</code></td>
-                  <td><a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
+                <tr><td>Settlement results for tracked events</td>
+                  <td><code>GET /markets?tickers=…</code> → <code>result</code></td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">docs ↗</a>
+                  · <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noreferrer">settlement ↗</a></td></tr>
                 <tr><td>Demo environment</td><td><code>{API}</code></td>
                   <td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
                 <tr><td>WebSocket (documented, not required)</td><td><code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code></td>
@@ -594,13 +678,31 @@ def build_methodology(live: dict[str, Any]) -> str:
           table are reproduced exactly by the implementation and are asserted in
           <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
           respected via each series' own <code>fee_multiplier</code>.</p>
-          <h2>The high-ROI filter</h2>
+          <h2>The high-ROI filter and the shortlist chat</h2>
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
           actually paid to cross the spread. Net ROI divides edge after fees by that
           price. A market is shortlisted only when net ROI clears the strategy's
           threshold and the spread is tight. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
+          <p>The gate is one number, published in the snapshot as
+          <code>model_gate</code> = <strong>{pct(live.get("model_gate"))}</strong> score
+          (net ROI scaled by book depth) and used by both the collector and the
+          browser, so the two chats cannot disagree. A verdict stays on the model
+          watchlist for <strong>6 hours</strong>, or until the market settles —
+          whichever comes first — so a swing that arrives minutes after the flag is
+          not lost. Every shortlist row states its net ROI, its score and the side
+          the model preferred.</p>
+          <h2>Candidate catalysts</h2>
+          <p>When a swing fires, the collector asks Google News RSS for headlines
+          published within ±6 hours, searching only words that appear in the
+          market's own public title. Each swing row carries one of four states:
+          <code>ok</code> (links shown), <code>no-headlines-found</code>,
+          <code>unavailable</code> (the lookup could not run, links left blank) and
+          <code>skipped</code> (run budget or per-run cap of
+          {live.get("news_lookups", {}).get("skipped", 0)} rows this run). A headline
+          next to a move is a <em>candidate</em>: temporal proximity is not
+          causation, and no source states that any article moved a Kalshi price.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:
           YES pays $1.00 per contract, NO pays nothing, as documented in
@@ -608,8 +710,9 @@ def build_methodology(live: dict[str, Any]) -> str:
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>
           <ul>
-            <li>No news article is attributed to a price move. The alert links to
-            the market, not to a cause we cannot verify.</li>
+            <li>No news article is <em>declared</em> to have caused a price move.
+            Headlines shown on a swing are candidates matched by title and time,
+            labelled as such, and every row states whether the lookup ran.</li>
             <li>The paper ledger is not your demo account balance. Authenticated
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>

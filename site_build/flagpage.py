@@ -89,6 +89,50 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
+    # 4. Candidate-catalyst lookup did not run. Publishing a blank next to an
+    #    unreported failure would read as "we checked and found nothing".
+    news = live.get("news_lookups") or {}
+    if news.get("unavailable"):
+        issues.append({
+            "kind": "Headline lookup unavailable",
+            "topic": "(all)",
+            "ticker": "news_lookups.unavailable",
+            "detail": (f"{news['unavailable']} swing(s) in this run could not be "
+                       f"matched to a headline because the request failed; the link "
+                       f"field is blank and the row is labelled 'unavailable'. "
+                       f"Counts — ok {news.get('ok', 0)}, none found "
+                       f"{news.get('no-headlines-found', 0)}, skipped "
+                       f"{news.get('skipped', 0)}."),
+            "source": "https://news.google.com/rss/search?q=gasoline+prices",
+        })
+
+    # 5. A topic with tracked markets and no captured settlement yet: honest
+    #    absence, not a gap in the pipeline. The tracker needs the market to
+    #    have settled since it was last seen open.
+    for slug, topic in (live.get("topics") or {}).items():
+        resolved = (live.get("resolutions") or {}).get(slug) or []
+        if topic.get("tracked_market_count") and not resolved:
+            issues.append({
+                "kind": "No settlement captured for this topic yet",
+                "topic": slug,
+                "ticker": f"resolutions:{slug}",
+                "detail": (f"{topic['tracked_market_count']} market(s) are tracked "
+                           f"and none has resolved into YES/NO since this desk began "
+                           f"watching it. The settlement lookup runs every pass; "
+                           f"nothing is inferred to fill this table."),
+                "source": f"{API}/markets?status=settled",
+            })
+
+    # 6. Anything the collector complained about, verbatim.
+    for index, err in enumerate((live.get("errors") or [])[:20]):
+        issues.append({
+            "kind": "Collector warning this run",
+            "topic": "(run)",
+            "ticker": f"errors:{index}",
+            "detail": str(err),
+            "source": API + "/exchange/status",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []

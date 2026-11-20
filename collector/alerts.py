@@ -34,6 +34,7 @@ ROI model ("what our model likes")
 
 from __future__ import annotations
 
+import datetime as dt
 import math
 import time
 from dataclasses import dataclass, field, asdict
@@ -44,6 +45,14 @@ from .kalshi_api import (best_bid, count, dollars, implied_yes_ask, mid_price,
 
 SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
+# One gate, published in the snapshot and used by BOTH the collector and the
+# browser, so the model chat and the server-side feed can never disagree. A
+# score is net ROI scaled by book depth (see score_market).
+MODEL_SCORE_GATE = 0.10
+# A model verdict is a statement about a price at a moment in time. It is kept
+# on the watchlist for this long so a swing that fires a few minutes after the
+# model liked a market still lands in the model chat.
+WATCHLIST_TTL_SECONDS = 6 * 3600
 MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
 # Swing alerts need a tight, two-sided quote. If the bid-ask spread is at least
 # the swing threshold, the mid can move by $0.10 purely because the quotes moved,
@@ -458,3 +467,218 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "market_url": obs.market_url,
         })
     return sorted(rows, key=lambda r: r["dollar_activity"], reverse=True)
+
+
+def series_from_ticker(ticker: str) -> str:
+    """Series part of a Kalshi market ticker.
+
+    A market ticker is ``SERIES-EVENT-MARKET`` (observed live on the demo host:
+    ``KXAAAGASW-26NOV16-4.2000`` belongs to series ``KXAAAGASW``). The official
+    ``GET /markets`` response schema carries ``ticker`` and ``event_ticker`` but
+    **no** ``series_ticker``
+    (https://docs.kalshi.com/api-reference/market/get-markets), while
+    ``GET /events`` does. So when only a market record is available the series is
+    recovered by splitting the ticker — a documented string form, not a guess.
+    """
+    return (ticker or "").split("-")[0]
+
+
+def _model_fields(sig: Signal) -> dict[str, Any]:
+    return {
+        "side": sig.side,
+        "executable_price": sig.executable_price,
+        "model_fair": sig.model_fair,
+        "edge": sig.edge,
+        "gross_roi": sig.gross_roi,
+        "fee": sig.fee,
+        "net_roi": sig.net_roi,
+        "score": sig.score,
+        "spread": sig.spread,
+        "reason": sig.reason,
+        "market_url": sig.market_url,
+    }
+
+
+def attach_models(alert_rows: Iterable[dict[str, Any]],
+                  observations: Iterable[Observation],
+                  liquidity: dict[str, dict[str, Any]],
+                  watch: dict[str, Any] | None = None,
+                  gate: float = MODEL_SCORE_GATE,
+                  now: float | None = None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Give every swing row the model's verdict, and refresh the watchlist.
+
+    A swing is scored the moment it fires, from the observation and the book of
+    the same snapshot, through the same ``score_market`` the desk publishes. A
+    market the model liked in an earlier run keeps its verdict in ``watch``, so a
+    swing that arrives a few minutes after the flag is not lost because this
+    run's gate moved.
+
+    Returns ``(rows, watch)`` as new objects — the caller's rows are never
+    mutated in place, which keeps a re-run of the same snapshot reproducible.
+    """
+    obs_by = {o.ticker: o for o in observations}
+    watch = dict(watch or {})
+    stamp = now if now is not None else time.time()
+    rows: list[dict[str, Any]] = []
+    for raw in alert_rows:
+        row = dict(raw)
+        ticker = row.get("ticker") or ""
+        obs = obs_by.get(ticker)
+        model: dict[str, Any] | None = None
+        if obs is not None:
+            sig = score_market(obs, liquidity.get(ticker) or {})
+            if sig is not None:
+                model = _model_fields(sig)
+                model["ts"] = stamp
+                watch[sig.ticker] = dict(
+                    model,
+                    ticker=sig.ticker, event_ticker=sig.event_ticker,
+                    series_ticker=series_from_ticker(sig.ticker),
+                    title=sig.title, topic=sig.topic,
+                    # mid at flag time, so the chat can show what has happened
+                    # since the model spoke without inventing a reference price.
+                    mid_at_flag=obs.mid, flagged_at=stamp,
+                )
+        if model is None and ticker in watch:
+            stored = watch[ticker]
+            model = {k: v for k, v in stored.items()
+                     if k in ("side", "executable_price", "model_fair", "edge",
+                              "gross_roi", "fee", "net_roi", "score", "spread",
+                              "reason", "market_url")}
+            model["ts"] = stored.get("ts") or stored.get("flagged_at")
+            model["carried_from_watchlist"] = True
+        row["model"] = model
+        row["model_score"] = (model or {}).get("score")
+        row["model_net_roi"] = (model or {}).get("net_roi")
+        row["model_side"] = (model or {}).get("side")
+        row["high_roi"] = bool(model) and float(model.get("score") or 0) >= gate
+        rows.append(row)
+    return rows, watch
+
+
+def prune_watchlist(watch: dict[str, Any], now: float,
+                    ttl: float = WATCHLIST_TTL_SECONDS,
+                    settled: Iterable[str] = ()) -> dict[str, Any]:
+    """Drop watchlist flags that went stale or whose market has settled.
+
+    A settled market no longer has a live edge to talk about, so keeping its
+    flag would publish a verdict the exchange has already made irrelevant.
+    """
+    cutoff = float(now) - float(ttl)
+    gone = {t for t in (settled or ()) if t}
+    out: dict[str, Any] = {}
+    for ticker, entry in (watch or {}).items():
+        if ticker in gone:
+            continue
+        try:
+            ts = float(entry.get("flagged_at") or entry.get("ts") or 0)
+        except (TypeError, ValueError):
+            continue
+        if ts >= cutoff:
+            out[ticker] = entry
+    return out
+
+
+def model_feed(rows: Iterable[dict[str, Any]], watch: dict[str, Any],
+               price_by_ticker: dict[str, float | None] | None = None,
+               gate: float = MODEL_SCORE_GATE, now: float | None = None,
+               limit: int = 200) -> list[dict[str, Any]]:
+    """The "model shortlist" chat feed.
+
+    Two kinds of rows, each labelled with ``kind`` so the UI can never blur them:
+
+    ``swing``   a ≥ $0.10 move on a market the model scores ≥ ``gate``
+    ``signal``  a market still on the model's watchlist that has not swung —
+                shown with the move since the flag, however small, because the
+                brief asks this chat to be the model's shortlist, not a copy of
+                the all-events chat.
+
+    Prices come from our own observations only; a missing current price renders
+    as blank in the UI, never as zero.
+    """
+    stamp = now if now is not None else time.time()
+    prices = price_by_ticker or {}
+    feed: list[dict[str, Any]] = []
+    swung: set[str] = set()
+    for raw in rows:
+        if not raw.get("high_roi"):
+            continue
+        ticker = raw.get("ticker") or ""
+        swung.add(ticker)
+        entry = watch.get(ticker) or {}
+        row = dict(raw)
+        row["kind"] = "swing"
+        row["model_reason"] = (raw.get("model") or {}).get("reason") or entry.get("reason")
+        row["model_flagged_at"] = entry.get("flagged_at")
+        feed.append(row)
+    for ticker, entry in (watch or {}).items():
+        if ticker in swung:
+            continue
+        if float(entry.get("score") or 0) < gate:
+            continue
+        current = prices.get(ticker)
+        previous = entry.get("mid_at_flag")
+        delta = (current - previous) if (current is not None and previous is not None) else None
+        feed.append({
+            "id": f"signal:{ticker}:{int(entry.get('flagged_at') or stamp)}",
+            "kind": "signal",
+            "ts": stamp,
+            "iso": dt.datetime.fromtimestamp(stamp, dt.timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"),
+            "ticker": ticker,
+            "event_ticker": entry.get("event_ticker", ""),
+            "series_ticker": entry.get("series_ticker") or series_from_ticker(ticker),
+            "topic": entry.get("topic", ""),
+            "title": entry.get("title", ""),
+            "previous": previous,
+            "current": current,
+            "delta": round(delta, 4) if delta is not None else None,
+            "abs_delta": round(abs(delta), 4) if delta is not None else 0.0,
+            "direction": "up" if (delta or 0) >= 0 else "down",
+            "threshold": gate,
+            "model_net_roi": entry.get("net_roi"),
+            "model_score": entry.get("score"),
+            "model_side": entry.get("side"),
+            "model_reason": entry.get("reason"),
+            "model_flagged_at": entry.get("flagged_at"),
+            "market_url": entry.get("market_url")
+            or f"https://kalshi.com/markets/{series_from_ticker(ticker)}/{ticker}",
+            "swing": False,
+        })
+    feed.sort(key=lambda r: r.get("ts") or 0, reverse=True)
+    return feed[:limit]
+
+
+def group_resolutions_by_topic(resolutions: dict[str, Any],
+                               series_to_topic: dict[str, str],
+                               topics: Iterable[str]) -> dict[str, list[dict[str, Any]]]:
+    """Bucket settled markets by topic, newest first.
+
+    Attribution order, most trustworthy first:
+
+    1. ``topic`` recorded on the resolution when the market was tracked,
+    2. the series the market belongs to, looked up in the topic's series list,
+    3. the series part of the market ticker, derived with
+       :func:`series_from_ticker`.
+
+    A settled market that matches no tracked topic is *excluded* rather than
+    parked in a catch-all bucket: the brief asks how the events on this desk
+    resolved, and a row that cannot be attributed to a topic is a row a reader
+    cannot check against a topic page.
+    """
+    out: dict[str, list[dict[str, Any]]] = {t: [] for t in topics}
+    for ticker, rec in (resolutions or {}).items():
+        if not rec:
+            continue
+        result = (rec.get("result") or "").lower()
+        if result not in ("yes", "no"):
+            continue          # closed but not yet settled: still tracked, not resolved
+        series = rec.get("series_ticker") or series_from_ticker(ticker or rec.get("ticker", ""))
+        slug = rec.get("topic") or (series_to_topic or {}).get(series) or ""
+        if slug in out:
+            out[slug].append(rec)
+    for slug in out:
+        out[slug] = sorted(out[slug],
+                           key=lambda r: r.get("settlement_ts") or "",
+                           reverse=True)[:40]
+    return out

@@ -13,7 +13,7 @@ on:
   push:
     # main publishes the site; the working branch is included so the pipeline
     # can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2"]
+    branches: ["main", "arena/f5837994-trade2", "arena/93e9da14-trade2"]
 
 permissions:
   contents: write
@@ -44,6 +44,11 @@ jobs:
           node --check assets/desk.js
           node --test test/alerts-view.test.mjs
 
+      - name: Front-end gate (jsdom; no network)
+        run: |
+          if [ ! -d node_modules/jsdom ]; then npm install --no-audit --no-fund >/dev/null; fi
+          node tools/deskcheck.mjs --selftest
+
       - name: Collect
         env:
           MARKET_CAP: ${{ github.event.inputs.market_cap || '150' }}
@@ -60,6 +65,9 @@ jobs:
       - name: Rebuild static site data
         run: python3 -m site_build.build
 
+      - name: Re-check the generated pages
+        run: node tools/deskcheck.mjs
+
       - name: Link check
         run: python3 tools/linkcheck.py
 
@@ -67,6 +75,10 @@ jobs:
         run: |
           git config user.name  "kalshi-collector[bot]"
           git config user.email "kalshi-collector@users.noreply.github.com"
+          # `npm install` in the front-end gate can rewrite the lock file. Never
+          # let that dirty the tree: it would make `git pull --rebase` refuse and
+          # the whole collection would fail to publish (seen on collector.yml).
+          git checkout -- package-lock.json package.json 2>/dev/null || true
           git add -f data/ *.html categories/ assets/live.json
           if git diff --cached --quiet; then
             echo "no data change"

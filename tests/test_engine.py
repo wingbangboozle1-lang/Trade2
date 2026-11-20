@@ -472,5 +472,209 @@ class TestBatchOrderbooks(unittest.TestCase):
         self.assertEqual(books["KNOWN"], books["UNKNOWN"])
 
 
+class TestSeriesDerivation(unittest.TestCase):
+    """GET /markets publishes no series_ticker; the ticker prefix does (verified
+    live 2026-11-20 against the demo API and against the official response schema
+    at https://docs.kalshi.com/api-reference/market/get-markets)."""
+
+    def test_real_tickers_from_the_demo_api(self):
+        from collector.alerts import series_from_ticker
+        self.assertEqual(series_from_ticker("KXAAAGASW-26NOV16-4.2000"), "KXAAAGASW")
+        self.assertEqual(series_from_ticker("KXPRESNOMD-28-RW"), "KXPRESNOMD")
+        self.assertEqual(series_from_ticker(""), "")
+
+    def test_grouping_uses_recorded_topic_first(self):
+        from collector.alerts import group_resolutions_by_topic
+        rows = {
+            "KXAAAGASW-26NOV16-4.2000": {"ticker": "KXAAAGASW-26NOV16-4.2000",
+                                         "result": "no", "topic": "gas-prices",
+                                         "settlement_ts": "2026-11-16T14:32:51Z"},
+            # No topic on the row: attribution must fall back to the series map.
+            "KXBTC15M-26NOV201345-45": {"ticker": "KXBTC15M-26NOV201345-45",
+                                        "result": "yes", "series_ticker": "KXBTC15M",
+                                        "settlement_ts": "2026-11-20T13:59:00Z"},
+            # Out of scope entirely -> excluded, never parked in a catch-all.
+            "KXQUICKSETTLE-20NOV26H1320-2": {"ticker": "KXQUICKSETTLE-20NOV26H1320-2",
+                                             "result": "yes",
+                                             "settlement_ts": "2026-11-20T18:50:38Z"},
+            # Closed but not settled yet -> still not a resolution.
+            "KXGOLF-26-NO": {"ticker": "KXGOLF-26-NO", "result": "",
+                             "series_ticker": "KXGOLF", "settlement_ts": None},
+        }
+        out = group_resolutions_by_topic(rows, {"KXBTC15M": "crypto", "KXGOLF": "golf"},
+                                         ["gas-prices", "crypto", "golf"])
+        self.assertEqual([r["ticker"] for r in out["gas-prices"]],
+                         ["KXAAAGASW-26NOV16-4.2000"])
+        self.assertEqual([r["ticker"] for r in out["crypto"]],
+                         ["KXBTC15M-26NOV201345-45"])
+        self.assertEqual(out["golf"], [])
+
+    def test_derived_series_maps_when_nothing_else_is_known(self):
+        from collector.alerts import group_resolutions_by_topic
+        rows = {"KXGOLF-26-WINS": {"ticker": "KXGOLF-26-WINS", "result": "yes",
+                                   "settlement_ts": "2026-11-20T00:00:00Z"}}
+        out = group_resolutions_by_topic(rows, {"KXGOLF": "golf"}, ["golf"])
+        self.assertEqual(len(out["golf"]), 1)
+
+
+class TestModelFeed(unittest.TestCase):
+    """The second chat must be the model's shortlist, decided by one gate."""
+
+    def _obs(self, ticker, bid, ask, mid, topic="crypto"):
+        from collector.alerts import Observation
+        return Observation(ts=1.0, ticker=ticker, event_ticker=ticker.rsplit("-", 1)[0],
+                           topic=topic, title="T", yes_bid=bid, yes_ask=ask, mid=mid,
+                           last_price=mid, volume=100, open_interest=100,
+                           yes_bid_size=500, notional=1.0, series_ticker="S")
+
+    def _liq(self, spread, depth=500):
+        return {"spread": spread, "yes_bid_contracts": depth, "no_bid_contracts": depth,
+                "yes_bids": [{"contracts": depth}], "no_bids": [{"contracts": depth}]}
+
+    def test_swing_on_a_modelled_market_is_annotated_and_persisted(self):
+        from collector import alerts
+        # Shape taken from a real published signal in data/live.json
+        # (YES bid 0.006 / ask 0.073 on a 15-minute BTC market, net ROI 0.487).
+        obs = self._obs("S-1-A", 0.006, 0.073, 0.0395)
+        rows = [{"id": "x1", "ticker": "S-1-A", "topic": "crypto", "title": "T",
+                 "previous": 0.30, "current": 0.42, "abs_delta": 0.12,
+                 "direction": "up", "ts": 1.0}]
+        out, watch = alerts.attach_models(rows, [obs], {"S-1-A": self._liq(0.067)}, {})
+        self.assertTrue(out[0]["high_roi"], "a scored swing must be flagged high ROI")
+        self.assertIsNotNone(out[0]["model"])
+        self.assertGreater(out[0]["model_net_roi"], 0.0)
+        self.assertIn("S-1-A", watch)
+        self.assertEqual(watch["S-1-A"]["mid_at_flag"], 0.0395)
+        self.assertEqual(watch["S-1-A"]["series_ticker"], "S")
+
+    def test_unscored_swing_borrows_the_stored_verdict(self):
+        """A market that swung after the model flagged it, in a run where it is no
+        longer quotable, keeps the flag instead of vanishing from the chat."""
+        from collector import alerts
+        rows = [{"id": "x2", "ticker": "S-1-Z", "topic": "crypto", "title": "T",
+                 "previous": 0.30, "current": 0.42, "abs_delta": 0.12,
+                 "direction": "up", "ts": 9.0}]
+        watch = {"S-1-Z": {"flagged_at": 8.0, "ts": 8.0, "score": 0.35, "net_roi": 0.3,
+                           "side": "yes", "edge": 0.03, "gross_roi": 0.4, "fee": 0.01,
+                           "model_fair": 0.5, "executable_price": 0.45, "spread": 0.05,
+                           "reason": "earlier flag", "market_url": "u",
+                           "mid_at_flag": 0.30}}
+        out, _ = alerts.attach_models(rows, [], {}, watch)
+        self.assertTrue(out[0]["high_roi"])
+        self.assertTrue(out[0]["model"]["carried_from_watchlist"])
+        self.assertEqual(out[0]["model_net_roi"], 0.3)
+
+    def test_rows_are_copies_the_caller_can_rerun(self):
+        from collector import alerts
+        obs = self._obs("S-1-A", 0.006, 0.073, 0.0395)
+        rows = [{"id": "x1", "ticker": "S-1-A", "topic": "crypto", "previous": 0.3,
+                 "current": 0.42, "abs_delta": 0.12, "direction": "up", "ts": 1.0}]
+        first, _ = alerts.attach_models(rows, [obs], {"S-1-A": self._liq(0.067)}, {})
+        second, _ = alerts.attach_models(rows, [obs], {"S-1-A": self._liq(0.067)}, {})
+        self.assertNotIn("model", rows[0])
+        self.assertEqual(first[0]["model_score"], second[0]["model_score"])
+
+    def test_watchlist_expires_and_drops_settled_markets(self):
+        from collector import alerts
+        watch = {"FRESH": {"flagged_at": 99000.0, "score": 0.3},
+                 "STALE": {"flagged_at": 1.0, "score": 0.3},
+                 "SETTLED": {"flagged_at": 99000.0, "score": 0.3}}
+        out = alerts.prune_watchlist(watch, 100000.0, ttl=3600, settled={"SETTLED"})
+        self.assertEqual(set(out), {"FRESH"})
+
+    def test_feed_is_never_empty_when_the_model_has_a_live_flag(self):
+        """Regression: the model chat used to require a swing AND a live signal on
+        the same ticker in the same run, which in practice never happened, so the
+        second chat was permanently empty on the published site."""
+        from collector import alerts
+        watch = {"S-1-B": {"flagged_at": 50.0, "ts": 50.0, "score": 0.4,
+                           "net_roi": 0.31, "side": "yes", "topic": "crypto",
+                           "title": "Quiet flag", "event_ticker": "S-1",
+                           "series_ticker": "S", "mid_at_flag": 0.40,
+                           "reason": "edge after fee", "market_url": "u"}}
+        feed = alerts.model_feed([], watch, {"S-1-B": 0.44}, now=60.0)
+        self.assertEqual(len(feed), 1)
+        row = feed[0]
+        self.assertEqual(row["kind"], "signal")
+        self.assertEqual(row["abs_delta"], 0.04)
+        self.assertEqual(row["direction"], "up")
+        self.assertEqual(row["current"], 0.44)
+
+    def test_feed_reports_a_missing_price_as_missing(self):
+        from collector import alerts
+        watch = {"S-1-C": {"flagged_at": 50.0, "score": 0.4, "net_roi": 0.3,
+                           "mid_at_flag": 0.40, "topic": "crypto", "title": "T"}}
+        row = alerts.model_feed([], watch, {}, now=60.0)[0]
+        self.assertIsNone(row["current"])
+        self.assertIsNone(row["delta"])
+        self.assertEqual(row["abs_delta"], 0.0)
+
+    def test_gate_is_applied_to_both_row_kinds(self):
+        from collector import alerts
+        low = {"S-1-D": {"flagged_at": 50.0, "score": alerts.MODEL_SCORE_GATE / 10,
+                         "net_roi": 0.01, "mid_at_flag": 0.4}}
+        self.assertEqual(alerts.model_feed([], low, {"S-1-D": 0.42}, now=60.0), [])
+        swing = [{"id": "x", "ticker": "S-1-D", "ts": 60.0, "topic": "crypto",
+                  "title": "T", "abs_delta": 0.11, "direction": "up",
+                  "high_roi": False, "model_score": 0.01}]
+        self.assertEqual(alerts.model_feed(swing, low, now=60.0), [])
+
+
+class TestNewsLookup(unittest.TestCase):
+    """Candidate catalysts: three distinguishable outcomes, never a silent blank."""
+
+    RSS = (b'<?xml version="1.0"?><rss><channel>'
+           b'<item><title>Gas prices climb again &amp; more</title>'
+           b'<link>https://example.test/a</link><source>Example News</source>'
+           b'<pubDate>Fri, 20 Nov 2026 13:30:00 GMT</pubDate></item>'
+           b'<item><title>Old story</title><link>https://example.test/b</link>'
+           b'<source>Example News</source>'
+           b'<pubDate>Mon, 09 Nov 2026 13:30:00 GMT</pubDate></item>'
+           b'</channel></rss>')
+
+    def _when(self):
+        from datetime import datetime, timezone
+        return datetime(2026, 11, 20, 14, 0, tzinfo=timezone.utc)
+
+    def test_window_filters_and_strip_html_work(self):
+        from collector import news
+        out = news.lookup("Will average **gas prices** be above $4.2000?", self._when(),
+                          fetcher=lambda url, timeout: self.RSS)
+        self.assertEqual(out["status"], "ok")
+        self.assertEqual(len(out["items"]), 1, "the out-of-window item must be dropped")
+        self.assertEqual(out["items"][0]["title"], "Gas prices climb again & more")
+        self.assertEqual(out["items"][0]["status"], "verified-fetch")
+        self.assertEqual(out["query"], "average gas prices above")
+        self.assertNotIn("will", out["query"].lower().split())
+
+    def test_empty_feed_is_reported_as_no_headlines_found(self):
+        from collector import news
+        out = news.lookup("gas prices", self._when(),
+                          fetcher=lambda url, timeout: b'<?xml version="1.0"?><rss><channel/></rss>')
+        self.assertEqual(out["status"], "no-headlines-found")
+        self.assertEqual(out["items"], [])
+
+    def test_network_failure_is_never_reported_as_nothing_found(self):
+        from collector import news
+
+        def boom(url, timeout):
+            raise OSError("blocked by the sandbox")
+
+        out = news.lookup("gas prices", self._when(), fetcher=boom)
+        self.assertEqual(out["status"], "unavailable")
+        self.assertIn("blocked", out["error"])
+
+    def test_query_never_invents_an_entity(self):
+        from collector import news
+        self.assertEqual(news.query_for(""), "")            # nothing to search
+        self.assertEqual(news.query_for("", "KXAAAGASW-26NOV16"), "KXAAAGASW-26NOV16")
+        self.assertEqual(news.query_for("KXAAAGASW-26NOV16-4.2000"),
+                         "KXAAAGASW-26NOV16-4.2000",
+                         "a ticker-shaped title is searched verbatim")
+        q = news.query_for("Will the **Fed** cut rates in December?")
+        self.assertIn("fed", q.lower())
+        self.assertNotIn("will", q.lower().split())
+
+
 if __name__ == "__main__":
     unittest.main()
