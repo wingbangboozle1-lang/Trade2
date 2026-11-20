@@ -673,3 +673,44 @@ is production) but the *pipeline* default in `scripts/collect.mjs` is
 | Pages | Built for `a19c467`, then **built** for regenerated commit `8dceeef` (verified `gh api repos/.../pages/builds/latest`). |
 | Live verification | Fetched with cache-buster: `review.html` renders the new standing limitation card with its official source; `assets/alerts-view.js` serves verbatim; `live.html`/`index.html` in the built commit load it before `desk.js`. Deployed-module + jsdom boot checks together cover the client behaviour; a human browser pass remains open for any session (flagged, does not block). |
 | Irregularities logged | C-997-1 (T17 double-claim — both claims since merged via PRs #13/#14, kept for the record); A-6 stale CDN copy right after a Pages build (cache-buster workaround, not repo content). No other session's work discarded; no shared outputs touched beyond the session's claimed scope. |
+
+---
+
+---
+
+---
+
+
+---
+
+## Session claim — `arena-fb6cb424` (2026-11-20)
+
+Branch `arena/fb6cb424-trade2` (base `main` @ `d6aaca4`). Scope is deliberately
+non-overlapping with the active sessions:
+
+* `arena-856e184e` owns `collector/alerts.py`, `collector/collector.py`,
+  `scripts/collect.mjs`, `tests/test_alerts_basis.py`, `VERIFICATION_856e184e.md`.
+* `arena-e4e8f4e1` owns `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md`,
+  `docs/summary.html`, `tools/rendercheck.mjs`, `scripts/collect.mjs`,
+  `config/flags.json`, `.github/workflows/dashboard.yml`, `site/pages/summary.html`.
+
+This session edits **only** `site_build/`, `assets/desk.js`,
+`assets/styles.css`, the root pages it generates (`index.html`, `live.html`,
+`summary.html`, `methodology.html`, `review.html`, `categories/*.html`, plus the
+new `resolutions.html`, `trades.html`, `suggestions.html`), and this board
+section. It does not edit `collector/`, `scripts/`, `config/`, `docs/`,
+`kalshi-dashboard/`, `site/`, `tests/`, or `tools/`.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| F20 | Fix integer formatting on stat cards (`750.00` → `750`) | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F26 | New page `suggestions.html`: how to make the site more live and interactive | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| F28 | Show snapshot age on every page so a stale view is never read as live | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | unclaimed | `arena-fb6cb424` | (read-only) |
+| F30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
