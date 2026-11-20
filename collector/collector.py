@@ -101,6 +101,31 @@ def resolution_topic(event_ticker: str | None, registry: dict[str, dict[str, Any
     return found
 
 
+def series_row_for_event(event_ticker: str | None,
+                         registry: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """The ``GET /series`` row that owns an event ticker, or None.
+
+    Same head scan as :func:`resolution_topic` and for the same reason: a market
+    object from ``GET /markets`` has no ``series_ticker`` field
+    (https://docs.kalshi.com/api-reference/market/get-markets), so the only way
+    back to the series — and therefore to the series' own ``fee_multiplier`` /
+    ``fee_type`` (https://docs.kalshi.com/api-reference/series/get-series) — is
+    the ticker prefix. Returns the whole registry row so callers can read any
+    documented series field, not just the topic.
+    """
+    if not event_ticker or not registry:
+        return None
+    parts = event_ticker.split("-")
+    for i in range(1, len(parts) + 1):
+        head = "-".join(parts[:i])
+        row = registry.get(head)
+        if row is None and head.startswith("KX"):
+            row = registry.get(head[2:])
+        if row is not None:
+            return row
+    return None
+
+
 def migrate_resolutions(store: dict[str, Any],
                         registry: dict[str, dict[str, Any]]) -> int:
     """Re-tag every stored resolution with its topic and drop out-of-scope ones.
@@ -445,7 +470,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 continue
             book = books.get(ticker)
             book_payload = {"orderbook_fp": book} if book is not None else None
-            obs = alerts.observe(market, book_payload, topic.slug, ts=now)
+            # The series row carries this series' own official fee parameters,
+            # which the market object does not (see series_row_for_event).
+            obs = alerts.observe(market, book_payload, topic.slug, ts=now,
+                                 series=series_row_for_event(
+                                     market.get("event_ticker") or ticker,
+                                     series_registry))
             if book:
                 liquidity[ticker] = alerts.analyse_liquidity(book_payload)
                 gap = alerts.book_record_divergence(market, book_payload)

@@ -186,7 +186,10 @@
         yes_bid: bid, yes_ask: ask, last_price: last, volume_fp: vol,
         open_interest_fp: fnum(raw.open_interest_fp),
         notional_usd: vol != null && px != null ? Math.round(vol * px * 100) / 100 : null,
-        expected_expiration: raw.expected_expiration_ts,
+        // Official field name on the market object (GET /markets/{ticker});
+        // matches collector/runner.py's mapping so the live and snapshot rows
+        // show the same thing. Verified against live demo responses 2026-11-20.
+        expected_expiration: raw.expected_expiration_time,
         fee_type: raw.fee_type, price_level_structure: raw.price_level_structure,
         source_url: "https://external-api.demo.kalshi.co/trade-api/v2/markets/" + raw.ticker,
         docs_url: "https://docs.kalshi.com/api-reference/market/get-markets",

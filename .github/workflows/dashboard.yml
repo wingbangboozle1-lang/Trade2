@@ -20,8 +20,14 @@ on:
 permissions:
   contents: write
 
+# One publisher at a time, but the scheduled collection gets its own group:
+# GitHub cancels a *pending* run as soon as a newer run enters the same group,
+# and `cancel-in-progress: false` protects only the run already executing — so a
+# merge-triggered push used to replace the queued */30 snapshot instead of
+# queueing behind it. Keying by event keeps that from starving the refresh loop.
+# Source: https://github.com/github/docs/blob/main/data/reusables/actions/actions-group-concurrency.md
 concurrency:
-  group: kalshi-dashboard
+  group: kalshi-dashboard-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -117,10 +123,37 @@ jobs:
             echo "No change to publish."
             exit 0
           fi
-          git commit -m "chore(dashboard): publish snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git commit -m "chore(dashboard): publish snapshot $(date -u +%Y-%m-%dT%H:%MZ) [skip ci]"
+          # A prior step (npm install) can leave drift outside kalshi-dashboard/,
+          # and `git pull --rebase` refuses to run with a dirty work tree.
+          git checkout -- . || true
+          # Conflict-tolerant for the same reason as the root collector: every file
+          # published here is regenerated from the demo API by each run, so a rebase
+          # conflict means a concurrent run published its own equally current
+          # snapshot first (request R-DC-4). Anything outside kalshi-dashboard/, and
+          # any rejected push, still fails the step.
           for attempt in 1 2 3; do
-            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
-            sleep 5
+            if git -c rebase.autoStash=true pull --rebase -q origin main 2>/tmp/pull.err; then
+              if git push -q origin HEAD:main; then
+                echo "published on attempt $attempt"
+                exit 0
+              fi
+              echo "::warning::push rejected on attempt $attempt (race with another collector); retrying"
+            else
+              cat /tmp/pull.err || true
+              git rebase --abort 2>/dev/null || true
+              outside=$(git diff --name-only HEAD origin/main 2>/dev/null | grep -v '^kalshi-dashboard/' | head -10 || true)
+              if [ -z "$outside" ]; then
+                echo "::notice::snapshot superseded by a concurrent run (attempt $attempt); conflicting paths are all regenerated data:"
+                git diff --name-only HEAD origin/main 2>/dev/null | head -20 || true
+                git reset --hard origin/main >/dev/null 2>&1 || true
+                exit 0
+              fi
+              echo "::error::rebase conflict touches files outside kalshi-dashboard — not auto-resolving:"
+              echo "$outside"
+              exit 1
+            fi
+            sleep $((attempt * 5))
           done
-          echo "::error::push to main failed after 3 attempts"
+          echo "::error::could not publish to main after 3 attempts"
           exit 1
