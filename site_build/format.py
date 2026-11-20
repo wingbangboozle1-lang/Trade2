@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import html
 import urllib.parse
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
@@ -65,16 +66,23 @@ def num(value: Any) -> str:
 
 
 def count(value: Any) -> str:
-    """A whole-number count: 750, not 750.00."""
+    """Format counts exactly without rounding away unexpected fractions.
+
+    Integral values render with thousands separators and no decimal tail.
+    Non-integral values retain the existing two-decimal formatting. Contract
+    quantities, prices, and money continue to use their separate formatters.
+    """
     if value is None or value == "":
         return ""
     try:
-        n = float(value)
-    except (TypeError, ValueError):
+        number = Decimal(str(value))
+    except (InvalidOperation, TypeError, ValueError):
         return esc(value)
-    if abs(n - round(n)) < 1e-9:
-        return f"{int(round(n)):,}"
-    return f"{n:,.2f}"
+    if not number.is_finite():
+        return esc(value)
+    if number == number.to_integral_value():
+        return f"{int(number):,}"
+    return num(value)
 
 
 def pct(value: Any) -> str:

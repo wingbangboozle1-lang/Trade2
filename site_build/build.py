@@ -441,6 +441,20 @@ def build_topic(slug: str, live: dict[str, Any],
             f'href="{API}/series/{html.escape(s.get("ticker",""))}">API ↗</a></td>'
             "</tr>")
 
+    if slug == "culture":
+        culture_url = f"{API}/series?category=Culture"
+        entertainment_url = f"{API}/series?category=Entertainment"
+        discovery_sources = (
+            f'<a class="source-link" href="{html.escape(culture_url)}" '
+            f'target="_blank" rel="noreferrer">Culture series API ↗</a> · '
+            f'<a class="source-link" href="{html.escape(entertainment_url)}" '
+            f'target="_blank" rel="noreferrer">Entertainment series API ↗</a>')
+    else:
+        discovery_url = topic.get("source_url") or f"{API}/series"
+        discovery_sources = (
+            f'<a class="source-link" href="{html.escape(discovery_url)}" '
+            'target="_blank" rel="noreferrer">Series discovery API ↗</a>')
+
     return f"""{topbar(label, generated, "", live.get("generated_at_ts"))}
         <section class="category-hero">
           <div class="eyebrow">TOPIC MONITOR · KALSHI DEMO</div>
@@ -462,8 +476,7 @@ def build_topic(slug: str, live: dict[str, Any],
             <div><span class="section-icon">⌕</span><div>
               <h2>{html.escape(label)} markets</h2>
               <p>Ranked by open-interest value</p></div></div>
-            <a class="source-link" href="{html.escape(topic.get('source_url') or API + '/series')}"
-               target="_blank" rel="noreferrer">Series discovery API ↗</a>
+            {discovery_sources}
           </div>
           <div class="table-wrap">
             <table>
