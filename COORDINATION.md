@@ -377,3 +377,34 @@ after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
 rebase+push retry that surfaces pull/push errors as workflow annotations.
 Verified: dispatch run `44769581312` on `main` → **success**, data commit
 `0beb9b2` landed, Pages rebuilt for it (`status: built`).
+
+---
+
+# Board D — session `arena-1011a94f` (branch `arena/1011a94f-trade2`, base `1bc32b7`)
+
+Started 2026-11-20 ~19:05Z. Read boards A/B/C above before starting.
+
+## Session registry
+
+| Session ID | Branch | Role | Status |
+| - | - | - | - |
+| `arena-1011a94f` | `arena/1011a94f-trade2` | Audit + repair of the published root site: alert integrity (≥ $0.10 swing rule), in-topic resolution tracking, model shortlist consistency, per-topic event ranking, formatting, docs, PR + merge | active |
+
+## Claims (non-overlapping with the boards above)
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T20 | Audit of published data line by line against the live demo API; log defects | in progress | `arena-1011a94f` | `VERIFICATION.md` (append-only section) |
+| T21 | Alert integrity: stop publishing single-print candle artifacts as ≥ $0.10 swings | in progress | `arena-1011a94f` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts.py` |
+| T22 | In-topic resolution tracking (settled markets currently never mapped to a topic) | in progress | `arena-1011a94f` | `collector/collector.py`, `tests/test_resolutions.py` |
+| T23 | Model shortlist: one published threshold for both builder and browser | in progress | `arena-1011a94f` | `assets/desk.js`, `site_build/build.py` |
+| T24 | Overview ranked per topic so all five topics are visible | in progress | `arena-1011a94f` | `site_build/build.py` |
+| T25 | Docs + flagged items + PR/merge/Pages record | in progress | `arena-1011a94f` | `EXECUTIVE_SUMMARY.md`, `README.md`, `COORDINATION.md`, `site_build/flagpage.py` |
+
+Not touched by this session: `docs/**` (session `c0205283`), `kalshi-dashboard/**` (session `5788e385`), `scripts/**`, `config/**`, `site/**`, `trading/**`, `server/**`, `.github/workflows/**`.
+
+Environment note (unchanged): this sandbox's egress allowlist still blocks `*.kalshi.co`
+(verified with `curl`: `SSL_ERROR_SYSCALL`, HTTP 000). Live reads for this audit were made
+through the platform fetch channel against the same official demo host; every read is logged
+with its exact URL in `VERIFICATION.md` (section "Session D"). All live collection and
+publishing continues to run on GitHub Actions, which has unrestricted egress.
