@@ -1,5 +1,5 @@
 {
- "bankroll": 9577.95,
+ "bankroll": 9374.18,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -14,8 +14,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795189980.8287103,
    "entry_fee": 13.44,
-   "current_price": 0.025,
-   "unrealized": -75.0,
+   "current_price": 0.015,
+   "unrealized": -125.0,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -38,8 +38,8 @@
    "entry_price": 0.06,
    "entry_ts": 1795202282.6330771,
    "entry_fee": 12.88,
-   "current_price": 0.06,
-   "unrealized": 0.0,
+   "current_price": 0.015,
+   "unrealized": -146.7986,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -49,6 +49,30 @@
    "reason": "net ROI 38% on a 0.05 spread",
    "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64999.99",
    "bankroll_at_entry": 9577.9486
+  },
+  {
+   "position_id": "pos-0ee08a0f2b",
+   "ticker": "KXPGAR2LEAD-THRC26-MGRE",
+   "event_ticker": "KXPGAR2LEAD-THRC26",
+   "topic": "golf",
+   "title": "Max Greyserman",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2128.43,
+   "entry_price": 0.09,
+   "entry_ts": 1795203145.498189,
+   "entry_fee": 12.21,
+   "current_price": 0.09,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 14% on a 0.04 spread",
+   "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-MGRE",
+   "bankroll_at_entry": 9374.1813
   }
  ],
  "trades": [
@@ -77,6 +101,19 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 38% on a 0.05 spread"
+  },
+  {
+   "trade_id": "tr-ed9016305f",
+   "ts": 1795203145.498189,
+   "ticker": "KXPGAR2LEAD-THRC26-MGRE",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2128.43,
+   "price": 0.09,
+   "fee": 12.21,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 14% on a 0.04 spread"
   }
  ],
  "equity_curve": [
@@ -223,6 +260,12 @@
    "equity": 9898.68,
    "realized": 0,
    "open": 395.73
+  },
+  {
+   "ts": 1795203035.2114937,
+   "equity": 9689.67,
+   "realized": 0,
+   "open": 587.29
   }
  ],
  "started_at": 1795182592.2117689
