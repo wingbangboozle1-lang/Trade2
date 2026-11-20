@@ -107,7 +107,9 @@ Root causes found line-by-line:
 3. The site rendered rows without labelling their basis, and showed no snapshot
    age.
 
-Fixes (each with regression tests in `tests/test_alerts.py`, 13 cases):
+Fixes (regression-tested — see `tests/test_alerts.py` for the store fold,
+`tests/test_alerts_basis.py` and `test/alerts-view.test.mjs` for the merged
+quote-mid/view rules):
 
 * **Depth-aware price basis** (`price_basis`): mid counts only when both sides
   quote and spread ≤ $0.20; otherwise the last traded price; a single-sided
@@ -127,6 +129,22 @@ Fixes (each with regression tests in `tests/test_alerts.py`, 13 cases):
 * **Flagged for Review**: `review.html` gains (a) a generated irregularity per
   wide-spread alert still in the snapshot, linking its order book, (b) standing
   items for the historical behaviour (fixed) and snapshot freshness.
+
+**Final state after the parallel-work merge (same day).** While this session
+worked, `arena-856e184e` and a view-layer session shipped their own R-D-01
+fixes to `main`: a stricter quote-mid rule (`ALERT_MAX_SPREAD = 0.10`,
+reference = candle *quote* closes so both sides are quote mids, legacy rows
+purged by `alert_record_valid`) and a render-layer fold
+(`assets/alerts-view.js`, mirrored in `site_build/extras.py`). Per the
+coordination rules their tested implementation was kept where the two overlapped
+(fully replacing the `price_basis`/last-trade fallback described above — a wide
+or one-sided book now produces **no** alert at all), and this session's
+**store-level fold** (`alert_window_key` + `dedupe_alerts`, keyed by
+market/reference-window/direction and by identical move within 24 h, wired into
+the collector merge after their purge) was re-applied on top, closing the one
+gap they left: the store itself still accumulated one row per run. Chart
+annotations (`#chartNotes`), the row-source table, and this document are the
+other pieces this session contributed to the merged tree.
 
 ## 6. Other irregularities found this session (all flagged, none silently fixed)
 
@@ -151,19 +169,21 @@ Fixes (each with regression tests in `tests/test_alerts.py`, 13 cases):
 * **Rows with `UNVERIFIED` badges** — markets whose official quote is the full
   $0.00/$1.00 spread; shown blank per the brief's rule.
 
-## 8. Automated checks re-run on this branch (all green)
+## 8. Automated checks re-run on the merged tree (all green)
 
 | Check | Result |
 | - | - |
-| `python3 -m unittest discover -s tests` | **55 passed** (1 skipped: Python `cryptography` not installed in sandbox; Node auth tests cover signing) |
-| `npm test` | **19 passed** |
+| `python3 -m unittest discover -s tests` | **95 passed** (1 skipped: Python `cryptography` not installed in sandbox; Node auth tests cover signing) |
+| `npm test` | **29 passed** |
 | `python3 -m collector.test_runner` | **PASS** (fixture pipeline, incl. 1 resolution) |
 | `python3 -m trading.test_engine` | **PASS** (fee table, positions, settlement, analytics) |
+| `node --test test/alerts-view.test.mjs` | pass (view-layer dedupe/age/spread rules) |
+| `node test/root_render.mjs` | **PASS** |
 | `node test/site_smoke.mjs docs/data` | **ALL PASS** |
-| `node tools/rendercheck.mjs` (jsdom) | **11/11 pages ok** (now discovers `suggestions.html` automatically) |
-| `python3 tools/linkcheck.py` | **46 pages, 538 internal links, 0 errors** |
+| `node tools/rendercheck.mjs` (jsdom) | **13/13 pages ok** (discovers pages automatically) |
+| `python3 tools/linkcheck.py` | **48 pages, 641 internal links, 0 errors** |
 | `node --check assets/desk.js`, `docs/assets/app.js` | ok |
-| `python3 tools/dedupe_alerts.py` + `python3 -m site_build.build` | idempotent; 32 → 9 alert rows; all 12 outputs rewritten |
+| `python3 tools/dedupe_alerts.py` + `python3 -m site_build.build` | idempotent (the published alert buffer was folded 32 → 9 rows at the fold step; the collector fold now keeps it that way) |
 
 ## 9. Manual-review links (quick access)
 

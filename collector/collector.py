@@ -38,9 +38,7 @@ HISTORY_PATH = os.path.join(DATA_DIR, "history.json")
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
 VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 
-ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
-                         # v3: depth-aware price basis + one alert per
-                         # market/reference-window/direction (R-D-01)
+ALERTS_VERSION = 2       # bump to discard alerts written by an older rule set
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
@@ -364,7 +362,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                            if a.get("id") not in {n["id"] for n in new_alerts}]
     # Drop stored alerts that fail the current quote rule (written before it).
     merged = [a for a in merged if alerts.alert_record_valid(a)]
-    merged = merged[:MAX_ALERTS]
+    # Fold repeats of the same market/reference-window/direction into one row
+    # (largest move wins) instead of accumulating one id per run (R-D-01).
+    merged = alerts.dedupe_alerts(merged)[:MAX_ALERTS]
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []

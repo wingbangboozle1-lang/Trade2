@@ -424,7 +424,9 @@
     var el = document.getElementById("chartNotes");
     if (!el) return;
     var t = state.market;
-    var rows = dedupeAlerts((state.snapshot && state.snapshot.alerts) || [])
+    var V = window.AlertsView;
+    var raw = (state.snapshot && state.snapshot.alerts) || [];
+    var rows = (V ? V.dedupeAlerts(raw) : raw)
       .filter(function (a) { return a.ticker === t; });
     if (!rows.length) {
       el.innerHTML = '<span class="muted">No ≥ $0.10 swing recorded for this ' +
