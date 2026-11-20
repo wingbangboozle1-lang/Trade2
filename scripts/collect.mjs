@@ -18,14 +18,17 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { getPublic, PRODUCTION_BASE, KalshiHttpError, configureBreaker, breakerTripped, breakerReason } from './kalshi.mjs';
+import { getPublic, PRODUCTION_BASE, DEMO_BASE, KalshiHttpError, configureBreaker, breakerTripped, breakerReason } from './kalshi.mjs';
 import { dollarsToCents } from './fees.mjs';
 import { openPositions, updatePositions, summarize, STRATEGIES } from './strategies.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const STATE_DIR = args.state || './state';
 const OUT_DIR = args.out || './_site/data';
-const BASE = args.base || process.env.KALSHI_BASE || PRODUCTION_BASE;
+// Requirement: the Kalshi DEMO endpoint. Production is only used if it is
+// explicitly requested with --base or KALSHI_BASE (then the label says so).
+export const DEFAULT_BASE = args.base || process.env.KALSHI_BASE || DEMO_BASE;
+const BASE = DEFAULT_BASE;
 const CONFIG_PATH = args.config || path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'config', 'topics.json');
 
 const log = (m) => console.error(m);
@@ -236,7 +239,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
     run: runInfo,
     source: {
       base_url: base,
-      environment: base === PRODUCTION_BASE ? 'Kalshi production — public read-only market data' : `Custom base URL: ${base}`,
+      environment: base === DEMO_BASE ? 'Kalshi demo — public read-only market data (external-api.demo.kalshi.co)' : base === PRODUCTION_BASE ? 'Kalshi production — public read-only market data' : `Custom base URL: ${base}`,
       endpoints: [
         `${base}/exchange/status`,
         `${base}/series`,

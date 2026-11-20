@@ -7,7 +7,8 @@ import { mkdtemp, readFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { main, resolveTopicSeries } from '../collect.mjs';
+import { main, resolveTopicSeries, DEFAULT_BASE } from '../collect.mjs';
+import { DEMO_BASE } from '../kalshi.mjs';
 import { takerFeeCents } from '../fees.mjs';
 import { readFileSync } from 'node:fs';
 
@@ -153,4 +154,13 @@ test('capSeries keeps curated series first, then highest-volume keyword matches,
   const out = capSeries(m, 2);
   assert.deepEqual([...out.keys()], ['CUR1', 'KW_HIGH']);
   assert.equal(capSeries(m, 10), m, 'no change when under the cap');
+});
+
+// Requirement (owner brief): the Kalshi DEMO endpoint. The default must never be production.
+test('collector default base is the Kalshi demo endpoint (not production)', () => {
+  assert.equal(DEMO_BASE, 'https://external-api.demo.kalshi.co/trade-api/v2');
+  if (!process.env.KALSHI_BASE && !process.argv.includes('--base')) {
+    assert.equal(DEFAULT_BASE, DEMO_BASE);
+  }
+  assert.notEqual(DEFAULT_BASE, 'https://external-api.kalshi.com/trade-api/v2');
 });
