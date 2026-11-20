@@ -334,7 +334,14 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
           </div>
         </section>""")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Resolved", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">SETTLEMENT TRACKING · KALSHI DEMO</div>
           <h1>Resolved events</h1>
@@ -495,7 +502,14 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         category_rows.append('<tr><td colspan="4" class="empty-state">No '
                              "settled trade yet.</td></tr>")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Trades and strategies", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">SIMULATED EXECUTION · PAPER LEDGER</div>
           <h1>Trades and strategies</h1>
@@ -884,7 +898,14 @@ def build_suggestions(live: dict[str, Any]) -> str:
           <div class="sug-grid">{''.join(cards)}</div>
         </section>""")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Suggestions", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">ROADMAP · MAKING THE DESK LIVE</div>
           <h1>Suggestions</h1>
