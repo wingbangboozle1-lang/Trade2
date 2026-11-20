@@ -38,6 +38,7 @@ HISTORY_PATH = os.path.join(DATA_DIR, "history.json")
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
 VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 
+ALERTS_VERSION = 2       # bump to discard alerts written by an older rule set
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
@@ -183,7 +184,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     for row in previous_live.get("observations", []):
         if row.get("ticker"):
             previous_obs[row["ticker"]] = row
-    alerts_store = load_json(os.path.join(DATA_DIR, "alerts.json"), {"alerts": []})
+    alerts_store = load_json(os.path.join(DATA_DIR, "alerts.json"),
+                             {"alerts": [], "version": 0})
+    if alerts_store.get("version") != ALERTS_VERSION:
+        # The rule that produced the stored alerts changed (a phantom 0.50 mid
+        # from unquoted markets). Keeping them would publish known-bad rows.
+        alerts_store = {"alerts": [], "version": ALERTS_VERSION}
     history = load_json(HISTORY_PATH, {"series": {}})
     resolutions = load_json(RESOLUTIONS_PATH, {"resolutions": {}, "meta": {}})
 
@@ -498,7 +504,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     }
 
     save_json(LIVE_PATH, payload)
-    save_json(os.path.join(DATA_DIR, "alerts.json"), {"alerts": merged})
+    save_json(os.path.join(DATA_DIR, "alerts.json"),
+              {"version": ALERTS_VERSION, "alerts": merged})
     save_json(HISTORY_PATH, history)
     save_json(RESOLUTIONS_PATH, resolutions)
     save_json(os.path.join(DATA_DIR, "series_cache.json"), series_cache)
