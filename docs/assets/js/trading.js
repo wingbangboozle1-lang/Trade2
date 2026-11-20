@@ -113,12 +113,20 @@ function renderDerived() {
   const list = p.derived_strategies || [];
   const el = document.getElementById('derived');
   if (!list.length) {
-    el.innerHTML = '<div class="loading">No combination has cleared the bar yet (≥ 3 closed trades and positive realized P&amp;L). The engine keeps trading every collection cycle, so this fills in as the demo market resolves.</div>';
+    el.innerHTML = '<div class="loading">No strategy × topic × side combination has enough closed trades yet. '
+      + 'The engine keeps trading every collection cycle, so this fills in as the demo market resolves.</div>';
     return;
   }
-  el.innerHTML = list.map((d) => `<div class="note ok">
-    <strong>${esc(d.title)}</strong><br>${esc(d.description)}
-  </div>`).join('');
+  const qualified = list.filter((d) => d.qualified);
+  const watching = list.filter((d) => !d.qualified);
+  const block = (title, items, cls) => (items.length ? `<h4 style="margin:14px 0 6px">${esc(title)}</h4>`
+    + items.map((d) => `<div class="note ${cls}">
+      <strong>${esc(d.title)}</strong> — ${d.trades} closed trades, ${fmt.num(d.win_rate, 1)}% win rate,
+      ${fmt.usd(d.realized_pnl, 2)} realized on ${fmt.usd(d.deployed, 2)} deployed
+      (${fmt.pct(d.roi_pct)} ROI)<br>${esc(d.description)}
+    </div>`).join('') : '');
+  el.innerHTML = block('Qualified (≥ 3 closed trades and positive realized P&L)', qualified, 'ok')
+    + block('Watching (not yet qualified — shown so nothing is hidden)', watching, 'warn');
 }
 
 function renderOpen() {

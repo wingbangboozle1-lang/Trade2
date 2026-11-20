@@ -29,6 +29,9 @@
 
   <div class="toolbar" style="margin-top:16px">
     <a class="badge live" href="docs/dashboard.html">Open the live dashboard →</a>
+    <a class="badge" href="live/index.html">Browser-live view →</a>
+    <a class="badge" href="docs/methodology.html">Methodology →</a>
+    <a class="badge" href="docs/flagged.html">Flagged for review →</a>
     <span data-role="status"></span>
   </div>
 
@@ -59,6 +62,29 @@
         <a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">Get Market Orderbook</a>
         <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a>
         <a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Two ways to read the same demo exchange</h2>
+    <p>
+      This repository publishes <strong>two independent implementations</strong>, both built in parallel
+      sessions against the same official Kalshi demo API. Neither replaces the other.
+    </p>
+    <div class="grid cols-2" style="margin-top:10px">
+      <div class="note ok">
+        <strong>This site — snapshot driven.</strong>
+        A GitHub Actions workflow collects from the public demo REST API every 10 minutes and commits
+        the result; the pages here render that snapshot. Alerts are detected server-side from the Kalshi
+        trade feed, so a swing is caught even when no browser is open. It needs no CORS permission and
+        every figure survives a reload.
+      </div>
+      <div class="note">
+        <strong><a href="live/index.html">The browser-live site →</a></strong>
+        Built by a parallel session. It polls the demo REST API directly from your browser, keeps its
+        paper-trading ledger in browser storage, and shows the raw per-market depth ladder. It is the
+        more immediate view; it needs the browser to be permitted to call Kalshi directly.
       </div>
     </div>
   </div>

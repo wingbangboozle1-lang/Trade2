@@ -25,7 +25,7 @@ const ALLOWED_HOSTS = [
   // Official Kalshi API hosts and the official SDK package page.
   'external-api.demo.kalshi.co', 'demo-api.kalshi.co', 'external-api-ws.demo.kalshi.co',
   'demo-api.kalshi.co', 'external-api.kalshi.com', 'api.elections.kalshi.com',
-  'www.npmjs.com',
+  'demo.kalshi.co', 'kalshi.co', 'www.kalshi.co', 'www.npmjs.com',
 ];
 
 const problems = [];

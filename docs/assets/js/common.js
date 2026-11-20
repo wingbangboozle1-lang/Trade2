@@ -147,6 +147,14 @@ export function renderStatus(data) {
     parts.push(`<span class="badge ${m.exchange_status.trading_active ? 'live' : 'danger'}">demo trading ${m.exchange_status.trading_active ? 'active' : 'paused'}</span>`);
   }
   if (health?.api_errors) parts.push(`<span class="badge ${health.api_errors > 5 ? 'warn' : ''}">${health.api_errors} API errors</span>`);
+  if (health?.cors) {
+    const ok = health.cors.browser_direct_allowed;
+    const cls = health.cors.host_reachable === false ? 'warn' : (ok ? 'live' : 'warn');
+    const label = health.cors.host_reachable === false
+      ? 'browser CORS unverified'
+      : (ok ? 'browser CORS allowed' : 'browser CORS blocked');
+    parts.push(`<span class="badge ${cls}" title="${esc(health.cors.verdict || '')}">${esc(label)}</span>`);
+  }
   el.innerHTML = parts.join(' ');
 }
 

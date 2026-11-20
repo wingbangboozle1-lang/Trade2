@@ -54,8 +54,8 @@
           <tr>
             <td>F4</td>
             <td><strong>Browser → Kalshi direct calls are not confirmed to be permitted</strong></td>
-            <td>No official Kalshi statement about CORS on the public REST endpoints was found. The dashboard therefore reads the committed snapshot by default; the “Try live browser API” button tests the browser's own policy and reports the result rather than assuming it works.</td>
-            <td>The live view is a graceful upgrade, not a dependency. Every feature works from the published snapshot.</td>
+            <td>No official Kalshi statement about CORS on the public REST endpoints was found. The collector therefore <em>measures</em> it on every run: it sends the same preflight a browser would send (OPTIONS + Origin + Access-Control-Request-Method) against the live demo host and publishes the response headers in <code>collector-health.json</code>. The measured verdict is shown as a badge on every page.</td>
+            <td>The live view is a graceful upgrade, not a dependency. Every feature works from the published snapshot, and the “Try live browser API” button reports the browser's own result rather than assuming it works.</td>
             <td><a href="https://docs.kalshi.com/getting_started/quick_start_market_data" target="_blank" rel="noopener">Quick start: market data</a></td>
           </tr>
           <tr>

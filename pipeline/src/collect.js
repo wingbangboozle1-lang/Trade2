@@ -31,6 +31,7 @@ import { scoreMarket } from './roi.js';
 import { detectSwings, detectTradeSwings, mergeAlerts, SWING_LOOKBACK_MINUTES } from './alerts.js';
 import { backtestMarket, stepMarket, buildPortfolio, STRATEGIES, strategyConfigHash } from './paper.js';
 import { createLiveClient, readAccountPortfolio } from './live-trade.js';
+import { probeCors } from './cors.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
@@ -124,6 +125,12 @@ async function main() {
 
   const exchangeStatus = await client.getExchangeStatus().catch((error) => {
     errors.push({ where: 'exchange/status', error: error.message });
+    return null;
+  });
+
+  // Measure (do not assume) whether a browser may call the demo API directly.
+  const cors = await probeCors(REST_BASE).catch((error) => {
+    errors.push({ where: 'cors/probe', error: error.message });
     return null;
   });
 
@@ -571,6 +578,7 @@ async function main() {
     runs: (state.runs || 0) + 1,
     rest_base: REST_BASE,
     ws_base: WS_BASE,
+    cors,
     notes: [
       'All market data is read from the public Kalshi demo REST API (no credentials).',
       'Orderbook and candle counts reflect the per-run request budget in collector/src/config.js.',
