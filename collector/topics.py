@@ -112,9 +112,10 @@ TOPICS: List[Topic] = [
         categories_strict=("Golf",),
         categories_broad=("Sports",),
         tags_any=("Golf",),
-        title_regex=r"\bgolf\b|\bpga\b|\blpga\b|ryder cup|open championship|masters",
+        # NB: no bare "masters" — it matches tennis (ATP Monte-Carlo Masters)
+        title_regex=r"\bgolf\b|\bpga\b|\blpga\b|ryder cup|presidents cup|open championship",
         # NB: plain "PGA" would match inside e.g. "KXATPGAME" (ATP tennis) — anchor it
-        ticker_regex=r"GOLF|LPGA|PGATOUR|KXPGA",
+        ticker_regex=r"GOLF|LPGA|PGATOUR|KXPGA|MASTERS",
     ),
 ]
 

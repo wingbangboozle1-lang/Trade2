@@ -29,11 +29,15 @@ EXCHANGE_STATUS = {
 SERIES = {
     "Sports": [
         {"ticker": "KXPGATOUR", "title": "PGA Tour: Tournament Winner", "category": "Sports",
-         "categories": ["Sports", "Golf"], "tags": ["Golf"], "fee_type": "quadratic", "fee_multiplier": 1},
+         "categories": ["Sports", "Golf"], "tags": ["Golf"], "fee_type": "quadratic", "fee_multiplier": 1,
+         "volume_fp": "5000.00", "last_updated_ts": "2026-11-20T10:00:00Z"},
         {"ticker": "KXNBA", "title": "NBA Championship", "category": "Sports",
          "categories": ["Sports"], "tags": ["Basketball"]},
         # regression: ticker contains the substring "PGA" but is ATP tennis — must NOT map to golf
         {"ticker": "KXATPGAME", "title": "ATP Tennis Match", "category": "Sports",
+         "categories": ["Sports"], "tags": ["Tennis"]},
+        # regression: tennis Monte-Carlo "Masters" must not map to golf
+        {"ticker": "KXMCMMEN", "title": "ATP Monte-Carlo Masters Winner", "category": "Sports",
          "categories": ["Sports"], "tags": ["Tennis"]},
     ],
     "Golf": [],
@@ -136,6 +140,13 @@ OPEN_MARKETS = {
          "title": "WTI Crude Oil Max Price", "series_ticker": "KXSPRMAX",
          "status": "open", "yes_bid_dollars": "0.3000", "yes_ask_dollars": "0.3300",
          "last_price_dollars": "0.3100", "volume_fp": "9000.00", "open_interest_fp": "2000.00",
+         "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
+    ],
+    "KXMCMMEN": [
+        {"ticker": "KXMCMMEN-26", "event_ticker": "KXMCMMEN",
+         "title": "ATP Monte-Carlo Masters Winner", "series_ticker": "KXMCMMEN",
+         "status": "open", "yes_bid_dollars": "0.2000", "yes_ask_dollars": "0.2300",
+         "last_price_dollars": "0.2100", "volume_fp": "4000.00", "open_interest_fp": "800.00",
          "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
     ],
 }
@@ -254,6 +265,11 @@ def main() -> int:
         assert all(m["ticker"] != "KXNBA" for m in markets), "NBA must not map to any tracked topic"
         assert all(m["ticker"] != "KXATPGAME" for m in markets), "ATP tennis must not map to golf (substring PGA)"
         assert all(m["ticker"] != "KXSPRMAX" for m in markets), "WTI oil must not map to gas prices"
+        assert all(m["ticker"] != "KXMCMMEN" for m in markets), "ATP Monte-Carlo Masters must not map to golf"
+        series_rows = load("series.json")["rows"]
+        pgatour = next((r for r in series_rows if r["ticker"] == "KXPGATOUR"), None)
+        assert pgatour and pgatour["volume"] == 5000.0, "include_volume must populate volume_fp"
+        assert all(r["ticker"] != "KXMCMMEN" for r in series_rows), "KXMCMMEN must not be tracked as golf"
         # verification invariants: every row has a source URL; bad rows flagged not filled
         for m in markets:
             assert m["source_url"].startswith("https://external-api.demo.kalshi.co/"), m

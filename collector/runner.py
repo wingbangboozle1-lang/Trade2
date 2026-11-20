@@ -85,13 +85,28 @@ def collect_series(client: KalshiClient, topic_keys: List[str], meta: Dict) -> D
     """
     wanted = [t for t in T.TOPICS if t.key in topic_keys]
     matched: Dict[str, List[tuple]] = {}  # topic -> [(volume, ticker, row)]
+    # prefer series whose metadata changed recently (active trading); fall back to
+    # the full category list if the filter returns nothing
+    recent_ts = int(time.time()) - 7 * 24 * 3600
     for topic in wanted:
         for cat in tuple(topic.categories_strict) + tuple(topic.categories_broad):
             url = CAT_URL.format(base=DEMO_BASE, cat=cat)
-            try:
-                data = client.get("/series/", category=cat, include_product_metadata="false", include_volume="true")
-            except Exception as exc:
-                meta["errors"].append({"step": "series", "category": cat, "error": str(exc)})
+            data = None
+            for params in (
+                dict(category=cat, include_product_metadata="false", include_volume="true", min_updated_ts=recent_ts),
+                dict(category=cat, include_product_metadata="false", include_volume="true"),
+            ):
+                try:
+                    data = client.get("/series/", **params)
+                except Exception as exc:
+                    meta["errors"].append({"step": "series", "category": cat, "error": str(exc)})
+                    data = None
+                    continue
+                if data.get("series"):
+                    if params.get("min_updated_ts"):
+                        url = CAT_URL.format(base=DEMO_BASE, cat=cat) + f"&min_updated_ts={recent_ts}"
+                    break
+            if not data:
                 continue
             for s in data.get("series") or []:
                 if not topic.matches(s):
@@ -105,7 +120,11 @@ def collect_series(client: KalshiClient, topic_keys: List[str], meta: Dict) -> D
                     "category": s.get("category"),
                     "categories": s.get("categories"),
                     "tags": s.get("tags"),
-                    "volume": fnum(s.get("volume")),
+                    # official field name is volume_fp (include_volume=true)
+                    "volume": fnum(s.get("volume_fp")),
+                    "last_updated": s.get("last_updated_ts"),
+                    "contract_terms_url": s.get("contract_terms_url"),
+                    "settlement_sources": s.get("settlement_sources"),
                     "topic": topic.key,
                     "source_url": url,
                     "verified": True,
@@ -457,7 +476,9 @@ def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict],
                         "verified": True,
                     }
                 )
-    return out
+    # keep the most recent settlements only (file size + relevance)
+    out.sort(key=lambda r: r.get("settlement_ts") or 0, reverse=True)
+    return out[:300]
 
 
 def main(argv: Optional[List[str]] = None) -> int:
