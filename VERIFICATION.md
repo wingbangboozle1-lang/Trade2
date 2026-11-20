@@ -122,6 +122,7 @@ means the demo API response was read, not the documentation's description of it.
 | H1b | The resolution store held 2,000 settled markets that could not be attributed to any topic | `data/resolutions.json` at commit `1bc32b7`: 2,000 rows, `series_ticker: null` on **all** of them | **Confirmed.** All 2,000 were demo `KXQUICKSETTLE` / weather series — none in scope. |
 | H1c | The model chat could never fill | `data/live.json` at `1bc32b7`: 29 alerts, **1** signal, `high_roi_alerts: []`; server gate `score >= 0.10`, browser gate `net_roi >= 0.05` | **Confirmed.** The two feeds required a swing *and* a same-run signal on the same ticker. |
 | H1d | Counters rendered as decimals ("Series in scope **162.00**") | same fetch of the live gas-prices page | **Confirmed** (independently fixed by session `997c9c83` as `cnt()`; this session's duplicate helper was dropped in favour of theirs). |
+| H1e | A swing that happened *between* two collector runs could never alert: the run-over-run comparison read a key the snapshot does not contain | `collector/collector.py` at `1bc32b7` and at `720fe51`: `previous_obs` is built from `previous_live.get("observations")`, while `collect()` publishes `events`, `liquidity`, `alerts`, `signals`, `topics`, `portfolio` … and **no** `observations` key (see the key list in `data/live.json`, `1bc32b7`) | **Confirmed by inspection and by test.** `tests/test_collect_flow.py::test_consecutive_run_swing_fires_from_the_tracked_ledger` fails against the old line and passes after the fix. Only the 5-minute reference-bar path could raise an alert, so a move spread across runs but inside one bar was invisible. |
 
 ### H2. Official-source checks behind each fix
 
@@ -143,12 +144,28 @@ The sandbox this repo is edited in cannot open a socket to Kalshi (only the
 documented fetcher can), so the pipeline's live behaviour is verified from a
 workflow run that prints its own summary and commits its snapshot:
 
-| Step | Evidence |
-| ------ | -------- |
-| Run | `.github/workflows/kalshi-dashboard.yml` on `arena/93e9da14-trade2` — <https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44800744776> |
-| Result | see the table appended below after the run completes (event counts, resolutions captured per topic, model shortlist size, headline lookup states) |
+| Run | Trigger | Outcome | What it proves |
+| --- | ------- | ------- | --------------- |
+| [44800744776](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44800744776) | push `26198ff` | **failed**, at "Front-end gate (jsdom; no network)" only | The gate ran *before* `python3 -m site_build.build`, so it compared new `desk.js` with the previous commit's HTML. Reproduced locally: the same 3 FAILs (moves rows, catalyst link, both chats) before the rebuild, green after. It is an ordering bug in the workflow, not a product bug — fixed in `26e0235` by moving the step after the rebuild. |
+| [44800744548](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44800744548) | push `26198ff` | **success** (`collector` job, 5m) | Python unit tests, `node --check`, and the sibling front-end suite all pass on a GitHub runner against this tree. |
+| [44801499134](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44801499134), [44801645557](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44801645557) | push `26e0235`, then `workflow_dispatch` | **cancelled while queued** | `concurrency.group: collect` with `cancel-in-progress: false` serialises this workflow across the repository, so a branch run waits behind `main`'s */5 collect runs and is cancelled when a newer run enters the group. A branch-level end-to-end number is therefore not reliably obtainable; the numbers below come from `main`'s next scheduled run after merge. |
 
-Until that table is filled, the fixes are verified by (a) the official-source
-checks above, (b) 87 unit tests including new regression tests for every
+Live-run numbers are read from what that run commits — `data/live.json` plus the
+"Dashboard data updated" commit message — never restated from memory. The
+snapshot on this branch (`1bc32b7`, produced by the same collector before these
+fixes) is published on the site and in `EXECUTIVE_SUMMARY_ADDENDUM.md` with its
+own caveats, so nothing here depends on an unverified figure.
+
+### H2k. Run-over-run basis and reproducible news lookup
+
+| # | Claim | Source | Result |
+| - | ----- | ------ | ------ |
+| H2k1 | The previous observation is stored per market, in the tracked ledger, bounded to `MAX_TRACKED` | `collector/collector.py` (`tracked["markets"][ticker]["last_obs"]`), `tests/test_collect_flow.py` | **Verified by test**, including that the published snapshot still has no `observations` key. |
+| H2k2 | The ledger is pruned, so the file cannot grow without limit | `collector/collector.py` `prune_tracked(...)` + the `MAX_TRACKED` cap applied when recording | **Verified by code path and test** (`tracked_markets.json` is rewritten from the capped set each run). |
+| H2k3 | A headline row can be audited: the collector publishes the query text and its URL, and the chat links it | `collector/collector.py` (`row["news_query"]`, `row["news_url"]`), `assets/desk.js` (`.chat-news-query`), `tools/deskcheck.mjs` asserting the link in both the "headline found" and "no headline found" states | **Verified locally** by the jsdom gate. The query URL is the public search the collector ran, not an official Kalshi source, and is labelled as such. |
+| H2k4 | Every test runs offline | `tests/test_collect_flow.py` uses a stub client and a temporary data directory; `test_no_repo_data_is_touched` asserts the repository's `data/` is not written | **Verified** — 97 unit tests, 0 failures, 1 skipped (optional `cryptography`). |
+
+Until the table above is filled by a scheduled run, the fixes are verified by (a)
+the official-source checks above, (b) 97 unit tests including new regression tests for every
 behaviour changed here, and (c) `tools/deskcheck.mjs`, which renders the desk in
 jsdom against a fixture and fails if either chat does not populate.

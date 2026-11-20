@@ -12,7 +12,7 @@ root desk against the brief, with official-source verification for every change.
 | T17 | Fix: the second (model high-ROI) chat feed can never populate — one shared gate + persisted model watchlist | in progress | `arena-93e9da14` | `collector/collector.py`, `assets/desk.js`, `site_build/build.py` |
 | T18 | Wire candidate-catalyst headlines into alerts and the chart panel (R17 on the root desk) | in progress | `arena-93e9da14` | `collector/news.py`, `collector/collector.py`, `assets/desk.js`, `site_build/build.py` |
 | T19 | Line-by-line re-verification of the root pipeline's claims against official docs + live demo responses | in progress | `arena-93e9da14` | `VERIFICATION.md` |
-| T20 | Executive addendum (findings + fixes + how to read the desk) as a new file; NOT `EXECUTIVE_SUMMARY.md` (owned by `arena-e4e8f4e1` T14) | in progress | `arena-93e9da14` | `EXECUTIVE_SUMMARY_ADDENDUM.md` |
+| T20 | Executive addendum (findings + fixes + how to read the desk) as a new file; NOT `EXECUTIVE_SUMMARY.md` (owned by `arena-e4e8f4e1` T14) | done | `arena-93e9da14` | `EXECUTIVE_SUMMARY_ADDENDUM.md` |
 
 Not touched (other sessions' scope, observed on `main`): `docs/**`,
 `kalshi-dashboard/**`, `scripts/**`, `config/**`, `trading/**`, `live/**`,
@@ -43,8 +43,25 @@ was left to `arena-e4e8f4e1` T14 as promised).
 | T18 candidate catalysts | done. `collector/news.py` gains `lookup()` with explicit states (`ok`, `no-headlines-found`, `unavailable`, `no-query`, `skipped`) and an injectable fetcher; both chats and the new "What moved this market" panel show the link or state the absence. |
 | T19 re-verification | done — §H1/H2 of `VERIFICATION.md`, including the live responses that prove `GET /markets` has no `series_ticker` and that the `tickers` filter works on the demo host. |
 | T20 executive addendum | done — `EXECUTIVE_SUMMARY_ADDENDUM.md`. |
+| T21 (self-added, after reading `collect()` end to end) | done. Two further defects found and fixed, each with a test: (a) the run-over-run swing basis read `data/live.json["observations"]`, a key the collector never writes, so alerts could only fire off the 5-minute reference bar — the previous observation now lives in the bounded tracked-market ledger; (b) a headline row published the parsed articles but not the query, so nothing was reproducible — `news_query`/`news_url` are now published and linked from both chat states. New `tests/test_collect_flow.py` (10 tests) runs the real `collect()` against shapes captured from the demo API, offline, in a temp directory. |
 
 **Coordination observations (logged, no other session's work was changed):**
+
+0. *For whoever edits `collector/collector.py` next:* the published snapshot has no
+   `observations` key by design — per-market history is in
+   `data/tracked_markets.json` (`last_obs`), and `alerts.detect_swing()` reads its
+   previous price from there. Adding an `observations` array back to the snapshot
+   would double `live.html`'s size; removing `last_obs` silently kills run-over-run
+   alerts. `tests/test_collect_flow.py` guards both.
+1. *`tools/deskcheck.mjs` gate ordering:* any jsdom/render gate must run **after**
+   `python3 -m site_build.build`, or it checks new JS against the previous commit's
+   HTML. Fixed in this branch's workflow; if you re-add a front-end step, put it
+   after the rebuild step.
+2. *Two sessions touched the same news/annotation surface* (`collector/news.py`,
+   `alerts.attach_models`) while this session's rebase was in flight. Nothing was
+   discarded: the merged result keeps the other session's `alerts-view.js`
+   formatting and `rendercheck` shim, and this session's states and ledger.
+
 
 1. **Duplicate work, resolved in favour of the earlier merges.** Session
    `arena-856e184e` landed `5666571` "site: whole-number counts, Flagged entries,

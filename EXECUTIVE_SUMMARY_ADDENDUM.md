@@ -37,9 +37,11 @@ Scope is deliberately narrow: **gas prices, elections, culture, crypto and golf*
 
 ## 2. What this session changed, and why it mattered
 
-Four defects were found by reading the published site against the requirements and
-reproducing each one from the committed snapshot. All four are fixed on this
-branch, each with a regression test.
+Five defects were found by reading the published site against the requirements,
+reproducing each one from the committed snapshot, and then reading `collect()`
+end to end rather than unit by unit. All five are fixed on this branch, each with
+a regression test; `tests/test_collect_flow.py` runs the real `collect()` against
+API shapes captured from the demo server today.
 
 | # | Defect as published | Root cause (verified) | Fix | Proof |
 | --- | --- | --- | --- | --- |
@@ -47,6 +49,13 @@ branch, each with a regression test.
 | 2 | The **model chat was permanently empty** — the second of the two required chats | Two different gates: the server kept alerts whose ticker had a same-run signal with `score ≥ 0.10`, the browser kept alerts with `net_roi ≥ 0.05`. A swing and a live signal on the same ticker in the same 5-minute run almost never coincide (snapshot: 29 alerts, 1 signal, `high_roi_alerts: []`) | **One published gate** (`model_gate` in the snapshot, `alerts.MODEL_SCORE_GATE` in code) used by collector and browser; each swing is scored by the model *when it fires*; the verdict persists on a 6-hour watchlist (dropped on settlement), so the shortlist contains both swings and live flags | `TestModelFeed` (6 tests incl. a regression test asserting a watch flag alone populates the feed) |
 | 3 | Requirement "live charts should include events and **website links** that may have caused a jump" was declined on this site | No official source maps an article to a price move — so the desk previously printed nothing at all | Swings now carry **candidate headlines** with four explicit states (`ok`, `no-headlines-found`, `unavailable`, `skipped`), a new **"What moved this market"** panel beside the chart, and links in both chats. Causation is never asserted; a failed lookup says so instead of showing a blank | `TestNewsLookup` (4 tests, canned RSS + injected failure), `tools/deskcheck.mjs` (renders the desk in jsdom and fails if the panel or either chat is empty) |
 | 4 | Counters rendered as `162.00` | the money formatter was used for counts | whole-number formatting (`cnt()`) — the concurrently merged fix by session `arena-997c9c83` was kept and this session's duplicate helper was dropped | visible in the generated pages |
+| 5 | A move spread across two collector runs could not alert: the run-over-run basis read `data/live.json["observations"]`, a key `collect()` never writes | verified by reading the published key list of the committed snapshot (`events`, `liquidity`, `alerts`, …, no `observations`) — so the fallback was empty on every run and only the 5-minute reference bar could fire | each tracked market's last observation is recorded in the bounded tracked-market ledger and used as the primary basis, with the old lookup kept as a fallback for hand-built files; the snapshot stays lean | `tests/test_collect_flow.py::test_consecutive_run_swing_fires_from_the_tracked_ledger` (fails on the old line) |
+
+A sixth, smaller gap in the same reading: a headline row published the parsed
+articles but not the query that produced them, so nothing could be re-checked.
+The collector now publishes `news_query` and `news_url`, and each chat row links
+"re-check" to that exact search — in the no-headline state too, which is the case
+where an audit link matters most.
 
 ## 3. Important details about the data itself
 
