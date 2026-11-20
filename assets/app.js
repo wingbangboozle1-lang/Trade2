@@ -77,6 +77,8 @@
     hours: 6 * 60 * 60 * 1000,
   };
   const MAX_ALERTS = 180;
+  const MAX_HISTORY_MARKETS = 300;
+  const MAX_HISTORY_POINTS = 240;
   const value = (obj, ...keys) => {
     for (const k of keys) {
       if (obj && obj[k] !== undefined && obj[k] !== null && obj[k] !== "")
@@ -255,7 +257,18 @@
     points.push({ t: now, p: m.bid });
     history[m.ticker] = points
       .filter((p) => now - p.t <= 24 * 60 * 60 * 1000)
-      .slice(-1200);
+      .slice(-MAX_HISTORY_POINTS);
+  }
+  function persistHistory() {
+    const compact = Object.entries(history)
+      .sort((a, b) => {
+        if (a[0] === selectedTicker) return -1;
+        if (b[0] === selectedTicker) return 1;
+        return (b[1].at(-1)?.t || 0) - (a[1].at(-1)?.t || 0);
+      })
+      .slice(0, MAX_HISTORY_MARKETS)
+      .map(([ticker, points]) => [ticker, points.slice(-MAX_HISTORY_POINTS)]);
+    store.write("history", Object.fromEntries(compact));
   }
   function modelCandidate(alert) {
     // Transparent screening heuristic, not an expected-return or profit model.
@@ -315,7 +328,7 @@
       for (const m of fresh) histPoint(m, now);
       markets = fresh;
       lastError = "";
-      store.write("history", history);
+      persistHistory();
       const checkSettlements = now - lastSettlementCheck >= 60000;
       await updateSettlements(fresh, checkSettlements);
       if (checkSettlements) lastSettlementCheck = now;
@@ -472,7 +485,7 @@
     const list = renderedMarkets();
     const count = $("#tableCount");
     if (count)
-      count.textContent = `${list.length} verified open markets · up to 800 events scanned`;
+      count.textContent = `Showing ${Math.min(list.length, 150)} of ${list.length} open markets · sorted by calculated open-interest value · up to 800 events scanned`;
     if (!list.length) {
       body.innerHTML = `<tr><td colspan="9" class="empty-state">${lastError ? "No live API data available." : "No open markets matched this topic in the scanned event pages."}</td></tr>`;
       return;
