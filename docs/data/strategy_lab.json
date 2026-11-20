@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T19:28:30Z",
+ "generated_at": "2026-11-20T19:34:12Z",
  "parameters": {
   "swing_threshold": 0.1,
   "hold_bars": 12,
@@ -20,127 +20,121 @@
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "window": "minutes",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6400",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6400",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXBTCMINY-27JAN01-50000.00",
    "window": "minutes",
    "points": 1,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "window": "hours",
+   "points": 2,
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXPGATOUR-THRC26-LHOD",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXPGATOUR-THRC26-LHOD",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXPGATOUR-THRC26-SSTR",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXPGATOUR-THRC26-SSTR",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXPGATOUR-THRC26-TMOO",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXPGATOUR-THRC26-TMOO",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
-   "ticker": "KXPRESNOMR-28-GY",
+   "ticker": "KXPRESNOMD-28-AKLO",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-GY/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
-   "ticker": "KXPRESNOMR-28-GY",
+   "ticker": "KXPRESNOMD-28-AKLO",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-GY/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
-  },
-  {
-   "ticker": "KXPRESNOMR-28-JDV",
-   "window": "minutes",
-   "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-JDV/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
-  },
-  {
-   "ticker": "KXPRESNOMR-28-JDV",
-   "window": "hours",
-   "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-JDV/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXPRESNOMR-28-MR",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXPRESNOMR-28-MR",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXRT-FUR-85",
    "window": "minutes",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXRT-FUR-85",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   },
   {
    "ticker": "KXTIME-26-CHR",
    "window": "minutes",
    "points": 2,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1795178366&end_ts=1795199966&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
   },
   {
    "ticker": "KXTIME-26-CHR",
    "window": "hours",
    "points": 2,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
   }
  ],
  "round_trips": [
@@ -271,6 +265,90 @@
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR"
   },
   {
+   "book": "docs-sim book",
+   "ticker": "KXPRESNOMD-28-AKLO",
+   "topic": "elections",
+   "strategy": "roi_edge",
+   "signal": "high-roi-fade",
+   "trade_type": "roi_edge|high-roi-fade|no",
+   "side": "no",
+   "status": "open",
+   "entry_ts": "2026-11-20T19:04:28.360614+00:00",
+   "entry_px": 0.998,
+   "contracts": 200,
+   "entry_fee": 0.03,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": null,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO"
+  },
+  {
+   "book": "docs-sim book",
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto",
+   "strategy": "roi_edge",
+   "signal": "high-roi-fade",
+   "trade_type": "roi_edge|high-roi-fade|no",
+   "side": "no",
+   "status": "open",
+   "entry_ts": "2026-11-20T19:04:28.360644+00:00",
+   "entry_px": 0.77,
+   "contracts": 259,
+   "entry_fee": 3.22,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": null,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00"
+  },
+  {
+   "book": "root book",
+   "ticker": "KXBTC15M-26NOV201430-30",
+   "topic": "",
+   "strategy": "value",
+   "signal": "",
+   "trade_type": "value|None|yes",
+   "side": "yes",
+   "status": "open",
+   "entry_ts": null,
+   "entry_px": null,
+   "contracts": 4788.98,
+   "entry_fee": null,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": null,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30"
+  },
+  {
+   "book": "root book",
+   "ticker": "KXBTCD-26NOV2017-T64999.99",
+   "topic": "",
+   "strategy": "value",
+   "signal": "",
+   "trade_type": "value|None|yes",
+   "side": "yes",
+   "status": "open",
+   "entry_ts": null,
+   "entry_px": null,
+   "contracts": 3262.19,
+   "entry_fee": null,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": null,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99"
+  },
+  {
    "book": "root book",
    "ticker": "KXBTCY-27JAN0100-B87500",
    "topic": "",
@@ -311,15 +389,57 @@
    "net": null,
    "result": "open",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
+  },
+  {
+   "book": "root book",
+   "ticker": "KXBTCD-26NOV2017-T64999.99",
+   "topic": "crypto",
+   "strategy": "value",
+   "signal": "$65,000 or above",
+   "trade_type": "value|settlement|yes",
+   "side": "yes",
+   "status": "open",
+   "entry_ts": "2026-11-20T19:18:02Z",
+   "entry_px": 0.06,
+   "contracts": 3262.19,
+   "entry_fee": 12.88,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": 0.0,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99"
+  },
+  {
+   "book": "root book",
+   "ticker": "KXBTC15M-26NOV201430-30",
+   "topic": "crypto",
+   "strategy": "value",
+   "signal": "Target Price: $58,037.85",
+   "trade_type": "value|settlement|yes",
+   "side": "yes",
+   "status": "open",
+   "entry_ts": "2026-11-20T19:27:27Z",
+   "entry_px": 0.04,
+   "contracts": 4788.98,
+   "entry_fee": 12.88,
+   "exit_ts": null,
+   "exit_px": null,
+   "exit_fee": 0.0,
+   "gross": null,
+   "net": null,
+   "result": "open",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30"
   }
  ],
  "aggregates": {
   "by_strategy": [
    {
     "key": "roi_edge",
-    "trades": 6,
+    "trades": 8,
     "closed": 1,
-    "open": 5,
+    "open": 7,
     "wins": 1,
     "losses": 0,
     "flat": 0,
@@ -330,6 +450,8 @@
     "sources": [
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.50",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85"
     ],
@@ -340,9 +462,9 @@
    },
    {
     "key": "value",
-    "trades": 2,
+    "trades": 6,
     "closed": 0,
-    "open": 2,
+    "open": 6,
     "wins": 0,
     "losses": 0,
     "flat": 0,
@@ -351,6 +473,8 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -422,10 +546,10 @@
     "max_drawdown": null
    },
    {
-    "key": "value|None|yes",
-    "trades": 1,
+    "key": "roi_edge|high-roi-fade|no",
+    "trades": 2,
     "closed": 0,
-    "open": 1,
+    "open": 2,
     "wins": 0,
     "losses": 0,
     "flat": 0,
@@ -434,6 +558,29 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO"
+    ],
+    "win_rate": null,
+    "avg_net": null,
+    "roi_on_cost": null,
+    "max_drawdown": null
+   },
+   {
+    "key": "value|None|yes",
+    "trades": 3,
+    "closed": 0,
+    "open": 3,
+    "wins": 0,
+    "losses": 0,
+    "flat": 0,
+    "gross": 0.0,
+    "fees": 0.0,
+    "net": 0.0,
+    "cost": 0.0,
+    "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -443,9 +590,9 @@
    },
    {
     "key": "value|settlement|yes",
-    "trades": 1,
+    "trades": 3,
     "closed": 0,
-    "open": 1,
+    "open": 3,
     "wins": 0,
     "losses": 0,
     "flat": 0,
@@ -454,6 +601,8 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -486,9 +635,9 @@
    },
    {
     "key": "(blank)",
-    "trades": 1,
+    "trades": 3,
     "closed": 0,
-    "open": 1,
+    "open": 3,
     "wins": 0,
     "losses": 0,
     "flat": 0,
@@ -497,6 +646,8 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -506,9 +657,9 @@
    },
    {
     "key": "crypto",
-    "trades": 1,
+    "trades": 4,
     "closed": 0,
-    "open": 1,
+    "open": 4,
     "wins": 0,
     "losses": 0,
     "flat": 0,
@@ -517,6 +668,9 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -546,51 +700,6 @@
    },
    {
     "key": "elections",
-    "trades": 1,
-    "closed": 0,
-    "open": 1,
-    "wins": 0,
-    "losses": 0,
-    "flat": 0,
-    "gross": 0.0,
-    "fees": 0.0,
-    "net": 0.0,
-    "cost": 0.0,
-    "sources": [
-     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR"
-    ],
-    "win_rate": null,
-    "avg_net": null,
-    "roi_on_cost": null,
-    "max_drawdown": null
-   }
-  ],
-  "by_book": [
-   {
-    "key": "docs-sim book",
-    "trades": 6,
-    "closed": 1,
-    "open": 5,
-    "wins": 1,
-    "losses": 0,
-    "flat": 0,
-    "gross": 600.0,
-    "fees": 65.24000000000001,
-    "net": 548.48,
-    "cost": 200.0,
-    "sources": [
-     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.50",
-     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
-     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR",
-     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85"
-    ],
-    "win_rate": 1.0,
-    "avg_net": 548.48,
-    "roi_on_cost": 2.7424,
-    "max_drawdown": 0.0
-   },
-   {
-    "key": "root book",
     "trades": 2,
     "closed": 0,
     "open": 2,
@@ -602,6 +711,56 @@
     "net": 0.0,
     "cost": 0.0,
     "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR"
+    ],
+    "win_rate": null,
+    "avg_net": null,
+    "roi_on_cost": null,
+    "max_drawdown": null
+   }
+  ],
+  "by_book": [
+   {
+    "key": "docs-sim book",
+    "trades": 8,
+    "closed": 1,
+    "open": 7,
+    "wins": 1,
+    "losses": 0,
+    "flat": 0,
+    "gross": 600.0,
+    "fees": 65.24000000000001,
+    "net": 548.48,
+    "cost": 200.0,
+    "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.50",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MR",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85"
+    ],
+    "win_rate": 1.0,
+    "avg_net": 548.48,
+    "roi_on_cost": 2.7424,
+    "max_drawdown": 0.0
+   },
+   {
+    "key": "root book",
+    "trades": 6,
+    "closed": 0,
+    "open": 6,
+    "wins": 0,
+    "losses": 0,
+    "flat": 0,
+    "gross": 0.0,
+    "fees": 0.0,
+    "net": 0.0,
+    "cost": 0.0,
+    "sources": [
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC15M-26NOV201430-30",
+     "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCD-26NOV2017-T64999.99",
      "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B87500"
     ],
     "win_rate": null,
@@ -613,16 +772,16 @@
  },
  "backtest": {
   "momentum": {
-   "trades": 1,
+   "trades": 4,
    "wins": 1,
-   "losses": 0,
-   "win_rate": 1.0,
-   "gross": 5.0,
-   "fees": 1.9300000000000002,
-   "net": 3.07,
-   "avg_net": 3.07,
-   "roi_on_cost": 0.03790123456790123,
-   "max_drawdown": 0.0,
+   "losses": 3,
+   "win_rate": 0.25,
+   "gross": -155.0,
+   "fees": 6.4300000000000015,
+   "net": -161.43,
+   "avg_net": -40.3575,
+   "roi_on_cost": -0.6673418768085986,
+   "max_drawdown": 164.5,
    "rows": [
     {
      "rule": "momentum",
@@ -641,21 +800,78 @@
      "result": "win",
      "ticker": "KXAAAGASW-26NOV23-3.6200",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    },
+    {
+     "rule": "momentum",
+     "side": "yes",
+     "entry_idx": 1,
+     "exit_idx": 2,
+     "entry_ts": "2026-11-20T15:00:00Z",
+     "exit_ts": "2026-11-20T16:00:00Z",
+     "entry_px": 0.803,
+     "exit_px": 0.003,
+     "contracts": 100,
+     "entry_fee": 1.11,
+     "exit_fee": 0.03,
+     "gross": -80.0,
+     "net": -81.14,
+     "result": "loss",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    },
+    {
+     "rule": "momentum",
+     "side": "no",
+     "entry_idx": 2,
+     "exit_idx": 3,
+     "entry_ts": "2026-11-20T16:00:00Z",
+     "exit_ts": "2026-11-20T17:00:00Z",
+     "entry_px": 0.003,
+     "exit_px": 0.803,
+     "contracts": 100,
+     "entry_fee": 0.03,
+     "exit_fee": 1.11,
+     "gross": -80.0,
+     "net": -81.14,
+     "result": "loss",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    },
+    {
+     "rule": "momentum",
+     "side": "yes",
+     "entry_idx": 3,
+     "exit_idx": 5,
+     "entry_ts": "2026-11-20T17:00:00Z",
+     "exit_ts": "2026-11-20T19:00:00Z",
+     "entry_px": 0.803,
+     "exit_px": 0.803,
+     "contracts": 100,
+     "entry_fee": 1.11,
+     "exit_fee": 1.11,
+     "gross": 0.0,
+     "net": -2.22,
+     "result": "loss",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
     }
    ]
   },
   "mean-reversion": {
-   "trades": 1,
-   "wins": 0,
-   "losses": 1,
-   "win_rate": 0.0,
-   "gross": -5.0,
-   "fees": 1.9300000000000002,
-   "net": -6.93,
-   "avg_net": -6.93,
-   "roi_on_cost": -0.08555555555555555,
-   "max_drawdown": 6.93,
+   "trades": 4,
+   "wins": 1,
+   "losses": 3,
+   "win_rate": 0.25,
+   "gross": 75.0,
+   "fees": 7.510000000000002,
+   "net": 67.49,
+   "avg_net": 16.8725,
+   "roi_on_cost": 0.27899958660603547,
+   "max_drawdown": 9.15,
    "rows": [
     {
      "rule": "mean-reversion",
@@ -674,7 +890,64 @@
      "result": "loss",
      "ticker": "KXAAAGASW-26NOV23-3.6200",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    },
+    {
+     "rule": "mean-reversion",
+     "side": "no",
+     "entry_idx": 1,
+     "exit_idx": 3,
+     "entry_ts": "2026-11-20T15:00:00Z",
+     "exit_ts": "2026-11-20T17:00:00Z",
+     "entry_px": 0.803,
+     "exit_px": 0.803,
+     "contracts": 100,
+     "entry_fee": 1.11,
+     "exit_fee": 1.11,
+     "gross": 0.0,
+     "net": -2.22,
+     "result": "loss",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    },
+    {
+     "rule": "mean-reversion",
+     "side": "yes",
+     "entry_idx": 2,
+     "exit_idx": 5,
+     "entry_ts": "2026-11-20T16:00:00Z",
+     "exit_ts": "2026-11-20T19:00:00Z",
+     "entry_px": 0.003,
+     "exit_px": 0.803,
+     "contracts": 100,
+     "entry_fee": 0.03,
+     "exit_fee": 1.11,
+     "gross": 80.0,
+     "net": 78.86,
+     "result": "win",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    },
+    {
+     "rule": "mean-reversion",
+     "side": "no",
+     "entry_idx": 3,
+     "exit_idx": 5,
+     "entry_ts": "2026-11-20T17:00:00Z",
+     "exit_ts": "2026-11-20T19:00:00Z",
+     "entry_px": 0.803,
+     "exit_px": 0.803,
+     "contracts": 100,
+     "entry_fee": 1.11,
+     "exit_fee": 1.11,
+     "gross": 0.0,
+     "net": -2.22,
+     "result": "loss",
+     "ticker": "KXPRESNOMD-28-AKLO",
+     "window": "minutes",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
     }
    ]
   },
