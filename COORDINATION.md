@@ -35,7 +35,7 @@ log the request here instead of editing the file.
 | 8 | Executive summary | done | sess-c0205283 | `EXECUTIVE_SUMMARY.md`, `docs/summary.html` |
 | 9 | Site build (landing + per-category subpages + tables) | done | sess-c0205283 | `docs/` |
 | 10 | Flagged for Review page | done | sess-c0205283 | `docs/flagged.html` |
-| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | in progress | sess-c0205283 | all — PR link recorded below once opened |
+| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | done | sess-c0205283 | all — PR #11 merged; Pages deploy verified (record below) |
 
 Statuses: `unclaimed` · `in progress` · `done` · `needs review`.
 
@@ -125,6 +125,10 @@ Serial diagnosis loop (each fix landed with a regression test before the next ru
 (+0.806 elections, ±0.12 culture, −0.21/+0.18 gas), 2 of 4 alerts carrying **real matched headlines**
 (e.g. gasoline-price article for the gas swing), 300 latest settlements, paper portfolio with 2 open
 `roi_edge` positions, $11.62 fees paid per the official formula, 0 errors, 75s runtime.
+
+**PR:** https://github.com/wingbangboozle1-lang/Trade2/pull/11 — `arena/c0205283-trade2` → `main`
+(integration checklist complete: CI green, site smoke green, link check clean). Merge result recorded in
+the "Integration completion" entry at the end of this file.
 
 **Sources for this phase:** live `external-api.demo.kalshi.co` responses (URLs stored per row) ·
 https://docs.kalshi.com/api-reference/market/get-series-list (schema: `volume_fp`, `min_updated_ts`,
