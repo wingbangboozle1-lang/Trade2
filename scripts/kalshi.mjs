@@ -20,6 +20,7 @@ export class KalshiHttpError extends Error {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const MAX_WAIT_MS = 30000; // never sleep longer than 30 s for one retry (Retry-After is capped)
 
 /**
  * GET a public JSON endpoint with retry/backoff for 429 and 5xx.
@@ -69,6 +70,10 @@ export async function getPublic(base, path, params = {}, opts = {}) {
         throw new KalshiNetworkBreaker(`${breaker.limit} consecutive network errors; last: ${err.message}`);
       }
       if (attempt > retries) throw err;
+      if (Date.now() + backoff(attempt) > breaker.deadlineMs) {
+        breaker.tripped = true;
+        throw new KalshiNetworkBreaker('network retry past the run deadline');
+      }
       await sleep(backoff(attempt));
       continue;
     }
@@ -82,7 +87,12 @@ export async function getPublic(base, path, params = {}, opts = {}) {
     const retriable = res.status === 429 || res.status >= 500;
     if (!retriable || attempt > retries) throw new KalshiHttpError(res.status, url, text);
     const ra = Number(res.headers.get('retry-after'));
-    await sleep(Number.isFinite(ra) && ra > 0 ? ra * 1000 : backoff(attempt));
+    const wait = Math.min(Number.isFinite(ra) && ra > 0 ? ra * 1000 : backoff(attempt), MAX_WAIT_MS);
+    if (Date.now() + wait > breaker.deadlineMs) {
+      breaker.tripped = true;
+      throw new KalshiNetworkBreaker(`rate limited past the run deadline (HTTP ${res.status})`);
+    }
+    await sleep(wait);
   }
 }
 
