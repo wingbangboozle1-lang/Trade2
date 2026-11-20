@@ -1,5 +1,5 @@
 {
- "bankroll": 9578.36,
+ "bankroll": 9374.45,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -38,8 +38,8 @@
    "entry_price": 0.09,
    "entry_ts": 1795202558.513031,
    "entry_fee": 12.47,
-   "current_price": 0.09,
-   "unrealized": 0.0,
+   "current_price": 0.07,
+   "unrealized": -43.4958,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -49,6 +49,30 @@
    "reason": "net ROI 14% on a 0.04 spread",
    "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-MGRE",
    "bankroll_at_entry": 9578.3589
+  },
+  {
+   "position_id": "pos-4341719ed1",
+   "ticker": "KXPGAR2LEAD-THRC26-GHIG",
+   "event_ticker": "KXPGAR2LEAD-THRC26",
+   "topic": "golf",
+   "title": "Garrick Higgo",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2394.59,
+   "entry_price": 0.08,
+   "entry_ts": 1795202982.495087,
+   "entry_fee": 12.34,
+   "current_price": 0.08,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 26% on a 0.05 spread",
+   "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG",
+   "bankroll_at_entry": 9374.4528
   }
  ],
  "trades": [
@@ -77,6 +101,19 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 14% on a 0.04 spread"
+  },
+  {
+   "trade_id": "tr-07ada8cb86",
+   "ts": 1795202982.495087,
+   "ticker": "KXPGAR2LEAD-THRC26-GHIG",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 2394.59,
+   "price": 0.08,
+   "fee": 12.34,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 26% on a 0.05 spread"
   }
  ],
  "equity_curve": [
@@ -223,6 +260,12 @@
    "equity": 9849.09,
    "realized": 0,
    "open": 395.73
+  },
+  {
+   "ts": 1795202870.8760402,
+   "equity": 9793.26,
+   "realized": 0,
+   "open": 587.3
   }
  ],
  "started_at": 1795182592.2117689
