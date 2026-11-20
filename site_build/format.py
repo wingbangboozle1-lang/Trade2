@@ -145,6 +145,21 @@ def kalshi_event_url(event_ticker: Any, series_ticker: Any = None) -> str:
     return f"{KALSHI_SITE}/markets/{series}/{event_ticker}"
 
 
+def safe_url(value: Any) -> str:
+    """Return an http(s) URL, or "" for anything else.
+
+    Every external href on the site is either built by us from a ticker or read
+    out of a payload the collector wrote — and one field of that payload (a news
+    headline link) is supplied by a third party. A renderer that trusts it can be
+    handed ``javascript:`` or ``data:`` and turn a headline into a click handler,
+    so the scheme is checked here, once, for both renderers to share.
+    """
+    text = str(value or "").strip()
+    if text.lower().startswith(("https://", "http://")):
+        return html.escape(text, quote=True)
+    return ""
+
+
 def news_search_url(text: Any, topic_label: Any = "") -> str:
     """A news search for an event — a place to look for a possible cause.
 

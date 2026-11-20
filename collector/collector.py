@@ -282,6 +282,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 if p.get("status") == "open"}
 
     observations: list[alerts.Observation] = []
+    # Two documented endpoints can disagree on the same market; publish the
+    # largest gaps instead of silently preferring one of them.
+    gaps: list[dict[str, Any]] = []
     liquidity: dict[str, dict[str, Any]] = {}
     per_topic: dict[str, Any] = {}
     series_registry: dict[str, dict[str, Any]] = {}
@@ -366,6 +369,10 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             obs = alerts.observe(market, book_payload, topic.slug, ts=now)
             if book:
                 liquidity[ticker] = alerts.analyse_liquidity(book_payload)
+                gap = alerts.book_record_divergence(market, book_payload)
+                if gap:
+                    gap["topic"] = topic.slug
+                    gaps.append(gap)
             observations.append(obs)
         t_mark = lap(f"books:{topic.slug}", t_mark)
 
@@ -610,6 +617,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "suppressed_this_run": len(suppressed),
         },
         "suppressed_alerts": suppressed[:40],
+        "book_record_gaps": sorted(gaps, key=lambda g: g["abs_gap"],
+                                    reverse=True)[:40],
+        "book_record_gap_count": len(gaps),
         "news_stats": news_stats,
         "run_seconds": round(time.time() - started, 1),
         "timings": timings,

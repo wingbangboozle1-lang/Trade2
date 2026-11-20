@@ -28,7 +28,7 @@ from typing import Any
 
 from .format import (API, count, cents, esc, kalshi_event_url,
                      kalshi_market_url, money, news_search_url, num, pct,
-                     result_chip)
+                     result_chip, safe_url)
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
 TOPIC_LABEL = {
@@ -302,14 +302,14 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
             ticker = rec.get("ticker") or ""
             body.append(
                 "<tr>"
-                f'<td><a href="{html.escape(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker")))}" '
+                f'<td><a href="{safe_url(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker"))) or "#"}" '
                 f'target="_blank" rel="noreferrer">{esc(rec.get("title"))}</a>'
                 f'<small class="ticker">{esc(ticker)}</small></td>'
                 f"<td>{result_chip(rec.get('result'))}</td>"
                 f"<td>{cents(rec.get('settlement_value_dollars'))}</td>"
                 f"<td>{esc((rec.get('settlement_ts') or '')[:19].replace('T', ' '))}</td>"
                 f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-                f'href="{html.escape(rec.get("source_url") or API + "/markets/" + ticker)}">API ↗</a></td>'
+                f'href="{safe_url(rec.get("source_url") or API + "/markets/" + ticker) or "#"}">API ↗</a></td>'
                 "</tr>")
         if not body:
             body.append('<tr><td colspan="5" class="empty-state">'
@@ -419,7 +419,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         trade_rows.append(
             "<tr>"
             f"<td>{esc(time.strftime('%Y-%m-%d %H:%M', time.gmtime(t.get('ts') or 0)))}</td>"
-            f'<td><a href="{html.escape(kalshi_market_url(ticker))}" target="_blank" '
+            f'<td><a href="{safe_url(kalshi_market_url(ticker)) or "#"}" target="_blank" '
             f'rel="noreferrer">{esc(ticker)}</a></td>'
             f"<td>{esc(t.get('strategy'))}</td>"
             f"<td>{esc((t.get('side') or '').upper())}</td>"
@@ -441,7 +441,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         ticker = p.get("ticker") or ""
         open_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(p.get("market_url") or kalshi_market_url(ticker))}" '
+            f'<td><a href="{safe_url(p.get("market_url") or kalshi_market_url(ticker)) or "#"}" '
             f'target="_blank" rel="noreferrer">{esc(p.get("title"))}</a>'
             f'<small class="ticker">{esc(ticker)}</small></td>'
             f"<td>{esc(p.get('topic'))}</td>"
@@ -461,7 +461,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         ticker = p.get("ticker") or ""
         settled_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(p.get("market_url") or kalshi_market_url(ticker))}" '
+            f'<td><a href="{safe_url(p.get("market_url") or kalshi_market_url(ticker)) or "#"}" '
             f'target="_blank" rel="noreferrer">{esc(p.get("title"))}</a>'
             f'<small class="ticker">{esc(ticker)}</small></td>'
             f"<td>{esc(p.get('strategy'))}</td>"

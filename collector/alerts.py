@@ -39,8 +39,8 @@ import time
 from dataclasses import dataclass, field, asdict
 from typing import Any, Iterable
 
-from .kalshi_api import (best_bid, count, dollars, implied_yes_ask, mid_price,
-                         kalshi_fee)
+from .kalshi_api import (DEMO_REST, best_bid, count, dollars, implied_yes_ask,
+                         mid_price, kalshi_fee)
 
 SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
@@ -415,6 +415,58 @@ def swing_rejection(previous: Observation | None, current: Observation,
     """
     return _swing(previous, current, threshold, reference, reference_ts,
                   reference_spread, bar_seconds)[1]
+
+
+def book_record_divergence(market: dict[str, Any], orderbook: dict[str, Any] | None,
+                           threshold: float = SWING_THRESHOLD) -> dict[str, Any] | None:
+    """Report a market whose order book and market record disagree by >= threshold.
+
+    Both numbers come from Kalshi, from two documented endpoints, and they can
+    disagree in the demo environment. Observed on 2026-11-20T19:1xZ for
+    KXPRESNOMD-28-HBID:
+
+        GET /markets/KXPRESNOMD-28-HBID
+            yes_bid_dollars 0.0020   yes_ask_dollars 0.0030   -> mid 0.0025
+        GET /markets/KXPRESNOMD-28-HBID/orderbook
+            best YES bid 0.0020, best NO bid 0.1890
+            -> implied YES ask 1.00 - 0.1890 = 0.8110         -> mid 0.4065
+
+    A $0.8080 gap on the same market, at the same moment. Whichever is stale, a
+    dashboard must not present either as "the price" without saying so, because
+    the alert engine and the chart read the book while the market table reads
+    the record. This function exists to make that visible instead of picking a
+    winner.
+    """
+    ob = (orderbook or {}).get("orderbook_fp") or {}
+    yb = best_bid(ob.get("yes_dollars") or [])
+    nb = best_bid(ob.get("no_dollars") or [])
+    book_bid = yb[0] if yb else None
+    book_ask = implied_yes_ask(nb[0] if nb else None)
+    rec_bid = dollars(market.get("yes_bid_dollars"))
+    rec_ask = dollars(market.get("yes_ask_dollars"))
+    if book_bid is None and book_ask is None:
+        return None
+    if rec_bid is None and rec_ask is None:
+        return None
+    book_mid = mid_price(book_bid, book_ask)
+    rec_mid = mid_price(rec_bid, rec_ask)
+    if book_mid is None or rec_mid is None:
+        return None
+    gap = round(book_mid - rec_mid, 4)
+    if abs(gap) + 1e-9 < threshold:
+        return None
+    return {
+        "ticker": market.get("ticker", ""),
+        "event_ticker": market.get("event_ticker", ""),
+        "title": (market.get("yes_sub_title") or market.get("title") or "").strip(),
+        "book_mid": book_mid, "record_mid": rec_mid, "gap": gap,
+        "abs_gap": abs(gap),
+        "book_yes_bid": book_bid, "book_yes_ask": book_ask,
+        "record_yes_bid": rec_bid, "record_yes_ask": rec_ask,
+        "threshold": threshold,
+        "source_book": (f"{DEMO_REST}/markets/{market.get('ticker')}/orderbook"),
+        "source_record": f"{DEMO_REST}/markets/{market.get('ticker')}",
+    }
 
 
 def fold_alerts(new_alerts: list[dict[str, Any]], existing: list[dict[str, Any]],

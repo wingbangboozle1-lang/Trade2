@@ -20,8 +20,9 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from collector.alerts import (ESCALATION_STEP, MODEL_MIN_NET_ROI, SWING_THRESHOLD,
-                              Observation, clears_model_gate, detect_swing,
-                              fold_alerts, high_roi_alerts, swing_rejection)
+                              Observation, book_record_divergence, clears_model_gate,
+                              detect_swing, fold_alerts, high_roi_alerts,
+                              swing_rejection)
 from collector.collector import bar_reference
 from collector import news as news_mod
 
@@ -334,3 +335,53 @@ class TestPayloadContract(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestBookAgainstRecord(unittest.TestCase):
+    """Two Kalshi endpoints, one market, different prices. Verified live.
+
+    Fixture values were read from the demo API on 2026-11-20T19:16Z:
+      https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID
+      https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook
+    """
+
+    MARKET = {"ticker": "KXPRESNOMD-28-HBID", "event_ticker": "KXPRESNOMD-28",
+              "yes_sub_title": "Hunter Biden",
+              "yes_bid_dollars": "0.0020", "yes_ask_dollars": "0.0030"}
+    BOOK = {"orderbook_fp": {
+        "yes_dollars": [["0.0010", "166666.66"], ["0.0020", "83333.33"]],
+        "no_dollars": [["0.1880", "1567.00"], ["0.1890", "215.44"]],
+    }}
+
+    def test_gap_is_measured_and_sourced(self):
+        gap = book_record_divergence(self.MARKET, self.BOOK)
+        self.assertIsNotNone(gap)
+        self.assertEqual(gap["book_mid"], 0.4065)      # (0.0020 + 1-0.1890)/2
+        self.assertEqual(gap["record_mid"], 0.0025)    # (0.0020 + 0.0030)/2
+        self.assertAlmostEqual(gap["gap"], 0.404)
+        self.assertEqual(gap["abs_gap"], 0.404)
+        self.assertEqual(gap["source_book"],
+                         "https://external-api.demo.kalshi.co/trade-api/v2/markets/"
+                         "KXPRESNOMD-28-HBID/orderbook")
+        self.assertEqual(gap["source_record"],
+                         "https://external-api.demo.kalshi.co/trade-api/v2/markets/"
+                         "KXPRESNOMD-28-HBID")
+
+    def test_agreement_is_silent(self):
+        book = {"orderbook_fp": {"yes_dollars": [["0.0020", "10.00"]],
+                                 "no_dollars": [["0.9970", "10.00"]]}}
+        self.assertIsNone(book_record_divergence(self.MARKET, book))
+
+    def test_missing_side_is_not_invented(self):
+        self.assertIsNone(book_record_divergence(self.MARKET, None))
+        self.assertIsNone(book_record_divergence(
+            {"ticker": "T", "yes_bid_dollars": "", "yes_ask_dollars": ""}, self.BOOK))
+
+    def test_threshold_is_the_alert_threshold(self):
+        book = {"orderbook_fp": {"yes_dollars": [["0.0600", "10.00"]],
+                                 "no_dollars": []}}
+        market = {"ticker": "T", "yes_bid_dollars": "0.0000",
+                  "yes_ask_dollars": "0.0300"}
+        self.assertIsNone(book_record_divergence(market, book, threshold=0.10))
+        self.assertIsNotNone(book_record_divergence(market, book, threshold=0.02))
+
