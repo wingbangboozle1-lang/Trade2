@@ -1,0 +1,25 @@
+<!--meta: {"out":"suggestions.html","page":"static","title":"Suggestions — Kalshi topic dashboard"} -->
+<h1>Suggestions: make the site more live and easier to trade from</h1>
+<p class="lead">Ideas ranked by value for a trader. Each one cites the official Kalshi source that makes it possible, or says plainly that it is an idea with no verified source. None of these is built yet unless noted.</p>
+
+<div class="table-wrap"><table>
+<thead><tr><th>#</th><th>Suggestion</th><th>Why it helps</th><th>Feasibility / source</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td><strong>Stream prices over WebSocket from a small always-on service.</strong> Keep the API key on the server and push ticks to the browser.</td><td>Gives true second-level charts and immediate ≥ 10¢ alerts instead of 15-minute snapshots.</td><td>The WebSocket needs an API key <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">[S8]</a>. Demo and production WS hosts are listed in <a href="https://docs.kalshi.com/getting_started/api_environments" target="_blank" rel="noopener">[S3]</a>. Not built (F-09).</td></tr>
+<tr><td class="num">2</td><td><strong>Live order-book ladders from the order-book delta channel.</strong></td><td>Shows liquidity change as it happens, not only at snapshot time.</td><td>The WebSocket docs list an <code>orderbook_delta</code> channel in their subscribe example <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">[S8]</a>. Not built.</td></tr>
+<tr><td class="num">3</td><td><strong>Fill and order updates for the demo account from the user WebSocket hosts.</strong></td><td>Portfolio P&amp;L updates when fills happen, without polling balance.</td><td>Dedicated user hosts for <code>fill</code> and <code>user_orders</code> are listed in <a href="https://docs.kalshi.com/getting_started/api_environments" target="_blank" rel="noopener">[S3]</a>. Needs the demo key (F-08).</td></tr>
+<tr><td class="num">4</td><td><strong>Show the exact taker fee next to each price</strong>, using the official formula, so the net edge of a trade is visible before it is taken.</td><td>Fees are material at mid prices (up to 1.75¢ per contract at 50¢ on standard series).</td><td>Formula and table: <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a>, implemented in scripts/fees.mjs and tested. Not yet shown in the UI.</td></tr>
+<tr><td class="num">5</td><td><strong>Replace the placeholder High-ROI rule with your model's output.</strong></td><td>The High-ROI chat then reflects your edge, not a generic filter.</td><td>Edit <code>high_roi_rule</code> in config/topics.json or feed model scores in (F-13).</td></tr>
+<tr><td class="num">6</td><td><strong>Add a cause-review queue.</strong> For each ≥ 10¢ alert, a reviewer adds a news or website link and a confidence note.</td><td>Answers "what caused this jump?" without guessing automatically.</td><td>No API field gives the cause (F-10). Manual process; not built.</td></tr>
+<tr><td class="num">7</td><td><strong>Plain-language cards per market</strong>: the event title, the one-line resolution rule, closing time, and the current YES/NO price, with the rules a click away.</td><td>Simplifies decisions, reduces misreads of YES and NO.</td><td>Rules text is in the market object (<code>rules_primary</code>) <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">[S9]</a>. Partly built (rules links on alerts).</td></tr>
+<tr><td class="num">8</td><td><strong>Respect rate limits when adding feeds.</strong> Add tiered polling: fast for top-volume markets, slow for the rest.</td><td>Keeps the feed reliable as coverage grows.</td><td>Token budgets and 429 handling are described in <a href="https://docs.kalshi.com/getting_started/rate_limits" target="_blank" rel="noopener">[S5]</a>; the public-endpoint numeric limit is not stated (F-06).</td></tr>
+<tr><td class="num">9</td><td><strong>Organize by decision, not by data.</strong> Each topic page starts with "what changed, what is liquid, what is resolving soon", then the full table.</td><td>Faster to read in a live session.</td><td>Layout suggestion; no external source needed.</td></tr>
+<tr><td class="num">10</td><td><strong>Push alerts to a chat channel</strong> (for example a team chat webhook) for High-ROI picks only.</td><td>Catches moves while the page is closed.</td><td>Idea only; no channel or webhook has been verified or connected.</td></tr>
+</tbody></table></div>
+
+<h2>Simplifications already made</h2>
+<ul class="clean">
+  <li>One template for all topic pages, so navigation stays identical.</li>
+  <li>Markets are grouped under their event, so related outcomes sit together.</li>
+  <li>Every table row carries a source link, and unverified values are listed on <a href="flagged.html">Flagged for review</a>.</li>
+</ul>

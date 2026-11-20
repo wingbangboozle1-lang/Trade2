@@ -1,0 +1,85 @@
+name: Kalshi dashboard — test, collect, build, deploy
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'      # GitHub may delay scheduled runs; see Flagged for review F-09
+  workflow_dispatch:
+  push:
+    branches: [main, arena/5788e385-trade2]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kalshi-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Unit tests (fee table, mocked pipeline, request signing)
+        run: npm test
+
+      - name: Restore collector state (price history, alerts, simulated trades)
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: kalshi-state-${{ github.run_id }}
+          restore-keys: |
+            kalshi-state-
+
+      - name: Collect public Kalshi data
+        env:
+          KALSHI_BASE: ${{ vars.KALSHI_BASE }}
+        run: node scripts/collect.mjs --state state --out _site/data
+
+      - name: Save collector state
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: state
+          key: kalshi-state-${{ github.run_id }}
+
+      - name: Read-only demo portfolio snapshot (skipped when secrets are absent)
+        env:
+          KALSHI_DEMO_KEY_ID: ${{ secrets.KALSHI_DEMO_KEY_ID }}
+          KALSHI_DEMO_PRIVATE_KEY: ${{ secrets.KALSHI_DEMO_PRIVATE_KEY }}
+        run: node scripts/portfolio.mjs --out _site/data
+
+      - name: Build site and check every internal link
+        run: node scripts/build-site.mjs --out _site
+
+      - name: Enable GitHub Pages (Actions source)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

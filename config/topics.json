@@ -1,0 +1,138 @@
+{
+  "_about": "Topic map for the dashboard. Series tickers in 'series' are copied from the official Kalshi Fee Schedule (kalshi.com/docs/kalshi-fee-schedule.pdf, effective July 7, 2026), where each row shows the series ticker and title. Keywords are used only to DISCOVER additional series from the live GET /series list; every discovered series is recorded with the reason it was matched, so a reviewer can check it.",
+  "official_source": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+  "keyword_match": "case-insensitive whole-word match on the series title, tags or category name returned by GET /series",
+  "topics": {
+    "gas": {
+      "label": "Gas prices",
+      "series": [
+        {
+          "ticker": "KXAAAGASM",
+          "title_in_fee_schedule": "US gas price"
+        }
+      ],
+      "keywords": [
+        "gas price",
+        "gasoline",
+        "gas prices"
+      ]
+    },
+    "elections": {
+      "label": "Elections",
+      "series": [
+        {
+          "ticker": "KXELECTIRAN",
+          "title_in_fee_schedule": "Will Iran hold a presidential election?"
+        }
+      ],
+      "keywords": [
+        "election",
+        "elections",
+        "presidential",
+        "senate",
+        "governor",
+        "congress"
+      ]
+    },
+    "culture": {
+      "label": "Culture & entertainment",
+      "series": [
+        {
+          "ticker": "KXEMMYCACTO",
+          "title_in_fee_schedule": "Emmys Award for Lead Comedy Actor"
+        },
+        {
+          "ticker": "KXEMMYCACTR",
+          "title_in_fee_schedule": "Emmys Award for Lead Comedy Actress"
+        },
+        {
+          "ticker": "KXEMMYCSERIES",
+          "title_in_fee_schedule": "Emmys Award for Comedy Series"
+        },
+        {
+          "ticker": "KXEMMYDACTO",
+          "title_in_fee_schedule": "Emmys Award for Lead Drama Actor"
+        },
+        {
+          "ticker": "KXEMMYDACTR",
+          "title_in_fee_schedule": "Emmys Award for Lead Drama Actress"
+        },
+        {
+          "ticker": "KXEMMYDSERIES",
+          "title_in_fee_schedule": "Emmys Award for Drama Series"
+        }
+      ],
+      "keywords": [
+        "emmy",
+        "emmys",
+        "oscar",
+        "oscars",
+        "grammy",
+        "grammys",
+        "golden globe",
+        "box office",
+        "rotten tomatoes"
+      ]
+    },
+    "crypto": {
+      "label": "Crypto",
+      "series": [
+        {
+          "ticker": "KXBTCMAX150",
+          "title_in_fee_schedule": "When will bitcoin hit 150k?"
+        },
+        {
+          "ticker": "KXBTCY",
+          "title_in_fee_schedule": "BTC price range EOY"
+        },
+        {
+          "ticker": "KXETHY",
+          "title_in_fee_schedule": "ETH price EOY"
+        }
+      ],
+      "keywords": [
+        "bitcoin",
+        "btc",
+        "ethereum",
+        "eth",
+        "crypto",
+        "solana",
+        "dogecoin"
+      ]
+    },
+    "golf": {
+      "label": "Golf",
+      "series": [
+        {
+          "ticker": "KXPGATOUR",
+          "title_in_fee_schedule": "PGA Tour"
+        },
+        {
+          "ticker": "KXPGARYDER",
+          "title_in_fee_schedule": "Ryder Cup"
+        },
+        {
+          "ticker": "KXPGASOLHEIM",
+          "title_in_fee_schedule": "Solheim Cup"
+        }
+      ],
+      "keywords": [
+        "golf",
+        "pga",
+        "ryder cup",
+        "solheim cup",
+        "lpga"
+      ]
+    }
+  },
+  "high_roi_rule": {
+    "_about": "RULE-BASED HEURISTIC, not a predictive model and not an official Kalshi value. Replace with your own model by editing this file.",
+    "max_entry_price_cents": 40,
+    "max_spread_cents": 5,
+    "min_volume_24h_contracts": 100
+  },
+  "alert_threshold_cents": 10,
+  "history_retention_hours": 72,
+  "orderbook_top_n": 40,
+  "tracked_max": 80
+}

@@ -1,0 +1,13 @@
+{
+  "name": "trade2-kalshi-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Read-only Kalshi topic dashboard (gas prices, elections, culture, crypto, golf) with price-move alerts, resolution tracking, simulated trades and a Flagged for Review page. No runtime dependencies.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test scripts/test/fees.test.mjs scripts/test/auth.test.mjs scripts/test/collect.test.mjs",
+    "collect": "node scripts/collect.mjs --state state --out _site/data",
+    "build": "node scripts/build-site.mjs --out _site"
+  },
+  "license": "UNLICENSED"
+}
