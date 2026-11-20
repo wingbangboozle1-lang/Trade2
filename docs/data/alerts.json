@@ -1,28 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795189396&end_ts=1795192996&period_interval=1",
-   "delta": 0.8,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.003,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
-   "t": 1795189680,
-   "t_iso": "2026-11-20T15:48:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXPRESNOMD-28-AKLO",
-   "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
-   "to": 0.803,
-   "topic": "elections",
-   "window": "seconds"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795171396&end_ts=1795192996&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795174887&end_ts=1795196487&period_interval=60",
    "delta": 0.806,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -43,62 +22,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795171396&end_ts=1795192996&period_interval=60",
-   "delta": 0.12,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.05,
-   "headlines": [
-    {
-     "published": "2026-11-20T14:46:29+00:00",
-     "source": "TODAY.com",
-     "status": "verified-fetch",
-     "title": "Stars of \u2018The Further Mis-Adventures of Cliff Booth\u2019 Talk New Series - TODAY.com",
-     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZ1ZWTnJDZHRuek9pMjY4dEFidWpETlg3NllZQWZDcERReklPeEYyVmhMdXZxYzlqSzVLNGh2NTFTYTRFZU41WlREbHAzSkF1R3pfMEMzUXpRdUhGNkgwRFcwekFoU0ZtVGNMYXJsVkJfSUZzV2taaFl3NngyMnNSbnMwSWJhVThCTU10dDFPczFTLWhmZzJBQWc2bF9iQzBtN0JmVWw4dVlaR2c?oc=5"
-    },
-    {
-     "published": "2026-11-20T15:07:42+00:00",
-     "source": "Washington City Paper",
-     "status": "verified-fetch",
-     "title": "The Further Mis-Adventures of Cliff Booth Is the Darker, Sinister Sequel to Once Upon a Time \u2026 in Hollywood - Washington City Paper",
-     "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPNGtFYm9ubGFDWUFZMXo3UFpBcTU1Y0hsM1NKY216QVhXYVNpOUpTU3ZDQWtFdFFla054aEFaNEhkaVROVnZMcDFUcGtUWFhVaG9CWU9MZ3lmZ3BYdDBPa2Y5VENhZlVQalQ5YjNkR1NXTWNqb1pVYnhTVjdZWVh0Vk5rQmNNSFdGa3MxVEdBYmpVeUh2d1RwUVRhcWtqbmFfckJnUVVSVkpsMXJfeXlMdEQ2V3pZNXo4dmc2X29udXFzQWl3OF8ya1ZPUzdUamRmWVpzUVBTYU80bzZhWHYxak02ZWxWYzA?oc=5"
-    },
-    {
-     "published": "2026-11-20T16:20:41+00:00",
-     "source": "Kansas City Pitch",
-     "status": "verified-fetch",
-     "title": "For a stuntman sequel, The Further Mis-Adventures of Cliff Booth is in no rush to accomplish much - Kansas City Pitch",
-     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQQzdGZ3pZRjdaZF9pcGd3c3cxbG1OQXhtOEFYWEk1RlczMURSZDNsbldCXzdweWxPbHhoMkdhbEpfNjN2NUNVbU5kN0xtY3FLTjh6Mk56cFNOeFMyLUZ5Xy1NREc3Mjc0Vll3RW5WQ1M2LVlGdTNKek1zZEFnLXdYZDhMVEFQWW9qV2trbjVheXZ1aFlIb1VoVnhfeFNJRzFwQmpOWXZwT09BTFZKemxneGFzSGZiWXIzU2FxVTViTndvQQ?oc=5"
-    },
-    {
-     "published": "2026-11-20T14:34:13+00:00",
-     "source": "Yahoo",
-     "status": "verified-fetch",
-     "title": "Stars of \u2018The Further Mis-Adventures of Cliff Booth\u2019 Talk New Series - Yahoo",
-     "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbk1LVHpLQUwxcGRxNldSRHlQbzJHN3JWakVvUWpVU3FRcXpGUnVCb2daaTh0OXZYSjc3NWh2b2RkM3pGNUZPRWJ0SFBxYTVJMjVBYXVzUFdvVkhaSXhzUmREekdNc3RUX0d2TFUtRjBlN01USXFBS21HY1l1Qzdpd2ZaNW5tZHBhRkxF?oc=5"
-    },
-    {
-     "published": "2026-11-20T06:16:07+00:00",
-     "source": "Film Stories",
-     "status": "verified-fetch",
-     "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
-     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
-   "t": 1795176000,
-   "t_iso": "2026-11-20T12:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXRT-FUR-85",
-   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
-   "to": 0.17,
-   "topic": "culture",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794933796&end_ts=1795192996&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794937287&end_ts=1795196487&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -119,7 +43,62 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794933796&end_ts=1795192996&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794937287&end_ts=1795196487&period_interval=1440",
+   "delta": -0.38,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.43,
+   "headlines": [
+    {
+     "published": "2026-11-20T07:31:27+00:00",
+     "source": "The Hollywood Reporter",
+     "status": "verified-fetch",
+     "title": "'The Further Mis-Adventures of Cliff Booth' Review: Brad Pitt Is Back - The Hollywood Reporter",
+     "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxObEdTVXd1aGc3VWRoamlPY2pMSjVEeHJIWW5wUzZDbmF2RWJ1ZFB3STdVZ3NJWE02ZWw5THRoOU5MeU94QWhjZUtpczd0Y1pWTlhELWJiRU5fWVp1alBzRjZSVFpOTHF0VS0xYlFtUGxzZ1k1YWVvR2x6U1VjTDZiaDJyN19RdVFuSFlQdkZLaE02SzVaaFB5d2JlVmVQLU1ZVTZ5bHA1cXJzWFRrSkNkQ3Q4VEdUZzdXVmZDNjh0NnJZOFk?oc=5"
+    },
+    {
+     "published": "2026-11-20T05:59:40+00:00",
+     "source": "https://www.nerdalert.world/",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Returns With a Darker Edge in Fincher and Tarantino\u2019s Righteous 1970s Noir - https://www.nerdalert.world/",
+     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQZ2JFMWNxbnJpRmlOMDF2MDhDcjZCYXZnSkRmZi1nQnJJS1JEeGJJamo4emZnMmVaRUlieWxPTWx2dXo2d3hFTUJaYm8zaFN0QThIZEhrUjdtb1FwYk9lZkp3Q3BMSXp3VG04RHZ4MDFwQVhacVJKRExpZ2RVTGhwczBKaFgzbl9f?oc=5"
+    },
+    {
+     "published": "2026-11-19T23:00:11+00:00",
+     "source": "Comic Book Resources",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Sequel Is Both Shaggy And Intoxicating - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
+    },
+    {
+     "published": "2026-11-20T06:16:07+00:00",
+     "source": "Film Stories",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
+    },
+    {
+     "published": "2026-11-20T05:44:18+00:00",
+     "source": "Geeks of Color",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXRT-FUR-85",
+   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
+   "to": 0.05,
+   "topic": "culture",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794937287&end_ts=1795196487&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -132,6 +111,13 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
+    },
+    {
+     "published": "2026-11-19T06:49:53+00:00",
+     "source": "Peradaban.id",
+     "status": "verified-fetch",
+     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
+     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
     },
     {
      "published": "2026-11-19T03:29:34+00:00",
@@ -153,7 +139,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T16:43:49.459170+00:00",
+ "generated_at": "2026-11-20T17:42:05.039232+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
