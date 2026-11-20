@@ -1850,8 +1850,10 @@ additively) are untouched here.
 * **Letters are unreliable under concurrency.** `F` (taken by `arena-400634c3`),
   `G` (`arena-e1a76b9d`) and `H` (`arena-479bbd2f` **and** `arena-a3137708`) were
   each claimed by more than one session; `D` is used by three sections. This section
-  was opened as "Board F" and re-lettered to **I** during the rebase, the same way
-  the other two collided sessions handled it. Suggest the integration session either
+  was opened as **F**, re-lettered to **I** on the first rebase, and re-lettered to
+  **J** on the second because `arena-479bbd2f` claimed `I` in PR #55 while this
+  branch sat open — three of the last five letter choices collided inside ~40
+  minutes, and a letter chosen at claim time is simply not stable. Suggest the integration session either
   re-key sections by session id (letters are cosmetic) or state a "one claim per
   letter, check `git log -p COORDINATION.md` before choosing" rule.
 * **File claims did not cover a shared test.** Two sessions independently fixed
