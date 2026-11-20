@@ -1,7 +1,7 @@
 {
-  "last_run_at": "2026-11-20T13:36:15.059Z",
-  "duration_ms": 36265,
-  "api_calls": 241,
+  "last_run_at": "2026-11-20T13:49:34.137Z",
+  "duration_ms": 35280,
+  "api_calls": 247,
   "api_errors": 0,
   "errors": [],
   "calls": {
@@ -14,9 +14,39 @@
   },
   "exchange_active": true,
   "trading_active": true,
-  "runs": 6,
+  "runs": 7,
   "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
   "ws_base": "wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2",
+  "cors": {
+    "checked_at": "2026-11-20T13:48:59.152Z",
+    "endpoint": "https://external-api.demo.kalshi.co/trade-api/v2/markets",
+    "method": "OPTIONS preflight (Origin + Access-Control-Request-Method: GET)",
+    "results": [
+      {
+        "origin": "https://wingbangboozle1-lang.github.io",
+        "reachable": true,
+        "status": 204,
+        "allow_origin": "https://wingbangboozle1-lang.github.io",
+        "allow_methods": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS",
+        "allowed": true,
+        "duration_ms": 98,
+        "error": null
+      },
+      {
+        "origin": "https://wingbangboozle1-lang.github.io/Trade2",
+        "reachable": true,
+        "status": 204,
+        "allow_origin": "https://wingbangboozle1-lang.github.io/Trade2",
+        "allow_methods": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS",
+        "allowed": true,
+        "duration_ms": 80,
+        "error": null
+      }
+    ],
+    "host_reachable": true,
+    "browser_direct_allowed": true,
+    "verdict": "allowed — the Kalshi demo API returned an Access-Control-Allow-Origin header matching the published site origin"
+  },
   "notes": [
     "All market data is read from the public Kalshi demo REST API (no credentials).",
     "Orderbook and candle counts reflect the per-run request budget in collector/src/config.js."

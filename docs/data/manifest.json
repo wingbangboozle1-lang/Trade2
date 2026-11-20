@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T13:36:15.059Z",
+  "generated_at": "2026-11-20T13:49:34.136Z",
   "generator": "collector/src/collect.js",
   "source": {
     "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
@@ -17,13 +17,13 @@
     "events": 12,
     "orderbooks": 60,
     "candles_series": 60,
-    "alerts_total": 52,
+    "alerts_total": 58,
     "alerts_this_run": 6,
     "trade_feed_markets": 18,
-    "trade_prints": 135,
+    "trade_prints": 144,
     "trades_total": 800,
-    "trades_open": 9,
-    "trades_closed": 791
+    "trades_open": 8,
+    "trades_closed": 792
   },
   "exchange_status": {
     "exchange_active": true,
