@@ -1,0 +1,90 @@
+{
+  "_about": "Source register. Every URL here was opened or downloaded in session arena-5788e385 on 2026-11-20 (date of verification). Values in the dashboard are fetched at run time from the Kalshi public API; this register records what was checked and how.",
+  "checked_on": "2026-11-20",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Kalshi API documentation — Welcome",
+      "url": "https://docs.kalshi.com/welcome",
+      "used_for": "Entry point; confirms the REST and WebSocket spec downloads and the Developer Agreement link.",
+      "verification": "Page text fetched and read (chunk 0 of 4). Links to openapi.yaml, asyncapi.yaml and the demo/API-key pages confirmed on the page."
+    },
+    {
+      "id": "S2",
+      "title": "Kalshi Trading Fee Schedule (PDF), 'Last updated and effective: July 7, 2026'",
+      "url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+      "used_for": "Taker and maker fee formulas; General Trading Fees Table (21 price rows); Non-Standard Fees table (series tickers KXAAAGASM, KXPGATOUR, KXPGARYDER, KXPGASOLHEIM, KXBTCMAX150, KXBTCY, KXETHY, KXELECTIRAN, KXEMMY*, and others); 'There is no settlement fee.'",
+      "verification": "PDF text layer fetched (2 chunks). Every General Trading Fees Table row (1-contract and 100-contract columns) is asserted in scripts/test/fees.test.mjs; the test passes. Some table text is scrambled in the PDF text layer (see flags F-03)."
+    },
+    {
+      "id": "S3",
+      "title": "Kalshi docs — API Environments and Endpoints",
+      "url": "https://docs.kalshi.com/getting_started/api_environments",
+      "used_for": "Production and demo REST base URLs (external-api.kalshi.com / external-api.demo.kalshi.co), WebSocket URLs, and the rule that request signing uses the path without query parameters.",
+      "verification": "Page fetched and read (chunk 0 of 6, which contains the REST, WebSocket, external-feed and request-signing sections). The demo REST and WebSocket URLs in the project brief match this page exactly."
+    },
+    {
+      "id": "S4",
+      "title": "Kalshi docs — Test in the Demo Environment",
+      "url": "https://docs.kalshi.com/getting_started/demo_env",
+      "used_for": "Demo host recommendation; warning that demo prices 'may not be reflective of those in real markets'.",
+      "verification": "Page fetched and read (chunk 0 of 4)."
+    },
+    {
+      "id": "S5",
+      "title": "Kalshi docs — Rate Limits and Tiers",
+      "url": "https://docs.kalshi.com/getting_started/rate_limits",
+      "used_for": "Token budgets; 429 handling; the statement that unauthenticated public requests have separate limits.",
+      "verification": "Page fetched and read (chunk 0 of 11). The numeric limit for unauthenticated requests is NOT stated on this page (see flag F-06)."
+    },
+    {
+      "id": "S6",
+      "title": "Kalshi docs — API Keys (key types, signing, timestamp rule)",
+      "url": "https://docs.kalshi.com/getting_started/api_keys",
+      "used_for": "Signed-request headers KALSHI-ACCESS-KEY / -TIMESTAMP / -SIGNATURE; signature over timestamp+method+path (no query); Ed25519 or RSA-PSS SHA-256; 30-second timestamp tolerance.",
+      "verification": "Page fetched and read (chunk 0 of 16). Used for the demo-portfolio code path (not yet activated; no keys supplied)."
+    },
+    {
+      "id": "S7",
+      "title": "Kalshi docs — Get Market Orderbook",
+      "url": "https://docs.kalshi.com/api-reference/market/get-market-orderbook",
+      "used_for": "Order-book endpoint and response shape (orderbook_fp.yes_dollars / no_dollars as [price, count] string pairs); depth parameter 0–100; description 'shows all active bid orders for both yes and no sides'.",
+      "verification": "Page fetched and read (chunk 0 of 10)."
+    },
+    {
+      "id": "S8",
+      "title": "Kalshi docs — WebSocket Connection",
+      "url": "https://docs.kalshi.com/websockets/websocket-connection",
+      "used_for": "Streaming option for the suggestions page. States 'API key authentication required for WebSocket connections', so streaming cannot be run from a static page.",
+      "verification": "Page fetched and read (chunk 0 of 39)."
+    },
+    {
+      "id": "S9",
+      "title": "kalshi-typescript 3.36.0 — official OpenAPI-generated SDK (npm)",
+      "url": "https://www.npmjs.com/package/kalshi-typescript",
+      "used_for": "Endpoint paths and query parameters (MarketApi, EventsApi, ExchangeApi, SearchApi docs), model fields (Market, EventData, Series, Trade, OrderbookCountFp, FeeType), status enums, and the default base path.",
+      "verification": "Tarball downloaded from registry.npmjs.org (integrity sha512-4M0wCVVY…, from registry metadata) and inspected: dist/models/market.d.ts, event-data.d.ts, series.d.ts, fee-type.d.ts, trade.d.ts, orderbook-count-fp.d.ts; docs/MarketApi.md, EventsApi.md, SearchApi.md, ExchangeStatus.md; dist/base.js (BASE_PATH). The SDK header says it is generated from the Kalshi Trade API OpenAPI document, version 3.36.0."
+    },
+    {
+      "id": "S10",
+      "title": "kalshi-python on PyPI (author: Kalshi Support)",
+      "url": "https://pypi.org/project/kalshi-python/",
+      "used_for": "Cross-check that a second official SDK exists and is published by Kalshi Support.",
+      "verification": "PyPI JSON metadata fetched (author 'Kalshi Support', description 'Complete API for the Kalshi trading platform … auto generated'). Package contents not inspected."
+    },
+    {
+      "id": "S11",
+      "title": "Kalshi GitHub organisation",
+      "url": "https://github.com/Kalshi",
+      "used_for": "Cross-check of the Kalshi org identity; lists public repos such as kalshi-starter-code-python.",
+      "verification": "Repository list read through the GitHub API (gh api orgs/Kalshi/repos). No code from these repos was used."
+    },
+    {
+      "id": "S12",
+      "title": "Kalshi Trade API — live market data (public endpoints, production host)",
+      "url": "https://external-api.kalshi.com/trade-api/v2/exchange/status",
+      "used_for": "Runtime data for the dashboard: exchange status, series, events with nested markets, market detail, order books, categories. Every table row links to the exact JSON URL it came from.",
+      "verification": "Not reachable from the build sandbox (its network allow-list excludes Kalshi hosts). Data is fetched by the GitHub Actions workflow on GitHub-hosted runners; the workflow's status.json records any errors per endpoint. Check the run log and status.json to verify."
+    }
+  ]
+}

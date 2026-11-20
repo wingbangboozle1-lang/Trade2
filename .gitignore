@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 docs/data/*.tmp
 collect.log
+.venv/
+/tmp/
+*.tmp
+data/portfolio_state.json.tmp

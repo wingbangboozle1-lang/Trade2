@@ -1,59 +1,87 @@
-# Trade2 — Kalshi Demo Dashboard
+# Trade2 — Kalshi demo monitoring desk
 
-Live dashboard for the **highest-dollar-volume events on the Kalshi demo exchange**, limited to five topics:
-**gas prices · elections · culture · crypto · golf**.
+A live monitoring dashboard for **Kalshi's demo environment** covering five
+topics only — gas prices, elections, culture, crypto and golf.
 
-**Live site:** https://wingbangboozle1-lang.github.io/Trade2/
+**Live site:** <https://wingbangboozle1-lang.github.io/Trade2/>
 
-## What's here
+## What it does
+
+| Capability | Status |
+| - | - |
+| Highest-dollar open events per topic, ranked by official open-interest value | live |
+| Alert on any price swing ≥ **$0.10** either way, as two scrolling chats (all events, model shortlist) | live |
+| Price graph with seconds / minutes / hours windows and live order-book depth (contracts at each price) | live |
+| Event tracked until it resolves, with the official YES/NO result and settlement value | live |
+| Automated simulated trading with four named strategies, scored by strategy, topic and outcome | simulated |
+| Placing orders on a demo account | implemented, inert without credentials |
+
+## How to run it
+
+```bash
+python3 -m collector.collector      # one collection pass -> data/live.json
+python3 -m site_build.build         # regenerate every page from that snapshot
+python3 server/app.py               # local dashboard on :8000 (serves the site + SSE)
+python3 -m unittest discover -s tests -v
+python3 tools/linkcheck.py          # fail on a broken internal link
+```
+
+No third-party packages are needed for the collector, site build or tests.
+`cryptography` is only required for signed requests.
+
+## Optional: enable real demo trading
+
+The simulator is used unless credentials exist. To switch the order adapter on:
+
+```bash
+export KALSHI_API_KEY_ID=<key id from Account & security -> API Keys>
+export KALSHI_PRIVATE_KEY_PATH=/path/to/kalshi-key.pem
+export KALSHI_ENV=demo
+```
+
+Signing follows the [official guide](https://docs.kalshi.com/getting_started/quick_start_authenticated_requests.md).
+
+## Documents
+
+* [EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md) — what this is, with every source linked
+* [VERIFICATION.md](VERIFICATION.md) — line-by-line check log
+* [REQUIREMENTS.md](REQUIREMENTS.md) — requirement → implementation → evidence
+* [COORDINATION.md](COORDINATION.md) — shared task board across sessions
+* [methodology.html](methodology.html) — the published rules
+* [review.html](review.html) — flagged irregularities and unverified items
+
+## Guardrails
+
+Every value shown comes from a documented Kalshi endpoint and links to it.
+Unverifiable values are blank and labelled **UNVERIFIED** — never inferred.
+Paper trades are labelled SIMULATED everywhere they appear.
+
+---
+
+## Second implementation (session `arena-c0205283`, PR #11)
+
+A parallel, independently verified implementation lives alongside the desk above.
+It keeps its site under `docs/` so root files owned by other sessions are never
+touched: **<https://wingbangboozle1-lang.github.io/Trade2/docs/>**.
 
 | Path | Purpose |
 |---|---|
-| `collector/` | Pulls the public demo REST API (markets, series, order books, candlesticks, settlements) and writes `docs/data/*.json`. Topic matchers in `collector/topics.py`. |
+| `collector/` (client.py, runner.py, news.py, kalshi.py) | Pulls the public demo REST API (markets, series, order books, candlesticks, settlements) and writes `docs/data/*.json`. Topic matchers in `collector/topics.py` (shared module — both pipelines import it). |
 | `trading/` | Automated **simulated** trading engine: official fee formula, three strategies, settlement grading, stats by strategy & trade type. |
-| `docs/` | The GitHub Pages site: landing page, one subpage per topic, portfolio, executive summary, **Flagged for Review**. |
+| `docs/` | GitHub Pages site: landing page, one subpage per topic, portfolio, executive summary, **Flagged for Review** (`docs/flagged.html`). |
 | `docs/verification/` | Verification ledger — every published claim mapped to an official source URL. |
-| `live/server.py` | Optional local server: serves the site with a 5s SSE live stream straight from the demo API. |
+| `live/server.py` | Optional local server: serves `docs/` with a 5s SSE live stream straight from the demo API. |
 | `.github/workflows/collector.yml` | Tests on every push; live collection + data commit every 15 minutes (schedule) or on manual dispatch. |
-| `COORDINATION.md` | Shared task board for parallel sessions (claims, status, log, PR record). |
-| `EXECUTIVE_SUMMARY.md` | Executive summary of endpoints, rules, model and gaps. |
-
-## Data pipeline
-
-```
-GitHub Actions (*/15 min)  →  collector.runner  →  docs/data/*.json  →  trading.engine  →  portfolio.json
-                                        ↓
-                        GitHub Pages site (polls JSON every 20s)
-```
-
-Every table row on the site links the exact official API endpoint it came from. Values that cannot be
-confirmed from an official source are left **blank** and flagged — never inferred.
-
-## Run locally
 
 ```bash
 python3 -m collector.runner            # one collection pass (needs network egress)
 python3 -m trading.engine              # simulated trading cycle against collected data
-python3 live/server.py                 # site + 5s live stream on http://localhost:8080
+python3 live/server.py                 # docs/ site + 5s live stream on :8080
+python3 -m trading.test_engine         # fee formula vs all 42 official table rows
+python3 -m collector.test_runner       # end-to-end collector on captured API payloads
+npm run test:site                      # jsdom UI smoke against docs/data
 ```
 
-## Tests (also run in CI before any data is published)
+Full claim-by-claim ledger for this implementation: [`docs/verification/sources.md`](docs/verification/sources.md) ·
+Flagged items: [`docs/flagged.html`](docs/flagged.html)
 
-```bash
-python3 -m trading.test_engine    # fee formula vs all 42 rows of the official PDF table + engine rules
-python3 -m collector.test_runner  # end-to-end collector on real captured API payloads
-npm install && python3 test/gen_fixtures.py /tmp/fx && node test/site_smoke.mjs /tmp/fx   # jsdom UI smoke
-```
-
-## Key official sources
-
-- Demo REST: `https://external-api.demo.kalshi.co/trade-api/v2` — [docs](https://docs.kalshi.com/getting_started/demo_env)
-- Demo WebSocket: `wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2` — [docs](https://docs.kalshi.com/getting_started/quick_start_websockets)
-- Fee schedule (PDF, eff. 2026-07-07): https://kalshi.com/docs/kalshi-fee-schedule.pdf
-- Settlement rules: https://docs.kalshi.com/getting_started/market_settlement
-
-Full claim-by-claim ledger: [`docs/verification/sources.md`](docs/verification/sources.md) ·
-Open items: [Flagged for Review](https://wingbangboozle1-lang.github.io/Trade2/flagged.html)
-
-> Simulated trading only — no API credentials exist in this project (FL-01), no orders are sent, and demo
-> prices may not reflect real markets. Not investment advice.

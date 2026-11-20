@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <title>Executive summary — Market Desk</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark">K</span
+          ><span
+            ><b>Market Desk</b><small>Kalshi · Demo monitor</small></span
+          ></a
+        >
+        <div class="side-label">Workspace</div>
+        <nav class="side-nav">
+          <a href="index.html"><span>◫</span> Overview</a
+          ><a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a
+          ><a href="categories/elections.html"><span>◉</span> Elections</a
+          ><a href="categories/culture.html"><span>✳</span> Culture</a
+          ><a href="categories/crypto.html"><span>₿</span> Crypto</a
+          ><a href="categories/golf.html"><span>⛳</span> Golf</a>
+        </nav>
+        <div class="side-label">Research</div>
+        <nav class="side-nav">
+          <a class="active" href="summary.html"
+            ><span>▤</span> Executive summary</a
+          ><a href="review.html"><span>⚑</span> Flagged for review</a>
+        </nav>
+        <div class="sidebar-foot">
+          <span class="dot"></span><span>Demo environment only</span
+          ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
+            >Open Kalshi demo ↗</a
+          >
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb">
+            <a href="index.html">Workspace</a> <span>/</span> Executive summary
+          </div>
+          <div class="top-actions">
+            <span class="live-pill"><i></i> SOURCE REVIEW</span>
+          </div>
+        </header>
+        <section class="category-hero">
+          <div class="eyebrow">
+            PROJECT BRIEF · VERIFIED OFFICIAL REFERENCES
+          </div>
+          <h1>Executive summary</h1>
+          <p>
+            What this dashboard can confirm, how it works, and what remains
+            deliberately unconnected.
+          </p>
+        </section>
+        <section class="panel text-panel">
+          <h2>At a glance</h2>
+          <p>
+            Market Desk is a GitHub Pages-ready, client-side Kalshi demo
+            monitor. It scans open events from the recommended demo Trade API,
+            filters the requested topics (gas prices, elections, culture,
+            crypto, golf), ranks rows by a calculated open-interest value
+            (open_interest_fp × notional_value_dollars) when both official
+            fields are available, and uses blank/flagged cells instead of
+            guessing missing values. The API defines notional_value_dollars as
+            one contract’s settlement value, so the product is not traded-dollar
+            volume. Each market row links to its official demo API resource.
+          </p>
+          <p>
+            The browser refreshes event snapshots every 15 seconds. Sudden
+            YES-bid moves of at least $0.10 are recorded only when successive
+            observations exist in this browser; historical changes before the
+            dashboard starts are not reconstructed. The chart plots recorded
+            YES-bid observations, and the orderbook panel requests five official
+            bid levels per side for the selected market. A separate
+            settled-events request (up to one page of 200, refreshed at least
+            once per minute) displays official YES/NO results when returned; it
+            is not a complete resolution archive.
+          </p>
+          <p>
+            Two alert feeds are available: all observed threshold moves and an
+            experimental shortlist. The shortlist is not a returns predictor: it
+            passes a move only when calculated open-interest value is present
+            and positive. This is an experimental activity/size screen, not an
+            expected-return model. Optional “Momentum replay” simulates a
+            one-sided YES paper entry after an upward threshold move, with a
+            one-hour market cooldown. It never submits a Kalshi order. Simulated
+            outcomes and trades are kept in this browser’s local storage.
+          </p>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div>
+              <span class="section-icon green">✓</span>
+              <div>
+                <h2>Official source register</h2>
+                <p>Every factual row has a direct source for manual review</p>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="source-table">
+              <thead>
+                <tr>
+                  <th>Detail</th>
+                  <th>Verified finding</th>
+                  <th>Official source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Recommended demo REST root</td>
+                  <td>https://external-api.demo.kalshi.co/trade-api/v2</td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/demo_env"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Test in the Demo Environment ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Supported demo REST alternative</td>
+                  <td>https://demo-api.kalshi.co/trade-api/v2</td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/api_environments"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — API Environments and Endpoints ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Recommended demo WebSocket root</td>
+                  <td>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/api_environments"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — API Environments and Endpoints ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Demo market data limitation</td>
+                  <td>
+                    Kalshi says demo markets use mock funds and their
+                    price/behavior may not reflect real markets; demo
+                    credentials are separate from production.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/demo_env"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Test in the Demo Environment ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Nested event markets</td>
+                  <td>
+                    GET /events supports `with_nested_markets=true`; the
+                    official events reference documents a 200-event page maximum
+                    and cursor pagination.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/events/get-events"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Get Events reference ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Market quote fields</td>
+                  <td>
+                    Market schema documents YES bid, best-quote size, volume,
+                    open-interest contract count, single-contract settlement
+                    value, status, and result fields. Unavailable inputs remain
+                    unfilled rather than estimated.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/market/get-markets"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Get Markets reference ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Displayed open-interest value</td>
+                  <td>
+                    This dashboard calculates open_interest_fp ×
+                    notional_value_dollars only when both are returned. Kalshi's
+                    OpenAPI schema describes notional_value_dollars as the value
+                    of one contract at settlement; the product is an
+                    open-interest notional measure, not traded-dollar volume.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/openapi.yaml"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi OpenAPI schema ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Orderbook convention</td>
+                  <td>
+                    Orderbook endpoint returns bid levels for YES and NO, with
+                    price and contract quantity. It does not return asks as a
+                    separate book; NO bids imply YES asks under binary pricing.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/orderbook_responses"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Orderbook Responses ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>WebSocket real-time update interface</td>
+                  <td>
+                    Kalshi documents ticker, orderbook delta, and trade
+                    channels; the quick-start shows authentication headers and
+                    demo connection setup.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_websockets"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Quick Start: WebSockets ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Real demo account order placement</td>
+                  <td>
+                    Kalshi documents signed, authenticated API requests for
+                    order creation. This static site does not accept keys and
+                    does not place account orders.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_create_order"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Quick Start: Create your first order ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Topic selection</td>
+                  <td>
+                    Topic mapping is this project's explicit keyword list over
+                    API event/category/ticker and market title/ticker text. It
+                    is a local classification rule, not an official Kalshi
+                    taxonomy.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/events/get-events"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi — Get Events schema and filters ↗</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel text-panel">
+          <h2>Operational design and next steps</h2>
+          <ul>
+            <li>
+              Use WebSockets for genuine low-latency ticker/orderbook updates
+              after a secure authenticated service is available. Current
+              static-only polling cannot promise sub-second alert delivery.
+            </li>
+            <li>
+              Add a server-side, credential-safe service for demo account
+              balance, order status, fills, portfolio history, and optionally
+              demo order placement; keep private signing keys out of GitHub
+              Pages and browser storage.
+            </li>
+            <li>
+              Persist quote history in a database if alerts need continuity
+              across devices, browsers, deployments, or page closures. Current
+              history and paper ledger are local to one browser.
+            </li>
+            <li>
+              For jump context, wire an event/milestone feed to user-reviewed
+              external sources; no causal news links are inferred or fabricated
+              by this dashboard.
+            </li>
+            <li>
+              Validate the category matcher against current open demo event data
+              and review false positives/omissions. It scans at most four pages
+              (up to 800 events) per refresh, so completeness is not claimed.
+            </li>
+            <li>
+              For strategy evaluation, store entry/exit assumptions, fees,
+              fill/slippage rules, timestamps, and resolved outcomes; separate
+              in-sample screening from out-of-sample results. The current
+              shortlist has no demonstrated ROI.
+            </li>
+          </ul>
+        </section>
+        <!-- SIMULATED-PORTFOLIO-START
+<!-- generated:performance -->
+        <section class="panel" id="performance">
+          <div class="panel-title">
+            <div><span class="section-icon violet">⇄</span><div>
+              <h2>Simulated portfolio performance</h2>
+              <p>Paper ledger · every position, including losses</p></div></div>
+            <span class="tag tag-purple">SIMULATED</span>
+          </div>
+          <section class="stats-grid compact">
+            <article class="stat-card"><span>Equity</span>
+              <strong>$10,000.00</strong>
+              <small>from $10,000.00</small></article>
+            <article class="stat-card"><span>Realised P&amp;L</span>
+              <strong>$0.00</strong>
+              <small>0.00 settled</small></article>
+            <article class="stat-card"><span>Win rate</span>
+              <strong></strong>
+              <small>0.00W / 0.00L</small></article>
+            <article class="stat-card"><span>Fees paid</span>
+              <strong>$0.00</strong>
+              <small>official quadratic fee</small></article>
+            <article class="stat-card"><span>Max drawdown</span>
+              <strong>0.0%</strong>
+              <small>on simulated equity</small></article>
+          </section>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Strategy</th><th>Trades</th><th>Wins</th><th>Losses</th>
+                <th>Win rate</th><th>Realised</th><th>Expectancy</th>
+                <th>ROI on cost</th><th>Fees</th></tr></thead>
+              <tbody><tr><td><b>Momentum follow</b><small class="ticker">Enter in the direction of a &gt;= $0.10 swing when the post-swing price still leaves &gt;= 2 cents of modelled edge after fees. Holds to settlement.</small></td><td>0.00</td><td>0.00</td><td>0.00</td><td></td><td>$0.00</td><td><span class="flag-badge">UNVERIFIED</span></td><td></td><td>$0.00</td></tr><tr><td><b>Mean reversion</b><small class="ticker">Take the opposite side of a swing when the model&#x27;s shrunk fair value crosses back through 0.50.</small></td><td>0.00</td><td>0.00</td><td>0.00</td><td></td><td>$0.00</td><td><span class="flag-badge">UNVERIFIED</span></td><td></td><td>$0.00</td></tr><tr><td><b>Quiet value</b><small class="ticker">No swing needed. Buy the side with the largest modelled edge after fees whenever the spread is tight and there is real book depth.</small></td><td>0.00</td><td>0.00</td><td>0.00</td><td></td><td>$0.00</td><td><span class="flag-badge">UNVERIFIED</span></td><td></td><td>$0.00</td></tr><tr><td><b>Resolution hold</b><small class="ticker">Buy the side already trading above 0.85 with a tight spread, betting on a clean yes/no resolution. Small payout, frequent wins, occasional total loss.</small></td><td>0.00</td><td>0.00</td><td>0.00</td><td></td><td>$0.00</td><td><span class="flag-badge">UNVERIFIED</span></td><td></td><td>$0.00</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Categorised by strategy type</span>
+          <span>Blank cells mean the strategy has not traded yet</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▦</span><div>
+              <h2>Results by topic</h2><p>Which subject areas the model is
+              actually good at</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Topic</th><th>Trades</th><th>Win rate</th>
+              <th>Realised</th><th>Expectancy</th></tr></thead>
+              <tbody><tr><td colspan="5" class="empty-state">No settled trades yet</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">✓</span><div>
+              <h2>Settled positions</h2><p>How each simulated trade actually
+              resolved</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Market</th><th>Strategy</th><th>Side</th>
+              <th>Entry</th><th>Result</th><th>P&amp;L</th></tr></thead>
+              <tbody><tr><td colspan="6" class="empty-state">No simulated position has resolved yet. The ledger fills as tracked markets settle.</td></tr></tbody>
+            </table>
+          </div>
+        </section><!-- SIMULATED-PORTFOLIO-END -->
+        <footer class="site-footer">
+          <span
+            >Prepared from Kalshi API documentation checked on 2026-11-20.</span
+          ><span
+            ><a href="index.html">Dashboard</a
+            ><a href="review.html">Flagged for review</a></span
+          >
+        </footer>
+      </main>
+    </div>
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>

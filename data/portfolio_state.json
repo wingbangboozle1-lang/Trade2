@@ -1,0 +1,75 @@
+{
+ "bankroll": 10000.0,
+ "starting_bankroll": 10000.0,
+ "positions": [],
+ "trades": [],
+ "equity_curve": [
+  {
+   "ts": 1795182269.551734,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795182664.8462157,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795183280.291985,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795183771.820632,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795184300.4428036,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795185338.5286365,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795186001.9476752,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795186309.1917968,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795186727.0767827,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795187001.2090914,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  },
+  {
+   "ts": 1795187274.0331972,
+   "equity": 10000.0,
+   "realized": 0,
+   "open": 0
+  }
+ ],
+ "started_at": 1795182592.2117689
+}

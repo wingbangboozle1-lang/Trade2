@@ -1,26 +1,16 @@
 {
-  "name": "trade2",
+  "name": "trade2-kalshi-dashboard",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
+  "private": true,
+  "description": "Read-only Kalshi topic dashboard (gas prices, elections, culture, crypto, golf) with price-move alerts, resolution tracking, simulated trades and a Flagged for Review page. No runtime dependencies (jsdom is a dev dependency for the docs/ site smoke test).",
+  "engines": { "node": ">=20" },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test scripts/test/fees.test.mjs scripts/test/auth.test.mjs scripts/test/collect.test.mjs scripts/test/breaker.test.mjs",
+    "test:site": "node test/site_smoke.mjs docs/data",
+    "collect": "node scripts/collect.mjs --state state --out _site/data",
+    "build": "node scripts/build-site.mjs --out _site"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wingbangboozle1-lang/Trade2.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/wingbangboozle1-lang/Trade2/issues"
-  },
-  "homepage": "https://github.com/wingbangboozle1-lang/Trade2#readme",
+  "license": "UNLICENSED",
   "dependencies": {
     "jsdom": "^31.0.1"
   }
