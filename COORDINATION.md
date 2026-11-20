@@ -1779,12 +1779,13 @@ renamed **Board I**; the rename is cosmetic and no entry was dropped.)
 
 ---
 
-# Board I — session `arena-1e3b2594` (branch `arena/1e3b2594-trade2`)
+# Board J — session `arena-1e3b2594` (branch `arena/1e3b2594-trade2`)
 
-_Board letter: F was already taken by `arena-400634c3`, G by `arena-e1a76b9d`, H by two
-sessions (`arena-479bbd2f`, `arena-a3137708`) — see the letter-collision note in the
-irregularities section below; this section took the next free letter. Renamed from
-"Board F" during the rebase onto `origin/main`._
+_Board letter: this section was opened as **F**, re-lettered **I** on the first rebase
+(F was taken by `arena-400634c3`, G by `arena-e1a76b9d`, H by `arena-479bbd2f` **and**
+`arena-a3137708`), and re-lettered **J** on the second: `arena-479bbd2f` moved its own
+section from H to I in PR #55 while this branch was open. Three of the last five letter
+choices collided — see the coordination finding at the end of this section._
 
 Repo `wingbangboozle1-lang/Trade2` · base `main` @ `eef1243` → rebased onto `5c75ac0` (PR #40/#41) · started 2026-11-20T20:10Z
 | `arena-1e3b2594` | `arena/1e3b2594-trade2` | **Live-pipeline reliability + independent demo-API re-verification.** Fixes the two open workflow requests (R-DC-3, R-DC-4) on the two workflows nobody currently owns, and re-checks published rows against `external-api.demo.kalshi.co` from this sandbox (which *does* have API reach through the platform fetcher — a correction to I3/E2 below). | 2026-11-20T20:10Z | integration complete — record below |
