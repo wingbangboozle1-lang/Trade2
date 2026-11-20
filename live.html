@@ -31,6 +31,11 @@
           <a href="methodology.html"><span>⚙</span> Methodology</a>
           <a href="review.html"><span>⚑</span> Flagged for review</a>
         </nav>
+        <div class="side-label">Other workbooks</div>
+        <nav class="side-nav" aria-label="Other workbooks">
+          <a href="kalshi-dashboard/"><span>◱</span> Topic workbook</a>
+          <a href="docs/"><span>◰</span> Live-data workbook</a>
+        </nav>
         <div class="sidebar-foot">
           <span class="dot"></span><span>Public demo data</span
           ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
@@ -64,7 +69,58 @@
                 <p id="chartSubtitle">Select a market from the table or a chat row</p>
               </div></div>
               <div class="control-row">
-                <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option></select>
+                <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option>
+                  <optgroup label="Gas prices">
+                  <option value="KXAAAGASM-26NOV30-4.70" data-series="KXAAAGASM">Above 4.70</option>
+                  <option value="KXAAAGASM-26NOV30-4.50" data-series="KXAAAGASM">Above 4.50</option>
+                  <option value="KXAAAGASM-26NOV30-4.80" data-series="KXAAAGASM">Above 4.80</option>
+                  <option value="KXAAAGASM-26NOV30-4.60" data-series="KXAAAGASM">Above 4.60</option>
+                  <option value="KXAAAGASM-26NOV30-4.40" data-series="KXAAAGASM">Above 4.40</option>
+                  <option value="KXAAAGASM-26NOV30-4.00" data-series="KXAAAGASM">Above 4.00</option>
+                  <option value="KXAAAGASW-26NOV23-3.6400" data-series="KXAAAGASW">Above 3.6400</option>
+                  <option value="KXAAAGASM-26NOV30-4.30" data-series="KXAAAGASM">Above 4.30</option>
+                  </optgroup>
+                  <optgroup label="Elections">
+                  <option value="KXPRESNOMD-28-RW" data-series="KXPRESNOMD">Raphael Warnock</option>
+                  <option value="KXPRESNOMD-28-GW" data-series="KXPRESNOMD">Gretchen Whitmer</option>
+                  <option value="KXPRESNOMD-28-SAS" data-series="KXPRESNOMD">Stephen A. Smith</option>
+                  <option value="KXPRESNOMD-28-ESLO" data-series="KXPRESNOMD">Elissa Slotkin</option>
+                  <option value="KXPRESNOMD-28-HBID" data-series="KXPRESNOMD">Hunter Biden</option>
+                  <option value="KXPRESNOMD-28-BOBA" data-series="KXPRESNOMD">Barack Obama</option>
+                  <option value="KXPRESNOMD-28-BS" data-series="KXPRESNOMD">Bernie Sanders</option>
+                  <option value="KXPRESNOMD-28-JSTE" data-series="KXPRESNOMD">Jon Stewart</option>
+                  </optgroup>
+                  <optgroup label="Culture">
+                  <option value="KXCRITICSFOREIGN-27-LAB" data-series="KXCRITICSFOREIGN">La Bola Negra</option>
+                  <option value="KXCRITICSFOREIGN-27-FJO" data-series="KXCRITICSFOREIGN">Fjord</option>
+                  <option value="KXCRITICSFOREIGN-27-ROS" data-series="KXCRITICSFOREIGN">Rose</option>
+                  <option value="KXPERFORMBONDSONG-35-COL" data-series="KXPERFORMBONDSONG">Coldplay</option>
+                  <option value="KXPERFORMBONDSONG-35-SAM" data-series="KXPERFORMBONDSONG">Sam Fender</option>
+                  <option value="KXPERFORMBONDSONG-35-LAD" data-series="KXPERFORMBONDSONG">Lady Gaga</option>
+                  <option value="KXGRAMMYNOMNAOTY-68-DTMF" data-series="KXGRAMMYNOMNAOTY">Debi Tirar Mas Fotos</option>
+                  <option value="KXGRAMMYNOMNAOTY-68-MM" data-series="KXGRAMMYNOMNAOTY">Moon Music</option>
+                  </optgroup>
+                  <optgroup label="Crypto">
+                  <option value="KXBTCY-27JAN0100-B127500" data-series="KXBTCY">125,000 to 129,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B142500" data-series="KXBTCY">140,000 to 144,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B47500" data-series="KXBTCY">45,000 to 49,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B42500" data-series="KXBTCY">40,000 to 44,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B22500" data-series="KXBTCY">20,000 to 24,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B122500" data-series="KXBTCY">120,000 to 124,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B117500" data-series="KXBTCY">115,000 to 119,999.99</option>
+                  <option value="KXBTCY-27JAN0100-B27500" data-series="KXBTCY">25,000 to 29,999.99</option>
+                  </optgroup>
+                  <optgroup label="Golf">
+                  <option value="KXPGATOUR-THRC26-TMOO" data-series="KXPGATOUR">Taylor Moore</option>
+                  <option value="KXPGATOUR-MAST27-MFIT" data-series="KXPGATOUR">Matt Fitzpatrick</option>
+                  <option value="KXPGATOUR-THRC26-SSTR" data-series="KXPGATOUR">Sepp Straka</option>
+                  <option value="KXPGATOUR-THRC26-KROY" data-series="KXPGATOUR">Kevin Roy</option>
+                  <option value="KXPGATOUR-THRC26-MPEN" data-series="KXPGATOUR">Marco Penge</option>
+                  <option value="KXPGATOUR-THRC26-MPAV" data-series="KXPGATOUR">Matthieu Pavon</option>
+                  <option value="KXPGATOUR-THRC26-SSTE" data-series="KXPGATOUR">Sam Stevens</option>
+                  <option value="KXPGATOUR-THRC26-CBLA" data-series="KXPGATOUR">Chandler Blanchet</option>
+                  </optgroup>
+                </select>
                 <div class="filter-tabs" id="windowTabs">
                   <button data-window="seconds">Seconds</button>
                   <button data-window="minutes" class="selected">Minutes</button>
@@ -132,8 +188,8 @@
             price of a market moves by at least <b>$0.10</b> either way
             <i>and</i> the quote it moves to is a real market price: two-sided,
             with a bid–ask width of at most <b>$0.50</b>.
-            A one-sided quote is still shown but is labelled
-            <span class="flag-badge">ONE-SIDED</span>.</p>
+            A quote with only one side is not published either: with no
+            opposite side there is nothing to check it against.</p>
             <p style="margin:0; color:#7b8884; font-size:11px;">Without that
             gate the feed filled with phantom crashes: e.g.
             <code>KXPRESNOMD-28-AKLO</code> has a real book of

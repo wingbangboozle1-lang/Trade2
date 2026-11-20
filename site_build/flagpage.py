@@ -208,8 +208,8 @@ STANDING = [
                  "lone $0.8030 ask prints for one minute and reverts, repeatedly. "
                  "Reading that print as a price produced '80 cent crashes' in the "
                  "alert feed. Alerts now require a two-sided quote no wider than "
-                 "50 cents; anything else is labelled ONE-SIDED or logged on this "
-                 "page with its API link."),
+                 "50 cents, and one-sided quotes are not published at all. "
+                 "Anything held back is listed on this page with its API link."),
         "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
     },
     {

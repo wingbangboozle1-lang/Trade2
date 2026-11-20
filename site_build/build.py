@@ -154,6 +154,11 @@ def page(title: str, active: str, body: str, prefix: str = "",
         <nav class="side-nav" aria-label="Research">
           {research_nav(active, prefix)}
         </nav>
+        <div class="side-label">Other workbooks</div>
+        <nav class="side-nav" aria-label="Other workbooks">
+          <a href="{prefix}kalshi-dashboard/"><span>◱</span> Topic workbook</a>
+          <a href="{prefix}docs/"><span>◰</span> Live-data workbook</a>
+        </nav>
         <div class="sidebar-foot">
           <span class="dot"></span><span>Public demo data</span
           ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
@@ -265,6 +270,27 @@ def build_overview(live: dict[str, Any]) -> str:
                           "in the current window yet. The feed fills as the "
                           "collector compares successive snapshots.</div>")
 
+    # Resolutions across the five topics, newest first.
+    resolution_rows = []
+    all_resolutions = []
+    for slug, rows in (live.get("resolutions") or {}).items():
+        for r in rows or []:
+            all_resolutions.append({**r, "topic": r.get("topic", slug)})
+    all_resolutions.sort(key=lambda r: r.get("settlement_ts") or "", reverse=True)
+    for r in all_resolutions[:20]:
+        resolution_rows.append(
+            "<tr>"
+            f'<td><a href="{html.escape(r.get("human_url",""))}" target="_blank" '
+            f'rel="noreferrer">{esc(r.get("title"))}</a>'
+            f'<small class="ticker">{esc(r.get("ticker"))}</small></td>'
+            f'<td>{esc(r.get("topic"))}</td>'
+            f"<td>{result_chip(r.get('result'))}</td>"
+            f"<td>{cents(r.get('settlement_value_dollars'))}</td>"
+            f"<td>{esc((r.get('settlement_ts') or '')[:19].replace('T', ' '))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{html.escape(r.get("source_url",""))}">API ↗</a></td>'
+            "</tr>")
+
     model_rows = []
     for a in model_alerts[:12]:
         sig = score_by_ticker[a["ticker"]]
@@ -351,6 +377,31 @@ def build_overview(live: dict[str, Any]) -> str:
           series outside the five topics and are listed on
           <a href="review.html">Flagged for review</a>)</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">✓</span><div>
+              <h2>Resolved — how each event ended</h2>
+              <p>The official <code>result</code> field (YES or NO) with its
+              settlement value, newest first, for markets whose series belongs
+              to one of the five topics</p></div></div>
+            <span class="source-link">{inum(attributed)} resolutions from
+            {inum(live.get("resolutions_count"))} stored</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Topic</th><th>Result</th>
+                <th>Settlement value</th><th>Settled at</th><th>Source</th></tr>
+              </thead>
+              <tbody>{''.join(resolution_rows) or
+                '<tr><td colspan="6" class="empty-state">No resolved market from '
+                'a tracked topic has been captured yet.</td></tr>'}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>read from
+          <code>GET /markets?status=settled</code> and
+          <code>GET /events?status=settled&amp;with_nested_markets=true</code></span>
+          <span>YES pays $1.00, NO pays $0.00 per contract</span></div>
         </section>
         <section class="desk-grid two-chats">
           <article class="panel chat-panel alert-panel">
@@ -520,6 +571,28 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
 
 def build_live(live: dict[str, Any]) -> str:
     from collector.alerts import MAX_QUOTE_SPREAD
+
+    # Market picker, grouped by topic with <optgroup>, so a trader picks a
+    # subject first instead of scrolling 120 flat options. Populated here so the
+    # control works with JavaScript disabled; desk.js rewrites it on new data.
+    market_options = ['<option value="">Choose a market</option>']
+    for slug in TOPIC_ORDER:
+        rows = ((live.get("events_by_topic") or {}).get(slug)
+                or [e for e in (live.get("events") or [])
+                    if e.get("topic") == slug])[:12]
+        if not rows:
+            continue
+        label = {"gas-prices": "Gas prices", "elections": "Elections",
+                 "culture": "Culture", "crypto": "Crypto",
+                 "golf": "Golf"}.get(slug, slug.title())
+        market_options.append(f'<optgroup label="{html.escape(label)}">')
+        for e in rows:
+            market_options.append(
+                f'<option value="{html.escape(e.get("ticker",""))}" '
+                f'data-series="{html.escape(e.get("series_ticker") or "")}">'
+                f'{html.escape((e.get("title") or e.get("ticker") or ""))}</option>')
+        market_options.append("</optgroup>")
+    market_options = "\n                  ".join(market_options)
     MAX_QUOTE_SPREAD_TEXT = f"{MAX_QUOTE_SPREAD:.2f}"
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
@@ -547,7 +620,8 @@ def build_live(live: dict[str, Any]) -> str:
                 <p id="chartSubtitle">Select a market from the table or a chat row</p>
               </div></div>
               <div class="control-row">
-                <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option></select>
+                <select id="chartMarket" aria-label="Market">{market_options}
+                </select>
                 <div class="filter-tabs" id="windowTabs">
                   <button data-window="seconds">Seconds</button>
                   <button data-window="minutes" class="selected">Minutes</button>
@@ -615,8 +689,8 @@ def build_live(live: dict[str, Any]) -> str:
             price of a market moves by at least <b>$0.10</b> either way
             <i>and</i> the quote it moves to is a real market price: two-sided,
             with a bid–ask width of at most <b>${MAX_QUOTE_SPREAD_TEXT}</b>.
-            A one-sided quote is still shown but is labelled
-            <span class="flag-badge">ONE-SIDED</span>.</p>
+            A quote with only one side is not published either: with no
+            opposite side there is nothing to check it against.</p>
             <p style="margin:0; color:#7b8884; font-size:11px;">Without that
             gate the feed filled with phantom crashes: e.g.
             <code>KXPRESNOMD-28-AKLO</code> has a real book of
@@ -713,8 +787,9 @@ def build_methodology(live: dict[str, Any]) -> str:
           <h2>Swing integrity gate</h2>
           <p>An alert is published only if the price it moves <em>to</em> is a real
           market price: two-sided, and no wider than
-          <strong>${MAX_QUOTE_SPREAD:.2f}</strong>. A one-sided quote is shown but
-          labelled <span class="flag-badge">ONE-SIDED</span>. This exists because
+          <strong>${MAX_QUOTE_SPREAD:.2f}</strong>, and one-sided quotes are not
+          published at all — with no opposite side there is nothing to check them
+          against. This exists because
           the demo exchange prints single unpaired quotes on otherwise 0.2-cent
           markets: <code>KXPRESNOMD-28-AKLO</code> has a $0.002/$0.003 book yet a
           lone $0.8030 ask prints for one minute and reverts, repeatedly. Those were

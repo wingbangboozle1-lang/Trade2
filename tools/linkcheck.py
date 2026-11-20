@@ -53,7 +53,14 @@ for page in sorted(pages):
             continue
         target = os.path.normpath(os.path.join(base, file_part))
         checked += 1
-        if not os.path.exists(os.path.join(ROOT, target)):
+        full = os.path.join(ROOT, target)
+        if os.path.isdir(full):
+            # A directory link (e.g. "docs/") is only valid on a static host if
+            # it resolves to an index.html inside the repo.
+            if not os.path.exists(os.path.join(full, "index.html")):
+                errors.append(f"{page}: directory link without index.html -> {href}")
+            continue
+        if not os.path.exists(full):
             errors.append(f"{page}: broken link -> {href}")
             continue
         if anchor:

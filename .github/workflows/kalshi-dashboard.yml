@@ -39,7 +39,12 @@ jobs:
         run: python3 -m unittest discover -s tests -v
 
       - name: Syntax check the front-end
-        run: node --check assets/desk.js
+        run: node --check assets/desk.js && node --check assets/app.js
+
+      - name: Front-end runtime check (jsdom)
+        run: |
+          npm install --no-audit --no-fund --no-save jsdom
+          node tools/rendercheck.mjs
 
       - name: Collect
         env:
@@ -59,6 +64,38 @@ jobs:
 
       - name: Link check
         run: python3 tools/linkcheck.py
+
+      - name: Data-integrity checks
+        # Fails closed: if the published alert buffer contains a row the
+        # integrity gate rejects, or a snapshot grouping is stale, the data
+        # commit is skipped rather than shipping a regressed page.
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          sys.path.insert(0, ".")
+          from collector.alerts import is_publishable
+          live = json.load(open("data/live.json"))
+          bad = [a for a in live.get("alerts") or [] if not is_publishable(a)]
+          if bad:
+              print("::error::published alerts fail the integrity gate:",
+                    [a.get("id") for a in bad][:5])
+              sys.exit(1)
+          counted = live.get("resolutions_count")
+          attributed = live.get("resolutions_attributed")
+          if counted is not None and attributed is None:
+              print("::error::snapshot does not report attributed resolutions")
+              sys.exit(1)
+          if not live.get("events_by_topic"):
+              print("::error::snapshot has no per-topic event ranking")
+              sys.exit(1)
+          print("integrity ok: alerts=%d held_back=%d attributed=%s of %s"
+                % (len(live.get("alerts") or []),
+                   live.get("alerts_suppressed_count") or 0,
+                   attributed, counted))
+          PY
+
+      - name: Site renders without runtime errors
+        run: node tools/rendercheck.mjs
 
       - name: Commit data
         run: |

@@ -330,7 +330,8 @@ section "Session D" with the exact API URL.
 **Rule now enforced** (`collector/alerts.py`, `collector.collector.candle_reference`):
 a swing is published only when **both ends** are verifiable market prices — a
 two-sided quote no wider than **$0.50**, and, where a printed price exists, a
-print that lies inside its own quote. A candlestick is usable as the baseline
+print that lies inside its own quote. One-sided quotes are not published: with
+no opposite side there is nothing to check them against. A candlestick is usable as the baseline
 only if its own `yes_bid`/`yes_ask` pass the same test. Alerts written by the
 older rule are held back and published on **Flagged for review** with their API
 links rather than deleted, so the fix stays checkable.
