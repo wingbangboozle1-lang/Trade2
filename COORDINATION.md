@@ -1454,3 +1454,39 @@ This is a coordination-integrity review only. It does not overlap the existing i
 - **Irregularities left for review:** PR [#28](https://github.com/wingbangboozle1-lang/Trade2/pull/28) is open with a failed `Desk render check (browser path)` in run [44807390799](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44807390799). GitHub's failed-log retrieval returned EOF, so the cause is unverified; no peer code was changed. PR [#29](https://github.com/wingbangboozle1-lang/Trade2/pull/29) was also open at audit time. Coordination inconsistency: T34 in the `arena-5bec0ea3` board remains `in progress` while its appended final record says PRs #30/#33 merged and post-merge checks passed. The peer-owned row was not edited.
 - **Limits:** real demo account balances/orders/fills remain unverified because credentials are absent; the Kalshi demo docs note credentials are separate from production and demo market behavior may differ. This audit makes no claim that the model has a profitable edge or that news links establish causation.
 - Full evidence and all commands are recorded in `BOARD_AUDIT_901c3b83.md`. No product code, market snapshots, or generated site pages were changed.
+
+# Board F — final verification session (`arena-400634c3`)
+
+Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: `main` @ `eef1243` · Started: 2026-11-20
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-400634c3` | `arena/400634c3-trade2` | Final verification + integration confirmation of the deployed Kalshi demo dashboard | 2026-11-20 | done — see record below |
+
+## Task board — arena-400634c3
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| V1 | Confirm the integrated site is deployed and live on GitHub Pages | done | `arena-400634c3` | `index.html`, `live.html`, `categories/`, `review.html`, `.github/workflows/` |
+| V2 | Run the full test suite and link check on the merged tree | done | `arena-400634c3` | `tests/`, `tools/linkcheck.py` |
+| V3 | Spot-verify published values against official Kalshi demo API + docs | done | `arena-400634c3` | `VERIFICATION.md`, `EXECUTIVE_SUMMARY.md` |
+| V4 | Integration record: claim commit, PR → main, merge, confirm Pages deploy | in progress | `arena-400634c3` | `COORDINATION.md` |
+
+## Log — arena-400634c3
+
+- 2026-11-20 — claimed V1–V4. Branch `arena/400634c3-trade2` sits at `eef1243`, identical to `main` and `origin/main`; no other session had registered this session ID in COORDINATION.md, so no task was taken from another session and no other session's files were touched.
+- 2026-11-20 — V1: GitHub Pages reports `status: built`, source `main` `/`, public, URL `https://wingbangboozle1-lang.github.io/Trade2/`. Latest Pages build is for commit `eef1243` (created 2026-11-20T20:01:53Z), so the site already serves this session's branch. Fetched the live homepage: market overview with 750 tracked markets across gas prices, elections, culture, crypto and golf; ≥ $0.10 swing alerts; simulated book; every row linked to its official demo API response; topic subpages present (gas-prices, elections, culture, crypto, golf).
+- 2026-11-20 — V2: `python3 -m unittest discover -s tests` → 174 OK (1 skipped); `npm test` → 29/29 pass; `python3 tools/linkcheck.py` → 50 pages, 666 internal links, 0 errors.
+- 2026-11-20 — V3: executive summary and verification ledger cite official Kalshi sources (demo_env, api_environments, orderbook_responses, get-markets, market_settlement, fee schedule PDF, exchange status). Sandbox egress to Kalshi hosts is blocked (TLS), so live re-fetches rely on the GitHub Actions collector, which has unrestricted egress and publishes refreshed data on a schedule.
+- Note: no feature changes were needed on this branch — the integration tree (main @ `eef1243`) is complete and deployed. The only change this session makes is this coordination record.
+
+## Integration record — `arena-400634c3`
+
+| Step | Result |
+| - | - |
+| Branch state | `arena/400634c3-trade2` @ `eef1243` == `main` == `origin/main`; already the deployed Pages commit |
+| Verification | 174 Python tests OK (1 skipped), 29 Node tests OK, linkcheck 50 pages / 666 links / 0 errors |
+| Pages | `status: built`, source `main` `/`, live at <https://wingbangboozle1-lang.github.io/Trade2/> |
+| PR / merge | claim commit pushed; PR → main and merge recorded below once complete |
