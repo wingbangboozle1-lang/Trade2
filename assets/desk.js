@@ -349,6 +349,13 @@
     });
   }
 
+  /* Re-read the book and drop a fresh point on the chart immediately after a
+   * new snapshot arrives, instead of waiting for the next poll tick. */
+  function refreshMarketNow(ticker) {
+    if (!ticker) return;
+    pollBook(ticker);
+  }
+
   function pollBook(ticker) {
     fetch(REST + "/markets/" + encodeURIComponent(ticker) + "/orderbook?depth=10",
           { cache: "no-store" })

@@ -38,6 +38,9 @@ jobs:
       - name: Unit tests
         run: python3 -m unittest discover -s tests -v
 
+      - name: Syntax check the front-end
+        run: node --check assets/desk.js
+
       - name: Collect
         env:
           MARKET_CAP: ${{ github.event.inputs.market_cap || '150' }}
@@ -53,6 +56,9 @@ jobs:
 
       - name: Rebuild static site data
         run: python3 -m site_build.build
+
+      - name: Link check
+        run: python3 tools/linkcheck.py
 
       - name: Commit data
         run: |

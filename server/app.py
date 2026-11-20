@@ -22,17 +22,21 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 import time
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from socketserver import ThreadingMixIn
 from urllib.parse import parse_qs, urlparse
 
-from collector.collector import LIVE_PATH, load_json
-from collector.kalshi_api import DEMO_REST, KalshiClient, KalshiHTTPError
-
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = os.path.join(ROOT, "docs")
+# Allow `python3 server/app.py` without installing anything.
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+from collector.collector import LIVE_PATH, load_json  # noqa: E402
+from collector.kalshi_api import (DEMO_REST, KalshiClient,  # noqa: E402
+                                  KalshiHTTPError)
+DOCS = ROOT  # GitHub Pages publishes the repo root, so the pages live here
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -169,7 +173,8 @@ class Handler(SimpleHTTPRequestHandler):
         super().log_message(fmt, *args)
 
 
-class Server(ThreadingMixIn, ThreadingHTTPServer):
+class Server(ThreadingHTTPServer):
+    """ThreadingHTTPServer already mixes in ThreadingMixIn."""
     daemon_threads = True
     allow_reuse_address = True
 
