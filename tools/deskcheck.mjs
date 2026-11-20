@@ -189,9 +189,14 @@ for (const page of ["index.html", "review.html", "methodology.html", "summary.ht
     [r.errors[0], bad.join(",")].filter(Boolean).join(" | "));
   const modelPanel = r.w.document.querySelector("#feedModel, .model-chat");
   if (page === "index.html") {
-    check("overview pre-renders BOTH chats (no JS needed)",
-      r.w.document.querySelectorAll(".chat-panel").length === 2 &&
-      r.w.document.querySelectorAll("#feedAll, .chat-panel .chat-row").length > 0);
+    const panels = [...r.w.document.querySelectorAll(".chat-panel")];
+    const answered = panels.filter((p) =>
+      p.querySelectorAll(".chat-row").length > 0 ||
+      p.querySelectorAll(".empty-state").length > 0);
+    check("overview pre-renders BOTH chats, each with rows or an explicit empty state",
+      panels.length === 2 && answered.length === 2,
+      `panels=${panels.length} answered=${answered.length} ` +
+      `rows=${r.w.document.querySelectorAll(".chat-panel .chat-row").length}`);
   }
   void modelPanel;
   r.w.close();

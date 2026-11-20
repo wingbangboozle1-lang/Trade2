@@ -7,6 +7,7 @@
     <meta name="description" content="Live Kalshi demo market monitor across gas prices, elections, culture, crypto and golf." />
     <title>Kalshi Monitor — Overview</title>
     <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/desk.css" />
   </head>
   <body>
     <div class="shell">
@@ -99,15 +100,34 @@
           <div class="table-foot"><span>Updated 2026-11-20T19:16:11Z</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
+        <section class="desk-grid two-chats">
+          <article class="panel chat-panel">
           <div class="panel-title">
             <div><span class="section-icon amber">◉</span><div>
               <h2>Swing chat — all events</h2>
               <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
+            <span class="count-badge">0</span>
           </div>
-          <div class="chat-feed"><div class="empty-state inline">No ≥ $0.10 swing observed in the current window yet. The feed fills as the collector compares successive snapshots.</div></div>
+          <div class="chat-feed">
+            <div class="empty-state inline">No ≥ $0.10 swing observed in the current window yet. The feed fills as the collector compares successive snapshots.</div>
+          </div>
+          <div class="alert-note">Rule: |Δ YES mid| ≥ $$0.10 between successive observations, or across the 5-minute reference bar. <a href="methodology.html">Methodology →</a></div>
+        </article>
+          <article class="panel chat-panel model-chat">
+          <div class="panel-title">
+            <div><span class="section-icon violet">★</span><div>
+              <h2>Model shortlist — high ROI only</h2>
+              <p>Swings, and watch flags, the model scores above the gate</p></div></div>
+            <span class="count-badge">0</span>
+          </div>
+          <div class="chat-feed">
+            <div class="empty-state inline">Nothing clears the model's score gate (net ROI ≥  after Kalshi's taker fee) right now. An empty shortlist is the honest answer.</div>
+          </div>
+          <div class="alert-note">Gate  net ROI after fees; flags expire after 6 h or when the market settles. <a href="methodology.html">Model rules →</a></div>
+        </article>
         </section>
+        <div class="table-foot"><span><a class="source-link" href="live.html">
+          Open the live desk (chart + depth + streaming chats) →</a></span></div>
         <footer class="site-footer">
           <span>Simulated trading and public demo market data. Not investment advice.</span>
           <span><a href="methodology.html">Methods &amp; sources</a>

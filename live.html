@@ -7,6 +7,7 @@
     <meta name="description" content="Kalshi demo market monitor, alerts and paper trading." />
     <title>Live desk — Kalshi Monitor</title>
     <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/desk.css" />
   </head>
   <body>
     <div class="shell">
@@ -83,6 +84,18 @@
               aria-label="Contract price over time"></canvas></div>
             <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
+          </article>
+          <article class="panel moves-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">⚑</span><div>
+                <h2>What moved this market</h2>
+                <p>≥ $0.10 swings recorded by this desk for the market on screen,
+                with the headline published nearest the move — a candidate, never
+                a proven cause</p></div></div>
+            </div>
+            <div id="chartMoves" class="move-list">
+              <div class="empty-state inline">Select a market to see its swings.</div>
+            </div>
           </article>
           <article class="panel depth-panel">
             <div class="panel-title">

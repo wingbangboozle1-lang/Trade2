@@ -104,5 +104,51 @@ against every row of Kalshi's published fee table by an automated test.
 | G1 | Demo-account balance, fills, positions | Requires API credentials the repo does not have. |
 | G2 | Placing real demo orders | Same. Adapter exists and is unit-tested against a mock only. |
 | G3 | WebSocket streaming in the running site | The handshake requires the same signed headers as REST. Polling is used instead; the endpoint and channels are documented and linked. |
-| G4 | Attribution of a price move to a specific news article | Deliberately not attempted: no official source maps articles to moves. |
+| G4 | Attribution of a price move to a specific news article | **Still not claimed.** Since session `arena-93e9da14` the desk attaches *candidate* headlines to a swing (title + link + publish time, plus an explicit state when none was found or the lookup failed), because the brief asks for links near a jump. No official source maps an article to a Kalshi price move, so causation is never asserted — see §H2h. |
 | G5 | A complete census of every Kalshi market | Each run tracks a bounded, ranked slice (top markets per topic) and reports the counts it read. |
+
+---
+
+## H. Session `arena-93e9da14` — defect verification (2026-11-20, UTC)
+
+Every row below was checked by opening the listed URL in this session. "Live"
+means the demo API response was read, not the documentation's description of it.
+
+### H1. The defects, as published
+
+| # | Observation | Evidence | Result |
+| - | ----------- | -------- | ------ |
+| H1a | Topic pages published **"Resolved captured 0"** for every topic | <https://wingbangboozle1-lang.github.io/Trade2/categories/gas-prices.html> fetched 2026-11-20T19:0xZ: "Resolved captured **0.00** YES/NO logged" | **Confirmed on the live site.** |
+| H1b | The resolution store held 2,000 settled markets that could not be attributed to any topic | `data/resolutions.json` at commit `1bc32b7`: 2,000 rows, `series_ticker: null` on **all** of them | **Confirmed.** All 2,000 were demo `KXQUICKSETTLE` / weather series — none in scope. |
+| H1c | The model chat could never fill | `data/live.json` at `1bc32b7`: 29 alerts, **1** signal, `high_roi_alerts: []`; server gate `score >= 0.10`, browser gate `net_roi >= 0.05` | **Confirmed.** The two feeds required a swing *and* a same-run signal on the same ticker. |
+| H1d | Counters rendered as decimals ("Series in scope **162.00**") | same fetch of the live gas-prices page | **Confirmed** (independently fixed by session `997c9c83` as `cnt()`; this session's duplicate helper was dropped in favour of theirs). |
+
+### H2. Official-source checks behind each fix
+
+| # | Claim used by the code | Source | Result |
+| - | ---------------------- | ------ | ------ |
+| H2a | A market record from `GET /markets` has **no** `series_ticker` field (only `ticker` and `event_ticker`) | <https://docs.kalshi.com/api-reference/market/get-markets> response schema, read 2026-11-20 | **Verified.** The published field list contains `ticker`, `event_ticker`, … `exchange_index` and no series field. |
+| H2b | Same conclusion from the live payload | `https://external-api.demo.kalshi.co/trade-api/v2/markets?limit=2&status=settled` fetched 2026-11-20 | **Verified.** Returned keys contain `event_ticker` and `ticker`, no `series_ticker`; `status` reads `finalized`, `result` reads `yes`/`no`. |
+| H2c | A market ticker is `SERIES-EVENT-MARKET`, so the series is the prefix before the first `-` | live: `https://external-api.demo.kalshi.co/trade-api/v2/events?series_ticker=KXAAAGASM&status=open&with_nested_markets=true&limit=1` → market `KXAAAGASM-26NOV30-2.50` under event `KXAAAGASM-26NOV30`, and `…/markets?tickers=…` response above | **Verified** by string inspection of real tickers; implemented as `alerts.series_from_ticker()` (a split, not a lookup table). |
+| H2d | `GET /markets` accepts a comma-separated `tickers` filter, and `status=settled` may be combined with `series_ticker` | <https://docs.kalshi.com/api-reference/market/get-markets> query parameters: `tickers` — "Comma-separated list of market tickers to retrieve"; `series_ticker` — "Filter by series ticker"; `min_settled_ts` also documented | **Verified** in the docs **and** live: `…/markets?tickers=KXAAAGASW-26NOV16-4.2000,KXAAAGASW-26NOV16-4.1800` returned both closed markets with `result: "no"`, `settlement_ts`, `settlement_value_dollars: "0.0000"`, `status: "finalized"`. |
+| H2e | Settlement semantics: a YES outcome pays $1 per YES contract, a NO outcome pays $1 per NO contract | <https://docs.kalshi.com/getting_started/market_settlement> | **Verified** (unchanged from §A; the resolution table shows `result` and `settlement_value_dollars` exactly as returned). |
+| H2f | `events` objects carry `series_ticker`, so tracked markets are attributed to a series without parsing | live `GET /events?series_ticker=KXAAAGASM&with_nested_markets=true` response above | **Verified**; the collector copies `event.series_ticker` onto each nested market. |
+| H2g | Model gate value is a project rule, not a Kalshi field | `collector/alerts.py` `MODEL_SCORE_GATE = 0.10`, published in the snapshot as `model_gate` and documented on <https://wingbangboozle1-lang.github.io/Trade2/methodology.html> | **Verified** as internally consistent: one constant, read by the collector and the browser. No profit claim is made. |
+| H2h | Candidate headlines are not an official mapping | Google News RSS is a public search feed; no Kalshi page maps articles to price moves | **Not verified as causation, by design.** Rows are labelled "candidate catalyst — timing only"; a failed lookup is published as `unavailable`, never as "nothing was found". |
+| H2i | Fee arithmetic used by the model (0.07 · C · P · (1−P), rounded up to the cent) | <https://kalshi.com/docs/kalshi-fee-schedule.pdf>, all 42 published rows asserted in `tests/test_engine.py` | **Unchanged and still passing** (87 tests, 1 skipped for the optional `cryptography` dependency). |
+
+### H2j. End-to-end run on GitHub Actions (real demo traffic)
+
+The sandbox this repo is edited in cannot open a socket to Kalshi (only the
+documented fetcher can), so the pipeline's live behaviour is verified from a
+workflow run that prints its own summary and commits its snapshot:
+
+| Step | Evidence |
+| ------ | -------- |
+| Run | `.github/workflows/kalshi-dashboard.yml` on `arena/93e9da14-trade2` — <https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44800744776> |
+| Result | see the table appended below after the run completes (event counts, resolutions captured per topic, model shortlist size, headline lookup states) |
+
+Until that table is filled, the fixes are verified by (a) the official-source
+checks above, (b) 87 unit tests including new regression tests for every
+behaviour changed here, and (c) `tools/deskcheck.mjs`, which renders the desk in
+jsdom against a fixture and fails if either chat does not populate.

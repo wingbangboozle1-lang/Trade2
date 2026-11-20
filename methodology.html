@@ -7,6 +7,7 @@
     <meta name="description" content="Kalshi demo market monitor, alerts and paper trading." />
     <title>Methodology — Kalshi Monitor</title>
     <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="assets/desk.css" />
   </head>
   <body>
     <div class="shell">
@@ -70,8 +71,10 @@
                   <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
                 <tr><td>Candlesticks</td><td><code>GET /series/{s}/markets/{t}/candlesticks</code></td>
                   <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
-                <tr><td>Settlement results</td><td><code>GET /markets?status=settled</code> → <code>result</code></td>
-                  <td><a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
+                <tr><td>Settlement results for tracked events</td>
+                  <td><code>GET /markets?tickers=…</code> → <code>result</code></td>
+                  <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">docs ↗</a>
+                  · <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noreferrer">settlement ↗</a></td></tr>
                 <tr><td>Demo environment</td><td><code>https://external-api.demo.kalshi.co/trade-api/v2</code></td>
                   <td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noreferrer">docs ↗</a></td></tr>
                 <tr><td>WebSocket (documented, not required)</td><td><code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code></td>
@@ -99,13 +102,31 @@
           table are reproduced exactly by the implementation and are asserted in
           <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
           respected via each series' own <code>fee_multiplier</code>.</p>
-          <h2>The high-ROI filter</h2>
+          <h2>The high-ROI filter and the shortlist chat</h2>
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
           actually paid to cross the spread. Net ROI divides edge after fees by that
           price. A market is shortlisted only when net ROI clears the strategy's
           threshold and the spread is tight. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
+          <p>The gate is one number, published in the snapshot as
+          <code>model_gate</code> = <strong></strong> score
+          (net ROI scaled by book depth) and used by both the collector and the
+          browser, so the two chats cannot disagree. A verdict stays on the model
+          watchlist for <strong>6 hours</strong>, or until the market settles —
+          whichever comes first — so a swing that arrives minutes after the flag is
+          not lost. Every shortlist row states its net ROI, its score and the side
+          the model preferred.</p>
+          <h2>Candidate catalysts</h2>
+          <p>When a swing fires, the collector asks Google News RSS for headlines
+          published within ±6 hours, searching only words that appear in the
+          market's own public title. Each swing row carries one of four states:
+          <code>ok</code> (links shown), <code>no-headlines-found</code>,
+          <code>unavailable</code> (the lookup could not run, links left blank) and
+          <code>skipped</code> (run budget or per-run cap of
+          0 rows this run). A headline
+          next to a move is a <em>candidate</em>: temporal proximity is not
+          causation, and no source states that any article moved a Kalshi price.</p>
           <h2>Settlement</h2>
           <p>Positions settle from the market's official <code>result</code> field:
           YES pays $1.00 per contract, NO pays nothing, as documented in
@@ -113,8 +134,9 @@
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>
           <ul>
-            <li>No news article is attributed to a price move. The alert links to
-            the market, not to a cause we cannot verify.</li>
+            <li>No news article is <em>declared</em> to have caused a price move.
+            Headlines shown on a swing are candidates matched by title and time,
+            labelled as such, and every row states whether the lookup ran.</li>
             <li>The paper ledger is not your demo account balance. Authenticated
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>

@@ -10,9 +10,9 @@ paper ledger. Nothing here is claimed as working without a link or a test.
 | R2 | Dashboard tracks **highest dollar amount** live events | `alerts.rank_events()` ranks by `open_interest_fp × notional_value_dollars` | [Get Markets](https://docs.kalshi.com/api-reference/market/get-markets); `tests/test_engine.py::TestRanking` | done |
 | R3 | Only gas prices, elections, culture, crypto, golf | `collector/topics.py` — explicit category + matcher rules per topic | verified live: see `VERIFICATION.md` §C | done |
 | R4 | Alert on swings ≥ **$0.10** either direction | `alerts.detect_swing()`, `SWING_THRESHOLD = 0.10` | unit tests: at-threshold fires, below does not | done |
-| R5 | Alerting as a simplified scrolling chat, real time | `live.html` two `.chat-feed` panels, SSE or 30 s polling | `assets/desk.js` | done |
-| R6 | Two chats: all events + model's high-ROI shortlist | `#feedAll` and `#feedModel` | model feed filters on `signal.net_roi` | done |
-| R7 | Track live events until resolved; how it resolved (yes/no) | collector reads `result` from `GET /markets?status=settled`, pages render it | [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement); `data/resolutions.json` | done |
+| R5 | Alerting as a simplified scrolling chat, real time | `live.html` two `.chat-feed` panels, SSE or 30 s polling | `assets/desk.js`; rendered and asserted by `node tools/deskcheck.mjs --selftest` | done |
+| R6 | Two chats: all events + model's high-ROI shortlist | `#feedAll` and `#feedModel`, fed by `model_shortlist` from one published gate (`model_gate`) | **fixed 2026-11-20 (session `arena-93e9da14`)**: the gate used to differ between server and browser so the model chat was empty on the live site; `TestModelFeed` + `tools/deskcheck.mjs` now fail if either chat renders empty | done |
+| R7 | Track live events until resolved; how it resolved (yes/no) | tracked-market ledger → `GET /markets?tickers=…` → `result` / `settlement_value_dollars`, grouped by `alerts.group_resolutions_by_topic` | [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement); [Get Markets `tickers` filter](https://docs.kalshi.com/api-reference/market/get-markets); `data/resolutions.json`. **Fixed 2026-11-20**: settled rows carried no `series_ticker` (that field is not in the market schema), so topic pages published "0 resolved" while 2,000 rows sat unattributed — see `VERIFICATION.md` §H | done |
 | R8 | Automate simulated trades to test strategies | `collector/engine.py` + `select_trades()`; runs every scheduled collection | 4 strategies: momentum, mean-reversion, value, resolution-hold | done |
 | R9 | Track portfolio performance using the demo account | **Not possible without credentials** | see `VERIFICATION.md` G1 | **flagged** |
 | R9b | Portfolio performance of the simulated book | `Portfolio.analytics()` → equity, realised P&L, win rate, expectancy, ROI on cost, fees, max drawdown | `summary.html#performance` | simulated |
@@ -23,7 +23,7 @@ paper ledger. Nothing here is claimed as working without a link or a test.
 | R14 | Show current liquidity: how many contracts at a given price | `alerts.analyse_liquidity()` returns price levels with contract counts and cumulative depth | [Orderbook responses](https://docs.kalshi.com/getting_started/orderbook_responses) | done |
 | R15 | Make suggestions to be more live/interactive | `EXECUTIVE_SUMMARY.md` §7, `methodology.html` | — | done |
 | R16 | Simplified graphs and charts | single-series price chart + horizontal depth bars | no chart library, no bundle | done |
-| R17 | Live charts link events and sites that may have caused a jump | alert rows link to the market; series pages list Kalshi's own settlement sources | no article attribution is invented — see `VERIFICATION.md` G4 | **flagged** |
+| R17 | Live charts link events and sites that may have caused a jump | each swing carries candidate headlines (`collector/news.py`), shown in both chats and in the "What moved this market" panel beside the chart | states are explicit (`ok` / `no-headlines-found` / `unavailable` / `skipped`); causation is never asserted — `VERIFICATION.md` §H2h, G4 | done (candidates only) |
 | R18 | Keep topics separate, events within a topic organised together | one page per topic, markets grouped and ranked inside it | `categories/*.html` | done |
 | R19 | No manual input required | collector + site build + Pages deploy are fully automated | `.github/workflows/kalshi-dashboard.yml` (cron `*/5`) | done |
 | R20 | Review repo, verify from official sources, link for manual review | `VERIFICATION.md`, `COORDINATION.md` | 5 findings logged as irregularities | done |
@@ -42,5 +42,7 @@ paper ledger. Nothing here is claimed as working without a link or a test.
 * **R11 (execute trades).** Same cause. The adapter is complete and unit-tested
   against a mock; it activates automatically when credentials are present.
 * **R17 (news attribution).** No official source maps news articles to Kalshi
-  price moves. Rather than guess, alerts link to the market and topic pages list
-  Kalshi's own named settlement sources (AAA, CF Benchmarks, ESPN, pgatour.com).
+  price moves. The desk now publishes *candidate* headlines beside a swing —
+  matched by the market's own words and a ±6 h window — and never calls one a
+  cause. Topic pages still list Kalshi's own named settlement sources
+  (AAA, CF Benchmarks, ESPN, pgatour.com).

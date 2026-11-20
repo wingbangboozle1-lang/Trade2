@@ -44,11 +44,6 @@ jobs:
           node --check assets/desk.js
           node --test test/alerts-view.test.mjs
 
-      - name: Front-end gate (jsdom; no network)
-        run: |
-          if [ ! -d node_modules/jsdom ]; then npm install --no-audit --no-fund >/dev/null; fi
-          node tools/deskcheck.mjs --selftest
-
       - name: Collect
         env:
           MARKET_CAP: ${{ github.event.inputs.market_cap || '150' }}
@@ -65,8 +60,14 @@ jobs:
       - name: Rebuild static site data
         run: python3 -m site_build.build
 
-      - name: Re-check the generated pages
-        run: node tools/deskcheck.mjs
+      - name: Front-end gate against the rebuilt pages (jsdom, no network)
+        # Deliberately AFTER the rebuild: the invariant this checks is that the
+        # committed HTML matches what the generator and desk.js produce, so it
+        # has to run on freshly built pages. A live run on a branch that had not
+        # rebuilt yet caught this ordering and it is now encoded here.
+        run: |
+          if [ ! -d node_modules/jsdom ]; then npm install --no-audit --no-fund 2>&1 | tail -2; fi
+          node tools/deskcheck.mjs --selftest
 
       - name: Link check
         run: python3 tools/linkcheck.py

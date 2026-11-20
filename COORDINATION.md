@@ -29,6 +29,51 @@ Verification note: the live demo API and docs are reachable from this sandbox
 through the platform fetcher (not raw egress), so every field used by these
 fixes is checked against a real response; the log is in `VERIFICATION.md`.
 
+### Status update (same session, 2026-11-20)
+
+All four tasks are **done pending merge**; the details, official sources and the
+reproduced defects are recorded in `VERIFICATION.md` §H, and the executive-level
+write-up is `EXECUTIVE_SUMMARY_ADDENDUM.md` (new file — `EXECUTIVE_SUMMARY.md`
+was left to `arena-e4e8f4e1` T14 as promised).
+
+| Task | Outcome |
+| --- | --- |
+| T16 resolutions per topic | done. `collector/collector.py` keeps `data/tracked_markets.json`; settlement is looked up with the documented `GET /markets?tickers=…` filter; `alerts.group_resolutions_by_topic()` attributes by recorded topic → series map → ticker prefix. Store migrated: 2,000 unattributable rows dropped, in-scope rows repopulate as tracked markets settle. |
+| T17 model chat | done. One gate (`alerts.MODEL_SCORE_GATE`, published as `model_gate`); swings scored by the model at fire time; 6 h watchlist in `data/model_watchlist.json`, pruned on settlement; `assets/desk.js` renders `model_shortlist` (falls back to the legacy rule for older snapshots). |
+| T18 candidate catalysts | done. `collector/news.py` gains `lookup()` with explicit states (`ok`, `no-headlines-found`, `unavailable`, `no-query`, `skipped`) and an injectable fetcher; both chats and the new "What moved this market" panel show the link or state the absence. |
+| T19 re-verification | done — §H1/H2 of `VERIFICATION.md`, including the live responses that prove `GET /markets` has no `series_ticker` and that the `tickers` filter works on the demo host. |
+| T20 executive addendum | done — `EXECUTIVE_SUMMARY_ADDENDUM.md`. |
+
+**Coordination observations (logged, no other session's work was changed):**
+
+1. **Duplicate work, resolved in favour of the earlier merges.** Session
+   `arena-856e184e` landed `5666571` "site: whole-number counts, Flagged entries,
+   offline render check (T16/T18)" — the same counter fix and the same task
+   numbers this session was working under — and `arena-997c9c83` landed
+   `a6810c1` (alert-row grouping, `assets/alerts-view.js`). Both are **kept**:
+   their `cnt()` helper and their grouping badges stayed, this session's
+   duplicate `count()` helper was dropped, and the `assets/desk.js` conflict was
+   resolved as a union (their repeat-count / wide-spread badges + this session's
+   headline links and `model_shortlist` source). This session's
+   `tools/deskcheck.mjs` complements, and does not replace, their
+   `tools/rendercheck.mjs` fetch shim. No work from either side was discarded.
+   Task ids T16–T18 collide across sessions — later sessions should prefix claim
+   ids with the session id.
+2. **CI ordering lesson recorded in the workflow.** The first branch run failed
+   because a front-end gate ran *before* the rebuild and therefore checked the
+   previous commit's HTML against new JS. The gate now runs after
+   `python3 -m site_build.build`, so "committed HTML must match the generator"
+   is enforced on every publish. `node --check` and the unit tests still run
+   before the collector so a broken build cannot spend the API budget.
+3. **`npm install` in this workflow can dirty `package-lock.json`** (the failure
+   that hit `collector.yml`). The commit step now checks the lock files back out
+   before `git pull --rebase`, and `assets/desk.css` was added as a new file
+   instead of editing the shared `assets/styles.css`.
+4. **`ALERTS_VERSION` was deliberately not bumped** when alerts gained model
+   annotations, so the real alert history collected by earlier sessions
+   survives; old rows are re-scored on the next run. (Separately, main's PR #22
+   purged rows without a verifiable quote basis — that purge stands.)
+
 ---
 
 # Board A (kept verbatim)
