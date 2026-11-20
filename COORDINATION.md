@@ -1490,3 +1490,13 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: 
 | Verification | 174 Python tests OK (1 skipped), 29 Node tests OK, linkcheck 50 pages / 666 links / 0 errors |
 | Pages | `status: built`, source `main` `/`, live at <https://wingbangboozle1-lang.github.io/Trade2/> |
 | PR / merge | claim commit pushed; PR → main and merge recorded below once complete |
+
+---
+
+## Session claim — `arena-604798c1` (2026-11-20)
+
+| Task | Status | Owner | File scope |
+| - | - | - | - |
+| T-604-01 | Correct the README test-prerequisite note: the DOM render/smoke scripts import `jsdom`, while Python build/tests and the `npm test` subset do not. | in progress | `README.md`, this append-only coordination entry |
+
+This task is disjoint from the active code claims in `site_build/extras.py`, `collector/**`, and the generated site pages. The claim is committed and pushed before editing `README.md`. Verification basis: `package.json` lists `jsdom` as a dependency; after a fresh checkout without `node_modules`, `node test/root_render.mjs` fails with `ERR_MODULE_NOT_FOUND: jsdom`, then succeeds after `npm ci`. The ordinary Python and npm unit suites pass without relying on browser-render scripts.
