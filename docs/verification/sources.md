@@ -57,7 +57,7 @@ Checked 2026-11-20 (UTC) unless noted. "Official" = docs.kalshi.com, kalshi.com,
 | D3 | Candle response fields: `end_period_ts`, `price.*_dollars`, `volume_fp`, `open_interest_fp`, `yes_bid/yes_ask` | live response + docs A8 | verified |
 | D4 | Headlines are time-proximity candidates only, never causes | project policy; `collector/news.py` docstring | enforced in code + UI wording |
 | D5 | Google News RSS `https://news.google.com/rss/search?q=…` is the headline source | https://news.google.com/rss/search?q=kalshi | endpoint reachable only from Actions runners (sandbox blocked) → FL-03; failure ⇒ blank + flagged |
-| D6 | X-axis windows seconds/minutes/hours map to `period_interval` 1/60/1440 | docs A8 | verified (1-second candles observed live) |
+| D6 | X-axis windows seconds/minutes/hours map to `period_interval` 1/60/1440 = **1-minute / 1-hour / 1-day candles** (the finest official interval is 1 minute — no sub-minute candles exist) | docs A8 + observed `end_period_ts` stepping by exactly 60s on `period_interval=1` | verified; window labels in the UI refer to the *time span* shown, and the chart legend states the real candle interval |
 
 ## E. Environment & operations
 

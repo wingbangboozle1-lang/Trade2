@@ -330,30 +330,33 @@ def collect_candles(
 
 
 def detect_alerts(candles: Dict[str, Any], rows: List[Dict], threshold: float, with_news: bool = True) -> List[Dict]:
-    """Alert when consecutive closes differ by >= threshold (either direction).
+    """Alert when official candlestick closes show a swing >= threshold (either direction).
 
-    Swing = latest close vs previous close inside the shortest window (seconds),
-    which is the most granular official series. A market with <2 points gets no
-    alert (never fabricate a move).
+    Windows are scanned smallest-first (seconds, then minutes, then hours) and, within
+    the first window that qualifies, the largest consecutive-close step is reported —
+    so a $0.10 move that spans several minutes still fires, labelled with its real
+    window. A market with fewer than two points in every window gets no alert
+    (a missing series is never treated as "no move").
     """
     by_ticker = {r.get("ticker"): r for r in rows}
     alerts: List[Dict] = []
     for ticker, windows in candles.items():
-        points = (windows.get("seconds") or {}).get("points") or []
-        if len(points) < 2:
-            # fall back to minutes if seconds are sparse
-            points = (windows.get("minutes") or {}).get("points") or []
-            window = "minutes"
-        else:
-            window = "seconds"
-        if len(points) < 2:
+        chosen = None  # (window, prev_point, cur_point, delta)
+        for label in ("seconds", "minutes", "hours"):
+            points = [p for p in ((windows.get(label) or {}).get("points") or []) if p.get("close") is not None]
+            if len(points) < 2:
+                continue
+            best = None
+            for i in range(1, len(points)):
+                d = round(points[i]["close"] - points[i - 1]["close"], 4)
+                if best is None or abs(d) > abs(best[2]):
+                    best = (points[i - 1], points[i], d)
+            if best and abs(best[2]) + 1e-9 >= threshold:
+                chosen = (label, best[0], best[1], best[2])
+                break
+        if chosen is None:
             continue
-        prev, cur = points[-2], points[-1]
-        if prev.get("close") is None or cur.get("close") is None:
-            continue
-        delta = round(cur["close"] - prev["close"], 4)
-        if abs(delta) + 1e-9 < threshold:
-            continue
+        window, prev, cur, delta = chosen
         row = by_ticker.get(ticker) or {}
         when = datetime.fromtimestamp(cur.get("t") or time.time(), tz=timezone.utc)
         headlines = news.market_news(ticker, row.get("title") or ticker, when) if with_news else []
@@ -472,7 +475,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     orderbooks = collect_orderbooks(client, row_list, args.orderbook_top, meta)
     progress(f"fetching candles for top {args.candle_top} markets × 3 windows …")
     candles = collect_candles(
-        client, row_list, {"seconds": 3600, "minutes": 6 * 3600, "hours": 24 * 60 * 60}, args.candle_top, meta,
+        # finest official interval is 1 minute (period_interval=1); windows are
+        # 1h / 6h / 72h so each window has enough points to detect a >=$0.10 step
+        client, row_list, {"seconds": 3600, "minutes": 6 * 3600, "hours": 3 * 24 * 3600}, args.candle_top, meta,
         series_map=series_map,
     )
     alerts = detect_alerts(candles, row_list, args.threshold, with_news=args.news)

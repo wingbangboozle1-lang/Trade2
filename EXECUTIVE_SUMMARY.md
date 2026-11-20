@@ -55,7 +55,10 @@ Irregularity: “Golf” is a **tag**, not a category (`category=Golf` → null)
 
 ## 4. Alerting rule
 
-- Source of truth: official candlestick closes (`price.close_dollars`), shortest available window (seconds, fallback minutes).
+- Source of truth: official candlestick closes (`price.close_dollars`). Windows are scanned smallest-first
+  (1h → 6h → 72h spans) and the largest qualifying step is reported with its window label. Finest official
+  candle interval is **1 minute** (`period_interval=1`); the UI's seconds/minutes/hours buttons select the
+  *time span* shown, and the chart states the real candle interval.
 - Alert when `|close_t − close_{t−1}| ≥ $0.10` — either direction, exactly the requested threshold.
 - Each alert stores: ticker, topic, from/to, delta, window, candle source URL, and candidate headlines (±6 h).
 - **Headlines are candidate catalysts by time proximity only — never asserted as causes.** No headline verified → cell blank + flagged.

@@ -551,7 +551,10 @@
     if (meta) {
       const yb = book.best_yes_bid, nb = book.best_no_bid;
       const ask = nb != null ? 1 - nb : null;
+      const iv = series.interval;
+      const ivLabel = iv === 1 ? "1-minute" : iv === 60 ? "1-hour" : iv === 1440 ? "1-day" : "unknown";
       meta.innerHTML = `
+        <span>candles: <b>${ivLabel}</b> (finest official interval)</span>
         <span>best bid <b>${yb != null ? money(yb) : "—"}</b></span>
         <span>best ask <b>${ask != null ? money(ask) : "—"}</b></span>
         <span>spread <b>${yb != null && ask != null ? money(ask - yb) : "—"}</b></span>
