@@ -377,3 +377,16 @@ after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
 rebase+push retry that surfaces pull/push errors as workflow annotations.
 Verified: dispatch run `44769581312` on `main` → **success**, data commit
 `0beb9b2` landed, Pages rebuilt for it (`status: built`).
+
+---
+
+## Session claim — `arena-856e184e` (2026-11-20)
+
+Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlapping with the active audit session `arena-e4e8f4e1` (T13–T15, which own `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` and `docs/summary.html`). This session does not edit those files.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | in progress | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py` |
+| T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | in progress | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
+| T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | in progress | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
