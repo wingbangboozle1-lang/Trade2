@@ -675,7 +675,7 @@ result here. Status values: `unclaimed` · `in progress` · `done` ·
 | T-D3 | Model shortlist chat is structurally empty (swing ∩ signal is near-always ∅): render the model's high-ROI signals as chat rows, statically and in JS | done (static side landed independently in PR #26 / arena-79cc0bd5; this session added the live `signalRow` in `assets/desk.js` and pinned both sides with `tests/test_chat_rows.py`) | `assets/desk.js`, `tests/test_chat_rows.py` |
 | T-D4 | Landing page (`index.html`) shows only one of the two required scrolling chats | done (dual chats landed independently in PR #26; verified and pinned by `tests/test_chat_rows.py`) | `site_build/build.py` (owner: arena-79cc0bd5) |
 | T-D5 | Static swing-chat rows duplicate identical re-fires; group them the way `alerts-view.js` does | done (server-side `extras.group_alerts` + parity test landed independently in PR #26) | `site_build/extras.py` (owner: arena-79cc0bd5) |
-| T-D6 | Integration: full test suite, link check, PR → `main`, merge, confirm Pages deploy, record result | in progress | `COORDINATION.md` |
+| T-D6 | Integration: full test suite, link check, PR → `main`, merge, confirm Pages deploy, record result | done (PR #40 merged as `e8e7b10`; Pages `built` 2026-11-20T20:07:44Z; live pages verified) | `COORDINATION.md` |
 
 ## Log — arena-5bbd15fd
 
@@ -761,6 +761,17 @@ result here. Status values: `unclaimed` · `in progress` · `done` ·
   by design in `site-check.yml`); `tools/rowsource_check.py` → report-only,
   731 listed issues are blank/unverified cells by design (mostly `kd.markets`
   blanks from another pipeline), none blocking.
+### Integration record — `arena-5bbd15fd` (T-D1–T-D6, final)
+
+| Step | Result |
+| - | - |
+| PR #40 | https://github.com/wingbangboozle1-lang/Trade2/pull/40 — `arena/5bbd15fd-trade2` → `main`. Three merge rounds against a fast-moving `main` (`1bc32b7` → `58be24d` → `dbea89c` → `e8c3484` → `eef1243`), all resolved as unions: `COORDINATION.md` boards kept whole; `site_build/build.py`/`extras.py` reconciled with PR #26 and #38/#39 (signal-picks fallback + collector one-gate shortlist + `KX`-stripped topic lookup both retained); `assets/desk.js` kept `high_roi_alerts` first with the signal-picks fallback; data/generated conflicts resolved by taking the newer collector run, re-running `migrate_resolutions`, and regenerating every page. No peer session's work was discarded. |
+| Verification before merge | `python3 -m unittest discover -s tests` → **196 OK** (1 pre-existing skip); `python3 -m collector.test_runner` PASS; `python3 -m trading.test_engine` PASS; `node --check assets/desk.js` OK; `node tools/root_pages_render.mjs` → ALL PASS (13 pages / 212 files); `python3 tools/linkcheck.py` → 50 pages / 666 links / 0 errors; `node tools/rendercheck.mjs` all ok; `npm test` 29/29; build drift = documented `age_label` line only. Branch CI (`site-check` + `collect`) green. |
+| Merge | Merged `2026-11-20` as **`e8e7b10`** (merge commit, PR #40). |
+| Pages | Legacy build of `main` `/`: `built` for `e8e7b10` (2026-11-20T20:06:34Z) and `5c75ac0` (2026-11-20T20:07:44Z). Live verified: `categories/gas-prices.html` → **“Resolved captured 268 YES/NO logged”** (was 0), `categories/crypto.html` → 60, `resolutions.html` → 80 sourced YES/NO rows, landing model chat → 5 `★` signal rows instead of the empty state. |
+| T-D2 store migration | Committed store migrated to **328 in-scope records** (268 gas + 60 crypto; the 1 672 out-of-scope settlements dropped; both classifiers agree, 0 in-scope lost); `resolutions_count` and per-topic buckets recomputed. Subsequent collector runs on `main` re-apply `migrate_resolutions()` every run, so a CI data commit can never reintroduce the mixed store. |
+| Flagged / non-blocking | R9/R11 still need demo API credentials; R17 has no official news→price source — both remain on the Flagged for Review page and did not block the merge. |
+
 ### Integration record — `arena-856e184e` (task T19, final)
 
 | Step | Result |
