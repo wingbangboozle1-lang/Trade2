@@ -313,5 +313,38 @@ class TestRanking(unittest.TestCase):
         self.assertEqual(rank_events([obs])[0]["dollar_activity"], 20.0)
 
 
+class TestBatchOrderbooks(unittest.TestCase):
+    """GET /markets/orderbooks batching, per the official docs contract."""
+
+    def test_batches_are_capped_at_100_and_flattened(self):
+        from collector.kalshi_api import KalshiClient
+        calls = []
+
+        def fake_request(method, path, params=None, **kw):
+            calls.append((path, len(params["tickers"])))
+            return {"orderbooks": [
+                {"ticker": t, "orderbook_fp": {"yes_dollars": [], "no_dollars": []}}
+                for t in params["tickers"]
+            ]}
+
+        client = KalshiClient()
+        client._request = fake_request
+        tickers = [f"T{i}" for i in range(250)]
+        books = client.orderbooks(tickers)
+        self.assertEqual(len(books), 100)          # the endpoint caps at 100
+        self.assertEqual(calls[0][0], "/markets/orderbooks")
+        self.assertEqual(calls[0][1], 100)
+
+    def test_empty_book_and_unknown_ticker_both_return_empty(self):
+        from collector.kalshi_api import KalshiClient
+        client = KalshiClient()
+        client._request = lambda *a, **k: {"orderbooks": [
+            {"ticker": "KNOWN", "orderbook_fp": {"yes_dollars": [], "no_dollars": []}},
+            {"ticker": "UNKNOWN", "orderbook_fp": {"yes_dollars": [], "no_dollars": []}},
+        ]}
+        books = client.orderbooks(["KNOWN", "UNKNOWN"])
+        self.assertEqual(books["KNOWN"], books["UNKNOWN"])
+
+
 if __name__ == "__main__":
     unittest.main()

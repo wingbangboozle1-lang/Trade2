@@ -98,7 +98,7 @@ def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
     return list(events.values())
 
 
-def collect(market_cap: int = 150, orderbook_cap: int = 90,
+def collect(market_cap: int = 150, orderbook_cap: int = 300,
             settle_scan: int = 400, budget_seconds: float = 330.0) -> dict[str, Any]:
     """One collection pass.
 
@@ -177,26 +177,35 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
         held = [m for m in markets[market_cap:] if m.get("ticker") in holdings]
         selected = ranked + held
 
-        orderbook_budget = orderbook_cap
+        # Order books are fetched in batches of up to 100 tickers, using the
+        # documented GET /markets/orderbooks endpoint. One request per batch
+        # instead of one per market is what keeps the run inside its budget.
+        wanted = [m.get("ticker") for m in selected[:orderbook_cap] if m.get("ticker")]
+        for held in holdings:
+            if held not in wanted:
+                wanted.append(held)
+        books: dict[str, dict[str, Any]] = {}
+        for start in range(0, len(wanted), 100):
+            if time.time() > deadline:
+                errors.append(f"{topic.slug}: order-book budget exhausted "
+                              f"({len(wanted) - start} markets without a book)")
+                break
+            chunk = wanted[start:start + 100]
+            try:
+                books.update(client.orderbooks(chunk))
+            except KalshiHTTPError as exc:
+                errors.append(f"{topic.slug}: orderbooks {start}-{start + len(chunk)} "
+                              f"failed ({exc})")
+
         for market in selected:
             ticker = market.get("ticker")
             if not ticker:
                 continue
-            out_of_time = time.time() > deadline
-            if out_of_time and ticker not in holdings:
-                orderbook_budget = 0
-            want_book = (orderbook_budget > 0) or (ticker in holdings)
-            book = None
-            if want_book:
-                if ticker not in holdings:
-                    orderbook_budget -= 1
-                try:
-                    book = client.orderbook(ticker, depth=10)
-                except KalshiHTTPError as exc:
-                    errors.append(f"orderbook {ticker}: {exc}")
-            obs = alerts.observe(market, book, topic.slug, ts=now)
+            book = books.get(ticker)
+            book_payload = {"orderbook_fp": book} if book is not None else None
+            obs = alerts.observe(market, book_payload, topic.slug, ts=now)
             if book:
-                liquidity[ticker] = alerts.analyse_liquidity(book)
+                liquidity[ticker] = alerts.analyse_liquidity(book_payload)
             observations.append(obs)
 
         per_topic[topic.slug] = {
@@ -370,7 +379,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--market-cap", type=int, default=150)
-    ap.add_argument("--orderbook-cap", type=int, default=90)
+    ap.add_argument("--orderbook-cap", type=int, default=300)
     ap.add_argument("--settle-scan", type=int, default=300)
     ap.add_argument("--budget", type=float, default=330.0)
     args = ap.parse_args()

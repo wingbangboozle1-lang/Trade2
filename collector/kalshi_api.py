@@ -262,6 +262,27 @@ class KalshiClient:
         return self._request("GET", f"/markets/{urllib.parse.quote(ticker)}/orderbook",
                              params)
 
+    def orderbooks(self, tickers: list[str]) -> dict[str, dict[str, Any]]:
+        """GET /markets/orderbooks — up to 100 tickers in one request.
+
+        Documented at
+        https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks.md
+        Returns {ticker: orderbook_fp}. A ticker with no book (including an
+        unknown one) comes back with empty arrays, never a 404, so an empty book
+        and a bad ticker are indistinguishable here by design — check the market
+        with GET /markets/{ticker} when that distinction matters.
+        """
+        out: dict[str, dict[str, Any]] = {}
+        clean = [t for t in tickers if t][:100]
+        if not clean:
+            return out
+        page = self._request("GET", "/markets/orderbooks", {"tickers": clean})
+        for entry in page.get("orderbooks") or []:
+            ticker = entry.get("ticker")
+            if ticker:
+                out[ticker] = entry.get("orderbook_fp") or {}
+        return out
+
     def candlesticks(self, series_ticker: str, ticker: str, start_ts: int, end_ts: int,
                      period_interval: int = 1) -> dict[str, Any]:
         """GET /series/{s}/markets/{t}/candlesticks — period must be 1, 60 or 1440.
