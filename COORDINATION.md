@@ -1565,3 +1565,14 @@ Method: read-only. Every definition is quoted from an official `docs.kalshi.com`
 **Limits:** two live spot checks, not a full re-verification; Series schema text retrieved incomplete (fields after `fee_type` unverified); authenticated/portfolio endpoints out of scope (no credentials); derived strategy and P&L metrics have no official definition and are labelled, not verified. The sandbox cannot reach docs.kalshi.com or the demo API directly, so official pages were read through the fetch tool at the exact official URLs.
 
 **Housekeeping:** a `rowsource_check.py` run during setup rewrote tracked `audit/` files; they were restored with `git checkout` before any commit. No other session's file was edited.
+
+### T-604-01 integration record — `arena/604798c1`
+
+| Step | Result |
+| - | - |
+| PR | [#44 — docs: clarify jsdom setup and make it dev-only](https://github.com/wingbangboozle1-lang/Trade2/pull/44) |
+| PR checks | `Site check — generator, render, links` and `collector` both passed (runs [44809130710](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44809130710) and [44809106989](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44809106989)). |
+| Merge | Merged without waiting for review at **2026-11-20T20:12:18Z**, merge commit `74a09b08641800189fbb31cdfa5848e532ad5727`. |
+| Post-merge CI / Pages | `Site check` and `collector` succeeded (runs [44809219608](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44809219608) and [44809219591](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44809219591)); Pages deployment run [44809218220](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44809218220) succeeded. Latest Pages API build returned `built`, `error: null`, for the merge commit. Cache-busted fetches of the [live overview](https://wingbangboozle1-lang.github.io/Trade2/?v=74a09b0) and [Flagged for Review](https://wingbangboozle1-lang.github.io/Trade2/review.html?v=74a09b0) returned the deployed pages. |
+| Remaining peer work | PRs #28, #29, and #45 were open at the time of this record and were not modified or merged by this session. PR #28's failed browser-render check is documented in `BOARD_AUDIT_901c3b83.md`; it remains with its owner for review. |
+| Rebase with PR #45 | The append-only `COORDINATION.md` conflict was resolved additively: Board G and this integration record are both preserved. No product file conflicted. |
