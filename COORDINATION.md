@@ -28,14 +28,14 @@ log the request here instead of editing the file.
 | 1 | Repo audit + source verification of Kalshi endpoints/fields | done | sess-c0205283 | `collector/`, `docs/verification/` |
 | 2 | Data collection (gas, elections, culture, crypto, golf) — official demo API | done | sess-c0205283 | `collector/`, `docs/data/markets.json` |
 | 3 | Alert engine ≥ $0.10 swings + two alert chats | done | sess-c0205283 | `collector/`, `docs/data/alerts.json`, `docs/assets/*` |
-| 4 | Live charting (seconds/minutes/hours) + liquidity/orderbook depth | done | sess-c0205283 | `collector/`, `docs/assets/charts.js` |
-| 5 | Simulated trading engine, strategies, scoreboard | done | sess-c0205283 | `trading/`, `docs/data/strategies.json` |
+| 4 | Live charting (seconds/minutes/hours) + liquidity/orderbook depth | done | sess-c0205283 | `collector/`, `docs/assets/app.js` (canvas charts) |
+| 5 | Simulated trading engine, strategies, scoreboard | done | sess-c0205283 | `trading/`, `docs/data/portfolio.json` (stats by strategy/type) |
 | 6 | Live demo-account execution + portfolio tracking | needs review | sess-c0205283 | `trading/execute.py` — **blocked on credentials**, see FL-01 |
 | 7 | Event resolution tracking (YES/NO outcome) | done | sess-c0205283 | `collector/`, `docs/data/resolutions.json` |
 | 8 | Executive summary | done | sess-c0205283 | `EXECUTIVE_SUMMARY.md`, `docs/summary.html` |
 | 9 | Site build (landing + per-category subpages + tables) | done | sess-c0205283 | `docs/` |
 | 10 | Flagged for Review page | done | sess-c0205283 | `docs/flagged.html` |
-| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | done | sess-c0205283 | all |
+| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | in progress | sess-c0205283 | all |
 
 Statuses: `unclaimed` · `in progress` · `done` · `needs review`.
 
@@ -65,3 +65,32 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`.
   the real demo order book) until `KALSHI_API_KEY_ID` + `KALSHI_PRIVATE_KEY_PEM` are added as repo secrets.
   Everything else (market data, alerts, simulation, portfolio analytics) is real and live. Logged as FL-01 on the
   Flagged for Review page. Task 6 = `needs review`.
+
+### 2026-11-20 — sess-c0205283 — build log (collector, trading, site, CI)
+
+- **Official fee schedule located and verified directly:** https://kalshi.com/docs/kalshi-fee-schedule.pdf
+  (effective 2026-07-07). Taker `ceil(0.07·C·P·(1−P))`, maker `ceil(0.0175·C·P·(1−P))` (M defaults 0),
+  no settlement/membership fee. `trading/test_engine.py` reproduces **all 42 rows** of the published table.
+  Prose-vs-table rounding nuance logged as FL-05.
+- **Topic mapping verified live** against `/series` (2026-11-20): Golf is a *tag* (`category=Golf` → null;
+  use `category=Sports&tags=Golf`) — FL-06; gas sits in Economics+energy tags; Culture/Crypto/Elections are
+  strict categories. `collector/topics.py` implements strict vs broad rules; `collector/test_runner.py` asserts
+  inclusion (golf/gas/crypto/culture/elections) and exclusion (`KXRATECUTS` not gas, `KXNBA` not tracked).
+- **Candlestick evidence for alerts:** live1-second candles for `KXDEMOFUTHOURLY-26NOV20H14-UP` printed
+  0.65→0.35→0.65 sequences (≥$0.10 moves) — the alert rule has a real dataset.
+- **Bugs found & fixed by tests (all before any data was published):**
+  (a) `collect_series` referenced the pre-refactor `categories_any` attribute → crashed the first CI run;
+  (b) `trading/engine.py` reloaded `positions` with `dict(list)` → crash on the *second* cycle (persistence bug);
+  (c) ROI score threshold made alert-based entries unreachable → switched to dollar net-edge scoring;
+  (d) workflow step name contained an unquoted colon → YAML parse failure.
+- **Test gates now run in CI before any data commit:** `python3 -m trading.test_engine` (fee table + engine),
+  `python3 -m collector.test_runner` (end-to-end on real captured payloads), `node test/site_smoke.mjs`
+  (jsdom: 28 assertions across index/topic/portfolio/flagged/summary pages).
+- **CI design:** push runs = tests+site smoke only (no API traffic, no commits → no loops); schedule
+  (`*/15 * * * *`, default branch only) + `workflow_dispatch` = collect + engine + commit `docs/data`.
+  Adaptive client pacing grows the request interval on HTTP 429 and decays it on success.
+- **Live-feel implementation:** `live/server.py` (optional local server) exposes `/api/stream` (SSE, 5s);
+  `docs/assets/app.js` auto-detects it and upgrades to push mode, otherwise the Pages site polls the
+  published JSON every 20s. Documented on the site; Pages never depends on the local server.
+- **Verification ledger:** `docs/verification/sources.md` (claims → official URLs). Flagged page:
+  `docs/flagged.html` (live flags + curated FL-01…FL-09).

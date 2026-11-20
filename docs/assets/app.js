@@ -106,6 +106,11 @@
   function freshness() {
     const el = $("#freshness");
     if (!el) return;
+    if (liveMode) {
+      el.textContent = `local live stream · ${S.meta && S.meta.finished_at ? "snapshot " + ts(S.meta.finished_at) : "SSE connected"}`;
+      el.className = "";
+      return;
+    }
     const g = S.meta && (S.meta.finished_at || S.meta.generated_at);
     if (!g) {
       el.innerHTML = 'no data yet — waiting for first collector run';
@@ -115,6 +120,78 @@
     const errs = (S.meta.counts && S.meta.counts.errors) || 0;
     el.textContent = `data: ${ts(g)} · ${errs} error${errs === 1 ? "" : "s"} · ${S.meta.environment || ""}`;
     el.className = "";
+  }
+
+  /* ------------------------------------------------- optional local live mode
+     When served by live/server.py, an SSE endpoint exists and pushes straight
+     from the demo API every 5s. On GitHub Pages that endpoint 404s and we simply
+     keep polling the published JSON — no error surfaced to the user. */
+  let liveMode = false;
+  function fnum(x) { const v = parseFloat(x); return isNaN(v) ? null : v; }
+  function parseBook(ob) {
+    const fp = (ob && ob.orderbook_fp) || {};
+    const yes = fp.yes_dollars || [], no = fp.no_dollars || [];
+    const best = levels => levels.length ? Math.max(...levels.map(l => parseFloat(l[0])).filter(v => !isNaN(v))) : null;
+    const depth = levels => {
+      let c = 0, d = 0;
+      levels.forEach(l => { const p = parseFloat(l[0]), n = parseFloat(l[1]); if (!isNaN(p) && !isNaN(n)) { c += n; d += p * n; } });
+      return [Math.round(c * 100) / 100, Math.round(d * 100) / 100];
+    };
+    const [yc, yd] = depth(yes), [nc, nd] = depth(no);
+    const yb = best(yes), nb = best(no);
+    return {
+      yes_levels: yes, no_levels: no, best_yes_bid: yb, best_no_bid: nb,
+      implied_yes_ask: nb != null ? Math.round((1 - nb) * 10000) / 10000 : null,
+      yes_depth_contracts: yc, yes_depth_usd: yd, no_depth_contracts: nc, no_depth_usd: nd,
+      source_url: "https://external-api.demo.kalshi.co/trade-api/v2/markets/" + ob.__ticker,
+      docs_url: "https://docs.kalshi.com/getting_started/orderbook_responses",
+    };
+  }
+  function ingest(snap) {
+    if (!snap || !Array.isArray(snap.markets)) return;
+    const byT = {};
+    S.markets.forEach(m => { if (m && m.ticker) byT[m.ticker] = m; });
+    snap.markets.forEach(raw => {
+      if (!raw || !raw.ticker) return;
+      const last = fnum(raw.last_price_dollars);
+      const bid = fnum(raw.yes_bid_dollars), ask = fnum(raw.yes_ask_dollars);
+      const vol = fnum(raw.volume_fp);
+      const px = last != null ? last : (bid != null && ask != null ? (bid + ask) / 2 : null);
+      byT[raw.ticker] = {
+        ticker: raw.ticker, event_ticker: raw.event_ticker, title: raw.title,
+        topic: raw._topic || (byT[raw.ticker] && byT[raw.ticker].topic),
+        series_ticker: raw.series_ticker, status: raw.status,
+        yes_bid: bid, yes_ask: ask, last_price: last, volume_fp: vol,
+        open_interest_fp: fnum(raw.open_interest_fp),
+        notional_usd: vol != null && px != null ? Math.round(vol * px * 100) / 100 : null,
+        expected_expiration: raw.expected_expiration_ts,
+        fee_type: raw.fee_type, price_level_structure: raw.price_level_structure,
+        source_url: "https://external-api.demo.kalshi.co/trade-api/v2/markets/" + raw.ticker,
+        docs_url: "https://docs.kalshi.com/api-reference/market/get-markets",
+        flags: [], verified: true, _live: true,
+      };
+    });
+    S.markets = Object.values(byT);
+    Object.entries(snap.books || {}).forEach(([t, ob]) => {
+      if (ob) { ob.__ticker = t; S.books[t] = parseBook(ob); }
+    });
+    if (S.meta) S.meta.finished_at = new Date(snap.fetched_at * 1000).toISOString();
+  }
+  function tryLiveStream() {
+    if (typeof EventSource === "undefined") return;
+    let es;
+    try { es = new EventSource("api/stream"); } catch (e) { return; }
+    es.onopen = () => { liveMode = true; render(); flashDot(); };
+    es.onmessage = ev => {
+      try { ingest(JSON.parse(ev.data)); render(); flashDot(); } catch (e) { /* ignore partial frame */ }
+    };
+    es.onerror = () => {
+      if (!liveMode) es.close();      // no local server (GitHub Pages) -> keep polling
+    };
+  }
+  function flashDot() {
+    const live = $("#live-dot");
+    if (live) { live.style.background = "var(--green)"; setTimeout(() => { live.style.background = ""; }, 600); }
   }
 
   /* --------------------------------------------------------------- charts */
@@ -621,16 +698,21 @@
 
   async function refresh() {
     await loadAll({
+      // in local SSE mode the stream owns markets/books; avoid overwriting with stale JSON
+      markets: !liveMode,
       portfolio: page === "portfolio" || page === "index",
       meta: true,
     });
+    render();
+  }
+
+  function render() {
     freshness();
     if (page === "index") { renderIndex(); renderChats(); }
     if (page === "topic") { renderTopic(document.body.dataset.topic); renderChats(); }
     if (page === "portfolio") renderPortfolio();
     if (page === "flagged") renderFlagged();
-    const live = $("#live-dot");
-    if (live) { live.style.background = "var(--green)"; setTimeout(() => { live.style.background = ""; }, 600); }
+    flashDot();
   }
 
   function wireWindowSeg() {
@@ -649,6 +731,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     wireWindowSeg();
     refresh();
+    tryLiveStream(); // upgrades to 5s SSE pushes when live/server.py is serving
     pollTimer = setInterval(refresh, POLL_MS);
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) { clearInterval(pollTimer); pollTimer = null; }
