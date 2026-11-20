@@ -1,17 +1,17 @@
 name: _probe-egress
-on:
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
       - name: Probe Kalshi demo REST
         run: |
-          set -x
-          curl -sS -m 20 -o /tmp/status.json -w "HTTP:%{http_code}\n" \
-            https://external-api.demo.kalshi.co/trade-api/v2/exchange/status || true
-          head -c 600 /tmp/status.json || true
-          echo
-          curl -sS -m 20 -o /tmp/mk.json -w "HTTP:%{http_code}\n" \
-            "https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&limit=2" || true
-          head -c 400 /tmp/mk.json || true
+          echo "== status =="
+          curl -sS -m 25 -D /tmp/h.txt -o /tmp/b.json -w "HTTP:%{http_code}\n" \
+            https://external-api.demo.kalshi.co/trade-api/v2/exchange/status || echo "CURLFAIL"
+          head -c 400 /tmp/b.json 2>/dev/null; echo
+          echo "== CORS =="
+          grep -i "access-control" /tmp/h.txt || echo "no-cors-headers"
+          echo "== markets =="
+          curl -sS -m 25 -o /tmp/m.json -w "HTTP:%{http_code}\n" \
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&limit=1" || echo CURLFAIL
