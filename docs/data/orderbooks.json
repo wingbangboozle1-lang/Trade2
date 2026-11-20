@@ -1,10 +1,10 @@
 {
  "books": {
-  "KXAAAGASCDWI-26NOV21-SD": {
+  "KXAAAGASMAXFL-26DEC31-5.50": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187044,
+   "fetched_at": 1795187340,
    "flags": [
     "orderbook-empty"
    ],
@@ -12,17 +12,17 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASCDWI-26NOV21-SD/orderbook",
-   "ticker": "KXAAAGASCDWI-26NOV21-SD",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXFL-26DEC31-5.50/orderbook",
+   "ticker": "KXAAAGASMAXFL-26DEC31-5.50",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXAAAGASCDWI-26NOV21-SI": {
+  "KXAAAGASMAXFL-26DEC31-5.70": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187041,
+   "fetched_at": 1795187338,
    "flags": [
     "orderbook-empty"
    ],
@@ -30,17 +30,17 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASCDWI-26NOV21-SI/orderbook",
-   "ticker": "KXAAAGASCDWI-26NOV21-SI",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXFL-26DEC31-5.70/orderbook",
+   "ticker": "KXAAAGASMAXFL-26DEC31-5.70",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXDWTSRANK-226DEC31-THAN": {
+  "KXAAAGASMAXFL-26DEC31-5.90": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187045,
+   "fetched_at": 1795187336,
    "flags": [
     "orderbook-empty"
    ],
@@ -48,17 +48,17 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDWTSRANK-226DEC31-THAN/orderbook",
-   "ticker": "KXDWTSRANK-226DEC31-THAN",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXFL-26DEC31-5.90/orderbook",
+   "ticker": "KXAAAGASMAXFL-26DEC31-5.90",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXMOVIEDELAY-27JUL01": {
+  "KXBNBY-27JAN0100-T199999": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187042,
+   "fetched_at": 1795187338,
    "flags": [
     "orderbook-empty"
    ],
@@ -66,17 +66,17 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXMOVIEDELAY-27JUL01/orderbook",
-   "ticker": "KXMOVIEDELAY-27JUL01",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBNBY-27JAN0100-T199999/orderbook",
+   "ticker": "KXBNBY-27JAN0100-T199999",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXPGATIGER-26": {
+  "KXBNBY-27JAN0100-T40000": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187041,
+   "fetched_at": 1795187336,
    "flags": [
     "orderbook-empty"
    ],
@@ -84,17 +84,55 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATIGER-26/orderbook",
-   "ticker": "KXPGATIGER-26",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBNBY-27JAN0100-T40000/orderbook",
+   "ticker": "KXBNBY-27JAN0100-T40000",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXSHIBA-26NOV2117-T0.000001000": {
+  "KXGEORGIAPARLI-28-GD": {
+   "best_no_bid": 0.03,
+   "best_yes_bid": 0.02,
+   "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
+   "fetched_at": 1795187335,
+   "flags": [],
+   "implied_yes_ask": 0.97,
+   "no_depth_contracts": 3.0,
+   "no_depth_usd": 0.06,
+   "no_levels": [
+    [
+     "0.0100",
+     "1.00"
+    ],
+    [
+     "0.0200",
+     "1.00"
+    ],
+    [
+     "0.0300",
+     "1.00"
+    ]
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGEORGIAPARLI-28-GD/orderbook",
+   "ticker": "KXGEORGIAPARLI-28-GD",
+   "yes_depth_contracts": 2.0,
+   "yes_depth_usd": 0.03,
+   "yes_levels": [
+    [
+     "0.0100",
+     "1.00"
+    ],
+    [
+     "0.0200",
+     "1.00"
+    ]
+   ]
+  },
+  "KXGEORGIAPARLI-28-UNM": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187044,
+   "fetched_at": 1795187337,
    "flags": [
     "orderbook-empty"
    ],
@@ -102,35 +140,38 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSHIBA-26NOV2117-T0.000001000/orderbook",
-   "ticker": "KXSHIBA-26NOV2117-T0.000001000",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGEORGIAPARLI-28-UNM/orderbook",
+   "ticker": "KXGEORGIAPARLI-28-UNM",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXSHIBA-26NOV2117-T0.000012499": {
-   "best_no_bid": null,
+  "KXNETFLIXRANKSHOWGLOBAL-26NOV23-THE": {
+   "best_no_bid": 0.27,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187042,
-   "flags": [
-    "orderbook-empty"
+   "fetched_at": 1795187337,
+   "flags": [],
+   "implied_yes_ask": 0.73,
+   "no_depth_contracts": 17.0,
+   "no_depth_usd": 4.59,
+   "no_levels": [
+    [
+     "0.2700",
+     "17.00"
+    ]
    ],
-   "implied_yes_ask": null,
-   "no_depth_contracts": 0.0,
-   "no_depth_usd": 0.0,
-   "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSHIBA-26NOV2117-T0.000012499/orderbook",
-   "ticker": "KXSHIBA-26NOV2117-T0.000012499",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXNETFLIXRANKSHOWGLOBAL-26NOV23-THE/orderbook",
+   "ticker": "KXNETFLIXRANKSHOWGLOBAL-26NOV23-THE",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXSHOWENDSIMPSONS-30": {
+  "KXNETFLIXRANKSHOWGLOBAL-26NOV23-WIN": {
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187040,
+   "fetched_at": 1795187339,
    "flags": [
     "orderbook-empty"
    ],
@@ -138,49 +179,39 @@
    "no_depth_contracts": 0.0,
    "no_depth_usd": 0.0,
    "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSHOWENDSIMPSONS-30/orderbook",
-   "ticker": "KXSHOWENDSIMPSONS-30",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXNETFLIXRANKSHOWGLOBAL-26NOV23-WIN/orderbook",
+   "ticker": "KXNETFLIXRANKSHOWGLOBAL-26NOV23-WIN",
    "yes_depth_contracts": 0.0,
    "yes_depth_usd": 0.0,
    "yes_levels": []
   },
-  "KXSTATELEGWA-28NOV07WAH0051-D": {
-   "best_no_bid": null,
-   "best_yes_bid": null,
+  "KXTRUMPPRES-28": {
+   "best_no_bid": 0.01,
+   "best_yes_bid": 0.01,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187040,
-   "flags": [
-    "orderbook-empty"
+   "fetched_at": 1795187339,
+   "flags": [],
+   "implied_yes_ask": 0.99,
+   "no_depth_contracts": 1.0,
+   "no_depth_usd": 0.01,
+   "no_levels": [
+    [
+     "0.0100",
+     "1.00"
+    ]
    ],
-   "implied_yes_ask": null,
-   "no_depth_contracts": 0.0,
-   "no_depth_usd": 0.0,
-   "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSTATELEGWA-28NOV07WAH0051-D/orderbook",
-   "ticker": "KXSTATELEGWA-28NOV07WAH0051-D",
-   "yes_depth_contracts": 0.0,
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTRUMPPRES-28/orderbook",
+   "ticker": "KXTRUMPPRES-28",
+   "yes_depth_contracts": 0.02,
    "yes_depth_usd": 0.0,
-   "yes_levels": []
-  },
-  "KXSTATELEGWA-28NOV07WAH0132-D": {
-   "best_no_bid": null,
-   "best_yes_bid": null,
-   "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795187043,
-   "flags": [
-    "orderbook-empty"
-   ],
-   "implied_yes_ask": null,
-   "no_depth_contracts": 0.0,
-   "no_depth_usd": 0.0,
-   "no_levels": [],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSTATELEGWA-28NOV07WAH0132-D/orderbook",
-   "ticker": "KXSTATELEGWA-28NOV07WAH0132-D",
-   "yes_depth_contracts": 0.0,
-   "yes_depth_usd": 0.0,
-   "yes_levels": []
+   "yes_levels": [
+    [
+     "0.0100",
+     "0.02"
+    ]
+   ]
   }
  },
- "generated_at": "2026-11-20T15:04:32.183184+00:00",
+ "generated_at": "2026-11-20T15:09:23.226237+00:00",
  "source_docs": "https://docs.kalshi.com/getting_started/orderbook_responses"
 }

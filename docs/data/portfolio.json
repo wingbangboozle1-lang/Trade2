@@ -35,9 +35,14 @@
    "cash": 10000.0,
    "equity": 10200.0,
    "ts": "2026-11-20T15:04:32.246309+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 10200.0,
+   "ts": "2026-11-20T15:09:23.314926+00:00"
   }
  ],
- "generated_at": "2026-11-20T15:04:32.246339+00:00",
+ "generated_at": "2026-11-20T15:09:23.314940+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -56,7 +61,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 1,
+   "open_periods": 2,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
