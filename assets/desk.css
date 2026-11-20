@@ -131,3 +131,12 @@
     grid-column: 1;
   }
 }
+
+/* "re-check" — the exact public search the collector ran for this move. The
+   desk publishes parsed headlines only, never a causation claim, so the query
+   itself has to be visible for a reviewer to audit what was actually asked. */
+.chat-row .chat-news-query {
+  margin-left: .35rem; font-size: .72rem; text-decoration: underline dotted;
+  color: inherit; opacity: .72;
+}
+.chat-row .chat-news-query:hover { opacity: 1; }

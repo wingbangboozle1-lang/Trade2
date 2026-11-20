@@ -44,6 +44,8 @@ const FIXTURE = {
       delta: 0.12, abs_delta: 0.12, direction: "up", threshold: 0.1,
       market_url: "https://kalshi.com/markets/KXTEST/KXTEST-26-A",
       news_status: "ok",
+      news_query: "Test swing",
+      news_url: "https://news.google.com/rss/search?q=Test%20swing",
       headlines: [{
         title: "Crypto rally continues", url: "https://example.test/headline",
         source: "Example Wire", published: "2026-11-20T18:30:00+00:00",
@@ -57,6 +59,8 @@ const FIXTURE = {
       topic: "golf", title: "Swing without a headline", previous: 0.55, current: 0.44,
       delta: -0.11, abs_delta: 0.11, direction: "down", threshold: 0.1,
       news_status: "no-headlines-found",
+      news_query: "Swing without a headline",
+      news_url: "https://news.google.com/rss/search?q=Swing%20without%20a%20headline",
       market_url: "https://kalshi.com/markets/KXQUIET/KXQUIET-26-B",
     },
   ],
@@ -141,12 +145,16 @@ check("model chat renders the shortlist (regression: it used to be empty)",
   modelRows.length === 2, `rows=${modelRows.length}`);
 check("model chat labels a watch flag that has not swung",
   !!doc.querySelector("#feedModel .chat-kind"));
+const queryLink = doc.querySelector("#feedAll .chat-news-query");
+check("swing row links the exact search the desk ran (news_url is published)",
+  !!queryLink && /^https:\/\/news\.google\.com\/rss\/search\?q=/.test(queryLink.getAttribute("href") || ""));
 const newsLinks = [...doc.querySelectorAll("#feedAll .chat-news-link")];
 check("swing row carries its candidate-catalyst link",
   newsLinks.length === 1 && newsLinks[0].getAttribute("href") === "https://example.test/headline",
   `links=${newsLinks.length}`);
-check("a swing with no headline states that none was found",
-  /no headline published in the/.test(doc.querySelector("#feedAll .chat-row.down")?.textContent || ""));
+check("a swing with no headline states that none was found, and still links its search",
+  /no headline published in the/.test(doc.querySelector("#feedAll .chat-row.down")?.textContent || "") &&
+  !!doc.querySelector("#feedAll .chat-row.down .chat-news-query"));
 const leaked = [...new Set(doc.body.textContent.match(/\bundefined\b|\bNaN\b|\[object Object\]/g) || [])];
 check("desk page leaks no undefined/NaN token", leaked.length === 0, leaked.join(","));
 

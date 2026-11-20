@@ -178,13 +178,25 @@
         'rel="noreferrer" title="Candidate catalyst — timing only, not a proven cause">' +
         esc(h.source ? h.source + ": " + h.title : h.title) + "</a>";
     }).join("");
+    // Kalshi publishes no news feed (see methodology), so the collector asked a
+    // public search on the market's own wording and published the exact query it
+    // used, with its URL. A reader can re-run that search to check the link —
+    // and see for themselves when the lookup found nothing.
+    var queryLink = a.news_url
+      ? ' <a class="chat-news-query" href="' + esc(a.news_url) + '" target="_blank" ' +
+        'rel="noreferrer" title="Re-run the exact search the collector ran' +
+        (a.news_query ? " (query: " + esc(a.news_query) + ")" : "") +
+        '">re-check</a>'
+      : "";
     var news = "";
     if (headlines) {
-      news = '<span class="chat-news">📰 ' + headlines + "</span>";
+      news = '<span class="chat-news">📰 ' + headlines + queryLink + "</span>";
     } else if (a.news_status === "no-headlines-found") {
-      news = '<span class="chat-news none">📰 no headline published in the window</span>';
+      news = '<span class="chat-news none">📰 no headline published in the window' +
+        queryLink + "</span>";
     } else if (a.news_status === "unavailable" || a.news_status === "no-query") {
-      news = '<span class="chat-news none">📰 lookup unavailable — link left blank</span>';
+      news = '<span class="chat-news none">📰 lookup unavailable — link left blank' +
+        queryLink + "</span>";
     }
     row.innerHTML =
       "<time>" + esc(when) + "</time>" +

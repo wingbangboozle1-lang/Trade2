@@ -225,10 +225,6 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         exchange = {"error": str(exc)}
 
     previous_live = load_json(LIVE_PATH, {})
-    previous_obs: dict[str, dict[str, Any]] = {}
-    for row in previous_live.get("observations", []):
-        if row.get("ticker"):
-            previous_obs[row["ticker"]] = row
     alerts_store = load_json(os.path.join(DATA_DIR, "alerts.json"),
                              {"alerts": [], "version": 0})
     if alerts_store.get("version") != ALERTS_VERSION:
@@ -241,6 +237,21 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     if not isinstance(tracked.get("markets"), dict):
         tracked = {"markets": {}, "meta": {}}
     model_watch = load_json(MODEL_WATCH_PATH, {}).get("entries", {})
+
+    # The previous observation of each market, for the run-over-run swing test.
+    # Defect found and fixed here (2026-11-20): this used to read
+    # ``data/live.json["observations"]``, a key the collector never writes, so
+    # ``previous_obs`` was empty on every run and only the reference-bar path
+    # could raise an alert. The tracked-market ledger now carries the last
+    # observation, and the old lookup stays as a fallback for hand-built files.
+    previous_obs: dict[str, dict[str, Any]] = {}
+    for ticker, rec in tracked["markets"].items():
+        row = rec.get("last_obs")
+        if row and row.get("mid") is not None:
+            previous_obs[ticker] = row
+    for row in previous_live.get("observations", []):
+        if row.get("ticker") and row["ticker"] not in previous_obs:
+            previous_obs[row["ticker"]] = row
 
     series_cache = load_json(os.path.join(DATA_DIR, "series_cache.json"), {})
     holdings = {p["ticker"] for p in
@@ -368,6 +379,23 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "notional_per_contract": obs.notional,
             "open_interest_contracts": obs.open_interest,
             "volume_contracts": obs.volume,
+            # What the swing detector needs on the *next* run. Kept in this
+            # bounded ledger rather than the published snapshot so live.html
+            # does not carry a second copy of every observation.
+            "last_obs": {
+                "ts": now,
+                "ticker": obs.ticker,
+                "event_ticker": obs.event_ticker,
+                "topic": obs.topic,
+                "title": obs.title,
+                "yes_bid": obs.yes_bid,
+                "yes_ask": obs.yes_ask,
+                "mid": obs.mid,
+                "last_price": obs.last_price,
+                "volume": obs.volume,
+                "open_interest": obs.open_interest,
+                "series_ticker": obs.series_ticker,
+            },
         }
 
     # -- reference bars ---------------------------------------------------
@@ -476,6 +504,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 row["headlines"] = found["items"][:3]
                 row["news_status"] = found["status"]
                 row["news_query"] = found["query"]
+                # Publish the search the collector actually ran, so every
+                # headline row is reproducible: desk.js links it as
+                # "re-check" (chat-news-query). Before this, only the parsed
+                # headlines were published and the query itself was
+                # unrecoverable — you could not tell what had been asked.
+                row["news_url"] = found["url"]
                 if found["status"] == "ok":
                     news_counts["ok"] += 1
                 elif found["status"] == "no-headlines-found":

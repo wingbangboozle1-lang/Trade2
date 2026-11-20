@@ -365,7 +365,42 @@ def build_overview(live: dict[str, Any]) -> str:
                       f'Model rules →</a>')}
         </section>
         <div class="table-foot"><span><a class="source-link" href="live.html">
-          Open the live desk (chart + depth + streaming chats) →</a></span></div>"""
+          Open the live desk (chart + depth + streaming chats) →</a></span></div>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">⇄</span><div>
+              <h2>Other collectors in this repository</h2>
+              <p>Three independent pipelines publish to this Pages site from the
+              same public demo API. They are listed so nothing looks duplicated by
+              accident: each keeps its own folder and schedule, and this page
+              never writes to theirs.</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Surface</th><th>Pipeline</th><th>Scheduled</th>
+                <th>Data it publishes</th><th>Open</th></tr></thead>
+              <tbody>
+                <tr><td>This desk (repository root)</td>
+                  <td><code>.github/workflows/kalshi-dashboard.yml</code></td>
+                  <td>cron */5</td><td><code>data/</code>, <code>*.html</code></td>
+                  <td><a class="source-link" href="live.html">live desk →</a></td></tr>
+                <tr><td>Alerts and candles desk</td>
+                  <td><code>.github/workflows/collector.yml</code></td>
+                  <td>cron */15</td><td><code>docs/data/</code></td>
+                  <td><a class="source-link" href="{SITE}/docs/" target="_blank"
+                         rel="noreferrer">/docs/ ↗</a></td></tr>
+                <tr><td>Topic monitor desk</td>
+                  <td><code>.github/workflows/dashboard.yml</code></td>
+                  <td>cron */30</td><td><code>kalshi-dashboard/data/</code></td>
+                  <td><a class="source-link" href="{SITE}/kalshi-dashboard/"
+                         target="_blank" rel="noreferrer">/kalshi-dashboard/ ↗</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Cadences are read from each workflow file in
+          this repository; they are configuration, not a claim that any particular
+          run succeeded.</span></div>
+        </section>"""
 
 
 # ---------------------------------------------------------------------------
