@@ -35,7 +35,7 @@ log the request here instead of editing the file.
 | 8 | Executive summary | done | sess-c0205283 | `EXECUTIVE_SUMMARY.md`, `docs/summary.html` |
 | 9 | Site build (landing + per-category subpages + tables) | done | sess-c0205283 | `docs/` |
 | 10 | Flagged for Review page | done | sess-c0205283 | `docs/flagged.html` |
-| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | in progress | sess-c0205283 | all |
+| 11 | Integration: re-verify combined data, build check, PR, merge, Pages deploy | in progress | sess-c0205283 | all — PR link recorded below once opened |
 
 Statuses: `unclaimed` · `in progress` · `done` · `needs review`.
 
@@ -94,3 +94,40 @@ Statuses: `unclaimed` · `in progress` · `done` · `needs review`.
   published JSON every 20s. Documented on the site; Pages never depends on the local server.
 - **Verification ledger:** `docs/verification/sources.md` (claims → official URLs). Flagged page:
   `docs/flagged.html` (live flags + curated FL-01…FL-09).
+
+### 2026-11-20 — sess-c0205283 — live-data bring-up (all verified against the real API from Actions)
+
+Serial diagnosis loop (each fix landed with a regression test before the next run):
+
+1. First live run: `collect_series` referenced a pre-refactor attribute → crashed; fixed; offline fixture test added.
+2. Run with real data: **6,651 series matched / 6,522 errors** — Entertainment+Mentions+Elections categories hold
+   thousands of series and the request budget was burned on per-series market scans. Fixed: volume-ranked cap
+   (`SERIES_PER_TOPIC=12`), budget-aware early stops, error-list cap (100 + total).
+3. Golf matcher false-positive: ticker regex `PGA` matched inside `KXATPGAME` (ATP tennis); title regex `masters`
+   matched `KXMCMMEN` (ATP Monte-Carlo). Anchored to `PGATOUR|KXPGA` etc.; regression fixtures assert exclusion.
+4. Gas matcher too broad: tag `Oil and energy` pulled ERCOT power/oil series. Tightened to gas-specific
+   tags/title/ticker; `KXSPRMAX` (WTI) now excluded (regression-tested).
+5. Real market objects have **no `series_ticker` field** and report `status:"active"` (not `"open"`) — candles
+   silently fetched nothing and the UI filtered every market out. Fixed: derive series from ticker prefix,
+   normalize `active`→`open`; both behaviors regression-tested.
+6. `include_volume` populates **`volume_fp`** (not `volume`) — ranking was arbitrary until the field name was
+   verified against the official schema (docs.kalshi.com Get Series List) and a live response.
+7. Candle selection ranked all-time volume → far-dated quiet markets, zero points. Fixed: two-phase fetch
+   (probe the 6h window across 2× candidates, enrich only markets with real points) + `min_updated_ts=7d`
+   recency filter (with fallback to the full list) + ranking prefers 24h activity.
+8. Alert logic only compared the last two *seconds*-window closes → missed swings spanning minutes/hours.
+   Now scans windows smallest-first and reports the largest qualifying step with its real window label.
+9. Corrected a verification overstatement: `period_interval=1` is **1-minute** candles (observed `end_period_ts`
+   steps of exactly 60s), not 1-second. `docs/verification/sources.md` D6 and the chart legend updated.
+
+**Live results after bring-up (run 4476…/ad52ff8, 2026-11-20):** 59 series tracked (12/topic, volume-ranked),
+40 markets across all five topics, 10 order books, 11 markets charted with real candles, **4 alerts ≥ $0.10**
+(+0.806 elections, ±0.12 culture, −0.21/+0.18 gas), 2 of 4 alerts carrying **real matched headlines**
+(e.g. gasoline-price article for the gas swing), 300 latest settlements, paper portfolio with 2 open
+`roi_edge` positions, $11.62 fees paid per the official formula, 0 errors, 75s runtime.
+
+**Sources for this phase:** live `external-api.demo.kalshi.co` responses (URLs stored per row) ·
+https://docs.kalshi.com/api-reference/market/get-series-list (schema: `volume_fp`, `min_updated_ts`,
+`include_volume`) · https://docs.kalshi.com/api-reference/market/get-market-candlesticks ·
+https://docs.kalshi.com/getting_started/orderbook_responses · https://kalshi.com/docs/kalshi-fee-schedule.pdf ·
+https://news.google.com/rss/search (headline candidates, FL-03 wording applies).

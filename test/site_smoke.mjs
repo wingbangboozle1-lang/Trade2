@@ -117,9 +117,13 @@ function ok(name, cond, detail) {
   ok("portfolio: no JS errors", errors.length === 0, errors.join(" | "));
   ok("portfolio: stat cards", d.querySelectorAll("#pf-stats .stat").length === 4,
      d.querySelectorAll("#pf-stats .stat").length);
-  ok("portfolio: strategy stats table", d.querySelectorAll("#stats-by-strategy tbody tr").length > 0,
-     d.querySelectorAll("#stats-by-strategy tbody tr").length);
-  ok("portfolio: trade type stats table", d.querySelectorAll("#stats-by-type tbody tr").length > 0);
+  const stratRows = d.querySelectorAll("#stats-by-strategy tbody tr").length;
+  ok("portfolio: strategy stats table (rows or honest empty state)",
+     stratRows > 0 || /No closed trades/.test(d.querySelector("#stats-by-strategy").innerHTML),
+     stratRows);
+  const typeRows = d.querySelectorAll("#stats-by-type tbody tr").length;
+  ok("portfolio: trade type stats table (rows or honest empty state)",
+     typeRows > 0 || /No closed trades/.test(d.querySelector("#stats-by-type").innerHTML), typeRows);
   ok("portfolio: trade log table", !!d.querySelector("#trade-log tbody tr") ||
      /No trades/.test(d.querySelector("#trade-log").innerHTML));
   ok("portfolio: fee source linked",
