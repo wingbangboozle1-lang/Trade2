@@ -66,12 +66,17 @@ jobs:
         if: steps.collect.outcome != 'success'
         run: echo "::warning::Collector did not publish this run. The last committed snapshot stays online. See Flagged for review F-21."
 
-      - name: Demo portfolio snapshot (read-only; runs only when secrets are set)
-        if: ${{ secrets.KALSHI_DEMO_KEY_ID != '' && secrets.KALSHI_DEMO_PRIVATE_KEY != '' }}
+      - name: Demo portfolio snapshot (read-only; skipped when secrets are not set)
         env:
           KALSHI_DEMO_KEY_ID: ${{ secrets.KALSHI_DEMO_KEY_ID }}
           KALSHI_DEMO_PRIVATE_KEY: ${{ secrets.KALSHI_DEMO_PRIVATE_KEY }}
-        run: node scripts/portfolio.mjs --out kalshi-dashboard/data
+        run: |
+          # secrets cannot be used in a step-level `if:`, so the check happens here
+          if [ -z "$KALSHI_DEMO_KEY_ID" ] || [ -z "$KALSHI_DEMO_PRIVATE_KEY" ]; then
+            echo "Demo secrets not set: portfolio snapshot skipped (flag F-08)."
+            exit 0
+          fi
+          node scripts/portfolio.mjs --out kalshi-dashboard/data
 
       - name: Build site and check every internal link
         run: node scripts/build-site.mjs --out kalshi-dashboard
