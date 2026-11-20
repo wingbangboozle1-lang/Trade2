@@ -48,12 +48,17 @@ jobs:
           python3 test/gen_fixtures.py /tmp/fixture-data
           node test/site_smoke.mjs /tmp/fixture-data
 
-      - name: Probe demo API connectivity
+      - name: Probe demo API connectivity (must be HTTP 200)
         if: github.event_name != 'push'
         run: |
-          code=$(curl -sS -m 15 -o /dev/null -w '%{http_code}' \
-            'https://external-api.demo.kalshi.co/trade-api/v2/exchange/status' || echo curl_failed)
-          echo "::notice::Kalshi demo API probe HTTP $code"
+          code=$(curl -sS -m 15 -o /tmp/probe.json -w '%{http_code}' \
+            'https://external-api.demo.kalshi.co/trade-api/v2/exchange/status' || echo 000)
+          echo "probe HTTP $code body: $(head -c 200 /tmp/probe.json 2>/dev/null)"
+          cors=$(curl -sS -m 15 -I -H 'Origin: https://wingbangboozle1-lang.github.io' \
+            'https://external-api.demo.kalshi.co/trade-api/v2/exchange/status' \
+            | grep -i '^access-control-allow-origin' || true)
+          echo "CORS: ${cors:-<none>}"
+          test "$code" = "200"
 
       - name: Collect demo data (with headline lookup for >=$0.10 swings)
         if: github.event_name != 'push'
