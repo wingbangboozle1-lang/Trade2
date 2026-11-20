@@ -25,6 +25,7 @@ Rules (agreed convention for this repo):
 | - | - | - | - | - |
 | `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | done |
 | `arena-e4e8f4e1` | `arena/e4e8f4e1-trade2` | Independent final audit, factual corrections, demo-only secondary collector integration | 2026-11-20 | active |
+| `arena-8a0899e5` | `arena/8a0899e5-trade2` | Line-by-line re-review + verification of the merged tree; found and fixed a NO-side position defect in `collector/engine.py`; re-verified official sources; re-checked site build, links and Pages | 2026-11-20 | active |
 
 No other sessions are registered as of the last update below. This session is
 doing the integration work itself because the board was empty and no competing
@@ -48,6 +49,7 @@ claims existed.
 | T10 | Scheduled data collection workflow (GitHub Actions) | done | `arena-f5837994` | `.github/workflows/` |
 | T11 | Flagged-for-review page (irregularities + unverified) | done | `arena-f5837994` | `flagged.html`, `VERIFICATION.md` |
 | T12 | Integration: re-verify, link check, PR, merge, confirm Pages deploy | done | `arena-f5837994` | `COORDINATION.md` |
+| T13 | Line-by-line re-review of the merged tree + verification of official sources | done | `arena-8a0899e5` | `collector/engine.py`, `tests/test_engine.py`, `VERIFICATION.md`, `COORDINATION.md` |
 
 ---
 
@@ -98,6 +100,41 @@ exact docs URL or live API URL used.
 
 **Post-merge record:** see the "Integration result" section at the bottom of
 this file.
+
+### 2026-11-20 — `arena-8a0899e5` — line-by-line re-review and verification
+
+This session started from `origin/main` @ `1bc32b7` (identical to the branch
+tip) and re-reviewed the merged tree line by line, re-checking every core
+claim against the official Kalshi sources before changing anything.
+
+**Official sources re-verified in this session (all fetched directly):**
+
+| Claim | Official source | Result |
+| - | - | - |
+| Demo REST root `https://external-api.demo.kalshi.co/trade-api/v2` and the alternate `https://demo-api.kalshi.co/trade-api/v2`; WS `wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2` and `wss://demo-api.kalshi.co/trade-api/ws/v2` | [demo_env](https://docs.kalshi.com/getting_started/demo_env) | **Confirmed.** Matches the code in `collector/kalshi_api.py` exactly. |
+| Orderbook shape: `orderbook_fp.yes_dollars` / `no_dollars`, ascending, best bid **last**, bids only, implied YES ask = `1.00 − best NO bid`, spread = ask − bid | [orderbook_responses](https://docs.kalshi.com/getting_started/orderbook_responses) | **Confirmed.** Matches `collector/alerts.py`, `collector/kalshi_api.py`, `assets/desk.js` and `assets/app.js`. |
+| Taker fee `round_up(M × 0.07 × C × P × (1−P))`, maker `0.0175`, default multiplier 1 / 0; no settlement or membership fee; all 42 table rows | [fee schedule PDF, eff. 2026-07-07](https://kalshi.com/docs/kalshi-fee-schedule.pdf) | **Confirmed.** The published table reproduces the values asserted in `tests/test_engine.py::TestFees`. |
+| YES holders receive $1 per contract, NO holders $1 per contract | [market_settlement](https://docs.kalshi.com/getting_started/market_settlement) | **Confirmed.** Matches `collector/engine.py::settle` and `trading/engine.py`. |
+
+**Defect found and fixed (F7 in `VERIFICATION.md`).** `collector/engine.py`
+marked a NO-side position with the **YES mid** and, in `exit_signals()`,
+compared the NO entry price to the **YES mid**. Because a NO position's value
+is `1 − YES mid`, a losing NO trade was reported as a large favourable swing and
+force-closed at a loss, and `equity` was overstated. Reproduced, then fixed so
+`mark()` stores the held-side value and `exit_signals()` tests the held-side
+swing. Regression tests added; **45 unit tests pass** (was 42). The parallel
+`trading/engine.py` (session `arena-c0205283`) already handled NO sides
+correctly and was left unchanged.
+
+**Other checks.** `python3 -m unittest discover -s tests` 45 OK;
+`python3 -m collector.test_runner` PASS; `python3 -m trading.test_engine` PASS;
+`npm test` 18/18; `python3 -m site_build.build` clean;
+`node scripts/build-site.mjs` builds 13 pages; `python3 tools/linkcheck.py`
+45 pages / 503 links / 0 errors. The published sites were fetched and serve real
+data: root <https://wingbangboozle1-lang.github.io/Trade2/> and the docs desk
+<https://wingbangboozle1-lang.github.io/Trade2/docs/>. No new irregularities
+found beyond F7; the pre-existing flags (credentials, CORS, news attribution,
+rate limits) stand unchanged.
 
 ---
 

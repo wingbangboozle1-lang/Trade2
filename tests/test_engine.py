@@ -356,6 +356,40 @@ class TestExits(unittest.TestCase):
         closed = [x for x in p.positions.values() if x.status == "stopped"][0]
         self.assertGreater(closed.exit_fee, 0)
 
+    def test_no_side_uses_no_value_for_the_swing_test(self):
+        # Regression: a NO position's value is 1 - YES mid. Comparing the NO
+        # entry price to the YES mid read a 5c LOSS as a 45c WIN and forced an
+        # early exit at a loss.
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.30, side="no"), "value")
+        # YES mid 0.75 -> NO value 0.25, down 0.05 from a 0.30 entry: hold.
+        decisions = exit_signals(p, {"X": self.obs(0.75, 0.74, 0.76)})
+        self.assertEqual(decisions, [])
+
+    def test_no_side_take_profit_fires_on_a_real_gain(self):
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.40, side="no"), "value")
+        # YES mid 0.20 -> NO value 0.80, up 0.40 from a 0.40 entry: take profit.
+        decisions = exit_signals(p, {"X": self.obs(0.20, 0.19, 0.21)})
+        self.assertEqual(len(decisions), 1)
+        pos, price, why = decisions[0]
+        # We sell NO at the NO bid = 1 - YES ask.
+        self.assertAlmostEqual(price, 0.79)
+        p.close("X", price, 2.0, why)
+        self.assertGreater(p.positions[pos.position_id].realized, 0)
+
+    def test_no_side_equity_uses_held_side_value(self):
+        p = Portfolio()
+        pos = p.open(self.signal(price=0.30, side="no"), "value")
+        # YES mid 0.75 -> the NO contract is worth 0.25, not the YES mid 0.75.
+        p.mark("X", 0.75)
+        self.assertAlmostEqual(pos.current_price, 0.25)
+        expected = p.bankroll + pos.contracts * 0.25
+        self.assertAlmostEqual(p.equity, expected, places=2)
+        self.assertLess(p.equity, 10_000.0)  # a losing position reduces equity
+
 
 class TestStrategyGate(unittest.TestCase):
     def sig(self, ticker, side, price, net_roi, model_fair=0.6, score=0.2,
