@@ -155,6 +155,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
         </footer>
       </main>
     </div>
+    <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
 </html>
