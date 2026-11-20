@@ -377,3 +377,19 @@ after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
 rebase+push retry that surfaces pull/push errors as workflow annotations.
 Verified: dispatch run `44769581312` on `main` → **success**, data commit
 `0beb9b2` landed, Pages rebuilt for it (`status: built`).
+
+---
+
+## Session D — current Arena branch `arena/0b2d2a2a-trade2`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-0b2d2a2a` | `arena/0b2d2a2a-trade2` | Fresh integration audit: current public site, pipeline health, official-source validation | 2026-11-20 | active |
+
+| # | Task | Status | Owner | File scope |
+| --- | --- | --- | --- | --- |
+| T13 | Re-audit merged deliverable and current deployment; record freshness, verification evidence, and remaining blockers | in progress | `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` |
+
+The task is documentation-only and does not edit the root dashboard, data pipeline,
+site templates, or another session's claimed implementation. Existing audit found
+three pipelines and parallel sessions; see `AUDIT_ADDENDUM.md` for verified findings.
