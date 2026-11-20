@@ -85,12 +85,37 @@
           <code>1.00 − best NO bid</code> and the YES mid is the average of the two.
           Contract depth is the sum of <code>count_fp</code> at every resting price
           level, reported as contracts available at each price.</p>
-          <h2>Swing threshold</h2>
-          <p>An alert is raised when the YES mid moves by at least
-          <strong>$0.10</strong> between two
-          consecutive observations of the same market. Missing quotes are skipped,
-          never treated as zero. A $0.10 move on a $1 contract is 10 cents of
-          settlement value.</p>
+          <h2 id="alert-rule">Alert rule — what a ≥ $0.10 swing means here</h2>
+          <p>A row is published in the <em>All events</em> chat when the YES mid
+          moves by at least
+          <strong>$0.10</strong> in either
+          direction. The requirement is applied literally: the threshold is never
+          raised. What is required is that the move can be <strong>dealt on</strong>,
+          so three conditions are checked before a row is written:</p>
+          <ol>
+            <li><strong>Two-sided quote, both ends.</strong> The reference is the
+            YES mid at the start of the current 5-minute bar, built from the candle's
+            own <code>yes_bid</code> and <code>yes_ask</code> closes; the current
+            value is the order-book mid. A last <em>trade</em> price is never
+            compared with a quote mid — doing that produced a "0.811 → 0.4065" alert
+            on <code>KXPRESNOMD-28-HBID</code> that no trade made.</li>
+            <li><strong>Spread strictly under $0.10.</strong> On a book wider than
+            the threshold the mid can only move by having one side pulled, not by
+            trading. This is a design choice of this project, not a Kalshi rule, and
+            it is labelled as such everywhere it appears.</li>
+            <li><strong>Same bar, same direction, one row.</strong> The alert id is
+            <code>ticker:bar_start:direction</code>, so re-running inside a bar
+            recomputes the same id instead of appending a duplicate.</li>
+          </ol>
+          <p>Missing quotes are skipped, never treated as zero. A $0.10 move on a $1
+          contract is 10 cents of settlement value. Every published row carries the
+          bid, the ask, the spread and the exact API URL for the market it came
+          from, so the rule can be checked one row at a time.</p>
+          <p>The second chat, <em>Model shortlist</em>, is not an alert feed. It
+          shows tradeable swings <em>and</em> every market whose modelled net edge
+          after the taker fee clears the gate, and each row states which of the two
+          it is <span class="tag tag-purple">swing</span>
+          <span class="tag tag-purple">signal</span>.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the

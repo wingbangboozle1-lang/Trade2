@@ -308,22 +308,50 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
     events = [e for e in live.get("events", []) if e.get("topic") == slug]
     resolutions = (live.get("resolutions") or {}).get(slug, [])
 
+    # Events are the unit a trader thinks in, so markets are grouped under
+    # their event (the brief asks for events within a topic to stay organised
+    # together). Inside an event the order is open-interest value, and events
+    # are ordered by their own largest market.
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for e in events:
+        groups.setdefault(e.get("event_ticker") or "\u2014", []).append(e)
+    ordered = sorted(groups.items(),
+                     key=lambda kv: max((r.get("open_interest_notional") or 0)
+                                        for r in kv[1]), reverse=True)
+
     market_rows = []
-    for e in events[:60]:
+    shown = 0
+    for event_ticker, rows in ordered:
+        if shown >= 60:
+            break
+        head = ((rows[0].get("observation") or {}).get("_event_title")
+                or event_ticker)
         market_rows.append(
-            "<tr>"
-            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
-            f'rel="noreferrer">{esc(e.get("title"))}</a>'
-            f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
-            f"<td>{cents(e.get('yes_bid'))}</td>"
-            f"<td>{cents(e.get('yes_ask'))}</td>"
-            f"<td>{num((e.get('liquidity') or {}).get('yes_bid_contracts'))}</td>"
-            f"<td>{money(e.get('open_interest_notional'))}</td>"
-            f"<td>{num(e.get('volume_contracts'))}</td>"
-            f"<td>{esc((e.get('close_time') or '')[:16].replace('T',' '))}</td>"
-            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-            f'href="{API}/markets/{html.escape(e.get("ticker",""))}">API ↗</a></td>'
-            "</tr>")
+            f'<tr class="group-row"><td colspan="8"><strong>{esc(head)}</strong> '
+            f'<small class="ticker">{esc(event_ticker)}</small> '
+            f'<span class="tag tag-purple">{len(rows)} market(s)</span></td></tr>')
+        for e in rows:
+            if shown >= 60:
+                break
+            shown += 1
+            spread = (e.get("observation") or {}).get("spread")
+            tradable = spread is not None and 0 <= spread < 0.10
+            quote_note = ("" if tradable else
+                          ' <span class="flag-badge">WIDE BOOK</span>')
+            market_rows.append(
+                "<tr>"
+                f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+                f'rel="noreferrer">{esc(e.get("title"))}</a>'
+                f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
+                f"<td>{cents(e.get('yes_bid'))}{quote_note}</td>"
+                f"<td>{cents(e.get('yes_ask'))}</td>"
+                f"<td>{num((e.get('liquidity') or {}).get('yes_bid_contracts'))}</td>"
+                f"<td>{money(e.get('open_interest_notional'))}</td>"
+                f"<td>{num(e.get('volume_contracts'))}</td>"
+                f"<td>{esc((e.get('close_time') or '')[:16].replace('T',' '))}</td>"
+                f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+                f'href="{API}/markets/{html.escape(e.get("ticker",""))}">API ↗</a></td>'
+                "</tr>")
     if not market_rows:
         market_rows.append('<tr><td colspan="8" class="empty-state">'
                            "No markets from this topic are in the current snapshot."
@@ -379,6 +407,9 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
             <strong>{cnt(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
           <article class="stat-card"><span>Resolved captured</span>
             <strong>{cnt(len(resolutions))}</strong><small>YES/NO logged</small></article>
+          <article class="stat-card"><span>Still live (open)</span>
+            <strong>{cnt(sum(1 for e in events if (e.get("observation") or {}).get("status") in ("active", "open")))}</strong>
+            <small>Tracked until the exchange settles them</small></article>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -497,16 +528,24 @@ def build_live(live: dict[str, Any]) -> str:
           <article class="panel chat-panel">
             <div class="panel-title">
               <div><span class="section-icon">◉</span><div>
-                <h2>All events</h2><p>Every swing ≥ $0.10, newest first</p></div></div>
+                <h2>All events</h2><p>Every swing ≥ $0.10 that a trader could
+                act on, newest first</p></div></div>
               <span class="count-badge" id="allCount">0</span>
             </div>
             <div class="chat-feed tall" id="feedAll" aria-live="polite"></div>
+            <div class="alert-note" id="alertRule">Rule: a move of at least
+            <strong>$0.10</strong> in either direction between the current order-book
+            mid and the mid at the start of the current 5-minute bar. Both quotes
+            must be two-sided and the spread must be under $0.10 — a wider book can
+            only move its mid by having one side pulled, which is not a price move.
+            <a href="methodology.html#alert-rule">How this is measured</a>.</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
               <div><span class="section-icon violet">★</span><div>
                 <h2>Model shortlist</h2>
-                <p>Filtered to signals the model scores as high ROI</p></div></div>
+                <p>Tradeable swings plus every market the model scores as
+                positive net ROI after the taker fee</p></div></div>
               <span class="count-badge" id="modelCount">0</span>
             </div>
             <div class="chat-feed tall" id="feedModel" aria-live="polite"></div>
@@ -514,6 +553,26 @@ def build_live(live: dict[str, Any]) -> str:
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
           </article>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">✓</span><div>
+              <h2>Resolved while tracking</h2>
+              <p>How each tracked market ended: the official <code>result</code>
+              field, YES or NO, with its settlement value</p></div></div>
+            <a class="source-link" href="{API}/markets?status=settled"
+               target="_blank" rel="noreferrer">Settled markets API ↗</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Topic</th><th>Result</th>
+                <th>Settlement value</th><th>Settled at</th><th>Source</th></tr></thead>
+              <tbody id="resolvedRows"></tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Rows come from the collector's settlement
+          store; a row is only listed under a topic when an official field
+          identifies it</span><span id="resolvedCount"></span></div>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -579,12 +638,37 @@ def build_methodology(live: dict[str, Any]) -> str:
           <code>1.00 − best NO bid</code> and the YES mid is the average of the two.
           Contract depth is the sum of <code>count_fp</code> at every resting price
           level, reported as contracts available at each price.</p>
-          <h2>Swing threshold</h2>
-          <p>An alert is raised when the YES mid moves by at least
-          <strong>${live.get("swap_threshold_dollars", 0.10):.2f}</strong> between two
-          consecutive observations of the same market. Missing quotes are skipped,
-          never treated as zero. A $0.10 move on a $1 contract is 10 cents of
-          settlement value.</p>
+          <h2 id="alert-rule">Alert rule — what a ≥ $0.10 swing means here</h2>
+          <p>A row is published in the <em>All events</em> chat when the YES mid
+          moves by at least
+          <strong>${live.get("swap_threshold_dollars", 0.10):.2f}</strong> in either
+          direction. The requirement is applied literally: the threshold is never
+          raised. What is required is that the move can be <strong>dealt on</strong>,
+          so three conditions are checked before a row is written:</p>
+          <ol>
+            <li><strong>Two-sided quote, both ends.</strong> The reference is the
+            YES mid at the start of the current 5-minute bar, built from the candle's
+            own <code>yes_bid</code> and <code>yes_ask</code> closes; the current
+            value is the order-book mid. A last <em>trade</em> price is never
+            compared with a quote mid — doing that produced a "0.811 → 0.4065" alert
+            on <code>KXPRESNOMD-28-HBID</code> that no trade made.</li>
+            <li><strong>Spread strictly under $0.10.</strong> On a book wider than
+            the threshold the mid can only move by having one side pulled, not by
+            trading. This is a design choice of this project, not a Kalshi rule, and
+            it is labelled as such everywhere it appears.</li>
+            <li><strong>Same bar, same direction, one row.</strong> The alert id is
+            <code>ticker:bar_start:direction</code>, so re-running inside a bar
+            recomputes the same id instead of appending a duplicate.</li>
+          </ol>
+          <p>Missing quotes are skipped, never treated as zero. A $0.10 move on a $1
+          contract is 10 cents of settlement value. Every published row carries the
+          bid, the ask, the spread and the exact API URL for the market it came
+          from, so the rule can be checked one row at a time.</p>
+          <p>The second chat, <em>Model shortlist</em>, is not an alert feed. It
+          shows tradeable swings <em>and</em> every market whose modelled net edge
+          after the taker fee clears the gate, and each row states which of the two
+          it is <span class="tag tag-purple">swing</span>
+          <span class="tag tag-purple">signal</span>.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the

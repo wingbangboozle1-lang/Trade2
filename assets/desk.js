@@ -139,6 +139,7 @@
     if (source === "poll" || source === "sse") banner("LIVE STREAM", "live");
     renderFeeds();
     renderDesk();
+    renderResolved();
     fillMarketSelect();
     if (state.market) refreshMarketNow(state.market);
   }
@@ -147,22 +148,45 @@
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
 
+  var KIND_LABEL = {
+    swing: "swing",
+    "swing+signal": "swing · model edge",
+    signal: "model edge",
+  };
+
   function alertRow(a, isModel) {
     var up = a.direction === "up";
     var when = (a.iso || "").slice(11, 19) || hhmmss(a.ts);
     var row = document.createElement("div");
     row.className = "chat-row" + (up ? " up" : " down");
+    var kind = KIND_LABEL[a.kind] || "";
+    var detail;
+    if (a.kind === "signal") {
+      // A scored candidate, not an observed move: show what it is.
+      detail = "buy " + String(a.model_side || "").toUpperCase() + " at " +
+        money(a.executable_price) + " · model fair " + money(a.current) +
+        " · net ROI " + pct(a.model_net_roi);
+    } else {
+      detail = money(a.previous) + " → " + money(a.current) + " · " + esc(a.topic);
+      if (a.spread !== undefined && a.spread !== null) {
+        detail += " · spread " + money(a.spread);
+      }
+      if (a.model_net_roi !== undefined && a.model_net_roi !== null) {
+        detail += " · net ROI " + pct(a.model_net_roi);
+      }
+    }
+    var badge = kind ? ' <span class="tag tag-purple">' + esc(kind) + "</span>" : "";
     row.innerHTML =
       '<time>' + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
-      (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
+      (a.kind === "signal"
+        ? (a.model_side === "no" ? "NO " : "YES ") + money(a.executable_price)
+        : (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4)) +
+      "</span>" +
       '<span class="chat-body">' +
       '<a href="' + esc(a.market_url || "#") + '" target="_blank" rel="noreferrer">' +
-      esc(a.title || a.ticker) + "</a>" +
-      "<small>" + money(a.previous) + " → " + money(a.current) +
-      " · " + esc(a.topic) +
-      (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small></span>" +
+      esc(a.title || a.ticker) + "</a>" + badge +
+      "<small>" + detail + "</small></span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
     return row;
@@ -173,21 +197,27 @@
     if (!s) return;
     var all = s.alerts || [];
 
-    // Model shortlist: alerts on markets the model scored as high ROI.
-    var scoreByTicker = {};
-    (s.signals || []).forEach(function (sig) {
-      scoreByTicker[sig.ticker] = sig;
-    });
-    var model = all
-      .filter(function (a) {
-        var sig = scoreByTicker[a.ticker];
-        return sig && sig.net_roi >= 0.05;
-      })
-      .map(function (a) {
-        var out = Object.assign({}, a);
-        out.model_net_roi = scoreByTicker[a.ticker].net_roi;
-        return out;
-      });
+    // Model shortlist. The collector publishes it in `high_roi_alerts`, built by
+    // collector/alerts.py::model_shortlist from (a) every swing whose book is
+    // tradeable and (b) every scored signal above the net-ROI gate, each row
+    // tagged with its `kind`. The old client-side filter intersected alerts
+    // with signals on the same ticker, which is empty in practice: a 10-cent
+    // move usually happens on a market whose book is too wide to score. If an
+    // older snapshot has no `high_roi_alerts` key, fall back to showing the
+    // scored signals so the chat is never blank for the wrong reason.
+    var model = (s.high_roi_alerts && s.high_roi_alerts.length)
+      ? s.high_roi_alerts
+      : (s.signals || []).filter(function (sig) {
+          return sig && sig.net_roi >= 0.05;
+        }).map(function (sig) {
+          return Object.assign({}, sig, {
+            kind: "signal",
+            direction: sig.side === "yes" ? "up" : "down",
+            previous: sig.executable_price,
+            current: sig.model_fair,
+            abs_delta: sig.edge,
+          });
+        });
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -202,9 +232,10 @@
     if (feedModel) {
       feedModel.innerHTML = "";
       if (!model.length) {
-        feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
-          "model's net-ROI gate right now. This is normal — an empty feed is an " +
-          "honest answer.</div>";
+        feedModel.innerHTML = '<div class="empty-state inline">No market currently ' +
+          "clears both gates: a tradeable book (two-sided, spread under $0.10) " +
+          "and a modelled net edge over the taker fee. This is normal — an empty " +
+          "feed is an honest answer.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
     }
@@ -291,6 +322,55 @@
     if (!tbody.children.length) {
       tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No market rows in ' +
         "this snapshot.</td></tr>";
+    }
+  }
+
+  /* Resolved-while-tracking table: the official result of every settlement the
+   * collector could attribute to one of the five topics. */
+  function renderResolved() {
+    var tbody = document.getElementById("resolvedRows");
+    if (!tbody || !state.snapshot) return;
+    var rows = [];
+    var byTopic = state.snapshot.resolutions || {};
+    Object.keys(byTopic).forEach(function (topic) {
+      (byTopic[topic] || []).forEach(function (r) {
+        rows.push(Object.assign({}, r, { topic: r.topic || topic }));
+      });
+    });
+    rows.sort(function (a, b) {
+      return String(b.settlement_ts || "").localeCompare(String(a.settlement_ts || ""));
+    });
+    tbody.innerHTML = "";
+    rows.slice(0, 80).forEach(function (r) {
+      var tr = document.createElement("tr");
+      var res = String(r.result || "").toLowerCase();
+      var chip = res === "yes" ? '<span class="tag tag-yes">YES</span>'
+        : res === "no" ? '<span class="tag tag-no">NO</span>'
+        : '<span class="flag-badge">UNVERIFIED</span>';
+      tr.innerHTML =
+        '<td><a href="' + esc(r.human_url || r.market_url || "#") +
+        '" target="_blank" rel="noreferrer">' + esc(r.title || r.ticker) +
+        '</a><small class="ticker">' + esc(r.ticker) + "</small></td>" +
+        "<td>" + esc(r.topic) + "</td>" +
+        "<td>" + chip + "</td>" +
+        "<td>" + (r.settlement_value_dollars === undefined ||
+                  r.settlement_value_dollars === null ? "—" :
+                  money(Number(r.settlement_value_dollars))) + "</td>" +
+        "<td>" + esc(String(r.settlement_ts || "").slice(0, 19).replace("T", " ")) + "</td>" +
+        '<td><a class="source-link" href="' + esc(r.source_url || "#") +
+        '" target="_blank" rel="noreferrer">API ↗</a></td>';
+      tbody.appendChild(tr);
+    });
+    var countEl = document.getElementById("resolvedCount");
+    if (countEl) countEl.textContent = rows.length + " resolved market(s) attributed";
+    if (!rows.length) {
+      var missing = (state.snapshot.unattributed_resolutions || []).length;
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No settlement in ' +
+        "the store can be attributed to these five topics yet" +
+        (missing ? " (" + missing + " recent settlement(s) could not be " +
+          "attributed and are listed on the Flagged for review page)" : "") +
+        ". Settlements are logged from the official <code>result</code> field as " +
+        "soon as the exchange finalises a tracked market.</td></tr>";
     }
   }
 

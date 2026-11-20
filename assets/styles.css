@@ -1116,3 +1116,15 @@ table .source-link:hover { text-decoration: underline; }
 .flag-card p { margin: 0 0 8px; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .flag-card .source-link { font-size: 11.5px; color: var(--green-dark); text-decoration: none; }
 table code { font-size: 11px; }
+
+/* Event groups inside a topic table: one header row per event, its markets
+   underneath. Keeps every market of an event visually together, which is how a
+   trader reads the page. */
+tr.group-row td {
+  background: #f3f6fb;
+  border-top: 2px solid var(--line, #e4e9f2);
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+}
+tr.group-row strong { font-weight: 600; }
+tr.group-row .ticker { margin-left: 0.4rem; }
