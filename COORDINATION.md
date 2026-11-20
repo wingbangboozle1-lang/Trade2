@@ -62,6 +62,8 @@ This audit does not modify other sessions' implementation or published data. It 
 
 **Audit follow-up claim T15:** `docs/summary.html` describes `period_interval=1` as an “s-series.” The official candlestick endpoint explicitly defines the allowed periods as minutes (1, 60, or 1440 minutes). T15 is claimed by this session, limited to that table row and this board; source: https://docs.kalshi.com/api-reference/market/get-market-candlesticks. The seconds/minutes/hours buttons are time-range windows, not seconds-based candle intervals.
 
+**Audit follow-up claim T16:** `tools/rendercheck.mjs` fails in local jsdom because `window.fetch` is not defined; that prevents the intended render assertion from running despite the site-smoke test passing. T16 is claimed by this session, limited to the test harness and this board. The fix will stub snapshot fetch as an offline miss (no network) so the checker verifies the inline snapshot-render path.
+
 ## Work log
 
 ### 2026-11-20 — `arena-f5837994`
