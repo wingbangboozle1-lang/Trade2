@@ -1,3 +1,36 @@
+# Session `arena-93e9da14` — claim (2026-11-20, appended at the top to avoid
+# append-collisions with other sessions)
+
+Session ID `arena-93e9da14` · branch `arena/93e9da14-trade2` · base `main` @ `1bc32b74`.
+
+Mission for this session: close the defects found while auditing the published
+root desk against the brief, with official-source verification for every change.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T16 | Fix: topic pages publish **zero** YES/NO resolutions (in-scope settlement tracking) | in progress | `arena-93e9da14` | `collector/collector.py`, `collector/alerts.py`, `tests/test_engine.py` |
+| T17 | Fix: the second (model high-ROI) chat feed can never populate — one shared gate + persisted model watchlist | in progress | `arena-93e9da14` | `collector/collector.py`, `assets/desk.js`, `site_build/build.py` |
+| T18 | Wire candidate-catalyst headlines into alerts and the chart panel (R17 on the root desk) | in progress | `arena-93e9da14` | `collector/news.py`, `collector/collector.py`, `assets/desk.js`, `site_build/build.py` |
+| T19 | Line-by-line re-verification of the root pipeline's claims against official docs + live demo responses | in progress | `arena-93e9da14` | `VERIFICATION.md` |
+| T20 | Executive addendum (findings + fixes + how to read the desk) as a new file; NOT `EXECUTIVE_SUMMARY.md` (owned by `arena-e4e8f4e1` T14) | in progress | `arena-93e9da14` | `EXECUTIVE_SUMMARY_ADDENDUM.md` |
+
+Not touched (other sessions' scope, observed on `main`): `docs/**`,
+`kalshi-dashboard/**`, `scripts/**`, `config/**`, `trading/**`, `live/**`,
+`server/**`, `site/**`, `tools/**`, `EXECUTIVE_SUMMARY.md`, `REPO_REVIEW.md`,
+`README.md`, `AUDIT_2026-11-20.md`, root `index.html`/`categories/*.html`/
+`summary.html`/`review.html`/`methodology.html` (these are **generated** by
+`site_build/build.py` in CI, so this session edits the generator only).
+
+Requests: `assets/app.js`, `assets/nav.js`, `assets/styles.css` are shared with
+the merged root site; this session needs no changes there (additive CSS classes
+requested in T18 will be added as a new stylesheet, not by editing `app.js`).
+
+Verification note: the live demo API and docs are reachable from this sandbox
+through the platform fetcher (not raw egress), so every field used by these
+fixes is checked against a real response; the log is in `VERIFICATION.md`.
+
+---
+
 # Board A (kept verbatim)
 # COORDINATION.md — Shared Task Board
 
