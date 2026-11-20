@@ -56,9 +56,14 @@ def cents(value: Any) -> str:
 
 
 def num(value: Any) -> str:
-    """A quantity that may legitimately carry decimals (contracts, volume)."""
+    """A quantity that may legitimately carry decimals (contracts, volume).
+
+    A missing value is flagged, never left blank: rule 1 of this module promises
+    an ``UNVERIFIED`` badge, and an empty cell in a price table is
+    indistinguishable from a legitimate zero.
+    """
     if value is None or value == "":
-        return ""
+        return esc(value)
     try:
         return f"{float(value):,.2f}"
     except (TypeError, ValueError):
@@ -73,6 +78,11 @@ def count(value: Any) -> str:
     quantities, prices, and money continue to use their separate formatters.
     """
     if value is None or value == "":
+        # Blank, on purpose — unlike num(). A missing *count* is a KPI tile with
+        # nothing to report yet (observation_count, open_positions,
+        # resolutions_count), pinned by tests/test_site_build.py as merged in
+        # PR #25; a missing *quantity* is an API read that failed and must show
+        # the badge. If these should agree, change the test and this line together.
         return ""
     try:
         number = Decimal(str(value))
