@@ -279,6 +279,57 @@ class TestPortfolio(unittest.TestCase):
         self.assertEqual(len(q.positions), 1)
 
 
+class TestExits(unittest.TestCase):
+    def signal(self, ticker="X", price=0.40, side="yes"):
+        from collector.alerts import Signal
+        return Signal(ticker=ticker, event_ticker="E", topic="crypto", title="t",
+                      side=side, executable_price=price, model_fair=0.6, edge=0.2,
+                      gross_roi=0.5, fee=0.01, net_roi=0.4, spread=0.02,
+                      liquidity=100, score=0.3, reason="r", market_url="u")
+
+    def obs(self, mid, bid, ask):
+        return Observation(ts=2.0, ticker="X", event_ticker="E", topic="crypto",
+                           title="t", yes_bid=bid, yes_ask=ask, mid=mid,
+                           last_price=None, volume=1, open_interest=1,
+                           series_ticker="S")
+
+    def test_take_profit_closes_and_books_a_gain(self):
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.40, side="yes"), "momentum")
+        decisions = exit_signals(p, {"X": self.obs(0.55, 0.54, 0.56)})
+        self.assertEqual(len(decisions), 1)
+        pos, price, why = decisions[0]
+        self.assertAlmostEqual(price, 0.54)   # we sell at the bid
+        p.close("X", price, 2.0, why)
+        settled = p.positions[pos.position_id]
+        self.assertEqual(settled.status, "stopped")
+        self.assertGreater(settled.realized, 0)
+
+    def test_stop_out_closes_at_a_loss(self):
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.40, side="yes"), "momentum")
+        decisions = exit_signals(p, {"X": self.obs(0.25, 0.24, 0.26)})
+        self.assertEqual(len(decisions), 1)
+        pos, price, why = decisions[0]
+        p.close("X", price, 2.0, why)
+        self.assertLess(p.positions[pos.position_id].realized, 0)
+
+    def test_small_move_holds(self):
+        from collector.engine import exit_signals
+        p = Portfolio()
+        p.open(self.signal(price=0.40, side="yes"), "momentum")
+        self.assertEqual(exit_signals(p, {"X": self.obs(0.45, 0.44, 0.46)}), [])
+
+    def test_exit_fee_is_charged(self):
+        p = Portfolio()
+        p.open(self.signal(price=0.40), "momentum")
+        p.close("X", 0.60, 2.0, "test")
+        closed = [x for x in p.positions.values() if x.status == "stopped"][0]
+        self.assertGreater(closed.exit_fee, 0)
+
+
 class TestStrategyGate(unittest.TestCase):
     def sig(self, ticker, side, price, net_roi, model_fair=0.6, score=0.2,
             spread=0.02, liquidity=200):

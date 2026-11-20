@@ -27,7 +27,8 @@ from typing import Any
 
 from . import alerts
 from . import topics as topic_mod
-from .engine import Portfolio, LiveDemoBroker, select_trades, STRATEGIES
+from .engine import (Portfolio, LiveDemoBroker, STRATEGIES, exit_signals as select_exits,
+                     select_trades)
 from .kalshi_api import DEMO_REST, KalshiClient, KalshiHTTPError
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
@@ -396,6 +397,14 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             history.setdefault("series", {}).setdefault(ticker, []).append(
                 {"ts": now, "result": result, "price": closed.exit_price})
 
+    # Manage open simulated positions: bank favourable swings, cut adverse ones.
+    obs_by_ticker = {o.ticker: o for o in observations}
+    closed_now: list[dict[str, Any]] = []
+    for pos, exit_price, why in select_exits(portfolio, obs_by_ticker):
+        closed = portfolio.close(pos.ticker, exit_price, now, why)
+        if closed:
+            closed_now.append(closed.as_dict())
+
     # Open new simulated trades from the strategy gate.
     picks = select_trades(signals, new_alerts, portfolio) if new_alerts or signals else []
     opened: list[dict[str, Any]] = []
@@ -470,6 +479,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "resolutions_count": len(resolutions["resolutions"]),
         "opened_this_run": opened,
         "settled_this_run": settled_updates,
+        "closed_this_run": closed_now,
         "observation_count": len(observations),
         "reference_bar_seconds": BAR_SECONDS,
         "reference_bars_used": len(references),

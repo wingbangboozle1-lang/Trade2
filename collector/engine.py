@@ -35,6 +35,13 @@ MAX_POSITION_PCT = 0.02        # never risk >2% of bankroll on one idea
 MAX_POSITIONS = 40
 MIN_CONFIDENCE = 0.55          # strategy gate, see STRATEGIES below
 
+# Exit rules applied to open positions on every run.
+#  - take profit: a swing of >= this much in our favour is banked rather than
+#    held to expiry, because the brief asks for strategies that react to swings.
+#  - stop: a swing of >= this much against us liquidates the idea.
+TAKE_PROFIT_SWING = 0.10
+STOP_SWING = 0.10
+
 STRATEGIES: dict[str, dict[str, Any]] = {
     "momentum": {
         "label": "Momentum follow",
@@ -144,7 +151,7 @@ class Portfolio:
     @property
     def realized_pnl(self) -> float:
         return round(sum(p.realized for p in self.positions.values()
-                         if p.status == "settled"), 2)
+                         if p.status in ("settled", "stopped")), 2)
 
     @property
     def fees_paid(self) -> float:
@@ -221,6 +228,41 @@ class Portfolio:
                 held = price if pos.side == "yes" else round(1.0 - price, 4)
                 pos.unrealized = round((held - pos.entry_price) * pos.contracts, 4)
 
+    def close(self, ticker: str, side_price: float, ts: float | None = None,
+              reason: str = "") -> Position | None:
+        """Exit a position at an observed price (selling the held side).
+
+        ``side_price`` is the price of the *held side*: for a YES position that
+        is the YES bid (what a seller actually receives), for a NO position it
+        is 1 - YES ask. Fees follow the same published taker formula.
+        """
+        for pos in self.positions.values():
+            if pos.status == "open" and pos.ticker == ticker:
+                if not (0.0 < side_price < 1.0):
+                    return None
+                proceeds = round(pos.contracts * side_price, 4)
+                fee = kalshi_fee(side_price, pos.contracts)
+                self.bankroll = round(self.bankroll + proceeds - fee, 4)
+                pos.exit_price = side_price
+                pos.exit_ts = ts or time.time()
+                pos.exit_fee = fee
+                pos.realized = round(proceeds - fee
+                                     - pos.contracts * pos.entry_price
+                                     - pos.entry_fee, 4)
+                pos.status = "stopped"
+                pos.current_price = side_price
+                pos.unrealized = 0.0
+                self.open_tickers.discard(pos.ticker)
+                self.trades.append(Trade(
+                    trade_id=f"tr-{uuid.uuid4().hex[:10]}", ts=pos.exit_ts,
+                    ticker=pos.ticker, strategy=pos.strategy, side=pos.side,
+                    contracts=pos.contracts, price=side_price, fee=fee,
+                    action="close", realized=pos.realized,
+                    note=reason or "exit on swing",
+                ))
+                return pos
+        return None
+
     def settle(self, ticker: str, result: str, ts: float | None = None) -> Position | None:
         """Resolve a position using the market's official ``result`` field.
 
@@ -260,7 +302,9 @@ class Portfolio:
 
     # -- analytics --------------------------------------------------------
     def analytics(self) -> dict[str, Any]:
-        settled = [p for p in self.positions.values() if p.status == "settled"]
+        # "settled" here means any position with a final outcome, whether it
+        # resolved at expiry (status "settled") or was exited early ("stopped").
+        settled = [p for p in self.positions.values() if p.status in ("settled", "stopped")]
         wins = [p for p in settled if p.realized > 0]
         losses = [p for p in settled if p.realized <= 0]
 
@@ -408,6 +452,38 @@ def select_trades(signals: list[Signal], swings: list[dict[str, Any]],
             break
 
     return picks
+
+
+def exit_signals(portfolio: Portfolio, observations: dict[str, Any]) -> list[tuple[Position, float, str]]:
+    """Decide which open positions to close on a >= $0.10 swing.
+
+    ``observations`` maps ticker -> Observation for the current run. Only prices
+    the trader could actually transact at are used: the YES bid to sell YES, and
+    1 - YES ask to sell NO.
+    """
+    decisions: list[tuple[Position, float, str]] = []
+    for pos in portfolio.positions.values():
+        if pos.status != "open":
+            continue
+        obs = observations.get(pos.ticker)
+        if obs is None or obs.mid is None:
+            continue
+        change = obs.mid - pos.entry_price
+        # Price we would receive for the side we hold.
+        if pos.side == "yes":
+            exit_price = obs.yes_bid
+        else:
+            exit_price = (round(1.0 - obs.yes_ask, 4)
+                          if obs.yes_ask is not None else None)
+        if exit_price is None or not (0.0 < exit_price < 1.0):
+            continue
+        if change >= TAKE_PROFIT_SWING:
+            decisions.append((pos, exit_price,
+                              f"+${change:.2f} favourable swing — take profit"))
+        elif change <= -STOP_SWING:
+            decisions.append((pos, exit_price,
+                              f"-${abs(change):.2f} adverse swing — stop out"))
+    return decisions
 
 
 # ---------------------------------------------------------------------------
