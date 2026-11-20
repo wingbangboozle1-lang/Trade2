@@ -24,7 +24,9 @@
    "result": "",
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500",
-   "bankroll_at_entry": 9786.56
+   "bankroll_at_entry": 9786.56,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-b23d8f3ffd",
@@ -48,7 +50,9 @@
    "result": "",
    "reason": "net ROI 38% on a 0.05 spread",
    "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64999.99",
-   "bankroll_at_entry": 9577.9486
+   "bankroll_at_entry": 9577.9486,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-7b12434142",
@@ -72,7 +76,9 @@
    "result": "",
    "reason": "net ROI 40% on a 0.04 spread",
    "market_url": "https://kalshi.com/markets/KXBTC15M/KXBTC15M-26NOV201430-30",
-   "bankroll_at_entry": 9373.5108
+   "bankroll_at_entry": 9373.5108,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-911c6cef20",
@@ -96,7 +102,9 @@
    "result": "",
    "reason": "net ROI 26% on a 0.05 spread",
    "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG",
-   "bankroll_at_entry": 9173.9596
+   "bankroll_at_entry": 9173.9596,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-9afaff7c79",
@@ -120,7 +128,9 @@
    "result": "",
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B37500",
-   "bankroll_at_entry": 9023.6804
+   "bankroll_at_entry": 9023.6804,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-a52cc4d013",
@@ -134,8 +144,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795206521.485993,
    "entry_fee": 12.13,
-   "current_price": 0.015,
-   "unrealized": -112.796,
+   "current_price": 0.025,
+   "unrealized": -67.6776,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -144,7 +154,9 @@
    "result": "",
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXHOUSEPOPVOTEMARGIN/KXHOUSEPOPVOTEMARGIN-27NOV03-B58",
-   "bankroll_at_entry": 8831.0764
+   "bankroll_at_entry": 8831.0764,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   },
   {
    "position_id": "pos-8bf4a90b6b",
@@ -168,7 +180,9 @@
    "result": "",
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T56499.99",
-   "bankroll_at_entry": 8642.5884
+   "bankroll_at_entry": 8642.5884,
+   "fee_multiplier": 1.0,
+   "fee_basis": ""
   }
  ],
  "trades": [
@@ -473,6 +487,12 @@
   {
    "ts": 1795207253.325014,
    "equity": 9259.19,
+   "realized": -166.91,
+   "open": 1116.27
+  },
+  {
+   "ts": 1795207461.2225206,
+   "equity": 9304.31,
    "realized": -166.91,
    "open": 1116.27
   }
