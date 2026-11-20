@@ -13,6 +13,17 @@
  * fallback) and a fixture case pins the fallback; desk.js itself was not
  * touched.
  *
+ * 2026-11-20, session arena-1e3b2594: that alignment is kept; this session
+ * added the teeth the shortlist case still lacked. Before the change below,
+ * `fixture.high_roi_alerts[0]` was `KXBTC-1`, which is also `fixture.signals[0]`
+ * and `fixture.alerts[0]` — so the single expected row could be produced by the
+ * *fallback* path just as well as by the shortlist, and forcing `model = []` in
+ * assets/desk.js (ignoring the published shortlist entirely) still passed. The
+ * shortlist now contains a second member the fallback cannot synthesise, and the
+ * assertion identifies rows by content rather than by count. Both mutations
+ * (ignore the shortlist; re-gate it client-side) turn this file red; the clean
+ * tree is green.
+ *
  * Run: node test/desk_render_dc732aa6.mjs
  */
 import fs from "node:fs";
@@ -219,6 +230,14 @@ const fixture = {
     ticker: "KXBTC-1", direction: "up", abs_delta: 0.12, previous: 0.44,
     current: 0.56, topic: "crypto", title: "Bitcoin",
     iso: "2026-11-20T19:02:11Z", model_net_roi: 0.09,
+  }, {
+    /* Published-shortlist member the client must NOT be able to reject or
+     * reproduce: its net ROI is below `model_gate.min_net_roi` and no signal in
+     * `fixture.signals` carries this ticker, so the only way it reaches the chat
+     * is by rendering `high_roi_alerts` exactly as published. */
+    ticker: "KXETH-1", direction: "down", abs_delta: 0.11, previous: 0.62,
+    current: 0.51, topic: "crypto", title: "Ether below 3k",
+    iso: "2026-11-20T19:02:41Z", model_net_roi: 0.02,
   }],
   alerts: [
     { ticker: "KXBTC-1", event_ticker: "KXBTC-1", series_ticker: "KXBTC",
@@ -295,9 +314,18 @@ check("fixture: a non-http href from the payload never reaches the markup",
 const legacy = frows[2] || { textContent: "" };
 check("fixture: a row without a verdict is labelled pre-rule, not guessed",
       /pre-rule row/.test(legacy.textContent) && !/executable/.test(legacy.textContent));
-check("fixture: the model chat reads the published shortlist",
-      fdoc.querySelectorAll("#feedModel .chat-row").length === 1 &&
-      /net ROI/.test(fdoc.querySelector("#feedModel .chat-row").textContent));
+/* Counting rows alone could not tell "rendered the published shortlist" from
+ * "ignored it and rendered the signal fallback" — see the header note. The two
+ * shortlist rows are now identified by content, and the fallback label must be
+ * absent because there is a swing for each of these. */
+const fxModelRows = Array.from(fdoc.querySelectorAll("#feedModel .chat-row"))
+  .map((r) => r.textContent.replace(/\s+/g, " "));
+const fxModelText = fxModelRows.join(" | ");
+check("fixture: the model chat shows the published shortlist exactly — no re-gate, no fallback",
+      fxModelRows.length === 2 &&
+      /Bitcoin/.test(fxModelText) && /Ether below 3k/.test(fxModelText) &&
+      /net ROI/.test(fxModelText) && !/no ≥ \$0\.10 swing yet/.test(fxModelText),
+      `${fxModelRows.length} rows — ` + fxModelText.slice(0, 120));
 
 /* The fallback that failed CI on main (run 44808226182): a gated shortlist
  * that is empty while published signals exist and no buffered swing matches
