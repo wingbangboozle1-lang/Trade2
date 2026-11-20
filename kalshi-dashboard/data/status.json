@@ -1,0 +1,19 @@
+{
+ "generated_at": "2026-11-20T14:22:05.101Z",
+ "run": 1,
+ "base_url": "https://external-api.kalshi.com/trade-api/v2",
+ "counts": {
+  "series_mapped": 60,
+  "markets_active": 573,
+  "alerts_this_run": 0,
+  "alerts_total": 0,
+  "orderbooks": 40,
+  "resolved_total": 0,
+  "pending_total": 0,
+  "resolution_checks_this_run": 0,
+  "positions": 0,
+  "positions_opened_this_run": 0,
+  "history_markets": 55
+ },
+ "errors": []
+}
