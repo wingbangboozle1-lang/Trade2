@@ -40,8 +40,8 @@
    "entry_price": 0.06,
    "entry_ts": 1795202282.6330771,
    "entry_fee": 12.88,
-   "current_price": 0.015,
-   "unrealized": -146.7986,
+   "current_price": 0.04,
+   "unrealized": -65.2438,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -144,8 +144,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795206521.485993,
    "entry_fee": 12.13,
-   "current_price": 0.025,
-   "unrealized": -67.6776,
+   "current_price": 0.015,
+   "unrealized": -112.796,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -170,8 +170,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795206698.5881274,
    "entry_fee": 11.87,
-   "current_price": 0.025,
-   "unrealized": -66.2331,
+   "current_price": 0.02,
+   "unrealized": -88.3108,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -493,6 +493,12 @@
   {
    "ts": 1795207461.2225206,
    "equity": 9304.31,
+   "realized": -166.91,
+   "open": 1116.27
+  },
+  {
+   "ts": 1795209716.5491748,
+   "equity": 9318.66,
    "realized": -166.91,
    "open": 1116.27
   }
