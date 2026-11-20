@@ -1,4 +1,4 @@
-name: Collect Kalshi demo data
+name: Kalshi dashboard — collect, build, deploy
 
 on:
   schedule:
@@ -11,7 +11,9 @@ on:
         description: "Markets to track per topic"
         default: "150"
   push:
-    branches: ["main"]
+    # main publishes the site; the working branch is included so the pipeline
+    # can be exercised before merge.
+    branches: ["main", "arena/f5837994-trade2"]
 
 permissions:
   contents: write
