@@ -237,16 +237,21 @@ def main() -> int:
                                  pub.get("open_interest_notional"),
                              "checks": [], "raw": {}}
 
-            mkt_url = f"{REST_BASE}/markets?ticker={urllib.parse.quote(ticker)}"
+            # The single-market endpoint (GET /markets/{ticker}) is the
+            # documented way to fetch one market. The list endpoint
+            # (GET /markets) has no singular `ticker` filter — a first draft
+            # of this tool passed `?ticker=` and the demo API silently ignored
+            # it, returning the newest market for every subject (identical
+            # cursor in all five responses — caught by this tool's own raw
+            # evidence on run 44811882990 and fixed before publishing).
+            mkt_url = f"{REST_BASE}/markets/{urllib.parse.quote(ticker)}"
             market: dict | None = None
             try:
                 resp = http_get_json(mkt_url, args.timeout)
                 subject["raw"]["market"] = {
                     "url": mkt_url, "status": resp["status"],
                     "body_head": json.dumps(resp["body"])[:600]}
-                markets = resp["body"].get("markets") or []
-                if markets:
-                    market = markets[0]
+                market = resp["body"].get("market")
             except Exception as exc:  # evidence, never a crash
                 subject["raw"]["market"] = {"url": mkt_url, "error": repr(exc)}
 

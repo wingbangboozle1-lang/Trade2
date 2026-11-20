@@ -1469,11 +1469,11 @@ This is a coordination-integrity review only. It does not overlap the existing i
 # Board F — final verification session (`arena-400634c3`)
 
 Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: `main` @ `eef1243` · Started: 2026-11-20
-# Board H — session `arena-479bbd2f` (branch `arena/479bbd2f-trade2`)
+# Board I — session `arena-479bbd2f` (branch `arena/479bbd2f-trade2`)
 
-(Board letter H: sessions `arena-400634c3` and then `arena-e1a76b9d`
-independently took "Board F"/"Board G" for their records while this session was
-starting; renamed here to keep the registry unambiguous.)
+(Board letter I: sessions `arena-400634c3`, `arena-e1a76b9d` and
+`arena-a3137708` independently took "Board F", "Board G" and "Board H" while
+this session was starting; renamed here to keep the registry unambiguous.)
 
 Base: `main` @ `e8e7b10` (PR #40) — branch fast-forwarded onto it at session start.
 Protocol followed: board read first; claim committed and pushed before any edit.
@@ -1692,7 +1692,7 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
 | ID | Task | Status | Owner | File scope |
 | - | - | - | - | - |
 | F-479-1 | **Repair red CI on main**: post-PR-#40 run 44808226182 fails step "Desk render check (browser path)" — `test/desk_render_dc732aa6.mjs` still pins the pre-#40 model-chat contract (`high_roi_alerts` only), while merged PR #40 (T-D3, pinned by `tests/test_chat_rows.py`) deliberately renders the published `signals` as chat rows when the gated shortlist is empty (reproduced locally: `expected 0, got 5`). Align the check with the merged contract; `assets/desk.js` itself is NOT touched (owner: merged PR #40 / open PR #28) | done — aligned + new fixture case pins the fallback; all 26 assertions pass; full battery green (`unittest` 196 OK/1 skip, `npm test` 29/29, linkcheck 50 pages/666 links/0 errors, rendercheck + root render + collector/trading/site-smoke PASS) | `arena-479bbd2f` | `test/desk_render_dc732aa6.mjs`, `COORDINATION.md` (this section only) |
-| F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | in progress — tool + workflow built and logic-tested offline (all 15 stubbed comparisons EXACT vs the collector's documented derivations; unreachable network degrades honestly to UNVERIFIED). Workflow dispatch requires the file on the default branch, so the run happens right after this PR merges; evidence lands in `audit/verify-479.*` and the record is completed below | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
+| F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | done — run **44812233528** (success): **EXACT 47 · DRIFT 12 · UNVERIFIED 16**, evidence committed as `audit/verify-479.json` + `audit/verify-479.md`; full interpretation + two tool bugs caught by its own raw evidence (list-endpoint `ticker=` silently ignored → single-market endpoint; YAML heredoc in a `run: \|` block) in `VERIFICATION_479bbd2f.md` | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
 | F-479-3 | Integration: full suites + link/render checks on the merged tree, PR → `main`, merge, confirm GitHub Pages deploy, record result here | in progress | `arena-479bbd2f` | `COORDINATION.md` (this section only) |
 
 ## Log — arena-479bbd2f
@@ -1727,7 +1727,6 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
   Full battery on the final rebased tree: unittest 196 OK (1 skip), npm 29/29,
   desk render check PASSED (the fix), linkcheck 50 pages/666 links/0 errors,
   rendercheck + root_pages_render + collector + trading + site-smoke PASS.
-
 ## Integration record — `arena-a3137708` (A4)
 
 | Step | Result |
@@ -1742,3 +1741,19 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
 | Known-red step, **not caused by this PR** | `Kalshi dashboard — collect, build, deploy` [44810878098](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44810878098) failed at exactly one step: **`Desk render check (browser path)`** in the `collect` job. Checked rather than assumed: the same workflow is **failure on every run back to `b54345f` 20:10:45Z** (`44808974745`, `44809219644`, `44809658316`, `44810053873`, `44810633900`), i.e. before this merge and across four other sessions’ commits. It is already recorded as **R-901-02** with a local reproduction (`model chat uses the published shortlist, not a client-side re-gate — expected 0, got 5`) and belongs to the PR #28 owner; `gh run view --log-failed` for this run again returned `Get "…/logs…zip": EOF`, the same log-download failure R-901-02 noted. `grep` shows the check does not read `site_build/` or `collector/runner.py` output, so this PR cannot be its cause; Pages itself deployed successfully. |
 | Follow-up for the next collector run | `data/run_meta.json` / `docs/data/run_meta.json` will start carrying `exchange_active`, `trading_active`, `intra_exchange_transfers_active`, `estimated_resume_time`, `indexes` (count of `exchange_index_statuses`) and `source_url`; `status`/`indexes: 0` disappear with it. Not backfilled by this session because the sandbox has no route to the demo API (see below). |
 | Sandbox limits hit here | Demo API egress died mid-session (TLS reset on both `external-api.demo.kalshi.co` and `demo-api.kalshi.co`); `github.io` is also outside the allowlist, so the live page could not be curl-fetched from here — deployment is therefore evidenced by the Pages API + the successful `pages build and deployment` run rather than a local fetch. `docs.kalshi.com` stayed reachable and every field claim above was checked against it. |
+- 2026-11-20 ~20:40 UTC — F-479-2 executed: first dispatch (44811154325) failed on an
+  indented YAML heredoc; second (44811882990, via branch ref) succeeded but its raw
+  evidence exposed that `GET /markets?ticker=` silently ignores the singular filter —
+  all five subjects returned the same newest cross-category market (identical cursor).
+  Fixed to the documented single-market endpoint `GET /markets/{ticker}`; final run
+  44812233528 (success) → EXACT 47 / DRIFT 12 / UNVERIFIED 16. The 12 DRIFTs are real
+  market movement between the 19:58:45Z snapshot and the 20:32:20Z re-fetch (volume,
+  OI, book depth), both values published side by side. The 16 UNVERIFIEDs are
+  blank-on-both-sides rows for markets whose order books are empty — confirming the
+  collector's phantom-quote refusal rule against the live exchange. Evidence committed
+  on this branch by the workflow (`bbdc82b`, then refreshed at the fixed run).
+
+(Board-letter note appended by `arena-479bbd2f`: the integration record above —
+session `arena-a3137708` — also re-lettered its board to "Board H" for the same
+reason logged there. To keep the registry unambiguous this session's board is
+renamed **Board I**; the rename is cosmetic and no entry was dropped.)
