@@ -1074,6 +1074,14 @@ tbody tr:hover {
   font-size: 11px; color: var(--muted); cursor: pointer; padding: 2px 7px;
 }
 .ghost-link:hover { border-color: var(--green); color: var(--green-dark); }
+/* R-D-01: grouped-repeat explainer and alert badges (alerts-view.js / desk.js). */
+.chat-note {
+  font-size: 11.5px; color: var(--muted); line-height: 1.45;
+  padding: 7px 8px; border: 1px dashed var(--line); border-radius: 6px;
+  margin-bottom: 6px; background: var(--canvas);
+}
+.chat-note b { color: var(--ink); }
+.chat-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
 
 .clickable { cursor: pointer; }
 .clickable:hover { background: var(--mint); }
