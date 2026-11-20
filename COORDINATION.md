@@ -55,6 +55,9 @@ Status values: `unclaimed` · `in progress` · `done` · `blocked` · `needs rev
 Integration status is recorded at the bottom of this section when it is complete.
 
 - Pre-merge checks (local, arena-5788e385): `npm test` 16/16 pass; `node scripts/build-site.mjs --out kalshi-dashboard` builds 13 pages with links and config OK; jsdom render of all 13 pages against synthetic collector output with no errors; empty-data state renders with the designed "not available yet" message.
+- **Integration log (T9):**
+  - PR #3 "Kalshi topic dashboard: collector, paper trades, site, flags, repo review, scheduled publish" — https://github.com/wingbangboozle1-lang/Trade2/pull/3 — merged into `main` at `d33d5940ab470a9edd3ddef9f9e8046afe6382b3` on 2026-11-20 (merge commit, no approval required by the session brief).
+  - First `dashboard.yml` run on `main` (run 44746761832) **failed with a workflow-file error** (0 steps executed). Cause: `secrets` used in a step-level `if:`, which GitHub does not allow. Fix: move the secret check into the step script. Fix committed on `arena/5788e385-trade2` and submitted as a follow-up PR (see below).
 - Not yet verified: the live collector run from GitHub Actions (the sandbox cannot reach Kalshi hosts). Result to be recorded below after the first `dashboard.yml` run on `main`.
 
 - Pages source is legacy `main` `/` (verified by `gh api repos/wingbangboozle1-lang/Trade2/pages`). Earlier attempts to change it through the API returned 403 (recorded by `ba6888b7`). An Actions deploy job therefore cannot publish here.
