@@ -308,3 +308,28 @@ FL-09 pinned-branch exception to the session-branch protocol. Full detail with l
 - Verification ledger: `docs/verification/sources.md`
 - Task board / PR record: `COORDINATION.md`
 - Reproduce any row: open its `source_url` — it is a GET on the public demo API, no key needed.
+
+---
+
+# Addendum — session `arena-dd1da6b5` (2026-11-20)
+
+## 10. What this session added
+
+| Addition | Where | Detail |
+| --- | --- | --- |
+| **Order-book model** for the high-ROI chat | `collector/shortlist.py`, published in `data/shortlist.json` | Fair value = book mid (YES bid + best NO bid) / 2; net edge = \|fair − price\| − the official taker fee. Six gates: post-fee edge ≥ $0.02, spread ≤ $0.05, both sides ≥ 50 contracts, spread ≤ 2× mid, 20-bar trail drift ≥ $0.01, and the book must have moved ≥ $0.10. Every alert gets a `picked`/`passed` verdict with a plain reason. Current snapshot: **5 picks**. |
+| **Candidate news headlines** | `collector/news.py`, `data/news.json` | Google News RSS per swing, 24 h window, labelled *candidate — not a confirmed cause*. |
+| **Per-topic swing + model feeds** | topic pages under `categories/` | Each topic page now carries its own ≥ $0.10 swing chat and the model's verdicts, so a trader never leaves the topic. |
+| **Automated snapshot verification** | `tools/verify_snapshot.py`, Methodology page | Re-opens every published market/book/series response and classifies each field as match / drift / mismatch / unverified with the exact URL. Structural fields (ticker, event, status, result) must match exactly; live prices and books may drift inside tolerance. Latest CI run: **143 match, 0 mismatch**. |
+| **Landing site map** | `index.html` | "How to use this site" links every page in one click. |
+
+## 11. New irregularity found (published on Flagged for Review)
+
+**The demo trade tape alternates on a flat book.** On
+`KXPRESNOMD-28-AKLO` the official 1-minute candlesticks alternate
+`0.8030 / 0.0030` while the order book stays `0.0020 / 0.0030` for every bar
+([candles](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&end_ts=1795200500&period_interval=1),
+[book](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO/orderbook)).
+A $0.10 swing measured against the *traded* price can therefore be a print, not
+a market move. The model refuses to price any move the book did not confirm,
+and swings without a verifiable quote basis are dropped (PR #22) or flagged.
