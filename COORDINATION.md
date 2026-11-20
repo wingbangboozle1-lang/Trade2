@@ -806,3 +806,17 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 | Irregularities | Published on `review.html` (Flagged for Review), with official source links; none block the merge |
 | Handoff notes | Collector commits to `main` every ~5 min and regenerates the same pages, so any branch that touches generated HTML conflicts on rebase; resolve by rebuilding from source. |
 
+
+---
+
+## Current session — `arena-c78c9b36`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | active |
+
+| # | Task | Status | Owner | File scope |
+| --- | --- | --- | --- | --- |
+| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | in progress | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
+
+**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `7bdff2f`, following PR #21's root-site redesign and PR #27's coordination/Pages-deployment record. Preserve all upstream pages, data, tests, and records. The root snapshot remains `2026-11-20T19:16:11Z` with zero stored alert rows. T14 keeps detections as review items rather than fills, will flag repeated tickers when they actually occur, and will keep Culture + Entertainment provenance distinct from the Culture-only category query. PR #25 was open with successful checks on its prior head but now needs this latest-main rebase and fresh checks.
