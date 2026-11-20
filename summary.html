@@ -27,8 +27,14 @@
         </nav>
         <div class="side-label">Research</div>
         <nav class="side-nav">
-          <a class="active" href="summary.html"
+          <a href="live.html"><span>◈</span> Live desk</a
+          ><a href="index.html"><span>◫</span> Overview</a
+          ><a class="active" href="summary.html"
             ><span>▤</span> Executive summary</a
+          ><a href="resolutions.html"><span>✓</span> Resolved</a
+          ><a href="trades.html"><span>⇄</span> Trades</a
+          ><a href="suggestions.html"><span>✦</span> Suggestions</a
+          ><a href="methodology.html"><span>⚙</span> Methodology</a
           ><a href="review.html"><span>⚑</span> Flagged for review</a>
         </nav>
         <div class="sidebar-foot">
@@ -46,6 +52,7 @@
           </div>
           <div class="top-actions">
             <span class="live-pill"><i></i> SOURCE REVIEW</span>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795200068.1722283">—</span>
           </div>
         </header>
         <section class="category-hero">
@@ -72,25 +79,37 @@
             volume. Each market row links to its official demo API resource.
           </p>
           <p>
-            The browser refreshes event snapshots every 15 seconds. Sudden
-            YES-bid moves of at least $0.10 are recorded only when successive
-            observations exist in this browser; historical changes before the
-            dashboard starts are not reconstructed. The chart plots recorded
-            YES-bid observations, and the orderbook panel requests five official
-            bid levels per side for the selected market. A separate
-            settled-events request (up to one page of 200, refreshed at least
-            once per minute) displays official YES/NO results when returned; it
-            is not a complete resolution archive.
+            How the site gets its numbers: a scheduled collector reads the
+            recommended demo Trade API, writes a verified snapshot, and a build
+            step pre-renders every page from that snapshot. The published pages
+            are therefore complete and correct with JavaScript switched off,
+            and the front-end layer only adds live polling on top. The page
+            prints the age of the snapshot it is showing, so a quiet schedule
+            can never be mistaken for a live feed.
           </p>
           <p>
-            Two alert feeds are available: all observed threshold moves and an
-            experimental shortlist. The shortlist is not a returns predictor: it
-            passes a move only when calculated open-interest value is present
-            and positive. This is an experimental activity/size screen, not an
-            expected-return model. Optional “Momentum replay” simulates a
-            one-sided YES paper entry after an upward threshold move, with a
-            one-hour market cooldown. It never submits a Kalshi order. Simulated
-            outcomes and trades are kept in this browser’s local storage.
+            Sudden moves of at least $0.10 in either direction are recorded
+            against a measured reference price — the open of the current
+            five-minute candle where Kalshi publishes one, otherwise the
+            previous observation — so a gradual drift that crosses the
+            threshold is still caught. The live desk plots real Kalshi
+            candlesticks and the live order book implied mid, with seconds,
+            minutes and hours windows, and lists the resting contracts at each
+            price. Every ≥ $0.10 row links to the Kalshi event page, which
+            carries Kalshi's own news feed for that event, and to a news search
+            for the event title. Neither link asserts that an article caused
+            the move.
+          </p>
+          <p>
+            Two alert chats run side by side: every observed threshold move, and
+            a shortlist filtered to the signals the model scores as high ROI
+            after Kalshi's published taker fee. The shortlist is a screen, not
+            an expected-return model, and it is not a prediction of profit.
+            Simulated trades are executed against live public prices by a
+            server-side paper ledger that stores entry assumptions, fees,
+            timestamps and resolved outcomes; it never submits a Kalshi order,
+            and its results — including every loss — are published on the
+            <a href="trades.html">trades page</a>.
           </p>
         </section>
         <section class="panel">
@@ -301,13 +320,14 @@
             </li>
             <li>
               Persist quote history in a database if alerts need continuity
-              across devices, browsers, deployments, or page closures. Current
-              history and paper ledger are local to one browser.
+              across devices, browsers, deployments, or page closures. The
+              collector already keeps a rolling history on disk; a database
+              would make it queryable and longer-lived.
             </li>
             <li>
-              For jump context, wire an event/milestone feed to user-reviewed
-              external sources; no causal news links are inferred or fabricated
-              by this dashboard.
+              For jump context, keep pointing at the Kalshi event page and the
+              news search; a human-reviewed headline feed would be stronger,
+              but no causal link is inferred or fabricated by this dashboard.
             </li>
             <li>
               Validate the category matcher against current open demo event data
@@ -321,6 +341,12 @@
               shortlist has no demonstrated ROI.
             </li>
           </ul>
+          <p>
+            The full prioritised list of improvements is published on the
+            <a href="suggestions.html">suggestions page</a>, and everything that
+            could not be verified is published on the
+            <a href="review.html">Flagged for review page</a>.
+          </p>
         </section>
         <!-- SIMULATED-PORTFOLIO-START
 <!-- generated:performance -->

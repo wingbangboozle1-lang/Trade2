@@ -503,6 +503,57 @@ def build_live(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
     payload = json.dumps(live, default=str).replace("</", "<\\/")
+
+    # Pre-render the desk so it is useful with JavaScript disabled. The JS
+    # layer replaces these blocks when it boots; until then, and for readers
+    # who never enable it, the table and both chats still carry real data.
+    signals = {s.get("ticker"): s for s in (live.get("signals") or [])
+               if s.get("ticker")}
+    alerts = live.get("alerts") or []
+    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
+        '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
+        "feed fills as successive snapshots are compared.</div>")
+    model_rows = []
+    for a in alerts:
+        sig = signals.get(a.get("ticker"))
+        if sig and (sig.get("net_roi") or 0) >= 0.05:
+            model_rows.append(alert_chat_row(a, sig.get("net_roi")))
+    if not model_rows:
+        model_html = ('<div class="empty-state inline">Nothing clears the '
+                      "model's net-ROI gate right now. An empty feed is an "
+                      "honest answer.</div>")
+    else:
+        model_html = "".join(model_rows[:40])
+
+    desk_rows = []
+    for e in (live.get("events") or [])[:40]:
+        liq = e.get("liquidity") or {}
+        sig = signals.get(e.get("ticker"))
+        side_cell = "—"
+        roi_cell = "—"
+        if sig:
+            side_cell = ('<span class="tag tag-yes">'
+                         + html.escape(str(sig.get("side") or "").upper())
+                         + "</span>")
+            roi_cell = pct(sig.get("net_roi"))
+        desk_rows.append(
+            "<tr>"
+            f'<td><a href="{html.escape(e.get("market_url",""))}" target="_blank" '
+            f'rel="noreferrer">{esc(e.get("title"))}</a>'
+            f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
+            f"<td>{esc(e.get('topic'))}</td>"
+            f"<td>{cents(e.get('yes_bid'))}</td>"
+            f"<td>{cents(e.get('yes_ask'))}</td>"
+            f"<td>{cents(liq.get('spread'))}</td>"
+            f"<td>{num(liq.get('yes_bid_contracts'))}</td>"
+            f"<td>{money(e.get('open_interest_notional'))}</td>"
+            f"<td>{side_cell}</td>"
+            f"<td>{roi_cell}</td>"
+            "</tr>")
+    if not desk_rows:
+        desk_rows.append('<tr><td colspan="9" class="empty-state">No market '
+                         "rows in this snapshot.</td></tr>")
+
     return f"""{topbar("Live desk", generated, "", live.get("generated_at_ts"))}
         <section class="page-heading">
           <div>
@@ -562,7 +613,7 @@ def build_live(live: dict[str, Any]) -> str:
                 <h2>All events</h2><p>Every swing ≥ $0.10, newest first</p></div></div>
               <span class="count-badge" id="allCount">0</span>
             </div>
-            <div class="chat-feed tall" id="feedAll" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedAll" aria-live="polite">{feed_all}</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
@@ -571,7 +622,7 @@ def build_live(live: dict[str, Any]) -> str:
                 <p>Filtered to signals the model scores as high ROI</p></div></div>
               <span class="count-badge" id="modelCount">0</span>
             </div>
-            <div class="chat-feed tall" id="feedModel" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedModel" aria-live="polite">{model_html}</div>
             <div class="alert-note">Rule-based edge after Kalshi's published taker
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
@@ -589,7 +640,7 @@ def build_live(live: dict[str, Any]) -> str:
               <thead><tr><th>Market</th><th>Topic</th><th>YES bid</th><th>YES ask</th>
                 <th>Spread</th><th>Bid depth</th><th>OI value</th><th>Model side</th>
                 <th>Net ROI</th></tr></thead>
-              <tbody id="deskRows"></tbody>
+              <tbody id="deskRows">{''.join(desk_rows)}</tbody>
             </table>
           </div>
         </section>

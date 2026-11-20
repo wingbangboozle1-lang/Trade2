@@ -89,6 +89,32 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
+    # 4. The same market reported the same swing many times in one buffer.
+    # A literal count, not a judgement: if one ticker appears three or more
+    # times in the alert buffer, the feed is repeating itself and the reader
+    # cannot tell a new move from a re-measurement of the same one.
+    counts: dict[str, int] = {}
+    for a in live.get("alerts") or []:
+        ticker = a.get("ticker")
+        if ticker:
+            counts[ticker] = counts.get(ticker, 0) + 1
+    for ticker, times in sorted(counts.items(), key=lambda kv: -kv[1]):
+        if times < 3:
+            continue
+        sample = next((a for a in live.get("alerts") or []
+                       if a.get("ticker") == ticker), {})
+        issues.append({
+            "kind": "Same swing reported repeatedly",
+            "topic": sample.get("topic"),
+            "ticker": ticker,
+            "detail": (f"reported {times} times in the current alert buffer "
+                       f"(largest single move "
+                       f"{abs(float(sample.get('abs_delta') or 0)):.4f}); "
+                       "the feed repeats the market rather than showing a new "
+                       "move"),
+            "source": f"{API}/markets/{ticker}",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -186,12 +212,35 @@ STANDING = [
     {
         "title": "No news article is attributed to a price move",
         "body": ("The brief asked for links to news that may have caused jumps. No "
-                 "official source maps articles to Kalshi price moves, so guessing "
-                 "one would be fabrication. Instead every alert links to the market "
-                 "itself and the series page lists Kalshi's own settlement sources "
-                 "(AAA, CF Benchmarks, ESPN, pgatour.com), which are the official "
-                 "pages that explain the underlying."),
-        "source": ("https://docs.kalshi.com/api-reference/market/get-series-list",),
+                 "official source maps an article to a Kalshi price move, so the "
+                 "dashboard never asserts one. Every ≥ $0.10 row instead links to "
+                 "the Kalshi event page — which carries Kalshi's own live news feed "
+                 "for that event, with its sources — and to a news search built "
+                 "from the event title. Those are places to look, not claims of "
+                 "cause."),
+        "source": ("https://docs.kalshi.com/api-reference/events/get-events",),
+    },
+    {
+        "title": "A book with no resting size is shown as UNVERIFIED, not as $0.0000",
+        "body": ("For markets with no size on either side Kalshi reports "
+                 "yes_bid_dollars 0.0000 and yes_ask_dollars 1.0000. A full 0-to-1 "
+                 "book is not a price — averaging it produces a phantom $0.50 "
+                 "midpoint — so the collector treats it as no quote at all and the "
+                 "site leaves those cells blank and flagged rather than printing a "
+                 "price that cannot be filled. Check the linked market response to "
+                 "see the raw values."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
+        "title": "Topic grouping of resolved markets uses the ticker prefix",
+        "body": ("GET /markets returns market objects with no series_ticker field, "
+                 "so a settled market cannot be filed under a topic from that "
+                 "response alone. The series ticker is recovered from the market "
+                 "ticker prefix, which is Kalshi's own naming convention, and the "
+                 "API value is preferred whenever it is present. Settled markets "
+                 "outside the five tracked topics are counted separately rather "
+                 "than dropped without trace."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
     },
     {
         "title": "Live streaming uses polling, not the WebSocket",
@@ -228,6 +277,8 @@ STANDING = [
 
 def render(live: dict[str, Any]) -> str:
     issues = detect_data_issues(live) if live else []
+    from .extras import age_label
+    age = age_label(live.get("generated_at"), live.get("generated_at_ts"))
     rows = []
     for i in issues:
         rows.append(
@@ -255,7 +306,9 @@ def render(live: dict[str, Any]) -> str:
     return f"""        <header class="topbar">
           <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
-            <time>Snapshot {esc(live.get('generated_at'))}</time>
+            <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
+            <time id="updatedAt">Snapshot {esc(live.get('generated_at'))}</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="{esc(live.get('generated_at_ts'))}">{esc(age)}</span>
           </div>
         </header>
         <section class="page-heading">

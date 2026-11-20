@@ -714,3 +714,79 @@ section. It does not edit `collector/`, `scripts/`, `config/`, `docs/`,
 | F28 | Show snapshot age on every page so a stale view is never read as live | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
 | F29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | unclaimed | `arena-fb6cb424` | (read-only) |
 | F30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+
+
+---
+
+
+---
+
+| T20 | Fix integer formatting on stat cards (`750.00` → `750`) | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T26 | New page `suggestions.html`: how to make the site more live and interactive | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | in progress | `arena-fb6cb424` | `site_build/build.py` |
+| T28 | Show snapshot age on every page so a stale view is never read as live | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | done | `arena-fb6cb424` | (read-only) |
+| T30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | in progress | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+
+### Scope extension (same session, same branch)
+
+Claimed in addition to the table above, and still non-overlapping with every
+other active session:
+
+| Path | Why |
+| - | --- |
+| `site_build/format.py` (new) | Shared formatters and link builders used by the builder and the new pages. |
+| `site_build/extras.py` (new) | The three new pages plus the resolution/topic mapping and the equity-curve chart. |
+| `site_build/flagpage.py` | The Flagged-for-Review generator: one new detection rule and three corrected/added standing items. |
+| `test/root_render.mjs` (new) | Offline render check for the root pages. `tools/rendercheck.mjs` is owned by `arena-e4e8f4e1`, which is repairing its jsdom setup, so this file is scoped to the root pages only and does not touch theirs. |
+| `.github/workflows/kalshi-dashboard.yml` | The root site's own pipeline. The new render check is now a CI gate, and this session's branch was added to the push trigger so the pipeline can be exercised before merge. No other active session owns this workflow. |
+| `VERIFICATION.md` | New section **H** with this session's line-by-line verification (14 entries, each with the URL that was opened). |
+| `summary.html` | The root site's executive-summary page. Its "At a glance" text described a browser-side collector the root pages do not load (finding H13); it now describes the architecture that actually runs. |
+
+### Work log — 2026-11-20, `arena-fb6cb424`
+
+**What was built.** The root site was live and healthy but had four gaps
+against the brief and two display defects:
+
+| Gap | Fix |
+| - | --- |
+| The brief asks for **two** scrolling chats — all events, and a selective filter the model likes as high ROI. Both existed on the live desk only. | The model shortlist chat is now on the landing page too, side by side with the all-events chat, and falls back to the current model picks when no swing clears the gate. |
+| The brief asks for "events and website links that may have caused a sharp jump in contract price, greater than or equal to $0.10 in either direction". Only the market link existed, and the Flagged page said no news link was possible. | Every ≥ $0.10 row now carries two extra links: the Kalshi **event** page (which carries Kalshi's own live news feed for that event, verified live in H6) and a **news search** for the event title (verified live in H8). Neither asserts a cause. The standing Flagged item was rewritten to match. |
+| The brief asks for events to be tracked until they resolve, yes or no. The topic pages' "how each event ended" table was **empty** on every topic. | Root cause: `GET /markets` returns market objects with no `series_ticker` (H3), so the collector's per-topic buckets stayed empty. The site now recovers the series from the market ticker prefix and publishes **339** real resolutions (270 gas prices, 69 crypto) across the five topics, plus a new `resolutions.html` page. |
+| The brief asks for trade results "categorized by the type of trade" and strategies built from them. The breakdown existed only inside the summary page. | New `trades.html`: ledger, strategy catalogue, open and settled positions, results by topic and by trade type, and an SVG equity curve drawn from the ledger's own points. |
+| The brief asks for suggestions on making the site more live and interactive. There was none. | New `suggestions.html`: 14 prioritised items in four groups, each with what / why / effort / status, and the official Kalshi page where one exists. |
+| The brief asks to keep topics separate and the events inside a topic together. The overview table was one flat list, 25 rows of which 24 were a single elections series. | The overview is now grouped by topic with a separator row per topic, each topic ranked by open-interest value. |
+
+**Display defects found and fixed.** Stat cards printed whole counts with a
+decimal tail (`750.00`, `1.00`, `2,000.00`); a dedicated integer formatter now
+renders `750`, `1`, `2,000`, while fractional contract counts and volume keep
+their decimals (H10). The live desk's market table and both chats were
+rendered by JavaScript only, so they were empty with scripting off; all three
+are now pre-rendered server-side and the script only replaces them (H11).
+
+**Flagged, not silently fixed.** A new literal rule publishes "Same swing
+reported repeatedly" when one ticker appears three or more times in the alert
+buffer — the current snapshot repeats three tickers 29 times (H14). The
+underlying alert rule belongs to `arena-856e184e` and is **not** changed here.
+Two new standing items document the 0.0000/1.0000 "no resting size" convention
+(H2) and the ticker-prefix topic mapping (H3).
+
+**Verification performed.** `python3 -m unittest discover -s tests` → 42 OK
+(1 skipped). `python3 -m trading.test_engine` → ALL TRADING TESTS PASSED.
+`python3 -m collector.test_runner` → RUNNER TEST PASSED. `npm test` → 18/18.
+`node --check assets/desk.js` → OK. `node test/root_render.mjs` → RENDER CHECK
+PASSED, 13 root pages. `python3 tools/linkcheck.py` → 48 pages, 609 internal
+links, 0 errors. `python3 -m site_build.build` → clean, no exceptions.
+Live spot-checks against the official demo API and docs are recorded one by
+one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
+
+### Requests (files owned by another session — logged, not edited)
+
+| Request | Needed work | From | To | Status |
+| - | - | - | - | - |
+| R-FB-01 | `collector/collector.py` builds the per-topic resolution buckets from `rec["series_ticker"]`, but `GET /markets` market objects carry no such field (verified in `VERIFICATION.md` H3), so every bucket is empty and the topic pages' "how each event ended" table was blank. This session works around it at the site layer by recovering the series from the market ticker prefix. The same fallback inside the collector would make `data/live.json` correct at the source and let any other consumer use it. Source: <https://docs.kalshi.com/api-reference/market/get-markets>. | `arena-fb6cb424` | `arena-856e184e` (owner of `collector/collector.py`) | needs review |
