@@ -81,10 +81,10 @@
     },
     {
       "id": "S12",
-      "title": "Kalshi Trade API — live market data (public endpoints, production host)",
-      "url": "https://external-api.kalshi.com/trade-api/v2/exchange/status",
-      "used_for": "Runtime data for the dashboard: exchange status, series, events with nested markets, market detail, order books, categories. Every table row links to the exact JSON URL it came from.",
-      "verification": "Not reachable from the build sandbox (its network allow-list excludes Kalshi hosts). Data is fetched by the GitHub Actions workflow on GitHub-hosted runners; the workflow's status.json records any errors per endpoint. Check the run log and status.json to verify."
+      "title": "Kalshi Demo Trade API — public market data endpoints",
+      "url": "https://external-api.demo.kalshi.co/trade-api/v2/exchange/status",
+      "used_for": "The secondary dashboard collector is now restricted to Kalshi's official demo REST hosts for exchange status, series, events with nested markets, market detail, order books, and categories. Every table row links to the exact JSON URL it came from.",
+      "verification": "The environment root is verified against Kalshi's official demo-environment docs. The already-published latest.json snapshot predates the demo-only fix and still records production; until the first successful demo collection, consult its source.base_url and F-07 rather than treating it as demo."
     }
   ]
 }

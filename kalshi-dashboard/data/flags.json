@@ -93,8 +93,8 @@
     {
       "id": "F-07",
       "type": "decision",
-      "title": "Market data comes from PRODUCTION, not the demo host",
-      "detail": "The brief asks to track live events on Kalshi, and public market-data endpoints need no key. The dashboard reads production public data from external-api.kalshi.com. Demo prices 'may not be reflective of those in real markets' (S4). Set the KALSHI_BASE secret/variable to https://external-api.demo.kalshi.co/trade-api/v2 to switch the dashboard to demo data. Please confirm which you want.",
+      "title": "Prior snapshot may contain production data until demo refresh succeeds",
+      "detail": "The secondary collector previously defaulted to production, contrary to the demo-only project scope. The collector now defaults to Kalshi's official demo REST root and rejects production/custom hosts before making requests. This flag remains open until a successful new demo collection replaces the older production snapshot; inspect source.base_url and generated_at in the published data.",
       "links": [
         {
           "label": "Demo environment",

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Kalshi dashboard collector.
 //
-//   node scripts/collect.mjs --state ./state --out ./_site/data [--base https://external-api.kalshi.com/trade-api/v2]
+//   node scripts/collect.mjs --state ./state --out ./_site/data [--base https://external-api.demo.kalshi.co/trade-api/v2]
 //
 // Reads ONLY public Kalshi Trade API endpoints (no credentials). Writes JSON the static site renders.
 // Persistent state (price history, alert memory, simulated trades) lives in --state (restored/saved by
@@ -18,19 +18,32 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import { getPublic, PRODUCTION_BASE, KalshiHttpError, configureBreaker, breakerTripped, breakerReason } from './kalshi.mjs';
+import { getPublic, DEMO_BASE, KalshiHttpError, configureBreaker, breakerTripped, breakerReason } from './kalshi.mjs';
 import { dollarsToCents } from './fees.mjs';
 import { openPositions, updatePositions, summarize, STRATEGIES } from './strategies.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const STATE_DIR = args.state || './state';
 const OUT_DIR = args.out || './_site/data';
-const BASE = args.base || process.env.KALSHI_BASE || PRODUCTION_BASE;
+const BASE = args.base || process.env.KALSHI_BASE || DEMO_BASE;
 const CONFIG_PATH = args.config || path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'config', 'topics.json');
 
 const log = (m) => console.error(m);
 
+/** Enforce demo-only collection, even if a workflow variable or CLI arg is changed. */
+export function assertDemoBase(base) {
+  let url;
+  try { url = new URL(base); } catch { throw new Error('Invalid Kalshi API base URL'); }
+  const allowedHosts = new Set(['external-api.demo.kalshi.co', 'demo-api.kalshi.co']);
+  if (url.protocol !== 'https:' || !allowedHosts.has(url.hostname) || url.port ||
+      url.username || url.password || url.pathname.replace(/\/+$/, '') !== '/trade-api/v2' || url.search || url.hash) {
+    throw new Error(`Demo-only guard rejected API base: ${base}`);
+  }
+  return base;
+}
+
 export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now(), deadlineMs = 12 * 60 * 1000 } = {}) {
+  assertDemoBase(base);
   const started = Date.now();
   configureBreaker({ limit: 6, deadlineMs: started + deadlineMs });
   const cfg = JSON.parse(await readFile(configPath, 'utf8'));
@@ -236,7 +249,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
     run: runInfo,
     source: {
       base_url: base,
-      environment: base === PRODUCTION_BASE ? 'Kalshi production — public read-only market data' : `Custom base URL: ${base}`,
+      environment: 'Kalshi demo — public read-only market data',
       endpoints: [
         `${base}/exchange/status`,
         `${base}/series`,
