@@ -154,7 +154,7 @@ def pick_markets(
                 rows.append(m)
         # keep the richest markets only
         rows_topic = [r for r in rows if r.get("_topic") == topic_key]
-        rows_topic.sort(key=lambda r: market_notional(r), reverse=True)
+        rows_topic.sort(key=market_rank, reverse=True)
         keep = {id(r) for r in rows_topic[:per_topic]}
         rows = [r for r in rows if r.get("_topic") != topic_key or id(r) in keep]
     return rows
@@ -209,6 +209,7 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         "yes_ask": ask,
         "last_price": last,
         "volume_fp": volume,
+        "volume_24h_fp": fnum(m.get("volume_24h_fp")),
         "notional_usd": round(market_notional(m), 2) if volume is not None else None,
         "open_interest_fp": fnum(m.get("open_interest_fp")),
         "expected_expiration": m.get("expected_expiration_ts"),
@@ -222,11 +223,17 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
     return row
 
 
+def market_rank(m: Dict) -> tuple:
+    """Sort key: markets with 24h volume (recently traded) first, then by notional."""
+    vol24 = fnum(m.get("volume_24h_fp")) or 0.0
+    return (1 if vol24 > 0 else 0, market_notional(m))
+
+
 def select_top(rows: List[Dict], n: int) -> List[Dict]:
-    """Top-n by dollar volume, round-robining across topics so one liquid topic
-    (e.g. gas) cannot starve the others of depth/candle coverage."""
+    """Top-n by recent dollar volume, round-robining across topics so one liquid
+    topic (e.g. gas) cannot starve the others of depth/candle coverage."""
     by_topic: Dict[str, List[Dict]] = {}
-    for r in sorted(rows, key=lambda r: (r.get("notional_usd") or 0), reverse=True):
+    for r in sorted(rows, key=market_rank, reverse=True):
         by_topic.setdefault(str(r.get("_topic") or r.get("topic") or "?"), []).append(r)
     out: List[Dict] = []
     while len(out) < n and any(by_topic.values()):
@@ -458,7 +465,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     progress("fetching open markets …")
     rows = pick_markets(client, series_map, topic_keys, args.max_markets, meta)
     row_list = [market_row(m, m.get("_series_source") or SOURCE_MARKETS) for m in rows]
-    row_list.sort(key=lambda r: (r.get("notional_usd") or 0), reverse=True)
+    row_list.sort(key=market_rank, reverse=True)
     progress(f"  {len(row_list)} markets kept")
 
     progress(f"fetching top {args.orderbook_top} order books …")
