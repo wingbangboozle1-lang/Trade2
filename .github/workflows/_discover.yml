@@ -7,10 +7,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: discover
-        run: python3 collector/discover.py 2>&1 | tail -40
+      - name: probe events schema
+        run: |
+          U=https://external-api.demo.kalshi.co/trade-api/v2
+          {
+          echo "=== events keys ==="
+          curl -sS -m 25 "$U/events?status=open&limit=2&with_nested_markets=true" \
+            | python3 -c "import json,sys;d=json.load(sys.stdin);e=d['events'][0];print(sorted(e.keys()));print('series_ticker=',e.get('series_ticker'));print('category=',e.get('category'));print('markets=',len(e.get('markets',[])));print('mkt keys=',sorted(e['markets'][0].keys()) if e.get('markets') else None)"
+          echo "=== category histogram of open events ==="
+          python3 - <<'PY'
+          import json,urllib.request,collections
+          U="https://external-api.demo.kalshi.co/trade-api/v2/events"
+          cur=""; h=collections.Counter(); n=0; series=set(); pages=0
+          while True:
+              u=f"{U}?status=open&limit=200&with_nested_markets=false"+(f"&cursor={cur}" if cur else "")
+              d=json.load(urllib.request.urlopen(u, timeout=30))
+              for e in d.get("events",[]):
+                  h[e.get("category")]+=1; n+=1; series.add(e.get("series_ticker"))
+              pages+=1
+              cur=d.get("cursor") or ""
+              if not cur or pages>60: break
+          print("events:",n,"pages:",pages,"unique series:",len(series))
+          print(dict(h.most_common(20)))
+          PY
+          echo "=== settled with result ==="
+          curl -sS -m 25 "$U/markets?status=settled&limit=1" | python3 -c "import json,sys;m=json.load(sys.stdin)['markets'][0];print({k:m.get(k) for k in ('ticker','event_ticker','result','status','settlement_ts','settlement_value_dollars')})"
+          } > data/_schema.txt 2>&1
       - name: commit
         run: |
           git config user.name bot; git config user.email bot@users.noreply.github.com
-          git add -f data/discovery.json; git commit -m "chore: discovery snapshot [skip ci]" || true
+          git add -f data/_schema.txt; git commit -m "chore: schema probe [skip ci]" || true
           git push || (git pull --rebase && git push)
