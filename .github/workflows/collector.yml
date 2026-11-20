@@ -28,9 +28,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run tests (fees vs official PDF table, engine rules)
+      - name: Run tests (fees vs official PDF table, engine rules, runner fixtures)
         run: |
           python3 -m trading.test_engine
+          python3 -m collector.test_runner
           python3 -m py_compile collector/*.py trading/*.py
 
       - name: Collect demo data (with headline lookup for >=$0.10 swings)

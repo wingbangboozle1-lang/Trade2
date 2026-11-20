@@ -75,7 +75,7 @@ def collect_series(client: KalshiClient, topic_keys: List[str], meta: Dict) -> D
     wanted = [t for t in T.TOPICS if t.key in topic_keys]
     by_ticker: Dict[str, Dict] = {}
     for topic in wanted:
-        for cat in topic.categories_any:
+        for cat in tuple(topic.categories_strict) + tuple(topic.categories_broad):
             url = CAT_URL.format(base=DEMO_BASE, cat=cat)
             try:
                 data = client.get("/series/", category=cat, include_product_metadata="false")
