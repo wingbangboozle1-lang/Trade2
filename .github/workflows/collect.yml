@@ -6,6 +6,12 @@ on:
   schedule:
     # every 10 minutes (GitHub cron is UTC)
     - cron: '*/10 * * * *'
+  push:
+    branches:
+      - main
+    # only data-only pushes are ignored, so the workflow never loops on its own commits
+    paths-ignore:
+      - 'docs/data/**'
   workflow_dispatch:
     inputs:
       note:
