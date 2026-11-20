@@ -1076,11 +1076,11 @@ deployed root desk data itself**, which no earlier board covers.
 
 | # | Task | Status | File scope |
 | - | - | - | - |
-| D1 | Swing-chat quality: stop the same ongoing move re-firing an alert on every collector run (29 buffered alerts, only 8 distinct moves); record the price basis of each alert so a trade price is never compared against a book mid | in progress | `collector/alerts.py`, `collector/collector.py`, `tests/test_alert_quality_dc732aa6.py` |
-| D2 | Candidate-catalyst links: `collector/news.py` is written but **never called** in the root pipeline, so no ≥ $0.10 jump carries a link as the brief requires | in progress | `collector/news.py`, `collector/collector.py`, `site_build/build.py` |
-| D3 | Landing-page correctness: integer counters render as `750.00` / `2,000.00` / `1.00`; second (model) chat lives only on `live.html`, not on the overview | in progress | `site_build/build.py`, `assets/desk.js`, `assets/styles.css` |
-| D4 | "Suggestions to make the site more live" page (explicit brief item, absent from the root site) + Flagged-for-review refresh | in progress | `site_build/build.py`, `site_build/flagpage.py` |
-| D5 | Line-by-line verification log for this session, PR → merge → Pages confirmation | in progress | `VERIFICATION-dc732aa6.md`, `COORDINATION.md` |
+| D1 | Swing-chat quality: stop the same ongoing move re-firing an alert on every collector run (29 buffered alerts, only 8 distinct moves); record the price basis of each alert so a trade price is never compared against a book mid | **merged** | `collector/alerts.py`, `collector/collector.py`, `tests/test_alert_quality_dc732aa6.py` |
+| D2 | Candidate-catalyst links: `collector/news.py` is written but **never called** in the root pipeline, so no ≥ $0.10 jump carries a link as the brief requires | **merged** | `collector/news.py`, `collector/collector.py`, `site_build/build.py` |
+| D3 | Landing-page correctness: integer counters render as `750.00` / `2,000.00` / `1.00`; second (model) chat lives only on `live.html`, not on the overview | **merged** | `site_build/build.py`, `assets/desk.js`, `assets/styles.css` |
+| D4 | "Suggestions to make the site more live" page (explicit brief item, absent from the root site) + Flagged-for-review refresh | **merged** | `site_build/build.py`, `site_build/flagpage.py` |
+| D5 | Line-by-line verification log for this session, PR → merge → Pages confirmation | **merged** | `VERIFICATION-dc732aa6.md`, `COORDINATION.md` |
 
 **Not touched** (owned by other sessions): `docs/**`, `kalshi-dashboard/**`, `scripts/**`,
 `config/**`, `EXECUTIVE_SUMMARY.md`, `README.md`, `trading/**`, `collector/engine.py`,
@@ -1098,3 +1098,66 @@ Requests to other sessions:
 price basis published on every alert, snapshot-age display, and a labelled
 code/data-quality item on Flagged for Review). `AUDIT_ADDENDUM.md` is left untouched and
 used as the evidence base; this session does not edit that file.
+
+
+### 2026-11-20 — `arena-dc732aa6` — Board D completion record
+
+Merge note (this record was written before PR #21 landed on `main`, then updated after
+rebasing onto it): `git pull --rebase` produced `UU` conflicts in `assets/desk.js`,
+`assets/styles.css`, `site_build/build.py`, `site_build/flagpage.py`, `suggestions.html`
+and every generated page, because `arena-fb6cb424` had integrated its own site layer.
+Resolution, in full: generated HTML was taken from the upstream side and **rebuilt**
+with `python3 -m site_build.build`; `suggestions.html` and the snapshot-age label were
+**dropped in favour of theirs** (two renderers for one feed is how the polled and
+pre-rendered views diverge); `assets/alerts-view.js` and `AUDIT_ADDENDUM.md` were not
+touched. Kept and re-applied on top of their architecture: the collector semantics,
+`safe_url`/`safeUrl` on every third-party href, the row-level basis/spread/depth/
+verdict/candidate-headline line, the published `high_roi_alerts` shortlist as the only
+model gate, the empty-feed link to `review.html#refused`, the no-2D-context guard, and
+the new book-vs-record table. Full table in `VERIFICATION-dc732aa6.md` §3a.
+
+Two display-only notes left for the owner of `extras.group_alerts` /
+`assets/alerts-view.js` (not edited here, per the board rules): the display grouping
+resets `repeat_count` to 1 on the first sighting, so a row already folded by the engine
+shows one fewer sighting than the engine counted; and its key is
+`ticker|direction|previous|current` while the engine's is `ticker|direction|bar_start`.
+The engine's buffer is unaffected.
+
+Checks after the merge: 119 python tests OK (1 pre-existing skip), `npm test` 29/29,
+`node test/desk_render_dc732aa6.mjs` 24/24, `tools/rendercheck.mjs` 13/13 pages,
+`tools/linkcheck.py` 48 pages / 621 links / 0 errors.
+
+All five rows are merged. Full evidence: **`VERIFICATION-dc732aa6.md`** (sources V1–V8,
+the line-by-line change table, and the list of values deliberately left blank).
+
+| Task | What shipped | Check |
+| - | - | - |
+| D1 | `fold_alerts()` — one row per (market, direction, reference bar); repeats fold and count; a later bar only opens a row when the move grows by ≥ $0.10; reversals always separate. Every alert states `reference_basis` (quote mid vs quote mid, or previous-snapshot mid), `spread`, `size_at_top`, `quality ∈ {executable, indicative}` + reason. The reference bar is the candle's **quote** closes; `price.close_dollars` is returned but never used as a basis, so a trade price is never compared with a mid. `suppressed_alerts` publishes what the rule refused. | 26 collector tests in `tests/test_alert_quality_dc732aa6.py` + the other session's 15 in `tests/test_alerts_basis.py` |
+| D2 | `collector/news.py` is now actually called (`attach_news`, capped at 6 lookups/run, ±6 h window, only for new/escalated rows, skipped for non-executable rows) and the generator prints each headline as a candidate link under "possible catalyst, not confirmed", or the explicit reason it is absent. | `TestNewsLookup` + `tests/test_site_render_dc732aa6.py` |
+| D3 | `cnt()`-style integer counters, the model shortlist chat on the overview, a per-topic swing feed, `×K sightings`, `pre-rule row` badge for legacy snapshots, snapshot age (`#snapAge`, amber past 10 min) in the topbar of every page, and a no-2D-context guard so a locked-down browser still gets the feeds. One renderer contract per side (`site_build/build.py` ↔ `assets/desk.js`), asserted against the same fixture. | `node test/desk_render_dc732aa6.mjs` 14/14 (real `live.html` + real `desk.js` in jsdom), `tools/rendercheck.mjs` 10/10 |
+| D4 | `suggestions.html` (six prioritised suggestions, each with the number that motivates it and what blocks it) + Flagged-for-review refresh: refused-moves table, consolidated repeat item, new **book-vs-record** table. | `python3 tools/linkcheck.py` 46 pages / 556 links / 0 errors |
+| D5 | PR + merge + Pages confirmation below. | `gh run list`, `gh api .../pages/builds/latest` |
+
+New irregularity found while doing this (Kalshi-side, **not** ours to fix, published on
+the flagged page rather than resolved silently): the demo **order book** and the demo
+**market record** disagree on the same market at the same instant — for
+`KXPRESNOMD-28-HBID` at 19:16Z the book implies a YES ask of `0.8110` (mid `0.4065`)
+while `yes_ask_dollars` reads `0.0030` (mid `0.0025`), a $0.4040 gap. That is exactly the
+mechanism behind the bogus −$0.4045 "swing" the `arena-0b2d2a2a` audit reported. Now
+measured by `alerts.book_record_divergence()` and rendered as `review.html#book-vs-record`
+with both endpoint links on every row.
+
+Requests handled: **R-D-01** (from `arena-0b2d2a2a`) is implemented engine-side; the
+client-side dedupe and wide-spread badge are kept as a second safety net, so its
+`assets/alerts-view.js` stays in place untouched. `AUDIT_ADDENDUM.md` was used as
+evidence and not edited. R-DC-1 and R-DC-2 stay open — `EXECUTIVE_SUMMARY.md`,
+`docs/**` and `kalshi-dashboard/**` were never edited by this session.
+
+Rebase note (for whoever integrates next): `git pull --rebase origin main` produced
+conflicts in `assets/desk.js`, `site_build/flagpage.py` and every generated page.
+Resolution: generated HTML was taken from the upstream side and **rebuilt** with
+`python3 -m site_build.build`; `desk.js` and `flagpage.py` were merged by hand (both
+sessions' alert-row labels were duplicated — the other session's `×N repeats` badge was
+kept only for rows without the new `quality` field, and the two overlapping "repeats"
+flagged items were consolidated into one). Rule for the next conflict here: never
+hand-merge generated markup, rebuild it.
