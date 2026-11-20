@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio &amp; strategies — Kalshi Demo Dashboard</title>
+<meta name="description" content="Simulated paper-trading portfolio on Kalshi demo data: equity, P&amp;L, fees, stats by strategy and trade type, open positions and full trade log.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="portfolio">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html" class="active">Portfolio</a>
+      <a href="summary.html">Executive summary</a>
+      <a href="flagged.html">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">Portfolio &amp; strategy performance <span class="badge topic">simulated</span></h1>
+  <p class="sub">Trades are <b>executed by the automated engine</b> against real demo order books, then graded on
+  real settlements. Every fill in the log links the market API and the
+  <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">official fee schedule PDF ↗</a>.</p>
+
+  <div class="note" id="pf-note">loading…</div>
+
+  <div class="grid c4" id="pf-stats"></div>
+
+  <div class="grid c2" style="margin-top:14px">
+    <div class="card">
+      <h2>Equity curve</h2>
+      <div class="chart-box"><canvas class="chart" id="equity-chart"></canvas>
+        <div class="legend"><span><i style="background:#bc8cff"></i>account equity ($, simulated)</span>
+        <span>each point = one collector cycle</span></div></div>
+    </div>
+    <div class="card">
+      <h2>Performance by strategy</h2>
+      <div id="stats-by-strategy"><div class="empty">loading…</div></div>
+      <div class="legend" style="margin-top:8px">Strategies: <b>swing_momentum</b> follows a ≥$0.10 move ·
+        <b>swing_reversal</b> fades it · <b>roi_edge</b> only trades when expected net edge after fee+spread
+        clears the ROI threshold (parameters shown above).</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Performance by trade type</h2>
+    <div id="stats-by-type"><div class="empty">loading…</div></div>
+    <div class="legend" style="margin-top:8px">Trade type = <code>strategy|signal|side</code>, so entries can be
+      compared category-by-category (e.g. fade-YES vs momentum-NO) and strategies refined from measured results.</div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Open positions</h2>
+    <div id="open-positions"><div class="empty">loading…</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Trade log (newest first)</h2>
+    <div id="trade-log"><div class="empty">loading…</div></div>
+  </div>
+</main>
+
+<footer>
+  Engine source: <code>trading/engine.py</code> · tests: <code>python3 -m trading.test_engine</code>
+  (reproduces every row of the official fee table) ·
+  <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">fee schedule ↗</a> ·
+  <a href="flagged.html">Flagged for Review</a>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

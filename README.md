@@ -55,3 +55,33 @@ Signing follows the [official guide](https://docs.kalshi.com/getting_started/qui
 Every value shown comes from a documented Kalshi endpoint and links to it.
 Unverifiable values are blank and labelled **UNVERIFIED** — never inferred.
 Paper trades are labelled SIMULATED everywhere they appear.
+
+---
+
+## Second implementation (session `arena-c0205283`, PR #11)
+
+A parallel, independently verified implementation lives alongside the desk above.
+It keeps its site under `docs/` so root files owned by other sessions are never
+touched: **<https://wingbangboozle1-lang.github.io/Trade2/docs/>**.
+
+| Path | Purpose |
+|---|---|
+| `collector/` (client.py, runner.py, news.py, kalshi.py) | Pulls the public demo REST API (markets, series, order books, candlesticks, settlements) and writes `docs/data/*.json`. Topic matchers in `collector/topics.py` (shared module — both pipelines import it). |
+| `trading/` | Automated **simulated** trading engine: official fee formula, three strategies, settlement grading, stats by strategy & trade type. |
+| `docs/` | GitHub Pages site: landing page, one subpage per topic, portfolio, executive summary, **Flagged for Review** (`docs/flagged.html`). |
+| `docs/verification/` | Verification ledger — every published claim mapped to an official source URL. |
+| `live/server.py` | Optional local server: serves `docs/` with a 5s SSE live stream straight from the demo API. |
+| `.github/workflows/collector.yml` | Tests on every push; live collection + data commit every 15 minutes (schedule) or on manual dispatch. |
+
+```bash
+python3 -m collector.runner            # one collection pass (needs network egress)
+python3 -m trading.engine              # simulated trading cycle against collected data
+python3 live/server.py                 # docs/ site + 5s live stream on :8080
+python3 -m trading.test_engine         # fee formula vs all 42 official table rows
+python3 -m collector.test_runner       # end-to-end collector on captured API payloads
+npm run test:site                      # jsdom UI smoke against docs/data
+```
+
+Full claim-by-claim ledger for this implementation: [`docs/verification/sources.md`](docs/verification/sources.md) ·
+Flagged items: [`docs/flagged.html`](docs/flagged.html)
+

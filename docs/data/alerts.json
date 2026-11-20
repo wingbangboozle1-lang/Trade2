@@ -1,0 +1,131 @@
+{
+ "alerts": [
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795184291&end_ts=1795187891&period_interval=1",
+   "delta": 0.806,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.004,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
+   "t": 1795184760,
+   "t_iso": "2026-11-20T14:26:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPRESNOMD-28-HBID",
+   "title": "Will Hunter Biden be the nominee for the Presidency for the Democratic party?",
+   "to": 0.81,
+   "topic": "elections",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795166291&end_ts=1795187891&period_interval=60",
+   "delta": 0.12,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.05,
+   "headlines": [
+    {
+     "published": "2026-11-20T14:46:29+00:00",
+     "source": "TODAY.com",
+     "status": "verified-fetch",
+     "title": "Stars of \u2018The Further Mis-Adventures of Cliff Booth\u2019 Talk New Series - TODAY.com",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZ1ZWTnJDZHRuek9pMjY4dEFidWpETlg3NllZQWZDcERReklPeEYyVmhMdXZxYzlqSzVLNGh2NTFTYTRFZU41WlREbHAzSkF1R3pfMEMzUXpRdUhGNkgwRFcwekFoU0ZtVGNMYXJsVkJfSUZzV2taaFl3NngyMnNSbnMwSWJhVThCTU10dDFPczFTLWhmZzJBQWc2bF9iQzBtN0JmVWw4dVlaR2c?oc=5"
+    },
+    {
+     "published": "2026-11-20T12:00:52+00:00",
+     "source": "Kotaku",
+     "status": "verified-fetch",
+     "title": "Critics Aren\u2019t Happy With David Fincher\u2019s \u2018Blatant And Egregious AI Use\u2019 In Tarrantino Sequel - Kotaku",
+     "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxORmdaeTZIdDA0WG9pVWx2TTl4b1lqbzZxOVVwUEVfMEtBTUtoRWtoTWljOEhzZEoxYi15M1VMMU9SREtTNVRkLXV5RUU1N1FFS0dsM2ptbXA2UGdoQklMajlOLVNLaWN0MjBwNkNrektta0l4U19WV0ZST1VzYl9BN2ZCcWxaRUxvcm5PQk5RdTFqeFhxNHlHVDdlTmt3OS1wSHVjWjJaT2pjRXhGLUVMLQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T15:07:42+00:00",
+     "source": "Washington City Paper",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Is the Darker, Sinister Sequel to Once Upon a Time \u2026 in Hollywood - Washington City Paper",
+     "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPNGtFYm9ubGFDWUFZMXo3UFpBcTU1Y0hsM1NKY216QVhXYVNpOUpTU3ZDQWtFdFFla054aEFaNEhkaVROVnZMcDFUcGtUWFhVaG9CWU9MZ3lmZ3BYdDBPa2Y5VENhZlVQalQ5YjNkR1NXTWNqb1pVYnhTVjdZWVh0Vk5rQmNNSFdGa3MxVEdBYmpVeUh2d1RwUVRhcWtqbmFfckJnUVVSVkpsMXJfeXlMdEQ2V3pZNXo4dmc2X29udXFzQWl3OF8ya1ZPUzdUamRmWVpzUVBTYU80bzZhWHYxak02ZWxWYzA?oc=5"
+    },
+    {
+     "published": "2026-11-20T06:16:07+00:00",
+     "source": "Film Stories",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
+    },
+    {
+     "published": "2026-11-20T07:44:22+00:00",
+     "source": "wehotimes.com",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Movie Review: A Hangout Sequel Nobody Needed Turns Out to Be a Blast - wehotimes.com",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNWjFKVm1YT0ZVVmh3Z21zOFduZDhLSGxzU0UzR1dRVUNMT0l0aDg5OG9OZHBKYm05b2oySExwQ1VuTlUxSl9UdWVnNTB2cURnNGR2bi1QQ21kWHVOaUNYejk1bEhDQ2xpQmo1V3VPWGtqOW0wVGN3dE5IYzFXajVHeC05NzRNbDJNcTVSQ1lVb0hzNXJLY2E5UXBqSXNueE45ZC1Oa1ZNd01qTjZzS0dqWXN3Rk1uSUVlOElQYW50N0o0OWNuMk1xdndQOUk?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
+   "t": 1795176000,
+   "t_iso": "2026-11-20T12:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXRT-FUR-85",
+   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
+   "to": 0.17,
+   "topic": "culture",
+   "window": "minutes"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794928691&end_ts=1795187891&period_interval=1440",
+   "delta": -0.21,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.28,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "title": "Will average **gas prices** be above $3.6400?",
+   "to": 0.07,
+   "topic": "gas-prices",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794928691&end_ts=1795187891&period_interval=1440",
+   "delta": 0.18,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.63,
+   "headlines": [
+    {
+     "published": "2026-11-19T05:00:00+00:00",
+     "source": "Bloomberg.com",
+     "status": "verified-fetch",
+     "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
+     "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6200",
+   "t": 1795064400,
+   "t_iso": "2026-11-19T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXAAAGASW-26NOV23-3.6200",
+   "title": "Will average **gas prices** be above $3.6200?",
+   "to": 0.81,
+   "topic": "gas-prices",
+   "window": "hours"
+  }
+ ],
+ "generated_at": "2026-11-20T15:18:44.262349+00:00",
+ "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+ "threshold": 0.1
+}

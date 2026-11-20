@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Executive summary — Kalshi Demo Dashboard</title>
+<meta name="description" content="Executive summary of the Kalshi demo dashboard project: scope, data sources, alerting rules, trading model, verification policy and flagged items.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="summary">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="summary.html" class="active">Executive summary</a>
+      <a href="flagged.html">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">Executive summary</h1>
+  <p class="sub">Plain-language overview of what this site is, where every number comes from, and what is
+  deliberately left blank. Mirrors <code>EXECUTIVE_SUMMARY.md</code> in the repo root.</p>
+
+  <div class="grid c2">
+    <div class="card">
+      <h2>What this is</h2>
+      <ul class="tight">
+        <li>A <b>live dashboard</b> for the highest-dollar-volume Kalshi <b>demo</b> events, limited to five
+          topics: <b>gas prices, elections, culture, crypto, golf</b>.</li>
+        <li>Feeds refresh every ~15 minutes via GitHub Actions
+          (<code>.github/workflows/collector.yml</code>); the page itself polls the published JSON every 20s.</li>
+        <li><b>Alerts</b> fire on any contract-price swing <b>≥ $0.10 in either direction</b>, shown as two
+          scrolling chats: <i>all events</i> and a <i>high-ROI</i> model filter.</li>
+        <li>Markets are tracked <b>through resolution</b> — every settled market shows its official YES/NO outcome.</li>
+        <li>An <b>automated paper-trading engine</b> executes simulated strategies, tracks equity, and reports
+          results by strategy and by trade type.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Where the data comes from (official only)</h2>
+      <ul class="tight">
+        <li>REST base: <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&amp;limit=1" target="_blank" rel="noopener">external-api.demo.kalshi.com/trade-api/v2 ↗</a>
+          (<a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">docs ↗</a>)</li>
+        <li>WebSocket: <code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code>
+          (<a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">docs ↗</a>)
+          — <span class="flag">requires API-key handshake, so the live layer polls REST instead (flagged)</span></li>
+        <li>Series → topic mapping: <a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">Get Series List ↗</a>
+          (category is exact/case-sensitive)</li>
+        <li>Charts: <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">candlesticks ↗</a>
+          · Depth: <a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">order book ↗</a>
+          · Trades: <a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">trades ↗</a></li>
+        <li>Fees: <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">official fee schedule PDF (eff. 2026-07-07) ↗</a></li>
+        <li>Settlement: <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">market settlement ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid c2" style="margin-top:14px">
+    <div class="card">
+      <h2>Verification policy (strict)</h2>
+      <ul class="tight">
+        <li>Every table row carries a <b>link to its official source</b> (API endpoint and/or docs page).</li>
+        <li>If a value cannot be confirmed from an official source it is left <b>blank</b> and marked
+          <b>unverified</b> — never inferred, never filled in.</li>
+        <li>Blanks sort to the bottom of every table so they can't masquerade as values.</li>
+        <li>All unverified/irregular items are published on the
+          <a href="flagged.html">Flagged for Review</a> page (current count: <span id="flag-count-inline">…</span>).</li>
+        <li>Headlines attached to swings are <b>candidate catalysts by time proximity only</b> — explicitly not
+          claimed as causes; blank when none verify.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Trading model (transparent by design)</h2>
+      <ul class="tight">
+        <li><b>Mode:</b> simulated paper account — no credentials exist in this environment (FL-01), so
+          <b>no orders are ever sent</b>.</li>
+        <li><b>Fills:</b> taker against the real demo order book; fee =
+          <code>ceil(0.07 × contracts × price × (1−price))</code>, reproduced against all 42 rows of the official
+          table by an automated test.</li>
+        <li><b>Strategies:</b> momentum (follow ≥$0.10), reversal (fade it), and a high-ROI filter that only
+          trades when <code>30% × swing − fee − spread ≥ $0.02</code> per contract. The 30% reversion share is an
+          <b>explicit assumption, not a forecast</b> — results are measured and published either way.</li>
+        <li><b>Risk:</b> max 8 open positions, $200/position, ±$0.05 target/stop, daily loss cap pauses entries.</li>
+        <li><b>Grading:</b> open positions settle at the official YES/NO result; stats are broken out by strategy
+          and by trade type so weak categories can be retired.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Key facts at a glance</h2>
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr><th>Fact</th><th>Value</th><th>Official source</th></tr></thead>
+        <tbody>
+          <tr><td>Demo REST root</td><td class="mono">https://external-api.demo.kalshi.co/trade-api/v2</td>
+            <td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">demo_env docs ↗</a></td></tr>
+          <tr><td>Alternate demo root</td><td class="mono">https://demo-api.kalshi.co/trade-api/v2</td>
+            <td><a href="https://docs.kalshi.com/getting_started/api_environments" target="_blank" rel="noopener">environments docs ↗</a></td></tr>
+          <tr><td>Demo WebSocket</td><td class="mono">wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</td>
+            <td><a href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noopener">WS quick start ↗</a></td></tr>
+          <tr><td>Alert threshold</td><td>≥ $0.10 absolute, both directions</td>
+            <td>project requirement (this site applies it to official candlestick closes)</td></tr>
+          <tr><td>Taker fee formula</td><td class="mono">ceil(0.07 × C × P × (1−P))</td>
+            <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">fee schedule PDF ↗</a></td></tr>
+          <tr><td>Maker fee formula</td><td class="mono">ceil(0.0175 × C × P × (1−P)), multiplier defaults to 0</td>
+            <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">fee schedule PDF ↗</a></td></tr>
+          <tr><td>Settlement / membership fee</td><td>none</td>
+            <td><a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">fee schedule PDF ↗</a></td></tr>
+          <tr><td>Order book returns</td><td>bids only (YES bids + NO bids); asks are implied at 1 − best opposite bid</td>
+            <td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">orderbook_responses ↗</a></td></tr>
+          <tr><td>Price ladder structure</td><td class="mono">tapered_deci_cent (0.001 near tails, 0.01 mid)</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?limit=1" target="_blank" rel="noopener">live market objects ↗</a></td></tr>
+          <tr><td>Candle intervals</td><td>1 s-series (period_interval=1), 60, 1440</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">candlesticks docs ↗</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Live &amp; interactive — what's in, what's next</h2>
+    <div class="grid c2">
+      <div>
+        <b>Implemented</b>
+        <ul class="tight">
+          <li>Two-speed data: 15-min collector cadence, plus optional local 5s SSE mode
+            (<code>live/server.py</code>) the page auto-detects.</li>
+          <li>≥$0.10 swing markers drawn on the price chart (green ▲ / red ▼).</li>
+          <li>Clickable catalyst headlines per swing (time-proximity only, never claimed as cause).</li>
+          <li>Sortable tables — blanks always sink, so unverified values can't be mistaken for low ones.</li>
+          <li>Seconds / minutes / hours chart windows + per-topic market picker.</li>
+          <li>Depth chart: contracts resting at each price (YES vs NO bids).</li>
+          <li>LIVE pulse + freshness chip (last run, error count, environment).</li>
+        </ul>
+      </div>
+      <div>
+        <b>Roadmap (not built)</b>
+        <ul class="tight">
+          <li>Browser/sound alerts for swings in your selected topic.</li>
+          <li>Watchlist + topic personalization (localStorage).</li>
+          <li>True tick streaming via WebSocket (needs an API key — FL-01/FL-02).</li>
+          <li>Strategy lab: slider-tuned backtests in the browser.</li>
+          <li>News timeline aggregating all swing headlines per topic.</li>
+          <li>Email/Slack webhook from the collector run.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:14px"><b>Demo caveat (official):</b> “Prices in the demo environment may not
+  reflect real market prices.” —
+  <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Kalshi demo docs ↗</a>.
+  This site is a research/education tool, not investment advice.</div>
+</main>
+
+<footer>
+  Full verification ledger: <code>docs/verification/</code> in the repo ·
+  <a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">repo ↗</a> ·
+  <a href="flagged.html">Flagged for Review</a>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

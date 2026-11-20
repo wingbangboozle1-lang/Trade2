@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golf — Kalshi Demo Dashboard</title>
+<meta name="description" content="Live Golf events on the Kalshi demo exchange: markets, >=$0.10 swing alerts with headline links, order-book depth and resolutions.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="topic" data-topic="golf">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="summary.html">Executive summary</a>
+      <a href="flagged.html">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">Golf <span class="badge topic">topic</span></h1>
+  <p class="sub">PGA/LPGA and DP World Tour contracts (league settlement). Markets within this topic are grouped here; other topics stay on their own pages.
+  Every row carries its official API source. <b>Sorted by dollar volume.</b> Click a column header to re-sort
+  (blanks always sink — they are never treated as a value).</p>
+
+  <div class="card">
+    <h2>Live markets <span class="live">live</span></h2>
+    <div id="markets"><div class="empty">loading…</div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Price &amp; liquidity
+      <span class="seg" style="margin-left:auto">
+        <button data-win="seconds">seconds</button>
+        <button data-win="minutes" class="on">minutes</button>
+        <button data-win="hours">hours</button>
+      </span>
+    </h2>
+    <select class="pick" id="pick-market" aria-label="Choose a market to chart"></select>
+    <div class="chart-box" style="margin-top:10px">
+      <canvas class="chart" id="price-chart"></canvas>
+      <div class="legend"><span><i style="background:#58a6ff"></i>contract price (YES, $)</span>
+        <span><i style="background:#3fb950"></i>swing ≥ +$0.10</span>
+        <span><i style="background:#f85149"></i>swing ≤ −$0.10</span>
+        <span>X = time (switch window above) · Y = price</span></div>
+    </div>
+    <div class="chart-box" style="margin-top:10px">
+      <canvas class="depth" id="depth-chart"></canvas>
+      <div class="legend"><span><i style="background:#3fb950"></i>YES bids resting (contracts at price)</span>
+        <span><i style="background:#f85149"></i>NO bids resting (contracts at price)</span>
+        <span>how many contracts are available at each price</span></div>
+    </div>
+    <div class="legend" id="chart-meta" style="margin-top:8px"></div>
+  </div>
+
+  <div class="grid c2" style="margin-top:14px">
+    <div class="card">
+      <h2>Swing alerts ≥ $0.10 + possible catalysts</h2>
+      <div id="topic-alerts"><div class="empty">loading…</div></div>
+      <div class="legend" style="margin-top:8px">Headlines are matched by publication time near the swing
+        (Google News RSS). Temporal proximity is <b>not causation</b> — links are candidates only, and if no
+        headline can be verified in the window the cell stays blank and flagged.</div>
+      <div id="swing-news" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h2>Resolutions (YES / NO)</h2>
+      <div id="topic-resolutions"><div class="empty">loading…</div></div>
+      <div class="legend" style="margin-top:8px">Settlement rules:
+        <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">official docs ↗</a></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Data: <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open" target="_blank" rel="noopener">demo REST API ↗</a> ·
+  Topic mapping evidence: <a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">series list docs ↗</a> ·
+  <a href="flagged.html">Flagged for Review</a>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
