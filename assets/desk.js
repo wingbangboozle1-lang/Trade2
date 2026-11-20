@@ -294,6 +294,29 @@
     return row;
   }
 
+  /* A model signal rendered as a chat row. The shortlist shows these when no
+   * >= $0.10 swing matches the signal: a swing usually leaves little modelled
+   * edge behind it, so intersecting the two feeds made the shortlist
+   * structurally empty. Mirrors the signal-picks fallback in
+   * site_build.build_overview. */
+  function signalRow(sig, seriesByTicker) {
+    var row = document.createElement("div");
+    row.className = "chat-row up";
+    row.innerHTML =
+      "<time>" + esc(hhmmss(sig.ts)) + "</time>" +
+      '<span class="chat-delta pos">★ ' + pct(sig.net_roi) + "</span>" +
+      '<span class="chat-body">' +
+      '<a href="' + esc(sig.market_url || "#") + '" target="_blank" rel="noreferrer">' +
+      esc(sig.title || sig.ticker) + "</a>" +
+      "<small>" + esc(String(sig.side || "").toUpperCase()) + " at " +
+      money(sig.executable_price) + " · " + esc(sig.topic) +
+      " · no ≥ $0.10 swing yet</small></span>" +
+      '<button class="ghost-link" data-chart="' + esc(sig.ticker) + '" ' +
+      'data-series="' + esc((seriesByTicker || {})[sig.ticker] || "") +
+      '">chart</button>';
+    return row;
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
@@ -304,12 +327,15 @@
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
 
-    /* Model shortlist: the swings on markets this project's model likes as high
-     * ROI. The collector publishes that list (high_roi_alerts) through one gate,
-     * so the polled view and the pre-rendered view cannot disagree about which
-     * rows belong in it. The fallback below exists for snapshots written before
-     * that field shipped and reads the published threshold rather than inventing
-     * a second one. */
+    /* Model shortlist: the collector publishes it through one gate
+     * (high_roi_alerts, >= MODEL_MIN_NET_ROI and executable), so the polled
+     * view and the pre-rendered view cannot disagree about which rows belong
+     * in it. The first fallback exists for snapshots written before that
+     * field shipped and reads the published threshold rather than inventing
+     * a second one; when no swing matches a signal at all — the common case,
+     * since a swing usually leaves little modelled edge behind it — the
+     * chat shows the model's current top signals, exactly like the
+     * server-rendered chat in build_overview. */
     var model = s.high_roi_alerts;
     if (!Array.isArray(model) || !model.length) {
       var gate = (s.model_gate && s.model_gate.min_net_roi != null)
@@ -329,6 +355,13 @@
       model = rawModel;
     }
     if (V) model = V.dedupeAlerts(model);
+    var signalRows = model.length
+      ? []
+      : (s.signals || []).filter(Boolean).slice(0, 8);
+    var seriesByTicker = {};
+    (s.events || []).forEach(function (e) {
+      if (e && e.ticker && e.series_ticker) seriesByTicker[e.ticker] = e.series_ticker;
+    });
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -351,17 +384,20 @@
     }
     if (feedModel) {
       feedModel.innerHTML = "";
-      if (!model.length) {
+      if (!model.length && !signalRows.length) {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
           "model's net-ROI gate right now. This is normal — an empty feed is an " +
           "honest answer.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
+      signalRows.slice(0, 200).forEach(function (sig) {
+        feedModel.appendChild(signalRow(sig, seriesByTicker));
+      });
     }
     var ac = document.getElementById("allCount");
     if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
-    if (mc) mc.textContent = model.length;
+    if (mc) mc.textContent = model.length + signalRows.length;
   }
 
   /* One-line explainer shown above the "all events" feed whenever grouping

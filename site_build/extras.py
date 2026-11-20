@@ -70,16 +70,30 @@ def resolution_topic(rec: dict[str, Any], series_map: dict[str, str]) -> str | N
 
     ``GET /markets`` returns market objects with **no** ``series_ticker``
     field, so the collector's own per-topic resolution buckets stayed empty.
-    The series ticker is recoverable from the market ticker prefix, which is
-    the documented Kalshi naming convention. The API value is preferred when
-    it is present; the prefix is the fallback.
+    Three sources are tried, most authoritative first:
+
+    1. ``rec["topic"]`` — tagged by the collector's ``migrate_resolutions()``
+       (integration fix, session arena-5bbd15fd) from the *event* ticker,
+       which is delimiter-anchored and therefore also right for series whose
+       own ticker contains ``-``;
+    2. the API's ``series_ticker`` when present;
+    3. the market-ticker prefix, which is Kalshi's naming convention — with a
+       leading ``KX`` stripped as well, because series ``AAAGASD`` publishes
+       its events as ``KXAAAGASD-26NOV20`` while the map holds the bare
+       series ticker (without this, every gas resolution was dropped here).
     """
+    topic = rec.get("topic")
+    if topic in TOPIC_ORDER:
+        return topic
     declared = rec.get("series_ticker")
     if declared and declared in series_map:
         return series_map[declared]
     ticker = rec.get("ticker") or ""
     prefix = ticker.split("-")[0] if "-" in ticker else ticker
-    return series_map.get(prefix)
+    slug = series_map.get(prefix)
+    if slug is None and prefix.startswith("KX"):
+        slug = series_map.get(prefix[2:])
+    return slug
 
 
 #: Same threshold as the alert engine: a swing of >= $0.10 in either
