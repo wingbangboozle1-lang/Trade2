@@ -1,8 +1,47 @@
 {
- "bankroll": 10000.0,
+ "bankroll": 9786.56,
  "starting_bankroll": 10000.0,
- "positions": [],
- "trades": [],
+ "positions": [
+  {
+   "position_id": "pos-94d4aa9369",
+   "ticker": "KXBTCY-27JAN0100-B87500",
+   "event_ticker": "KXBTCY-27JAN0100",
+   "topic": "crypto",
+   "title": "85,000 to 89,999.99",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 5000.0,
+   "entry_price": 0.04,
+   "entry_ts": 1795189980.8287103,
+   "entry_fee": 13.44,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 26% on a 0.03 spread",
+   "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500",
+   "bankroll_at_entry": 9786.56
+  }
+ ],
+ "trades": [
+  {
+   "trade_id": "tr-c70b1d3d41",
+   "ts": 1795189980.8287103,
+   "ticker": "KXBTCY-27JAN0100-B87500",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 5000.0,
+   "price": 0.04,
+   "fee": 13.44,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 26% on a 0.03 spread"
+  }
+ ],
  "equity_curve": [
   {
    "ts": 1795182269.551734,
@@ -81,6 +120,12 @@
    "equity": 10000.0,
    "realized": 0,
    "open": 0
+  },
+  {
+   "ts": 1795189872.0178175,
+   "equity": 9986.56,
+   "realized": 0,
+   "open": 200.0
   }
  ],
  "started_at": 1795182592.2117689
