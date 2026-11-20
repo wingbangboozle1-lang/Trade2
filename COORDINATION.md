@@ -1472,7 +1472,7 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: 
 | V1 | Confirm the integrated site is deployed and live on GitHub Pages | done | `arena-400634c3` | `index.html`, `live.html`, `categories/`, `review.html`, `.github/workflows/` |
 | V2 | Run the full test suite and link check on the merged tree | done | `arena-400634c3` | `tests/`, `tools/linkcheck.py` |
 | V3 | Spot-verify published values against official Kalshi demo API + docs | done | `arena-400634c3` | `VERIFICATION.md`, `EXECUTIVE_SUMMARY.md` |
-| V4 | Integration record: claim commit, PR → main, merge, confirm Pages deploy | in progress | `arena-400634c3` | `COORDINATION.md` |
+| V4 | Integration record: claim commit, PR → main, merge, confirm Pages deploy | done | `arena-400634c3` | `COORDINATION.md` |
 
 ## Log — arena-400634c3
 
@@ -1489,4 +1489,4 @@ Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: 
 | Branch state | `arena/400634c3-trade2` @ `eef1243` == `main` == `origin/main`; already the deployed Pages commit |
 | Verification | 174 Python tests OK (1 skipped), 29 Node tests OK, linkcheck 50 pages / 666 links / 0 errors |
 | Pages | `status: built`, source `main` `/`, live at <https://wingbangboozle1-lang.github.io/Trade2/> |
-| PR / merge | claim commit pushed; PR → main and merge recorded below once complete |
+| PR / merge | PR #42 (https://github.com/wingbangboozle1-lang/Trade2/pull/42) merged into `main` via merge commit `b54345f2b0be2a34f9e5f43b11d262fe95dbe3b0`; GitHub Pages `status: built` for the merge commit (created 2026-11-20T20:10:44Z, updated 20:11:25Z, error: null), live at https://wingbangboozle1-lang.github.io/Trade2/ |
