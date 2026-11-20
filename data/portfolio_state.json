@@ -1,5 +1,5 @@
 {
- "bankroll": 9374.45,
+ "bankroll": 9219.89,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -14,13 +14,13 @@
    "entry_price": 0.04,
    "entry_ts": 1795189980.8287103,
    "entry_fee": 13.44,
-   "current_price": 0.015,
-   "unrealized": -125.0,
-   "status": "open",
-   "exit_price": null,
-   "exit_ts": null,
-   "exit_fee": 0.0,
-   "realized": 0.0,
+   "current_price": 0.01,
+   "unrealized": 0.0,
+   "status": "stopped",
+   "exit_price": 0.01,
+   "exit_ts": 1795203829.5096648,
+   "exit_fee": 3.47,
+   "realized": -166.91,
    "result": "",
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500",
@@ -62,8 +62,8 @@
    "entry_price": 0.08,
    "entry_ts": 1795202982.495087,
    "entry_fee": 12.34,
-   "current_price": 0.08,
-   "unrealized": 0.0,
+   "current_price": 0.055,
+   "unrealized": -59.8648,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -73,6 +73,30 @@
    "reason": "net ROI 26% on a 0.05 spread",
    "market_url": "https://kalshi.com/markets/KXPGAR2LEAD/KXPGAR2LEAD-THRC26-GHIG",
    "bankroll_at_entry": 9374.4528
+  },
+  {
+   "position_id": "pos-c6ed9e40cf",
+   "ticker": "KXBTCY-27JAN0100-B37500",
+   "event_ticker": "KXBTCY-27JAN0100",
+   "topic": "crypto",
+   "title": "35,000 to 39,999.99",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4710.49,
+   "entry_price": 0.04,
+   "entry_ts": 1795203945.3589637,
+   "entry_fee": 12.67,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 26% on a 0.03 spread",
+   "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B37500",
+   "bankroll_at_entry": 9219.8904
   }
  ],
  "trades": [
@@ -114,6 +138,32 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.05 spread"
+  },
+  {
+   "trade_id": "tr-e228a89871",
+   "ts": 1795203829.5096648,
+   "ticker": "KXBTCY-27JAN0100-B87500",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 5000.0,
+   "price": 0.01,
+   "fee": 3.47,
+   "action": "close",
+   "realized": -166.91,
+   "note": "+$0.46 favourable swing \u2014 take profit"
+  },
+  {
+   "trade_id": "tr-d285aa9fab",
+   "ts": 1795203945.3589637,
+   "ticker": "KXBTCY-27JAN0100-B37500",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4710.49,
+   "price": 0.04,
+   "fee": 12.67,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 26% on a 0.03 spread"
   }
  ],
  "equity_curve": [
@@ -266,6 +316,12 @@
    "equity": 9793.26,
    "realized": 0,
    "open": 587.3
+  },
+  {
+   "ts": 1795203829.5096648,
+   "equity": 9692.25,
+   "realized": -166.91,
+   "open": 575.72
   }
  ],
  "started_at": 1795182592.2117689
