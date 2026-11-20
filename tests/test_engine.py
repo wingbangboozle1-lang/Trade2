@@ -101,6 +101,29 @@ class TestFees(unittest.TestCase):
         self.assertEqual(kalshi_fee(1.0, 10), 0.0)
 
 
+class TestPhantomPrice(unittest.TestCase):
+    """An unquoted market reports 0.0000 / 1.0000 and must not become a 0.50 mid."""
+
+    def test_no_book_placeholder_is_not_a_price(self):
+        from collector.alerts import observe
+        market = {"ticker": "T", "event_ticker": "E", "title": "t",
+                  "yes_bid_dollars": "0.0000", "yes_ask_dollars": "1.0000",
+                  "status": "active"}
+        obs = observe(market, {"orderbook_fp": {"yes_dollars": [], "no_dollars": []}},
+                      "golf")
+        self.assertIsNone(obs.mid)
+        self.assertIsNone(obs.yes_bid)
+        self.assertIsNone(obs.yes_ask)
+
+    def test_a_real_quote_still_works(self):
+        from collector.alerts import observe
+        market = {"ticker": "T", "event_ticker": "E", "title": "t",
+                  "yes_bid_dollars": "0.3100", "yes_ask_dollars": "0.3300",
+                  "status": "active"}
+        obs = observe(market, None, "gas-prices")
+        self.assertAlmostEqual(obs.mid, 0.32)
+
+
 class TestLiquidity(unittest.TestCase):
     def test_depth_and_spread(self):
         liq = analyse_liquidity(DOC_ORDERBOOK)

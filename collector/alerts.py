@@ -91,13 +91,21 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     no_bid = nb[0] if nb else None
     yes_ask = implied_yes_ask(no_bid)
 
-    # Fall back to the market record's own quotes when the book is empty.
+    # Fall back to the market record's own quotes when the book is empty...
     if yes_ask is None:
         yes_ask = dollars(market.get("yes_ask_dollars"))
     if yes_bid is None:
         yes_bid = dollars(market.get("yes_bid_dollars"))
     if yes_bid is None and yes_bid_size is None:
         yes_bid_size = count(market.get("yes_bid_size_fp"))
+
+    # ...but a market with no quotes at all reports 0.0000 bid / 1.0000 ask.
+    # Averaging that pair produces a phantom 0.50 mid, which is how a golf
+    # outlier with no book would appear to "jump" to exactly $0.50 and back.
+    # A full 0-to-1 spread is not a price: treat it as no quote.
+    if (yes_bid is not None and yes_ask is not None
+            and yes_bid <= 0.0 and yes_ask >= 1.0):
+        yes_bid, yes_ask = None, None
 
     return Observation(
         ts=ts if ts is not None else time.time(),
