@@ -3,15 +3,22 @@
 Definitions, stated explicitly so nothing is implied:
 
 Swing
-    A change of at least $0.10 in either direction between two consecutive
-    observations of the same market's reference price. The reference price is
-    the YES mid, computed from the order book per the official docs
-    (https://docs.kalshi.com/getting_started/orderbook_responses.md):
+    A change of at least $0.10 in either direction in the same measured price
+    of the same market. The price is the YES mid, computed from the order book
+    exactly as the official docs define it
+    (https://docs.kalshi.com/getting_started/orderbook_responses):
         best YES bid = last element of orderbook_fp.yes_dollars
-        best YES ask = 1.00 - (last element of orderbook_fp.no_dollars)
+        best YES ask = 1.00 - (best NO bid, i.e. last of orderbook_fp.no_dollars)
         mid = (bid + ask) / 2
-    When only one side is quoted the quote is used on its own; when neither is
-    quoted the observation is skipped, never treated as zero.
+    Both legs are required. A one-sided book has no mid — it has a bid and no
+    offer — so it is never given a synthetic price and never alerts. The rule
+    used to fall back to the market record's `last_price_dollars` for the
+    reference, which meant a last *trade* (Hunter Biden: $0.811 on a book
+    quoted 0.0020 / 0.8110) was subtracted from an order-book *mid* ($0.4065)
+    and published as a 40-cent "swing". That is a comparison of two different
+    quantities and is no longer made: the reference and the current value now
+    come from the same source, and `detect_swing` rejects any alert whose
+    reference is not a two-sided mid.
 
 Threshold
     SWING_THRESHOLD = 0.10 USD, configurable, and reported in the UI.
@@ -50,6 +57,21 @@ MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
 MIN_TOP_LEVEL_CONTRACTS = 1.0  # the best level must actually hold size
 
+# A swing is only reported when the move is a real change in the price of a
+# tradable contract. Books wider than this are one-sided in practice: the
+# observed "mid" is an average of a bid nobody will lift and an ask nobody will
+# hit, and moving it is not a price move a trader could act on. 20 cents is the
+# widest spread any Kalshi market quoted in the 2026-11-20 snapshot showed while
+# still holding size on both sides (162 of 220 two-sided books were <= $0.10).
+MAX_ALERT_SPREAD = 0.20
+# Both legs of the mid must rest real size: 1 contract on a level is a stub.
+MIN_ALERT_TOP_SIZE = 1.0
+MIN_ALERT_DEPTH = 10.0        # total contracts resting across both bid sides
+# De-duplication: one alert per market per reference bar per direction. The id
+# is built from these parts, so a re-run inside the same bar cannot append the
+# same move twice to the chat buffer.
+ALERT_DEDUP_SECONDS = 300
+
 
 @dataclass
 class Observation:
@@ -71,15 +93,46 @@ class Observation:
     result: str = ""
     series_ticker: str = ""
     close_time: str = ""
+    no_bid_size: float | None = None   # contracts resting at the best NO bid
+    quote_source: str = ""             # "book" (two-sided) or "unquoted"
+    spread: float | None = None
 
     @property
     def market_url(self) -> str:
         return f"https://kalshi.com/markets/{self.series_ticker or self.event_ticker}/{self.ticker}"
 
+    @property
+    def alertable(self) -> bool:
+        """True only when this observation supports a measured price move.
+
+        Requires a mid built from two resting bids (see ``observe``) and a
+        spread narrow enough that the mid is a price rather than the midpoint of
+        an empty range.
+        """
+        return (self.quote_source == "book" and self.mid is not None
+                and self.spread is not None
+                and self.spread <= MAX_ALERT_SPREAD)
+
 
 def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
             topic: str, ts: float | None = None) -> Observation:
-    """Build an Observation from GET /markets plus GET /markets/{t}/orderbook."""
+    """Build an Observation from GET /markets plus GET /markets/{t}/orderbook.
+
+    Only the order book produces a price. Both bid sides must be present:
+
+        YES bid  = last of orderbook_fp.yes_dollars
+        NO  bid  = last of orderbook_fp.no_dollars
+        YES ask  = 1.00 - NO bid          (documented reciprocal, see module docstring)
+
+    A book that is missing either side is recorded as ``quote_source="unquoted"``
+    with ``mid=None``. The market record's own ``yes_bid_dollars`` /
+    ``yes_ask_dollars`` are *not* used to manufacture one: on Kalshi a market
+    quoting 0.0020 / 0.8110 reports a "mid" of 0.4065 that no order ever
+    touched, and that artefact is what produced the phantom 40-cent alerts on
+    KXPRESNOMD-28-HBID (verified against
+    https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook
+    on 2026-11-20, whose yes side is 0.0010/0.0020 and no side is 0.1850-0.1890).
+    """
     ob = (orderbook or {}).get("orderbook_fp") or {}
     yes_levels = ob.get("yes_dollars") or []
     no_levels = ob.get("no_dollars") or []
@@ -89,23 +142,30 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     yes_bid = yb[0] if yb else None
     yes_bid_size = yb[1] if yb else None
     no_bid = nb[0] if nb else None
+    no_bid_size = nb[1] if nb else None
     yes_ask = implied_yes_ask(no_bid)
 
-    # Fall back to the market record's own quotes when the book is empty...
-    if yes_ask is None:
-        yes_ask = dollars(market.get("yes_ask_dollars"))
-    if yes_bid is None:
-        yes_bid = dollars(market.get("yes_bid_dollars"))
-    if yes_bid is None and yes_bid_size is None:
-        yes_bid_size = count(market.get("yes_bid_size_fp"))
+    quote_source = "book"
+    if yes_bid is None or yes_ask is None:
+        quote_source = "unquoted"
+        # For DISPLAY only: the market record carries official yes_bid_dollars /
+        # yes_ask_dollars even when no book was fetched. Those numbers are
+        # published on the tables (they are Kalshi's own fields), but they never
+        # produce a mid, a mark or an alert, because a quote without depth is
+        # not a tradeable price.
+        if yes_bid is None:
+            yes_bid = dollars(market.get("yes_bid_dollars"))
+            yes_bid_size = count(market.get("yes_bid_size_fp"))
+        if yes_ask is None:
+            yes_ask = dollars(market.get("yes_ask_dollars"))
+        # A 0.0000 / 1.0000 pair is the "no quote" placeholder, not a quote.
+        if (yes_bid is not None and yes_ask is not None
+                and yes_bid <= 0.0 and yes_ask >= 1.0):
+            yes_bid, yes_ask = None, None
 
-    # ...but a market with no quotes at all reports 0.0000 bid / 1.0000 ask.
-    # Averaging that pair produces a phantom 0.50 mid, which is how a golf
-    # outlier with no book would appear to "jump" to exactly $0.50 and back.
-    # A full 0-to-1 spread is not a price: treat it as no quote.
-    if (yes_bid is not None and yes_ask is not None
-            and yes_bid <= 0.0 and yes_ask >= 1.0):
-        yes_bid, yes_ask = None, None
+    spread = None
+    if quote_source == "book" and yes_bid is not None and yes_ask is not None:
+        spread = round(yes_ask - yes_bid, 4)
 
     return Observation(
         ts=ts if ts is not None else time.time(),
@@ -115,7 +175,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         title=(market.get("yes_sub_title") or market.get("title") or "").strip(),
         yes_bid=yes_bid,
         yes_ask=yes_ask,
-        mid=mid_price(yes_bid, yes_ask),
+        mid=mid_price(yes_bid, yes_ask) if quote_source == "book" else None,
         last_price=dollars(market.get("last_price_dollars")),
         volume=count(market.get("volume_fp")),
         open_interest=count(market.get("open_interest_fp")),
@@ -126,48 +186,58 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
         close_time=market.get("close_time", "") or "",
+        no_bid_size=no_bid_size,
+        quote_source=quote_source,
+        spread=spread,
     )
 
 
 def detect_swing(previous: Observation | None, current: Observation,
                  threshold: float = SWING_THRESHOLD,
-                 reference: float | None = None,
-                 reference_ts: float | None = None) -> dict[str, Any] | None:
-    """Return an alert dict when the reference price moved by >= threshold.
+                 reference: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    """Return an alert dict when the measured price moved by >= threshold.
 
-    How the reference works, and why it is not simply "the previous snapshot":
+    Both ends of the comparison are order-book mids, and both must be two-sided
+    and tradeable:
 
-    The collector samples roughly every 5-15 minutes while a market can move
-    continuously. Comparing only against the immediately previous sample makes
-    every alert fire once and then reset, so a market that drifts 20 cents over
-    an hour in 4-cent steps never alerts. The caller therefore passes the price
-    at the start of the current 5-minute bar, taken from Kalshi's own published
-    candle close. That reference is still a measured price, never an
-    interpolation, and it is used whenever available; the previous snapshot is
-    the fallback for markets without candle history.
+    * **reference** is the bar reference returned by ``bar_reference`` in the
+      collector — ``{"mid", "ts", "yes_bid", "yes_ask", "quote_source"}`` taken
+      from Kalshi's own candlestick, whose ``price`` block carries the traded
+      price *and* whose ``yes_bid`` / ``yes_ask`` blocks carry the quote. Only
+      rows whose candle quote is two-sided are accepted here.
+    * **current** is ``current.mid``, which is two-sided by construction.
+
+    The previous *snapshot* is deliberately not a fallback any more. It was the
+    source of double counting: a move that had already fired stayed in the
+    buffer while the next run re-measured it against the same reference bar and
+    appended it again (the same Hunter Biden row appeared 7 times in
+    ``data/live.json`` on 2026-11-20, with ``observed_gap_seconds`` as low as
+    -3.8).
     """
-    if previous is None and reference is None:
+    if not current.alertable:
         return None
-    # Prefer the bar-opening reference: it spans the whole bar rather than a
-    # single inter-snapshot hop, so a gradual move is measurable. Fall back to
-    # the previous snapshot when no bar is available.
     if reference is not None:
-        base = reference
+        base = reference.get("mid")
+        prev_ts = reference.get("ts")
+        ref_quoted = (reference.get("quote_source") or "") == "book"
+        if base is None or not ref_quoted:
+            return None
     elif previous is not None:
+        if not previous.alertable:
+            return None
         base = previous.mid
+        prev_ts = previous.ts
     else:
-        base = None
+        return None
     if base is None or current.mid is None:
         return None
-    prev_ts = reference_ts if reference is not None else (
-        previous.ts if previous is not None else None)
     delta = round(current.mid - base, 4)
     if abs(delta) + 1e-9 < threshold:
         return None
     direction = "up" if delta > 0 else "down"
-    prev_mid = base
+    bar = int((current.ts // ALERT_DEDUP_SECONDS) * ALERT_DEDUP_SECONDS)
     return {
-        "id": f"{current.ticker}:{int(current.ts)}",
+        "id": f"{current.ticker}:{bar}:{direction}",
         "ts": current.ts,
         "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(current.ts)),
         "ticker": current.ticker,
@@ -175,7 +245,7 @@ def detect_swing(previous: Observation | None, current: Observation,
         "series_ticker": current.series_ticker,
         "topic": current.topic,
         "title": current.title,
-        "previous": prev_mid,
+        "previous": base,
         "previous_ts": prev_ts,
         "current": current.mid,
         "delta": delta,
@@ -184,10 +254,12 @@ def detect_swing(previous: Observation | None, current: Observation,
         "pct_of_dollar": round(abs(delta) * 100, 2),  # cents of contract value
         "yes_bid": current.yes_bid,
         "yes_ask": current.yes_ask,
+        "spread": current.spread,
         "volume": current.volume,
         "open_interest": current.open_interest,
         "market_url": current.market_url,
         "threshold": threshold,
+        "price_source": "order-book mid (two-sided)",
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
     }
@@ -304,7 +376,12 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
     if obs.yes_bid is None and obs.yes_ask is None:
         return None
     spread = liquidity.get("spread")
-    if spread is not None and spread > max_spread:
+    if spread is None:
+        # No book for this market: a quote without depth is not a price. The
+        # old code defaulted the spread to 2 cents here, which let an empty
+        # book with a stale 1-cent quote score as a high-ROI signal.
+        return None
+    if spread > max_spread:
         return None
 
     # Tradability gates. Without resting size on both sides a quoted price is
@@ -323,7 +400,7 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
     mid = obs.mid
     if mid is None:
         return None
-    width = spread if spread is not None else 0.02
+    width = spread
     prior = 0.5
     weight = SHRINK * min(1.0, width / max_spread)
     fair = round(mid * (1 - weight) + prior * weight, 4)
@@ -405,3 +482,119 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "market_url": obs.market_url,
         })
     return sorted(rows, key=lambda r: r["dollar_activity"], reverse=True)
+
+
+# ---------------------------------------------------------------------------
+# Model shortlist ("the events our model likes"), one definition, used by both
+# the collector and the tests, so the second chat can never silently go empty
+# because two different filters disagreed.
+# ---------------------------------------------------------------------------
+
+MODEL_SIGNAL_MIN_NET_ROI = 0.05   # modelled net ROI after the taker fee
+
+
+def model_shortlist(alerts_rows: list[dict[str, Any]],
+                    signals: list[dict[str, Any]],
+                    min_net_roi: float = MODEL_SIGNAL_MIN_NET_ROI) -> list[dict[str, Any]]:
+    """Rows for the model chat: tradeable swings first, then scored signals.
+
+    The model chat used to be built by intersecting alerts with signals on the
+    same ticker. That intersection is nearly always empty: an alert needs a
+    >= $0.10 move, a signal needs a tight book with depth, and the markets that
+    move 10 cents in one bar are usually the ones whose book is a 0.0020/0.8110
+    quote. The feed therefore showed "nothing clears the gate" while the model
+    had real candidates. This function instead publishes:
+
+    * every alert whose own book is tradeable (``alertable``, spread gate) —
+      these are the *swings* the model can act on, tagged ``kind="swing"``;
+    * every scored signal at or above ``min_net_roi``, tagged ``kind="signal"``
+      and carrying the model's own numbers (``net_roi``, ``side``,
+      ``executable_price``).
+
+    Each row states which of the two it is, so nothing is presented as a "high
+    ROI alert" when it is only a move, or vice versa.
+    """
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    by_ticker = {s.get("ticker"): s for s in signals if s.get("ticker")}
+
+    for row in alerts_rows:
+        spread = row.get("spread")
+        if spread is None or spread > MAX_ALERT_SPREAD:
+            continue
+        sig = by_ticker.get(row.get("ticker"))
+        item = dict(row)
+        item["kind"] = "swing"
+        if sig and sig.get("net_roi") is not None and sig["net_roi"] >= min_net_roi:
+            item["kind"] = "swing+signal"
+            item["model_net_roi"] = sig.get("net_roi")
+            item["model_side"] = sig.get("side")
+        key = (str(item.get("ticker")), str(item.get("kind")))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(item)
+
+    for sig in signals:
+        if sig.get("net_roi") is None or sig["net_roi"] < min_net_roi:
+            continue
+        item = {
+            "kind": "signal",
+            "id": f"signal:{sig.get('ticker')}:{int(float(sig.get('ts') or 0))}",
+            "ts": sig.get("ts"),
+            "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ",
+                                 time.gmtime(float(sig.get("ts") or 0))),
+            "ticker": sig.get("ticker"),
+            "event_ticker": sig.get("event_ticker"),
+            "series_ticker": "",
+            "topic": sig.get("topic"),
+            "title": sig.get("title"),
+            "direction": "up" if (sig.get("side") == "yes") else "down",
+            "previous": sig.get("executable_price"),
+            "current": sig.get("model_fair"),
+            "abs_delta": sig.get("edge"),
+            "model_net_roi": sig.get("net_roi"),
+            "model_side": sig.get("side"),
+            "executable_price": sig.get("executable_price"),
+            "market_url": sig.get("market_url"),
+            "reason": sig.get("reason"),
+        }
+        key = (str(item.get("ticker")), "signal")
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(item)
+
+    out.sort(key=lambda r: float(r.get("ts") or 0), reverse=True)
+    return out
+
+
+def resolution_topic(series_ticker: str | None, event_ticker: str | None,
+                     series_to_topic: dict[str, str],
+                     event_to_topic: dict[str, str]) -> str | None:
+    """Attribute a settlement to one of the five topics, or None.
+
+    Uses only identifiers Kalshi itself returns, in the order the official
+    glossary recommends ("do not parse ticker strings to infer relationships",
+    https://docs.kalshi.com/getting_started/terms#ticker-conventions):
+
+    1. the market's own ``series_ticker``, looked up in the registry of series
+       that the topic-scoped series queries returned;
+    2. the market's own ``event_ticker``, looked up in the registry of events
+       that this collector actually discovered for a topic.
+
+    Anything else returns ``None``. The row is then published as "topic not
+    attributable" on the Flagged for Review page — never guessed from a title
+    or from the shape of a ticker string.
+
+    Why this exists: settlements were mapped only by ``series_ticker``, and
+    Kalshi's settled-market records routinely carry ``series_ticker: null``
+    (verified on KXQUICKSETTLE-20NOV26H1310-3, fetched 2026-11-20T19:07Z). Every
+    row was therefore dropped and the "resolved" tables stayed empty while
+    2,000 settlements sat in the store.
+    """
+    if series_ticker and series_ticker in series_to_topic:
+        return series_to_topic[series_ticker]
+    if event_ticker and event_ticker in event_to_topic:
+        return event_to_topic[event_ticker]
+    return None

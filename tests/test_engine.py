@@ -14,7 +14,8 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from collector.alerts import (Observation, analyse_liquidity, detect_swing,
-                              rank_events, score_market, SWING_THRESHOLD)
+                              model_shortlist, rank_events, resolution_topic,
+                              score_market, SWING_THRESHOLD)
 from collector.engine import Portfolio, STARTING_BANKROLL, select_trades
 from collector.kalshi_api import (best_bid, dollars, implied_yes_ask,
                                   kalshi_fee, mid_price, sign_message)
@@ -120,8 +121,27 @@ class TestPhantomPrice(unittest.TestCase):
         market = {"ticker": "T", "event_ticker": "E", "title": "t",
                   "yes_bid_dollars": "0.3100", "yes_ask_dollars": "0.3300",
                   "status": "active"}
+        book = {"orderbook_fp": {
+            "yes_dollars": [["0.3000", "500.00"], ["0.3100", "400.00"]],
+            "no_dollars": [["0.6600", "250.00"], ["0.6700", "150.00"]]}}
+        obs = observe(market, book, "gas-prices")
+        self.assertEqual(obs.quote_source, "book")
+        self.assertAlmostEqual(obs.mid, 0.32)      # (0.31 + 0.33) / 2
+        self.assertAlmostEqual(obs.spread, 0.02)
+
+    def test_quote_without_a_book_is_displayed_but_never_priced(self):
+        """Official record quotes are shown, never turned into a mid."""
+        from collector.alerts import observe
+        market = {"ticker": "T", "event_ticker": "E", "title": "t",
+                  "yes_bid_dollars": "0.3100", "yes_ask_dollars": "0.3300",
+                  "status": "active"}
         obs = observe(market, None, "gas-prices")
-        self.assertAlmostEqual(obs.mid, 0.32)
+        self.assertAlmostEqual(obs.yes_bid, 0.31)   # displayed
+        self.assertAlmostEqual(obs.yes_ask, 0.33)
+        self.assertIsNone(obs.mid)                  # never priced
+        self.assertIsNone(obs.spread)
+        self.assertEqual(obs.quote_source, "unquoted")
+        self.assertFalse(obs.alertable)
 
 
 class TestLiquidity(unittest.TestCase):
@@ -142,11 +162,15 @@ class TestLiquidity(unittest.TestCase):
 
 
 class TestSwing(unittest.TestCase):
-    def base(self, mid, ts=1000.0):
+    def base(self, mid, ts=1000.0, spread=0.02):
         return Observation(ts=ts, ticker="T", event_ticker="E", topic="crypto",
-                           title="t", yes_bid=mid - 0.01, yes_ask=mid + 0.01,
+                           title="t", yes_bid=mid - spread / 2, yes_ask=mid + spread / 2,
                            mid=mid, last_price=mid, volume=1, open_interest=1,
-                           series_ticker="S")
+                           series_ticker="S", quote_source="book", spread=spread)
+
+    def ref(self, mid, ts=900.0, quote_source="book"):
+        return {"mid": mid, "ts": ts, "quote_source": quote_source,
+                "yes_bid": mid - 0.01, "yes_ask": mid + 0.01}
 
     def test_no_alert_below_threshold(self):
         self.assertIsNone(detect_swing(self.base(0.40), self.base(0.49, 1010)))
@@ -168,14 +192,67 @@ class TestSwing(unittest.TestCase):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
         self.assertIsNone(detect_swing(prev, cur))
         # ...but against the bar's opening price of 0.30 it is a 14c swing.
-        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0)
+        alert = detect_swing(prev, cur, reference=self.ref(0.30))
         self.assertIsNotNone(alert)
         self.assertAlmostEqual(alert["abs_delta"], 0.14)
         self.assertEqual(alert["previous"], 0.30)
 
     def test_reference_bar_still_respects_the_threshold(self):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
-        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0))
+        self.assertIsNone(detect_swing(prev, cur, reference=self.ref(0.38)))
+
+    # -- regressions for the phantom-alert defect (see COORDINATION board D) --
+
+    def test_one_sided_book_is_not_a_price(self):
+        """HBID case: book 0.0020 / 0.8110 must not yield a 0.4065 'mid'."""
+        from collector.alerts import observe
+        market = {"ticker": "KXPRESNOMD-28-HBID", "event_ticker": "KXPRESNOMD-28",
+                  "series_ticker": "KXPRESNOMD", "title": "Will Hunter Biden ...",
+                  "yes_sub_title": "Hunter Biden",
+                  "yes_bid_dollars": "0.0020", "yes_ask_dollars": "0.8110",
+                  "last_price_dollars": "0.8110", "status": "active"}
+        book = {"orderbook_fp": {
+            "yes_dollars": [["0.0010", "166666.66"], ["0.0020", "83333.33"]],
+            "no_dollars": [["0.1850", "1471.00"], ["0.1890", "271.49"]]}}
+        obs = observe(market, book, "elections")
+        self.assertEqual(obs.quote_source, "book")
+        self.assertAlmostEqual(obs.yes_bid, 0.002)
+        self.assertAlmostEqual(obs.yes_ask, 0.811)
+        # mid exists, but is not alertable: spread 0.809 > MAX_ALERT_SPREAD
+        self.assertFalse(obs.alertable)
+        alert = detect_swing(
+            None, obs,
+            reference={"mid": 0.8110, "ts": 900.0, "quote_source": "book"})
+        self.assertIsNone(alert, "a 0.0020/0.8110 book must never alert")
+
+    def test_last_trade_is_never_compared_with_a_mid(self):
+        """The reference must be a two-sided mid, not the candle's traded price."""
+        cur = self.base(0.55, 1010)
+        # A reference with no quote at all (quote_source != 'book') is rejected
+        # even though its number would cross the threshold.
+        self.assertIsNone(detect_swing(None, cur, reference=self.ref(0.30, quote_source="none")))
+        self.assertIsNone(detect_swing(None, cur, reference={"mid": None, "ts": 1,
+                                                             "quote_source": "book"}))
+
+    def test_wide_but_two_sided_book_never_alerts(self):
+        cur = self.base(0.45, 1010, spread=0.35)
+        self.assertFalse(cur.alertable)
+        self.assertIsNone(detect_swing(None, cur, reference=self.ref(0.20)))
+
+    def test_tight_two_sided_book_does_alert(self):
+        cur = self.base(0.55, 1010, spread=0.02)
+        self.assertTrue(cur.alertable)
+        self.assertIsNotNone(detect_swing(None, cur, reference=self.ref(0.30)))
+
+    def test_alert_ids_are_stable_within_a_bar(self):
+        """Re-running inside one 5-minute bar must not append the row twice."""
+        cur = self.base(0.55, 1010)
+        a = detect_swing(None, cur, reference=self.ref(0.30))
+        b = detect_swing(None, self.base(0.55, 1015), reference=self.ref(0.30))
+        self.assertEqual(a["id"], b["id"])
+        later = detect_swing(None, self.base(0.55, 1400), reference=self.ref(0.30))
+        self.assertNotEqual(a["id"], later["id"])
+        self.assertTrue(a["id"].endswith(":up"))
 
     def test_missing_quote_never_fires(self):
         prev = self.base(0.40)
@@ -436,3 +513,77 @@ class TestBatchOrderbooks(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestModelShortlist(unittest.TestCase):
+    """The second chat must populate from tradeable swings *and* scored signals."""
+
+    def swing(self, ticker, spread=0.02):
+        return {"id": f"{ticker}:1", "ticker": ticker, "topic": "crypto", "ts": 100,
+                "iso": "2026-11-20T00:01:40Z", "direction": "up",
+                "previous": 0.30, "current": 0.42, "abs_delta": 0.12,
+                "spread": spread}
+
+    def signal(self, ticker, net_roi=0.18):
+        return {"ticker": ticker, "topic": "gas-prices", "title": "Above 4.50",
+                "side": "yes", "executable_price": 0.17, "model_fair": 0.38,
+                "net_roi": net_roi, "edge": 0.21, "ts": 200,
+                "market_url": "https://kalshi.com/markets/KXAAAGASM/x"}
+
+    def test_tradeable_swing_appears(self):
+        rows = model_shortlist([self.swing("A")], [])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["kind"], "swing")
+
+    def test_untradeable_swing_is_excluded(self):
+        self.assertEqual(model_shortlist([self.swing("A", spread=0.81)], []), [])
+
+    def test_signal_appears_even_with_no_alert_on_the_same_ticker(self):
+        rows = model_shortlist([], [self.signal("S1")])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["kind"], "signal")
+        self.assertAlmostEqual(rows[0]["model_net_roi"], 0.18)
+
+    def test_weak_signal_is_excluded(self):
+        self.assertEqual(model_shortlist([], [self.signal("S1", net_roi=0.01)]), [])
+
+    def test_swing_and_signal_on_same_market_merge(self):
+        rows = model_shortlist([self.swing("X")], [self.signal("X")])
+        kinds = sorted(r["kind"] for r in rows)
+        self.assertEqual(kinds, ["signal", "swing+signal"])
+
+    def test_no_duplicate_ticker_kind_pairs(self):
+        rows = model_shortlist([self.swing("A"), self.swing("A")], [])
+        self.assertEqual(len(rows), 1)
+
+
+class TestResolutionTopic(unittest.TestCase):
+    """Settlements must reach a topic even when Kalshi omits series_ticker."""
+
+    series = {"KXAAAGASW": "gas-prices", "KXPGATOUR": "golf",
+              "KXPRESNOMD": "elections", "KXBTCY": "crypto"}
+    events = {"KXAAAGASW-26NOV23": "gas-prices", "KXPGATOUR-THRC26": "golf"}
+
+    def test_series_field_wins_when_present(self):
+        self.assertEqual(
+            resolution_topic("KXPRESNOMD", "KXPRESNOMD-28", self.series, self.events),
+            "elections")
+
+    def test_null_series_ticker_uses_the_discovered_event(self):
+        # Real record shape: KXQUICKSETTLE-20NOV26H1310-3 has series_ticker null
+        # and belongs to no tracked topic -> None (never guessed).
+        self.assertIsNone(resolution_topic(None, "KXQUICKSETTLE-20NOV26H1310",
+                                           self.series, self.events))
+        self.assertEqual(resolution_topic(None, "KXAAAGASW-26NOV23",
+                                          self.series, self.events), "gas-prices")
+
+    def test_ticker_strings_are_never_parsed(self):
+        """Official glossary: do not infer relationships from ticker strings."""
+        self.assertIsNone(resolution_topic("KXPGATOUR-UNKNOWN", None,
+                                           self.series, self.events))
+        self.assertIsNone(resolution_topic(None, "KXPGATOUR-UNKNOWN",
+                                           self.series, self.events))
+
+    def test_unregistered_ticker_is_never_attributed(self):
+        self.assertIsNone(resolution_topic("KXNBA", "KXNBA-26", self.series, self.events))
+        self.assertIsNone(resolution_topic(None, None, self.series, self.events))

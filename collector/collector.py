@@ -142,14 +142,40 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     current_bar_start = now - (now % BAR_SECONDS)
     completed = [c for c in candles if c["end_period_ts"] <= current_bar_start]
     chosen = completed[-1] if completed else candles[0]
-    price = ((chosen.get("price") or {}).get("close_dollars"))
-    try:
-        value = float(price) if price not in (None, "") else None
-    except (TypeError, ValueError):
-        value = None
-    if value is None or not (0.0 < value < 1.0):
-        return None
-    return {"mid": value, "ts": float(chosen["end_period_ts"])}
+
+    def _px(block: dict[str, Any] | None) -> float | None:
+        raw = (block or {}).get("close_dollars")
+        try:
+            v = float(raw) if raw not in (None, "") else None
+        except (TypeError, ValueError):
+            v = None
+        return v
+
+    # The candle carries both the traded price and the quote at bar close.
+    # The swing test needs a *quote* on both ends, so the reference is built
+    # from yes_bid/yes_ask exactly as the order book builds it:
+    #   YES bid = yes_bid.close_dollars
+    #   YES ask = yes_ask.close_dollars  (= 1 - no_bid, already the implied ask
+    #                                     in Kalshi's own candle schema)
+    # The traded price (``price``) is kept separately for display and is never
+    # compared against an order-book mid.
+    yes_bid = _px(chosen.get("yes_bid"))
+    yes_ask = _px(chosen.get("yes_ask"))
+    traded = _px(chosen.get("price"))
+    ref: dict[str, Any] = {
+        "ts": float(chosen["end_period_ts"]),
+        "traded": traded,
+        "quote_source": "none",
+        "mid": None,
+        "yes_bid": yes_bid,
+        "yes_ask": yes_ask,
+    }
+    if (yes_bid is not None and yes_ask is not None
+            and 0.0 < yes_bid < 1.0 and 0.0 < yes_ask <= 1.0
+            and yes_ask >= yes_bid):
+        ref["quote_source"] = "book"
+        ref["mid"] = round((yes_bid + yes_ask) / 2.0, 4)
+    return ref
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 300,
@@ -295,6 +321,16 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "market_count": len(markets),
             "tracked_market_count": len(selected),
             "series_resolved_at": (series_cache.get(topic.slug) or {}).get("resolved_at"),
+            # Events discovered for this topic this run, so settlements whose
+            # series_ticker is null can be attributed from an official field,
+            # and so the topic pages can group markets under their event.
+            "events": [
+                {"event_ticker": e.get("event_ticker"),
+                 "title": e.get("title"),
+                 "series_ticker": e.get("series_ticker"),
+                 "market_count": len(e.get("markets") or [])}
+                for e in events[:120] if e.get("event_ticker")
+            ],
             "series": series[:400],
         }
 
@@ -334,17 +370,16 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 series_ticker=prev_row.get("series_ticker", ""),
             )
         ref = references.get(obs.ticker)
-        alert = alerts.detect_swing(
-            prev, obs,
-            reference=(ref or {}).get("mid"),
-            reference_ts=(ref or {}).get("ts"),
-        )
+        alert = alerts.detect_swing(prev, obs, reference=ref)
         if alert:
             new_alerts.append(alert)
 
+    # One row per (market, reference bar, direction). Re-running inside the same
+    # bar used to append the same move again (7 duplicate HBID rows were
+    # published on 2026-11-20), which floods the chat and inflates the count.
     existing = alerts_store.get("alerts", [])
-    merged = new_alerts + [a for a in existing
-                           if a.get("id") not in {n["id"] for n in new_alerts}]
+    seen_ids = {a["id"] for a in new_alerts}
+    merged = new_alerts + [a for a in existing if a.get("id") not in seen_ids]
     merged = merged[:MAX_ALERTS]
 
     # -- signals ----------------------------------------------------------
@@ -360,6 +395,18 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             signals.append(sig)
     signals.sort(key=lambda s: s.score, reverse=True)
     signal_dicts = [s.as_dict() for s in signals[:60]]
+
+    # Every registered series -> its topic. Built here because the settlement
+    # loop below needs it: Kalshi's settled records often omit series_ticker.
+    series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
+    # Events this run actually discovered per topic. Only these can attribute a
+    # settlement whose series_ticker came back null (official fields only, no
+    # ticker-string parsing — see alerts.resolution_topic).
+    event_to_topic: dict[str, str] = {}
+    for _slug, _payload in per_topic.items():
+        for _ev in _payload.get("events") or []:
+            if _ev.get("event_ticker"):
+                event_to_topic[_ev["event_ticker"]] = _slug
 
     # -- simulated portfolio ---------------------------------------------
     portfolio = Portfolio(load_json(STATE_PATH, None))
@@ -384,10 +431,17 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         result = (market.get("result") or "").lower()
         if not ticker or result not in ("yes", "no"):
             continue
+        settle_event = market.get("event_ticker") or ""
+        settle_series = market.get("series_ticker")
         resolutions["resolutions"][ticker] = {
             "ticker": ticker,
-            "event_ticker": market.get("event_ticker"),
-            "series_ticker": market.get("series_ticker"),
+            "event_ticker": settle_event,
+            "series_ticker": settle_series,
+            # Kalshi's settled records often carry series_ticker: null, so the
+            # topic is resolved from the registry at settle time and stored with
+            # the row (see alerts.resolution_topic for the documented order).
+            "topic": alerts.resolution_topic(settle_series, settle_event,
+                                             series_to_topic, event_to_topic),
             "title": market.get("yes_sub_title") or market.get("title"),
             "result": result,
             "settlement_value_dollars": market.get("settlement_value_dollars"),
@@ -434,11 +488,15 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
 
     # Highest-dollar events per topic, plus resolved feed per topic.
     resolved_by_topic: dict[str, list[dict[str, Any]]] = {t.slug: [] for t in topic_mod.TOPICS}
-    series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
+    unattributed: list[dict[str, Any]] = []
     for ticker, rec in resolutions["resolutions"].items():
-        topic_slug = series_to_topic.get(rec.get("series_ticker") or "")
-        if topic_slug:
-            resolved_by_topic.setdefault(topic_slug, []).append(rec)
+        topic_slug = rec.get("topic") or alerts.resolution_topic(
+            rec.get("series_ticker"), rec.get("event_ticker"),
+            series_to_topic, event_to_topic)
+        if topic_slug in resolved_by_topic:
+            resolved_by_topic[topic_slug].append({**rec, "topic": topic_slug})
+        else:
+            unattributed.append(rec)
     for slug in resolved_by_topic:
         resolved_by_topic[slug] = sorted(
             resolved_by_topic[slug],
@@ -475,10 +533,13 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "topics": per_topic,
         "events": ranked_events,
         "alerts": merged,
-        "high_roi_alerts": [a for a in merged
-                            if any(s["ticker"] == a["ticker"] and s["score"] >= 0.10
-                                   for s in signal_dicts)],
+        # The model chat: tradeable swings plus scored signals, each row tagged
+        # with what it is (see alerts.model_shortlist).
+        "high_roi_alerts": alerts.model_shortlist(merged, signal_dicts),
         "signals": signal_dicts,
+        "unattributed_resolutions": sorted(
+            unattributed,
+            key=lambda r: r.get("settlement_ts") or "", reverse=True)[:40],
         "liquidity": liquidity,
         "portfolio": analytics,
         "resolutions": resolved_by_topic,
@@ -503,12 +564,24 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         },
     }
 
+    # Fail closed. If the whole run produced no observation (network blocked,
+    # API down, every book fetch failed) the payload is empty, and writing it
+    # would replace a good published snapshot with "0 markets". That happened
+    # while testing this collector offline on 2026-11-20. The run still reports
+    # its errors and exits non-zero, but the last good snapshot survives.
+    if not observations:
+        payload["published"] = False
+        payload["publish_skipped"] = (
+            "no market was observed this run; the previous snapshot is kept")
+        return payload
+
     save_json(LIVE_PATH, payload)
     save_json(os.path.join(DATA_DIR, "alerts.json"),
               {"version": ALERTS_VERSION, "alerts": merged})
     save_json(HISTORY_PATH, history)
     save_json(RESOLUTIONS_PATH, resolutions)
     save_json(os.path.join(DATA_DIR, "series_cache.json"), series_cache)
+    payload["published"] = True
     return payload
 
 
@@ -533,9 +606,15 @@ def main() -> None:
         "open_positions": payload["portfolio"]["open_positions"],
         "equity": payload["portfolio"]["equity"],
         "resolutions": payload["resolutions_count"],
+        "published": payload.get("published"),
+        "publish_skipped": payload.get("publish_skipped"),
         "errors": payload["errors"],
         "elapsed_s": round(time.time() - started, 1),
     }, indent=1))
+    if payload.get("published") is False:
+        # Fail the step so a broken run is visible in Actions instead of
+        # silently committing an empty dashboard.
+        raise SystemExit(2)
 
 
 if __name__ == "__main__":
