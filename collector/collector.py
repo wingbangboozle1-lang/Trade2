@@ -117,9 +117,10 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
 
     ``GET /series/{series_ticker}/markets/{ticker}/candlesticks`` returns OHLC
     per period (https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md).
-    We take the most recent *completed* 1-minute candle's close and its timestamp
-    and use that as the baseline for the $0.10 swing test, so a gradual move
-    still alerts instead of being swallowed between two snapshots.
+    We take the most recent *completed* 1-minute candle and use its quote closes
+    (yes_bid and yes_ask) as the baseline for the $0.10 swing test, so a gradual
+    move still alerts instead of being swallowed between two snapshots. The
+    baseline is a quote mid with its spread, never a last-trade price.
 
     Returns None when the market has no trade history in the window, in which
     case the caller falls back to the previous snapshot.
@@ -151,30 +152,33 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
             v = None
         return v
 
-    # The candle carries both the traded price and the quote at bar close.
-    # The swing test needs a *quote* on both ends, so the reference is built
-    # from yes_bid/yes_ask exactly as the order book builds it:
-    #   YES bid = yes_bid.close_dollars
-    #   YES ask = yes_ask.close_dollars  (= 1 - no_bid, already the implied ask
-    #                                     in Kalshi's own candle schema)
-    # The traded price (``price``) is kept separately for display and is never
-    # compared against an order-book mid.
+    # Price basis: the swing test compares quote mids, so the reference must be
+    # a quote mid too. The candle's ``price`` block is the last *trade*; using it
+    # against a book mid produced phantom alerts (e.g. KXPRESNOMD-28-HBID: last
+    # trade 0.8110 vs mid of a 0.0020 / 0.8110 book = 0.4065). Use the candle's
+    # yes_bid / yes_ask close instead (both documented in the candlestick schema).
     yes_bid = _px(chosen.get("yes_bid"))
     yes_ask = _px(chosen.get("yes_ask"))
     traded = _px(chosen.get("price"))
     ref: dict[str, Any] = {
         "ts": float(chosen["end_period_ts"]),
-        "traded": traded,
+        "traded": traded,          # kept for display only; never compared
         "quote_source": "none",
         "mid": None,
         "yes_bid": yes_bid,
         "yes_ask": yes_ask,
+        "spread": None,
     }
     if (yes_bid is not None and yes_ask is not None
-            and 0.0 < yes_bid < 1.0 and 0.0 < yes_ask <= 1.0
-            and yes_ask >= yes_bid):
+            and 0.0 <= yes_bid <= yes_ask <= 1.0):
         ref["quote_source"] = "book"
         ref["mid"] = round((yes_bid + yes_ask) / 2.0, 4)
+        ref["spread"] = round(yes_ask - yes_bid, 4)
+    else:
+        # No two-sided quote at bar close -> no reference at all. Returning a
+        # dict with mid=None used to be enough (the caller read .get("mid")),
+        # but an explicit None is the contract the callers and tests share.
+        return None
     return ref
 
 
@@ -370,7 +374,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 series_ticker=prev_row.get("series_ticker", ""),
             )
         ref = references.get(obs.ticker)
-        alert = alerts.detect_swing(prev, obs, reference=ref)
+        alert = alerts.detect_swing(
+            prev, obs,
+            reference=(ref or {}).get("mid"),
+            reference_ts=(ref or {}).get("ts"),
+            reference_spread=(ref or {}).get("spread"),
+        )
         if alert:
             new_alerts.append(alert)
 
@@ -380,6 +389,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     existing = alerts_store.get("alerts", [])
     seen_ids = {a["id"] for a in new_alerts}
     merged = new_alerts + [a for a in existing if a.get("id") not in seen_ids]
+    # Drop stored alerts that fail the current quote rule (written before it).
+    merged = [a for a in merged if alerts.alert_record_valid(a)]
     merged = merged[:MAX_ALERTS]
 
     # -- signals ----------------------------------------------------------

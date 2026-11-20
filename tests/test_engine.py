@@ -192,19 +192,23 @@ class TestSwing(unittest.TestCase):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
         self.assertIsNone(detect_swing(prev, cur))
         # ...but against the bar's opening price of 0.30 it is a 14c swing.
-        alert = detect_swing(prev, cur, reference=self.ref(0.30))
+        # The reference is a candle *quote* mid, so it must carry its own tight
+        # spread (see VERIFICATION_856e184e.md, T16). Without it, no alert.
+        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0,
+                             reference_spread=0.02)
         self.assertIsNotNone(alert)
         self.assertAlmostEqual(alert["abs_delta"], 0.14)
         self.assertEqual(alert["previous"], 0.30)
 
     def test_reference_bar_still_respects_the_threshold(self):
         prev, cur = self.base(0.40), self.base(0.44, 1010)
-        self.assertIsNone(detect_swing(prev, cur, reference=self.ref(0.38)))
+        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0,
+                                       reference_spread=0.02))
 
-    # -- regressions for the phantom-alert defect (see COORDINATION board D) --
+    # -- regressions for the phantom-alert defect (COORDINATION board D, P1/P2) --
 
     def test_one_sided_book_is_not_a_price(self):
-        """HBID case: book 0.0020 / 0.8110 must not yield a 0.4065 'mid'."""
+        """HBID case: book 0.0020 / 0.8110 must not yield a tradeable 0.4065 mid."""
         from collector.alerts import observe
         market = {"ticker": "KXPRESNOMD-28-HBID", "event_ticker": "KXPRESNOMD-28",
                   "series_ticker": "KXPRESNOMD", "title": "Will Hunter Biden ...",
@@ -218,41 +222,33 @@ class TestSwing(unittest.TestCase):
         self.assertEqual(obs.quote_source, "book")
         self.assertAlmostEqual(obs.yes_bid, 0.002)
         self.assertAlmostEqual(obs.yes_ask, 0.811)
-        # mid exists, but is not alertable: spread 0.809 > MAX_ALERT_SPREAD
-        self.assertFalse(obs.alertable)
-        alert = detect_swing(
-            None, obs,
-            reference={"mid": 0.8110, "ts": 900.0, "quote_source": "book"})
-        self.assertIsNone(alert, "a 0.0020/0.8110 book must never alert")
+        self.assertAlmostEqual(obs.spread, 0.809)
+        self.assertFalse(obs.alertable)          # spread >= $0.10
+        self.assertIsNone(detect_swing(
+            None, obs, reference=0.4065, reference_ts=900.0, reference_spread=0.809),
+            "a 0.0020/0.8110 book must never alert")
 
     def test_last_trade_is_never_compared_with_a_mid(self):
-        """The reference must be a two-sided mid, not the candle's traded price."""
+        """A reference without a tight quote spread is rejected outright."""
         cur = self.base(0.55, 1010)
-        # A reference with no quote at all (quote_source != 'book') is rejected
-        # even though its number would cross the threshold.
-        self.assertIsNone(detect_swing(None, cur, reference=self.ref(0.30, quote_source="none")))
-        self.assertIsNone(detect_swing(None, cur, reference={"mid": None, "ts": 1,
-                                                             "quote_source": "book"}))
-
-    def test_wide_but_two_sided_book_never_alerts(self):
-        cur = self.base(0.45, 1010, spread=0.35)
-        self.assertFalse(cur.alertable)
-        self.assertIsNone(detect_swing(None, cur, reference=self.ref(0.20)))
-
-    def test_tight_two_sided_book_does_alert(self):
-        cur = self.base(0.55, 1010, spread=0.02)
-        self.assertTrue(cur.alertable)
-        self.assertIsNotNone(detect_swing(None, cur, reference=self.ref(0.30)))
+        self.assertIsNone(detect_swing(None, cur, reference=0.30, reference_ts=900.0))
+        self.assertIsNone(detect_swing(None, cur, reference=0.30, reference_ts=900.0,
+                                       reference_spread=0.809))
+        self.assertIsNone(detect_swing(None, cur, reference=None))
 
     def test_alert_ids_are_stable_within_a_bar(self):
         """Re-running inside one 5-minute bar must not append the row twice."""
         cur = self.base(0.55, 1010)
-        a = detect_swing(None, cur, reference=self.ref(0.30))
-        b = detect_swing(None, self.base(0.55, 1015), reference=self.ref(0.30))
+        a = detect_swing(None, cur, reference=0.30, reference_ts=900.0,
+                         reference_spread=0.02)
+        b = detect_swing(None, self.base(0.55, 1015), reference=0.30, reference_ts=900.0,
+                         reference_spread=0.02)
         self.assertEqual(a["id"], b["id"])
-        later = detect_swing(None, self.base(0.55, 1400), reference=self.ref(0.30))
+        later = detect_swing(None, self.base(0.55, 1400), reference=0.30, reference_ts=900.0,
+                             reference_spread=0.02)
         self.assertNotEqual(a["id"], later["id"])
         self.assertTrue(a["id"].endswith(":up"))
+        self.assertEqual(a["reference_basis"], "candle_quote_mid")
 
     def test_missing_quote_never_fires(self):
         prev = self.base(0.40)

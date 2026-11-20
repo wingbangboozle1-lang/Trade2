@@ -21,7 +21,14 @@ Swing
     reference is not a two-sided mid.
 
 Threshold
-    SWING_THRESHOLD = 0.10 USD, configurable, and reported in the UI.
+    SWING_THRESHOLD = 0.10 USD, applied literally and reported in the UI, so a
+    row can always be checked against the requirement that produced it. What is
+    gated is dealability, not magnitude: both quotes must be two-sided and the
+    spread must be strictly below $0.10 (ALERT_MAX_SPREAD). A book wider than
+    the threshold cannot have its mid moved by $0.10 of trading; the mid only
+    moves because one side was pulled, which is a quote artefact and not a price
+    move a trader can act on. The gate is a documented design choice, and it is
+    stated on the Methodology page rather than hidden in code.
 
 ROI model ("what our model likes")
     This is a transparent, rule-based scorer — not a prediction and not a
@@ -52,21 +59,17 @@ from .kalshi_api import (best_bid, count, dollars, implied_yes_ask, mid_price,
 SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
 MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
+# Swing alerts need a tight, two-sided quote. If the bid-ask spread is at least
+# the swing threshold, the mid can move by $0.10 purely because one side of the
+# book was pulled, not because a trade happened. Design choice (not a Kalshi
+# rule): require the spread to be strictly below the $0.10 threshold.
+# Logged in VERIFICATION_856e184e.md and stated on the Methodology page.
+ALERT_MAX_SPREAD = 0.10
 SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.5
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
 MIN_TOP_LEVEL_CONTRACTS = 1.0  # the best level must actually hold size
 
-# A swing is only reported when the move is a real change in the price of a
-# tradable contract. Books wider than this are one-sided in practice: the
-# observed "mid" is an average of a bid nobody will lift and an ask nobody will
-# hit, and moving it is not a price move a trader could act on. 20 cents is the
-# widest spread any Kalshi market quoted in the 2026-11-20 snapshot showed while
-# still holding size on both sides (162 of 220 two-sided books were <= $0.10).
-MAX_ALERT_SPREAD = 0.20
-# Both legs of the mid must rest real size: 1 contract on a level is a stub.
-MIN_ALERT_TOP_SIZE = 1.0
-MIN_ALERT_DEPTH = 10.0        # total contracts resting across both bid sides
 # De-duplication: one alert per market per reference bar per direction. The id
 # is built from these parts, so a re-run inside the same bar cannot append the
 # same move twice to the chat buffer.
@@ -111,7 +114,7 @@ class Observation:
         """
         return (self.quote_source == "book" and self.mid is not None
                 and self.spread is not None
-                and self.spread <= MAX_ALERT_SPREAD)
+                and swing_quotes_ok(self.yes_bid, self.yes_ask))
 
 
 def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
@@ -192,41 +195,88 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     )
 
 
+def quoted_spread(yes_bid: float | None, yes_ask: float | None) -> float | None:
+    """YES ask minus YES bid, or None when either side is not quoted."""
+    if yes_bid is None or yes_ask is None:
+        return None
+    return round(yes_ask - yes_bid, 4)
+
+
+def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
+    """True only for a two-sided quote tighter than ALERT_MAX_SPREAD."""
+    spread = quoted_spread(yes_bid, yes_ask)
+    return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
+
+
+def alert_record_valid(alert: dict[str, Any]) -> bool:
+    """Re-check a stored alert against the current quote rule.
+
+    Used to purge alerts written before the quote rule existed (for example a
+    \"0.811 -> 0.4065\" move that was only the midpoint of a 0.002/0.811 book).
+    """
+    return swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask"))
+
+
 def detect_swing(previous: Observation | None, current: Observation,
                  threshold: float = SWING_THRESHOLD,
-                 reference: dict[str, Any] | None = None) -> dict[str, Any] | None:
-    """Return an alert dict when the measured price moved by >= threshold.
+                 reference: float | None = None,
+                 reference_ts: float | None = None,
+                 reference_spread: float | None = None) -> dict[str, Any] | None:
+    """Return an alert dict when the measured price moved by >= ``threshold``.
 
-    Both ends of the comparison are order-book mids, and both must be two-sided
-    and tradeable:
+    Price basis
+        Both ends of the comparison are YES *mid* prices built from two-sided
+        quotes. The reference is the mid of the reference bar's candle quote
+        closes (``yes_bid`` / ``yes_ask``), with ``reference_spread`` its
+        ask-minus-bid width; the current value is ``current.mid``, which is
+        built from the order book. A last *trade* price is never compared with a
+        quote mid: doing exactly that produced the phantom "0.811 -> 0.4065"
+        alert on KXPRESNOMD-28-HBID, where 0.8110 was the last trade and 0.4065
+        was the midpoint of a 0.0020 / 0.8110 book (both verified against the
+        live API on 2026-11-20 and against the candle history for that bar).
 
-    * **reference** is the bar reference returned by ``bar_reference`` in the
-      collector — ``{"mid", "ts", "yes_bid", "yes_ask", "quote_source"}`` taken
-      from Kalshi's own candlestick, whose ``price`` block carries the traded
-      price *and* whose ``yes_bid`` / ``yes_ask`` blocks carry the quote. Only
-      rows whose candle quote is two-sided are accepted here.
-    * **current** is ``current.mid``, which is two-sided by construction.
+    Dealability
+        The requirement is "any swing >= $0.10 either way", so ``threshold`` is
+        applied literally and the spread is *not* used to raise it. What is
+        required is that both quotes can actually be dealt on: two resting bids
+        and a spread strictly below the threshold. A book whose spread is at
+        least $0.10 cannot move its mid by $0.10 through trading — the mid only
+        moves because one side was pulled — so such rows are not price moves.
+        Both gates live in ``swing_quotes_ok``.
 
-    The previous *snapshot* is deliberately not a fallback any more. It was the
-    source of double counting: a move that had already fired stayed in the
-    buffer while the next run re-measured it against the same reference bar and
-    appended it again (the same Hunter Biden row appeared 7 times in
-    ``data/live.json`` on 2026-11-20, with ``observed_gap_seconds`` as low as
-    -3.8).
+    Reference
+        The collector samples every ~5 minutes while a market moves
+        continuously. Comparing only against the immediately previous snapshot
+        makes every alert fire once and reset, so a market drifting 20 cents in
+        4-cent steps never alerts. The caller therefore passes the quote mid at
+        the start of the current bar, taken from Kalshi's own published candle
+        (a measured value, never an interpolation). The previous snapshot is the
+        fallback only when no candle exists, and it is subject to the same gate.
+
+    De-duplication
+        The id is ``<ticker>:<bar start>:<direction>``. A re-run inside the same
+        bar recomputes the same id, so the row is not appended twice (the same
+        Hunter Biden row appeared 7 times in the 18:41Z snapshot, with
+        ``observed_gap_seconds`` as low as -3.8).
     """
+    if previous is None and reference is None:
+        return None
     if not current.alertable:
         return None
+    if not swing_quotes_ok(current.yes_bid, current.yes_ask):
+        return None
+    basis = "candle_quote_mid"
     if reference is not None:
-        base = reference.get("mid")
-        prev_ts = reference.get("ts")
-        ref_quoted = (reference.get("quote_source") or "") == "book"
-        if base is None or not ref_quoted:
+        if reference_spread is None or not (0.0 <= reference_spread < ALERT_MAX_SPREAD):
             return None
+        base = reference
+        prev_ts = reference_ts
     elif previous is not None:
-        if not previous.alertable:
+        if not swing_quotes_ok(previous.yes_bid, previous.yes_ask):
             return None
         base = previous.mid
         prev_ts = previous.ts
+        basis = "previous_snapshot_mid"
     else:
         return None
     if base is None or current.mid is None:
@@ -254,12 +304,13 @@ def detect_swing(previous: Observation | None, current: Observation,
         "pct_of_dollar": round(abs(delta) * 100, 2),  # cents of contract value
         "yes_bid": current.yes_bid,
         "yes_ask": current.yes_ask,
-        "spread": current.spread,
         "volume": current.volume,
         "open_interest": current.open_interest,
         "market_url": current.market_url,
         "threshold": threshold,
         "price_source": "order-book mid (two-sided)",
+        "reference_basis": basis,
+        "spread": quoted_spread(current.yes_bid, current.yes_ask),
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
     }
@@ -520,7 +571,7 @@ def model_shortlist(alerts_rows: list[dict[str, Any]],
 
     for row in alerts_rows:
         spread = row.get("spread")
-        if spread is None or spread > MAX_ALERT_SPREAD:
+        if spread is None or not (0.0 <= spread < ALERT_MAX_SPREAD):
             continue
         sig = by_ticker.get(row.get("ticker"))
         item = dict(row)
