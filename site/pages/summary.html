@@ -1,0 +1,60 @@
+<!--meta: {"out":"summary.html","page":"static","title":"Executive summary — Kalshi topic dashboard"} -->
+<h1>Executive summary</h1>
+<p class="lead">Status as of 2026-11-20. Every factual claim below links to the official source it was checked against (IDs refer to the <a href="sources.html">Sources</a> page). Open items are on <a href="flagged.html">Flagged for review</a>. Live numbers are on the dashboard pages and change with each run; they are not copied into this summary.</p>
+
+<h2>What was built</h2>
+<ul class="clean">
+  <li><strong>Read-only live dashboard</strong> for five topics: gas prices, elections, culture, crypto and golf. Each topic page groups markets by event, shows last price, bid/ask, 24-hour volume, open interest and an order-book ladder, and offers a price chart with 1, 6, 24 and 72-hour windows.</li>
+  <li><strong>Price-move alerts</strong> whenever a contract's last price moves 10¢ (= $0.10) or more between two collector runs, in either direction, shown in two scrolling chats: all alerts, and a High-ROI filter.</li>
+  <li><strong>Resolved outcomes</strong> for followed markets, recorded as the official YES or NO result.</li>
+  <li><strong>Simulated (paper) trades</strong> testing three rule-based strategies, with category and strategy analysis. No real or demo orders are placed.</li>
+  <li><strong>Repository review</strong> with irregularities and links (see <a href="flagged.html">Flagged for review</a>).</li>
+</ul>
+
+<h2>Status by requirement</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Requirement</th><th>Status</th><th>Notes and sources</th></tr></thead>
+<tbody>
+<tr><td>Track highest-dollar live events (gas, elections, culture, crypto, golf)</td><td><span class="chip hi">built</span></td><td>Ranked by estimated 24h dollar volume (derived). Topic series come from the official fee schedule <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a> plus keyword discovery (flag F-14).</td></tr>
+<tr><td>Live alerts for ≥ $0.10 swings, two scrolling chats</td><td><span class="chip hi">built</span></td><td>Detected between collector runs, so a swing that reverts within one run interval is missed. Data endpoints: <a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">[S7]</a> and the SDK's market model <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">[S9]</a>.</td></tr>
+<tr><td>Price graph: x = time (choose window), y = contract price</td><td><span class="chip warn">partly</span></td><td>Windows are 1, 6, 24 and 72 hours. Seconds are not available: data is collected about every 30 minutes (flag F-09).</td></tr>
+<tr><td>Liquidity: contracts available at each price</td><td><span class="chip hi">built</span></td><td>Top-10 resting bids per side from the official order book <a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">[S7]</a>, for the top-volume markets each run.</td></tr>
+<tr><td>Resolution: yes or no</td><td><span class="chip hi">built</span></td><td>Uses the market's official <code>result</code> field, read through the public market endpoint <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">[S9]</a>.</td></tr>
+<tr><td>Automated simulated trades and strategy analysis</td><td><span class="chip hi">built</span></td><td>Three strategies, categories by topic, direction and price band. Fees use the official formula <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a>.</td></tr>
+<tr><td>Track demo-account portfolio on the site</td><td><span class="chip warn">blocked</span></td><td>Needs a demo API key pair from the owner (flag F-08). Signing follows the official spec <a href="https://docs.kalshi.com/getting_started/api_keys" target="_blank" rel="noopener">[S6]</a> and is tested offline.</td></tr>
+<tr><td>Execute trades on demo</td><td><span class="chip warn">not done</span></td><td>Blocked on the same keys (F-08). No orders have been placed.</td></tr>
+<tr><td>News or website links that caused sharp jumps</td><td><span class="chip warn">not determined</span></td><td>No API field identifies a cause; links are left blank and flagged (F-10).</td></tr>
+<tr><td>Repository review, line by line</td><td><span class="chip hi">done</span></td><td>Findings are on Flagged for review (F-01 to F-05, F-18, F-19).</td></tr>
+<tr><td>Coordination board</td><td><span class="chip hi">done</span></td><td>Tasks T1–T9 are tracked in COORDINATION.md on the working branch.</td></tr>
+</tbody></table></div>
+
+<h2>Verified facts used</h2>
+<ul class="clean">
+  <li>Public market-data endpoints need no authentication: the SDK marks them "No authorization required" <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">[S9]</a>.</li>
+  <li>The demo REST host is <code>https://external-api.demo.kalshi.co/trade-api/v2</code> and the demo WebSocket host is <code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code>, both as listed in the brief <a href="https://docs.kalshi.com/getting_started/api_environments" target="_blank" rel="noopener">[S3]</a>.</li>
+  <li>The taker fee is round up of 0.07 × contracts × price × (1 − price); the maker fee uses 0.0175 and applies only where the series' maker multiplier is non-zero. Every row of the General Trading Fees Table is checked by a test <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a>.</li>
+  <li>There is no settlement fee and no membership fee <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a>.</li>
+  <li>Topic series on the official fee schedule: gas <code>KXAAAGASM</code> ("US gas price"); golf <code>KXPGATOUR</code>, <code>KXPGARYDER</code>, <code>KXPGASOLHEIM</code>; crypto <code>KXBTCMAX150</code>, <code>KXBTCY</code>, <code>KXETHY</code>; culture <code>KXEMMY*</code> series; elections <code>KXELECTIRAN</code> <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">[S2]</a>.</li>
+  <li>WebSocket connections require an API key, so live streaming cannot run from a static site <a href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noopener">[S8]</a>.</li>
+</ul>
+
+<h2>Decisions to confirm</h2>
+<ul class="clean">
+  <li><strong>Market data source:</strong> production public data, not demo, because the brief asks to track live Kalshi events. Demo prices may not reflect real markets <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">[S4]</a>. Switch by setting the <code>KALSHI_BASE</code> variable (F-07).</li>
+  <li><strong>High-ROI picks:</strong> a transparent rule (entry ≤ 40¢, spread ≤ 5¢, 24h volume ≥ 100), not a predictive model. Replace it with your model (F-13).</li>
+</ul>
+
+<h2>Main irregularities for review</h2>
+<ul class="clean">
+  <li>Market status words differ between filters ("open", "settled") and responses ("active", "determined", "finalized") (F-01).</li>
+  <li>The fee rounding wording ("rounded to a centicent") does not match whole-cent table values (F-02).</li>
+  <li>Parts of the fee-schedule PDF text layer are scrambled (F-03).</li>
+  <li>The SDK's default base URL is production (F-05).</li>
+</ul>
+
+<h2>What the owner needs to do</h2>
+<ol class="clean">
+  <li>Create a Kalshi demo API key and add secrets <code>KALSHI_DEMO_KEY_ID</code> and <code>KALSHI_DEMO_PRIVATE_KEY</code> to enable the portfolio view (F-08).</li>
+  <li>Read the Kalshi Developer Agreement before enabling any automated trading (F-17).</li>
+  <li>Review the Flagged for review list and request changes.</li>
+</ol>
