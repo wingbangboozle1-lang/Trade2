@@ -1,0 +1,61 @@
+name: collector
+
+# Collects live Kalshi demo data, runs the paper-trading engine, and (on schedule
+# or manual runs) commits the refreshed JSON the GitHub Pages site reads.
+#
+# Push runs never commit (prevents a commit loop); scheduled/dispatch runs commit.
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run tests (fees vs official PDF table, engine rules)
+        run: |
+          python3 -m trading.test_engine
+          python3 -m py_compile collector/*.py trading/*.py
+
+      - name: Collect demo data (with headline lookup for >=$0.10 swings)
+        run: python3 -m collector.runner --news
+
+      - name: Run simulated trading engine
+        run: python3 -m trading.engine
+
+      - name: Commit refreshed data (schedule/dispatch only)
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "data: collector run $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Upload data snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalshi-data
+          path: docs/data/
+          retention-days: 7
