@@ -37,7 +37,7 @@ jobs:
           python3 -m collector.test_runner
           python3 -m py_compile collector/*.py trading/*.py
 
-      - name: Site smoke test (jsdom: every page renders with fixture data)
+      - name: "Site smoke test (jsdom: every page renders with fixture data)"
         run: |
           npm install --no-audit --no-fund
           python3 test/gen_fixtures.py /tmp/fixture-data
