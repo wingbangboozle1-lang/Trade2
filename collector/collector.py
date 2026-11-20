@@ -39,6 +39,8 @@ VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_EQUITY_POINTS = 1500
+BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
+REFERENCE_MARKET_CAP = 120  # markets per topic to ask for a reference bar
 
 
 def iso(ts: float | None = None) -> str:
@@ -96,6 +98,47 @@ def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
         for event in batch:
             events[event["event_ticker"]] = event
     return list(events.values())
+
+
+def bar_reference(client: KalshiClient, market: dict[str, Any],
+                  deadline: float) -> dict[str, Any] | None:
+    """Price at the start of the current bar, from official candlesticks.
+
+    ``GET /series/{series_ticker}/markets/{ticker}/candlesticks`` returns OHLC
+    per period (https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md).
+    We take the most recent *completed* 1-minute candle's close and its timestamp
+    and use that as the baseline for the $0.10 swing test, so a gradual move
+    still alerts instead of being swallowed between two snapshots.
+
+    Returns None when the market has no trade history in the window, in which
+    case the caller falls back to the previous snapshot.
+    """
+    series = market.get("series_ticker")
+    ticker = market.get("ticker")
+    if not series or not ticker or time.time() > deadline:
+        return None
+    now = int(time.time())
+    try:
+        data = client.candlesticks(series, ticker, now - 3 * BAR_SECONDS,
+                                  now, period_interval=1)
+    except KalshiHTTPError:
+        return None
+    candles = [c for c in (data.get("candlesticks") or [])
+               if c.get("end_period_ts")]
+    if not candles:
+        return None
+    candles.sort(key=lambda c: c["end_period_ts"])
+    current_bar_start = now - (now % BAR_SECONDS)
+    completed = [c for c in candles if c["end_period_ts"] <= current_bar_start]
+    chosen = completed[-1] if completed else candles[0]
+    price = ((chosen.get("price") or {}).get("close_dollars"))
+    try:
+        value = float(price) if price not in (None, "") else None
+    except (TypeError, ValueError):
+        value = None
+    if value is None or not (0.0 < value < 1.0):
+        return None
+    return {"mid": value, "ts": float(chosen["end_period_ts"])}
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 300,
@@ -219,6 +262,23 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "series": series[:400],
         }
 
+    # -- reference bars ---------------------------------------------------
+    # Ask for an official candle for the busiest markets in each topic, so a
+    # gradual move across snapshots can still cross the $0.10 threshold.
+    references: dict[str, dict[str, Any]] = {}
+    per_topic_seen: dict[str, list[alerts.Observation]] = {}
+    for obs in observations:
+        per_topic_seen.setdefault(obs.topic, []).append(obs)
+    for topic_slug, obs_list in per_topic_seen.items():
+        for obs in obs_list[:REFERENCE_MARKET_CAP]:
+            if time.time() > deadline:
+                errors.append(f"{topic_slug}: reference bars truncated by budget")
+                break
+            stub = {"series_ticker": obs.series_ticker, "ticker": obs.ticker}
+            ref = bar_reference(client, stub, deadline)
+            if ref:
+                references[obs.ticker] = ref
+
     # -- swaps ------------------------------------------------------------
     new_alerts: list[dict[str, Any]] = []
     for obs in observations:
@@ -236,7 +296,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 open_interest=prev_row.get("open_interest"),
                 series_ticker=prev_row.get("series_ticker", ""),
             )
-        alert = alerts.detect_swing(prev, obs)
+        ref = references.get(obs.ticker)
+        alert = alerts.detect_swing(
+            prev, obs,
+            reference=(ref or {}).get("mid"),
+            reference_ts=(ref or {}).get("ts"),
+        )
         if alert:
             new_alerts.append(alert)
 
@@ -329,7 +394,16 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     for slug in resolved_by_topic:
         resolved_by_topic[slug] = sorted(
             resolved_by_topic[slug],
-            key=lambda r: r.get("settlement_ts") or "", reverse=True)[:60]
+            key=lambda r: r.get("settlement_ts") or "", reverse=True)[:40]
+
+    # Keep the resolutions store bounded. Open-interest-free sports markets
+    # settle constantly, and an unbounded map grew the file past 8 MB in the
+    # first hour. Newest 2,000 are kept; older entries drop out.
+    res_map = resolutions.get("resolutions", {})
+    if len(res_map) > 2000:
+        ordered = sorted(res_map.items(),
+                         key=lambda kv: kv[1].get("settlement_ts") or "", reverse=True)
+        resolutions["resolutions"] = dict(ordered[:2000])
 
     payload = {
         "generated_at": iso(now),
@@ -356,6 +430,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "opened_this_run": opened,
         "settled_this_run": settled_updates,
         "observation_count": len(observations),
+        "reference_bar_seconds": BAR_SECONDS,
+        "reference_bars_used": len(references),
         "run_seconds": round(time.time() - started, 1),
         "budget_seconds": budget_seconds,
         "errors": errors[:20],

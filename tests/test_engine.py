@@ -140,6 +140,20 @@ class TestSwing(unittest.TestCase):
         self.assertEqual(alert["direction"], "down")
         self.assertAlmostEqual(alert["abs_delta"], 0.15)
 
+    def test_reference_bar_catches_a_gradual_move(self):
+        # Two snapshots 4 cents apart do not alert on their own...
+        prev, cur = self.base(0.40), self.base(0.44, 1010)
+        self.assertIsNone(detect_swing(prev, cur))
+        # ...but against the bar's opening price of 0.30 it is a 14c swing.
+        alert = detect_swing(prev, cur, reference=0.30, reference_ts=900.0)
+        self.assertIsNotNone(alert)
+        self.assertAlmostEqual(alert["abs_delta"], 0.14)
+        self.assertEqual(alert["previous"], 0.30)
+
+    def test_reference_bar_still_respects_the_threshold(self):
+        prev, cur = self.base(0.40), self.base(0.44, 1010)
+        self.assertIsNone(detect_swing(prev, cur, reference=0.38, reference_ts=900.0))
+
     def test_missing_quote_never_fires(self):
         prev = self.base(0.40)
         cur = self.base(0.90)

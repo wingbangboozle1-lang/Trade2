@@ -97,10 +97,16 @@ CULTURE = Topic(
     slug="culture",
     label="Culture",
     queries=(("Culture", None), ("Entertainment", None)),
-    matchers=(_kw("culture", "celebrity", "emmy", "oscar", "grammy", "award",
-                  "album", "movie", "film", "box office", "song", "series",
-                  "tv", "netflix", "billboard", "time person", "nobel",
-                  "ballon d'or", "viral", "tweet", "x post", "banned"),),
+    # Deliberately strict. Kalshi files awards shows, streaming and celebrity
+    # content under "Entertainment", but that category also carries ordinary
+    # TV/sports programming; a loose matcher pulled in 963 unrelated series in
+    # testing. Only these marker words qualify a series for the Culture topic.
+    matchers=(_kw("culture", "celebrity", "emmy", "oscars", "academy award",
+                  "grammy", "golden globe", "billboard", "box office",
+                  "time person of the year", "nobel", "ballon d'or",
+                  "netflix", "album", "movie", "film", "song", "banned from x",
+                  "tweet", "viral", "best actor", "best actress",
+                  "song of the year", "record of the year"),),
     notes="Entertainment, celebrity and internet-culture markets. Kalshi files "
           "most of these under the Entertainment category; the Culture category "
           "is queried as well.",

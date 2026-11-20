@@ -122,14 +122,42 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
 
 
 def detect_swing(previous: Observation | None, current: Observation,
-                 threshold: float = SWING_THRESHOLD) -> dict[str, Any] | None:
-    """Return an alert dict when the reference price moved by >= threshold."""
-    if previous is None or previous.mid is None or current.mid is None:
+                 threshold: float = SWING_THRESHOLD,
+                 reference: float | None = None,
+                 reference_ts: float | None = None) -> dict[str, Any] | None:
+    """Return an alert dict when the reference price moved by >= threshold.
+
+    How the reference works, and why it is not simply "the previous snapshot":
+
+    The collector samples roughly every 5-15 minutes while a market can move
+    continuously. Comparing only against the immediately previous sample makes
+    every alert fire once and then reset, so a market that drifts 20 cents over
+    an hour in 4-cent steps never alerts. The caller therefore passes the price
+    at the start of the current 5-minute bar, taken from Kalshi's own published
+    candle close. That reference is still a measured price, never an
+    interpolation, and it is used whenever available; the previous snapshot is
+    the fallback for markets without candle history.
+    """
+    if previous is None and reference is None:
         return None
-    delta = round(current.mid - previous.mid, 4)
+    # Prefer the bar-opening reference: it spans the whole bar rather than a
+    # single inter-snapshot hop, so a gradual move is measurable. Fall back to
+    # the previous snapshot when no bar is available.
+    if reference is not None:
+        base = reference
+    elif previous is not None:
+        base = previous.mid
+    else:
+        base = None
+    if base is None or current.mid is None:
+        return None
+    prev_ts = reference_ts if reference is not None else (
+        previous.ts if previous is not None else None)
+    delta = round(current.mid - base, 4)
     if abs(delta) + 1e-9 < threshold:
         return None
     direction = "up" if delta > 0 else "down"
+    prev_mid = base
     return {
         "id": f"{current.ticker}:{int(current.ts)}",
         "ts": current.ts,
@@ -139,7 +167,8 @@ def detect_swing(previous: Observation | None, current: Observation,
         "series_ticker": current.series_ticker,
         "topic": current.topic,
         "title": current.title,
-        "previous": previous.mid,
+        "previous": prev_mid,
+        "previous_ts": prev_ts,
         "current": current.mid,
         "delta": delta,
         "abs_delta": abs(delta),
@@ -151,7 +180,8 @@ def detect_swing(previous: Observation | None, current: Observation,
         "open_interest": current.open_interest,
         "market_url": current.market_url,
         "threshold": threshold,
-        "observed_gap_seconds": round(current.ts - previous.ts, 1),
+        "observed_gap_seconds": round(
+            current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
     }
 
 
