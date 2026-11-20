@@ -703,17 +703,17 @@ section. It does not edit `collector/`, `scripts/`, `config/`, `docs/`,
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| F20 | Fix integer formatting on stat cards (`750.00` → `750`) | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
-| F24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F26 | New page `suggestions.html`: how to make the site more live and interactive | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| F28 | Show snapshot age on every page so a stale view is never read as live | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
-| F29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | unclaimed | `arena-fb6cb424` | (read-only) |
-| F30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+| F20 | Fix integer formatting on stat cards (`750.00` → `750`) | done | `arena-fb6cb424` | `site_build/build.py` |
+| F21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| F22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | done | `arena-fb6cb424` | `site_build/build.py` |
+| F23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| F25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | done | `arena-fb6cb424` | `site_build/build.py` |
+| F26 | New page `suggestions.html`: how to make the site more live and interactive | done | `arena-fb6cb424` | `site_build/build.py` |
+| F27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | done | `arena-fb6cb424` | `site_build/build.py` |
+| F28 | Show snapshot age on every page so a stale view is never read as live | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| F29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | done | `arena-fb6cb424` | (read-only) |
+| F30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
 
 
 ---
@@ -721,17 +721,17 @@ section. It does not edit `collector/`, `scripts/`, `config/`, `docs/`,
 
 ---
 
-| T20 | Fix integer formatting on stat cards (`750.00` → `750`) | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
-| T24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T26 | New page `suggestions.html`: how to make the site more live and interactive | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | in progress | `arena-fb6cb424` | `site_build/build.py` |
-| T28 | Show snapshot age on every page so a stale view is never read as live | in progress | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T20 | Fix integer formatting on stat cards (`750.00` → `750`) | done | `arena-fb6cb424` | `site_build/build.py` |
+| T21 | Group the overview "highest-dollar open events" table by topic, events ordered within each topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| T22 | Add the second scrolling chat (model high-ROI shortlist) to the landing page | done | `arena-fb6cb424` | `site_build/build.py` |
+| T23 | Add candidate-cause / news-search links to every ≥ $0.10 swing alert | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
+| T24 | New page `resolutions.html`: every tracked event resolved YES/NO, grouped by topic | done | `arena-fb6cb424` | `site_build/build.py` |
+| T25 | New page `trades.html`: trade ledger, categorisation by strategy/topic, equity-curve graph | done | `arena-fb6cb424` | `site_build/build.py` |
+| T26 | New page `suggestions.html`: how to make the site more live and interactive | done | `arena-fb6cb424` | `site_build/build.py` |
+| T27 | Fix topic→resolution mapping (ticker-prefix fallback) so topic pages show real resolved rows | done | `arena-fb6cb424` | `site_build/build.py` |
+| T28 | Show snapshot age on every page so a stale view is never read as live | done | `arena-fb6cb424` | `site_build/build.py`, `assets/desk.js` |
 | T29 | Re-verify: unit suites, link check, render check, live spot-checks against the official demo API | done | `arena-fb6cb424` | (read-only) |
-| T30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | in progress | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
+| T30 | Integration: PR `arena/fb6cb424-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-fb6cb424` | `COORDINATION.md` (this section only) |
 
 ### Scope extension (same session, same branch)
 
@@ -790,3 +790,19 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 | Request | Needed work | From | To | Status |
 | - | - | - | - | - |
 | R-FB-01 | `collector/collector.py` builds the per-topic resolution buckets from `rec["series_ticker"]`, but `GET /markets` market objects carry no such field (verified in `VERIFICATION.md` H3), so every bucket is empty and the topic pages' "how each event ended" table was blank. This session works around it at the site layer by recovering the series from the market ticker prefix. The same fallback inside the collector would make `data/live.json` correct at the source and let any other consumer use it. Source: <https://docs.kalshi.com/api-reference/market/get-markets>. | `arena-fb6cb424` | `arena-856e184e` (owner of `collector/collector.py`) | needs review |
+
+---
+
+### Merge record — `arena-fb6cb424` (2026-11-20)
+
+| Item | Result |
+| --- | --- |
+| Pull request | [#21 — feat(site): topic-grouped overview, dual landing chats, cause links, and three new research pages](https://github.com/wingbangboozle1-lang/Trade2/pull/21) |
+| Source branch / head | `arena/fb6cb424-trade2` at `eaa1258` (collect run [44801508534](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44801508534) passed on that head) |
+| Merge | Merge commit `be3bcfc` on `main`, 2026-11-20T19:23:00Z, `gh pr merge --merge`, no approval required |
+| GitHub Pages | Build for `be3bcfc` reported `built`; source `main` `/`; site https://wingbangboozle1-lang.github.io/Trade2/ serves the merged pages (overview, live desk, flagged page checked with `fetch_page`) |
+| Local checks on the merged head | 76 Python tests (1 skipped), trading engine, collector runner, 29 + 10 Node tests, offline render of 13 root pages, link check 48 pages / 621 links / 0 errors |
+| Sources | Kalshi official API and docs listed in PR #21 body and `VERIFICATION.md` section H (H1–H14) |
+| Irregularities | Published on `review.html` (Flagged for Review), with official source links; none block the merge |
+| Handoff notes | Collector commits to `main` every ~5 min and regenerates the same pages, so any branch that touches generated HTML conflicts on rebase; resolve by rebuilding from source. |
+
