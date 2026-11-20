@@ -362,3 +362,18 @@ https://news.google.com/rss/search (headline candidates, FL-03 wording applies).
 | Pipelines after merge | Three scheduled collectors now coexist, each writing its own folder: `kalshi-dashboard.yml` (*/5, f5837994 → `data/`, `*.html`), `dashboard.yml` (*/30, 5788e385 → `kalshi-dashboard/`), `collector.yml` (*/15, this session → `docs/data/`). All push steps rebase before pushing. The first post-merge `kalshi-dashboard.yml` run already landed on `main`. |
 | Cross-scope notes | (1) `arena/c0affdd1` has an **open claim on `docs/**`, `analysis/**`, `pipeline/**`, `collect.yml`** (board B registry) — this session has now shipped `docs/**` and `.github/workflows/collector.yml` under PR #11; c0affdd1 should treat those paths as taken and request changes here instead of overwriting. (2) `README.md` (R-5788-1) resolved pragmatically: main's README kept as the primary document, this session's implementation documented in a clearly separated appendix section. (3) Root `index.html` ownership (R-5788-2) untouched — this session never edits root files. |
 | Flagged | FL-01…FL-09 unchanged and published at `docs/flagged.html`; this session's board C above carries its own flag list. Nothing flagged blocks the merge (per brief). |
+
+### Post-integration CI fix (2026-11-20, same session)
+
+First scheduled-style runs of `collector.yml` on `main` failed at the data-commit
+step while every other step succeeded. Diagnosis (reproduced locally): the test
+step's `npm install` rewrote `package-lock.json` (its `name` metadata still
+matched the pre-merge `package.json`), leaving a dirty tree, so
+`git pull --rebase` refused with "you have unstaged changes" — three retries, all
+refused, exit 1. An earlier single-attempt run had failed with exit 128 (a plain
+push race with the other sessions' */5 and */30 collectors). Fixed by (a)
+committing the synced `package-lock.json`, (b) discarding non-`docs/data` drift
+after the data commit, (c) `rebase.autoStash=true`, and (d) a 3-attempt
+rebase+push retry that surfaces pull/push errors as workflow annotations.
+Verified: dispatch run `44769581312` on `main` → **success**, data commit
+`0beb9b2` landed, Pages rebuilt for it (`status: built`).
