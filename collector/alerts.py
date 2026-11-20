@@ -63,6 +63,7 @@ class Observation:
     open_interest: float | None
     yes_bid_size: float | None = None
     no_bid: float | None = None
+    notional: float | None = None      # notional_value_dollars per contract
     status: str = "active"
     result: str = ""
     series_ticker: str = ""
@@ -109,6 +110,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         open_interest=count(market.get("open_interest_fp")),
         yes_bid_size=yes_bid_size,
         no_bid=no_bid,
+        notional=dollars(market.get("notional_value_dollars")),
         status=market.get("status", "active"),
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
@@ -313,17 +315,20 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
 
 
 def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
-    """Order events by the dollar value actually trading on them.
+    """Order events by the dollar amount actually at stake.
 
-    "Highest dollar amount" is measured as open interest notional
-    (open_interest * $1 notional per contract, which is the documented
-    ``notional_value_dollars``) plus traded volume notional. Both fields come
-    straight from GET /markets; nothing is estimated.
+    Primary measure: open-interest value = ``open_interest_fp`` x
+    ``notional_value_dollars``. Both are documented GET /markets fields
+    (https://docs.kalshi.com/api-reference/market/get-markets): notional value
+    is "the total value of a single contract at settlement in dollars".
+    Traded volume is reported separately in contracts and never multiplied by a
+    price we invented, because the API does not publish a traded-dollar figure.
     """
     rows = []
     for obs in observations:
         oi = obs.open_interest or 0.0
         vol = obs.volume or 0.0
+        notional = obs.notional if obs.notional is not None else 1.0
         rows.append({
             "ticker": obs.ticker,
             "event_ticker": obs.event_ticker,
@@ -335,9 +340,9 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "yes_ask": obs.yes_ask,
             "volume_contracts": vol,
             "open_interest_contracts": oi,
-            "open_interest_notional": round(oi * 1.0, 2),
-            "volume_notional": round(vol * 1.0, 2),
-            "dollar_activity": round(vol + oi, 2),
+            "notional_per_contract": notional,
+            "open_interest_notional": round(oi * notional, 2),
+            "dollar_activity": round(oi * notional, 2),
             "status": obs.status,
             "result": obs.result,
             "close_time": obs.close_time,

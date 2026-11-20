@@ -274,15 +274,24 @@ class TestStrategyGate(unittest.TestCase):
 
 
 class TestRanking(unittest.TestCase):
-    def test_rank_by_dollar_activity(self):
-        def o(t, vol, oi):
+    def test_rank_by_open_interest_value(self):
+        def o(t, vol, oi, notional=1.0):
             return Observation(ts=1, ticker=t, event_ticker="E", topic="crypto",
                                title=t, yes_bid=0.4, yes_ask=0.42, mid=0.41,
                                last_price=None, volume=vol, open_interest=oi,
-                               series_ticker="S")
-        rows = rank_events([o("small", 10, 5), o("big", 5000, 100)])
+                               series_ticker="S", notional=notional)
+        rows = rank_events([o("small", 9000, 5), o("big", 1, 100)])
+        # Open-interest value wins over raw contract volume.
         self.assertEqual(rows[0]["ticker"], "big")
-        self.assertEqual(rows[0]["dollar_activity"], 5100.0)
+        self.assertEqual(rows[0]["dollar_activity"], 100.0)
+        self.assertEqual(rows[1]["dollar_activity"], 5.0)
+
+    def test_non_unit_notional_is_applied(self):
+        obs = Observation(ts=1, ticker="T", event_ticker="E", topic="crypto",
+                          title="t", yes_bid=0.4, yes_ask=0.42, mid=0.41,
+                          last_price=None, volume=0, open_interest=10,
+                          series_ticker="S", notional=2.0)
+        self.assertEqual(rank_events([obs])[0]["dollar_activity"], 20.0)
 
 
 if __name__ == "__main__":
