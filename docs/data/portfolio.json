@@ -1,11 +1,11 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 10000.0,
+  "cash": 9793.0,
   "daily_loss_cap": 150.0,
-  "equity": 10000.0,
-  "fees_paid": 0.0,
-  "open_positions": 0,
+  "equity": 9993.0,
+  "fees_paid": 7.0,
+  "open_positions": 1,
   "realized_pnl": 0.0,
   "starting_cash": 10000.0
  },
@@ -25,9 +25,14 @@
    "cash": 10000.0,
    "equity": 10000.0,
    "ts": "2026-11-20T14:53:38.083007+00:00"
+  },
+  {
+   "cash": 9793.0,
+   "equity": 9993.0,
+   "ts": "2026-11-20T14:58:49.282618+00:00"
   }
  ],
- "generated_at": "2026-11-20T14:53:38.083015+00:00",
+ "generated_at": "2026-11-20T14:58:49.282629+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -40,7 +45,23 @@
   "roi_min": 0.02,
   "spread_max": 0.06
  },
- "positions": [],
+ "positions": [
+  {
+   "avg_price": 0.5,
+   "contracts": 400,
+   "entry_cost": 200.0,
+   "entry_fee": 7.0,
+   "open_periods": 0,
+   "opened_at": "2026-11-20T14:58:49.282600+00:00",
+   "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
+   "side": "no",
+   "signal": "book-undervalued-no",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXAAAGASM-26NOV30-3.50",
+   "topic": "gas-prices"
+  }
+ ],
  "source_urls": {
   "fees": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
   "markets": "https://external-api.demo.kalshi.co/trade-api/v2/markets",
@@ -60,9 +81,35 @@
   "by_trade_type": {}
  },
  "this_run": {
-  "equity": 10000.0,
+  "equity": 9993.0,
   "marks": {},
-  "opened": []
+  "opened": [
+   {
+    "signal": "book-undervalued-no",
+    "strategy": "roi_edge",
+    "ticker": "KXAAAGASM-26NOV30-3.50"
+   }
+  ]
  },
- "trades": []
+ "trades": [
+  {
+   "action": "open",
+   "contracts": 400,
+   "exit_reason": null,
+   "fee": 7.0,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.5,
+   "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
+   "settlement": null,
+   "side": "no",
+   "signal": "book-undervalued-no",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.50",
+   "strategy": "roi_edge",
+   "ticker": "KXAAAGASM-26NOV30-3.50",
+   "topic": "gas-prices",
+   "trade_type": "roi_edge|book-undervalued-no|no",
+   "ts": "2026-11-20T14:58:49.282609+00:00"
+  }
+ ]
 }
