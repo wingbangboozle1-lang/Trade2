@@ -5,13 +5,33 @@ Definitions, stated explicitly so nothing is implied:
 Swing
     A change of at least $0.10 in either direction between two consecutive
     observations of the same market's reference price. The reference price is
-    the YES mid, computed from the order book per the official docs
-    (https://docs.kalshi.com/getting_started/orderbook_responses.md):
+    depth-gated (see "Price basis" below), computed from the order book per the
+    official docs (https://docs.kalshi.com/getting_started/orderbook_responses.md):
         best YES bid = last element of orderbook_fp.yes_dollars
         best YES ask = 1.00 - (last element of orderbook_fp.no_dollars)
         mid = (bid + ask) / 2
     When only one side is quoted the quote is used on its own; when neither is
     quoted the observation is skipped, never treated as zero.
+
+Price basis (depth-aware rule, applied consistently to every observation)
+    A wide or one-sided book has a meaningless mid: a market quoted 0.002 bid /
+    0.811 ask "mids" at 0.4065 even though nothing traded there (this produced
+    phantom midpoint swings; see COORDINATION.md R-D-01). The rule is:
+        * mid exists and spread <= MAX_SPREAD   -> basis = mid
+        * mid exists but the book is wide or one-sided:
+              last traded price available       -> basis = last_price
+              no trade, single-sided quote only -> basis = quote
+              nothing measurable                -> no price, cannot alert
+        * no mid at all                          -> no price, cannot alert
+    Alerts record which basis produced them (``basis``, ``spread``,
+    ``thin_book``) so the UI can label non-executable midpoint context.
+
+Dedupe key (one alert per market per reference window per direction)
+    The collector re-observes the same sustained move on every run against the
+    same reference bar. Alerts are therefore keyed by
+    ``ticker + reference-window timestamp + direction`` and the largest move in
+    the window wins (see ``dedupe_alerts``). A 12x repeated row is a bug class
+    this key exists to prevent.
 
 Threshold
     SWING_THRESHOLD = 0.10 USD, configurable, and reported in the UI.
@@ -66,6 +86,7 @@ class Observation:
     open_interest: float | None
     yes_bid_size: float | None = None
     no_bid: float | None = None
+    spread: float | None = None       # yes_ask - yes_bid when both sides quote
     notional: float | None = None      # notional_value_dollars per contract
     status: str = "active"
     result: str = ""
@@ -107,6 +128,9 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
             and yes_bid <= 0.0 and yes_ask >= 1.0):
         yes_bid, yes_ask = None, None
 
+    spread = (round(yes_ask - yes_bid, 4)
+              if yes_bid is not None and yes_ask is not None else None)
+
     return Observation(
         ts=ts if ts is not None else time.time(),
         ticker=market.get("ticker", ""),
@@ -121,12 +145,38 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         open_interest=count(market.get("open_interest_fp")),
         yes_bid_size=yes_bid_size,
         no_bid=no_bid,
+        spread=spread,
         notional=dollars(market.get("notional_value_dollars")),
         status=market.get("status", "active"),
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
         close_time=market.get("close_time", "") or "",
     )
+
+
+def price_basis(o: Observation) -> tuple[float | None, str]:
+    """Depth-aware price for one observation. See the module docstring.
+
+    Returns ``(price, basis_label)``:
+
+    * ``mid`` — a mid is only a price when the book quotes both sides and the
+      spread is at most ``MAX_SPREAD``;
+    * ``last_price`` — a wide or one-sided book has a meaningless mid, so the
+      last traded price is the only measured price;
+    * ``quote`` — last resort when no trade has printed: a single-sided quote
+      is still a real resting price (the official book is bids-only, so a
+      one-sided book is normal — see the orderbook docs);
+    * ``none`` — nothing measurable; the observation cannot alert.
+    """
+    if o.mid is None:
+        return None, "none"
+    if o.spread is not None and o.spread <= MAX_SPREAD:
+        return o.mid, "mid"
+    if o.last_price is not None:
+        return o.last_price, "last_price"
+    if (o.yes_bid is None) != (o.yes_ask is None):
+        return o.mid, "quote"
+    return None, "none"
 
 
 def detect_swing(previous: Observation | None, current: Observation,
@@ -145,29 +195,39 @@ def detect_swing(previous: Observation | None, current: Observation,
     candle close. That reference is still a measured price, never an
     interpolation, and it is used whenever available; the previous snapshot is
     the fallback for markets without candle history.
+
+    Both sides of the comparison use the depth-aware ``price_basis`` rule: a
+    wide-spread book never contributes a midpoint "price", so a move that only
+    exists in the middle of a $0.80-wide spread cannot alert. The alert records
+    ``basis`` / ``spread`` / ``thin_book`` so the UI can label what was measured.
     """
     if previous is None and reference is None:
         return None
+    cur_price, basis = price_basis(current)
     # Prefer the bar-opening reference: it spans the whole bar rather than a
     # single inter-snapshot hop, so a gradual move is measurable. Fall back to
     # the previous snapshot when no bar is available.
     if reference is not None:
         base = reference
-    elif previous is not None:
-        base = previous.mid
     else:
-        base = None
-    if base is None or current.mid is None:
+        base, _ = price_basis(previous) if previous is not None else (None, "none")
+    if base is None or cur_price is None:
         return None
     prev_ts = reference_ts if reference is not None else (
         previous.ts if previous is not None else None)
-    delta = round(current.mid - base, 4)
+    delta = round(cur_price - base, 4)
     if abs(delta) + 1e-9 < threshold:
         return None
     direction = "up" if delta > 0 else "down"
     prev_mid = base
+    thin = (basis != "mid") or (current.spread is not None
+                                and current.spread > MAX_SPREAD)
     return {
-        "id": f"{current.ticker}:{int(current.ts)}",
+        # One id per market + reference window + direction: re-observing the
+        # same sustained move on later runs reuses the id and dedupe_alerts
+        # folds the repeats into a single row (COORDINATION.md R-D-01).
+        "id": f"{current.ticker}:{int(prev_ts if prev_ts is not None else current.ts)}"
+              f":{direction}",
         "ts": current.ts,
         "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(current.ts)),
         "ticker": current.ticker,
@@ -177,11 +237,14 @@ def detect_swing(previous: Observation | None, current: Observation,
         "title": current.title,
         "previous": prev_mid,
         "previous_ts": prev_ts,
-        "current": current.mid,
+        "current": cur_price,
         "delta": delta,
         "abs_delta": abs(delta),
         "direction": direction,
         "pct_of_dollar": round(abs(delta) * 100, 2),  # cents of contract value
+        "basis": basis,
+        "spread": current.spread,
+        "thin_book": thin,
         "yes_bid": current.yes_bid,
         "yes_ask": current.yes_ask,
         "volume": current.volume,
@@ -191,6 +254,58 @@ def detect_swing(previous: Observation | None, current: Observation,
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
     }
+
+
+def dedupe_alerts(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One row per distinct move, largest / newest surviving.
+
+    Two folds (COORDINATION.md R-D-01):
+
+    1. Per (market, reference window, direction) — the collector re-observes
+       the same sustained swing on every run against the same reference bar;
+       without this fold the published chat shows the identical row a dozen
+       times. Among duplicates the row with the largest ``abs_delta`` — the
+       total move in that window — survives.
+    2. Per (market, direction, previous -> current) within 24 hours — the same
+       numeric move measured again on a *later* bar is the same sustained
+       condition, not a new event; only the newest observation of it is kept.
+
+    Rows with no id are dropped. Output is newest first.
+    """
+    best: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        key = str(row.get("id") or "")
+        if not key:
+            continue
+        cur = best.get(key)
+        if cur is None:
+            best[key] = row
+            continue
+        new_delta = row.get("abs_delta") or 0
+        cur_delta = cur.get("abs_delta") or 0
+        if new_delta > cur_delta or (new_delta == cur_delta
+                                     and (row.get("ts") or 0) > (cur.get("ts") or 0)):
+            best[key] = row
+
+    # Fold 2: identical sustained moves within a day.
+    DAY = 86400.0
+    distinct: list[dict[str, Any]] = []
+    for row in sorted(best.values(), key=lambda r: r.get("ts") or 0, reverse=True):
+        sig = (row.get("ticker"), row.get("direction"),
+               round(row.get("previous") or 0, 4),
+               round(row.get("current") or 0, 4))
+        ts = row.get("ts") or 0
+        dup = False
+        for kept in distinct:
+            ksig = (kept.get("ticker"), kept.get("direction"),
+                    round(kept.get("previous") or 0, 4),
+                    round(kept.get("current") or 0, 4))
+            if ksig == sig and abs((kept.get("ts") or 0) - ts) <= DAY:
+                dup = True
+                break
+        if not dup:
+            distinct.append(row)
+    return distinct
 
 
 def _all_levels(rows: list[Any]) -> list[dict[str, float]]:
