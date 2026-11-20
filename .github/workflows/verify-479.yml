@@ -33,16 +33,16 @@ jobs:
             echo "## Row verification vs official demo API (F-479-2)"
             echo '```'
             python3 - <<'PY'
-            import json
-            d = json.load(open('audit/verify-479.json'))
-            print('verified_at:', d['verified_at'])
-            print('snapshot_generated_at:', d['snapshot_generated_at'])
-            print('verdicts:', json.dumps(d['summary']))
-            for s in d['subjects']:
-                bad = [c for c in s['checks'] if c['verdict'] == 'DRIFT']
-                print(f"{s['topic']}: {s['market_ticker']} — "
-                      f"{len(s['checks'])} checks, {len(bad)} drift")
-            PY
+import json
+d = json.load(open('audit/verify-479.json'))
+print('verified_at:', d['verified_at'])
+print('snapshot_generated_at:', d['snapshot_generated_at'])
+print('verdicts:', json.dumps(d['summary']))
+for s in d['subjects']:
+    bad = [c for c in s['checks'] if c['verdict'] == 'DRIFT']
+    print(f"{s['topic']}: {s['market_ticker']} — "
+          f"{len(s['checks'])} checks, {len(bad)} drift")
+PY
             echo '```'
             echo "Full evidence: audit/verify-479.json and audit/verify-479.md (also in the workflow artifact)."
           } >> "$GITHUB_STEP_SUMMARY"
