@@ -99,8 +99,18 @@ def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 90,
-            settle_scan: int = 400) -> dict[str, Any]:
-    now = time.time()
+            settle_scan: int = 400, budget_seconds: float = 240.0) -> dict[str, Any]:
+    """One collection pass.
+
+    ``budget_seconds`` is a hard wall-clock ceiling. Unauthenticated Kalshi has
+    no documented rate-limit headers (verified: the demo REST response carries
+    none), so the collector is deliberately self-limiting: when the budget is
+    exhausted it stops requesting order books and records that it did, rather
+    than being killed mid-run. The dashboard shows the resulting coverage.
+    """
+    started = time.time()
+    deadline = started + budget_seconds
+    now = started
     client = KalshiClient(DEMO_REST)
 
     exchange = {}
@@ -129,6 +139,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
     errors: list[str] = []
 
     for topic in topic_mod.TOPICS:
+        if time.time() > deadline:
+            errors.append(f"budget exhausted before topic {topic.slug}")
+            continue
         try:
             series = topic_mod.resolve_series(client, topic)
         except KalshiHTTPError as exc:
@@ -169,6 +182,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
             ticker = market.get("ticker")
             if not ticker:
                 continue
+            out_of_time = time.time() > deadline
+            if out_of_time and ticker not in holdings:
+                orderbook_budget = 0
             want_book = (orderbook_budget > 0) or (ticker in holdings)
             book = None
             if want_book:
@@ -241,11 +257,13 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
 
     # Settle anything the exchange has already resolved.
     settled_updates: list[dict[str, Any]] = []
-    try:
-        settled_markets = client.markets(status="settled", limit=min(1000, settle_scan))
-    except KalshiHTTPError as exc:
-        errors.append(f"settled scan failed ({exc})")
-        settled_markets = []
+    settled_markets = []
+    if time.time() < deadline:
+        try:
+            settled_markets = client.markets(status="settled",
+                                             limit=min(1000, settle_scan))
+        except KalshiHTTPError as exc:
+            errors.append(f"settled scan failed ({exc})")
 
     for market in settled_markets:
         ticker = market.get("ticker")
@@ -329,6 +347,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 90,
         "opened_this_run": opened,
         "settled_this_run": settled_updates,
         "observation_count": len(observations),
+        "run_seconds": round(time.time() - started, 1),
+        "budget_seconds": budget_seconds,
         "errors": errors[:20],
         "strategies": STRATEGIES,
         "sources": {
