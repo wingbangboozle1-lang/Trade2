@@ -29,7 +29,8 @@ export function detectSwings({ markets, history = {}, now = Date.now() / 1000 })
 
     const candidates = [];
     const prev = fp.dollars(market.previous_price);
-    if (prev > 0) candidates.push({ ref: prev, refLabel: 'Kalshi previous_price_dollars' });
+    // A previous price of 0 means "no previous print" — it is not a real reference.
+    if (prev >= 0.01) candidates.push({ ref: prev, refLabel: 'Kalshi previous_price_dollars' });
 
     const historical = priceMinutesAgo(history[market.ticker] || [], SWING_LOOKBACK_MINUTES, now);
     if (historical !== null && historical > 0) {
@@ -95,4 +96,58 @@ export function mergeAlerts(existing = [], incoming = [], { max = 400 } = {}) {
     if (out.length >= max) break;
   }
   return out;
+}
+
+/**
+ * Detect swings straight from the trade feed: two consecutive trades on the same
+ * market whose YES prices differ by at least $0.10.
+ * This is the most precise "live" signal because every point is an actual fill
+ * reported by the exchange (`GET /markets/trades`).
+ *
+ * @param {object} p
+ * @param {Object<string, Array<{ts:number, price:number, count:number}>>} p.tradeFeed
+ * @param {object[]} p.markets normalized markets (for titles / links)
+ */
+export function detectTradeSwings({ tradeFeed = {}, markets = [], minGapSeconds = 0 }) {
+  const byTicker = new Map(markets.map((m) => [m.ticker, m]));
+  const swings = [];
+  const thresholdCents = Math.round(SWING_THRESHOLD * 100);
+
+  for (const [ticker, points] of Object.entries(tradeFeed)) {
+    if (!points || points.length < 2) continue;
+    const sorted = [...points].sort((a, b) => a.ts - b.ts);
+    for (let i = 1; i < sorted.length; i += 1) {
+      const prev = sorted[i - 1];
+      const curr = sorted[i];
+      if (curr.ts - prev.ts < minGapSeconds) continue;
+      const delta = curr.price - prev.price;
+      const cents = Math.round(Math.abs(delta) * 100);
+      if (cents < thresholdCents) continue;
+      const market = byTicker.get(ticker);
+      swings.push({
+        ts: new Date(curr.ts * 1000).toISOString(),
+        ticker,
+        event_ticker: market?.event_ticker || null,
+        title: market?.title || ticker,
+        topic: market?.topic || null,
+        topics: market?.topics || [],
+        category: market?.category || null,
+        direction: delta > 0 ? 'up' : 'down',
+        from: Number(prev.price.toFixed(4)),
+        to: Number(curr.price.toFixed(4)),
+        delta: Number(delta.toFixed(4)),
+        abs_delta: Number(Math.abs(delta).toFixed(4)),
+        threshold: SWING_THRESHOLD,
+        reference: 'consecutive trade print',
+        trade_count: curr.count,
+        last_price: Number(curr.price.toFixed(4)),
+        close_time: market?.close_time || null,
+        dollar_amount: market?.dollar_amount ?? null,
+        kalshi_url: market?.kalshi_url || null,
+        settlement_sources: market?.settlement_sources || [],
+        roi_score: market?.roi_score ?? null,
+      });
+    }
+  }
+  return swings.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 }

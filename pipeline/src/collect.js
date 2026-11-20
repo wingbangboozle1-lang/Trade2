@@ -28,7 +28,7 @@ import { KalshiClient, fp } from './kalshi.js';
 import { classify, kalshiSeriesUrl } from './topics.js';
 import { summarizeOrderbook } from './liquidity.js';
 import { scoreMarket } from './roi.js';
-import { detectSwings, mergeAlerts, SWING_LOOKBACK_MINUTES } from './alerts.js';
+import { detectSwings, detectTradeSwings, mergeAlerts, SWING_LOOKBACK_MINUTES } from './alerts.js';
 import { backtestMarket, stepMarket, buildPortfolio, STRATEGIES } from './paper.js';
 import { createLiveClient, readAccountPortfolio } from './live-trade.js';
 
@@ -120,7 +120,7 @@ async function main() {
   });
   const client = new KalshiClient({ verbose: false });
   const errors = [];
-  const calls = { markets: 0, series: 0, orderbooks: 0, candles: 0, events: 0 };
+  const calls = { markets: 0, series: 0, orderbooks: 0, candles: 0, events: 0, trades: 0 };
 
   const exchangeStatus = await client.getExchangeStatus().catch((error) => {
     errors.push({ where: 'exchange/status', error: error.message });
@@ -238,19 +238,7 @@ async function main() {
   // ---------------------------------------------------- 4. orderbooks + candles
   const tickers = markets.map((m) => m.ticker);
   const books = {};
-  const chunkSize = 20;
-  for (let i = 0; i < tickers.length && calls.orderbooks < MAX_DETAIL_REQUESTS; i += chunkSize) {
-    const chunk = tickers.slice(i, i + chunkSize);
-    try {
-      const batch = await client.getOrderbooks(chunk);
-      calls.orderbooks += 1;
-      for (const [ticker, book] of Object.entries(batch || {})) books[ticker] = book;
-    } catch (error) {
-      errors.push({ where: 'markets/orderbooks', error: error.message });
-    }
-  }
-  // Single orderbook with explicit depth for the markets we care about most.
-  for (const market of markets.slice(0, 40)) {
+  for (const market of markets) {
     if (calls.orderbooks >= MAX_DETAIL_REQUESTS) break;
     try {
       const book = await client.getOrderbook(market.ticker, ORDERBOOK_DEPTH);
@@ -261,17 +249,48 @@ async function main() {
     }
   }
 
+  // Recent fills for every market: this is the live price feed (second resolution).
+  let tradeFeed = {};
+  try {
+    const rawTrades = await client.getTradesPaged({ limit: 1000, maxPages: 4 });
+    calls.trades += 1;
+    const tracked = new Set(tickers);
+    for (const trade of rawTrades) {
+      if (!tracked.has(trade.ticker)) continue;
+      const ts = Math.floor(Date.parse(trade.created_time) / 1000);
+      if (!Number.isFinite(ts)) continue;
+      if (!tradeFeed[trade.ticker]) tradeFeed[trade.ticker] = [];
+      tradeFeed[trade.ticker].push({
+        ts,
+        price: fp.dollars(trade.yes_price_dollars),
+        count: fp.num(trade.count_fp),
+      });
+    }
+    for (const key of Object.keys(tradeFeed)) {
+      tradeFeed[key].sort((a, b) => a.ts - b.ts);
+      tradeFeed[key] = tradeFeed[key].slice(-600);
+    }
+  } catch (error) {
+    errors.push({ where: 'markets/trades', error: error.message });
+  }
+  log(`trade feed: ${Object.keys(tradeFeed).length} markets with fills`);
+
   const endTs = now();
   const startTs = endTs - CANDLE_HISTORY_HOURS * 3600;
   const candleSets = {};
-  for (let i = 0; i < tickers.length && calls.candles < 12; i += 40) {
-    const chunk = tickers.slice(i, i + 40);
+  // Candles are only useful where the market actually trades.
+  const withTrades = markets.filter((m) => (tradeFeed[m.ticker] || []).length > 0);
+  for (const market of withTrades) {
+    if (calls.candles >= MAX_DETAIL_REQUESTS) break;
     try {
-      const batch = await client.getCandlesBatch(chunk, { startTs, endTs, periodInterval: CANDLE_PERIOD_MINUTES });
+      const series = market.series_ticker || String(market.ticker).split('-')[0];
+      const candles = await client.getCandles(series, market.ticker, {
+        startTs, endTs, periodInterval: CANDLE_PERIOD_MINUTES,
+      });
       calls.candles += 1;
-      for (const [ticker, candles] of Object.entries(batch || {})) candleSets[ticker] = candles;
+      candleSets[market.ticker] = candles;
     } catch (error) {
-      errors.push({ where: 'markets/candlesticks', error: error.message });
+      errors.push({ where: `candlesticks ${market.ticker}`, error: error.message });
     }
   }
 
@@ -330,7 +349,10 @@ async function main() {
     const score = scoreMarket({
       market,
       book: orderbooks[market.ticker],
-      points: history[market.ticker] || [],
+      points: [
+        ...(history[market.ticker] || []).map(([ts, price]) => ({ ts, price })),
+        ...(tradeFeed[market.ticker] || []).map((t) => ({ ts: t.ts, price: t.price })),
+      ].sort((a, b) => a.ts - b.ts),
       now: timestamp,
     });
     market.roi_score = score.score;
@@ -352,7 +374,13 @@ async function main() {
   }
 
   // --------------------------------------------------------------- 8. swings
-  const swings = detectSwings({ markets, history, now: timestamp });
+  // Two independent references:
+  //   - consecutive trade prints (live, second resolution)
+  //   - Kalshi's own previous_price_dollars vs the current price
+  const priceSwings = detectSwings({ markets, history, now: timestamp });
+  const tradeSwings = detectTradeSwings({ tradeFeed, markets });
+  const swings = [...tradeSwings, ...priceSwings]
+    .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
   const alerts = mergeAlerts(state.alerts || [], swings, { max: MAX_ALERTS });
   for (const alert of alerts) {
     const market = markets.find((m) => m.ticker === alert.ticker);
@@ -397,9 +425,10 @@ async function main() {
   for (const market of markets) {
     const openPositions = openByTicker.get(market.ticker) || [];
     if (!openPositions.length) continue;
-    const series = (history[market.ticker] || []).map(([ts, price]) => ({
-      ts, price, bid: price, ask: price, spread: null,
-    }));
+    const series = [
+      ...(history[market.ticker] || []).map(([ts, price]) => ({ ts, price, bid: price, ask: price, spread: null })),
+      ...(tradeFeed[market.ticker] || []).map((t) => ({ ts: t.ts, price: t.price, bid: t.price, ask: t.price, spread: null })),
+    ].sort((a, b) => a.ts - b.ts).slice(-400);
     const { closed, opened } = stepMarket({
       openPositions,
       market,
@@ -475,6 +504,8 @@ async function main() {
       candles_series: Object.keys(candles).length,
       alerts_total: alerts.length,
       alerts_this_run: swings.length,
+      trade_feed_markets: Object.keys(tradeFeed).length,
+      trade_prints: Object.values(tradeFeed).reduce((n, list) => n + list.length, 0),
       trades_total: trimmedTrades.length,
       trades_open: portfolio.open_positions,
       trades_closed: portfolio.closed_trades,
@@ -505,6 +536,7 @@ async function main() {
   writeJson(path.join(DATA_DIR, 'events.json'), events);
   writeJson(path.join(DATA_DIR, 'orderbooks.json'), orderbooks);
   writeJson(path.join(DATA_DIR, 'candles.json'), candles);
+  writeJson(path.join(DATA_DIR, 'market_trades.json'), tradeFeed);
   writeJson(path.join(DATA_DIR, 'alerts.json'), alerts);
   writeJson(path.join(DATA_DIR, 'prices.json'), history);
   writeJson(path.join(DATA_DIR, 'trades.json'), trimmedTrades);
@@ -513,6 +545,7 @@ async function main() {
   writeJson(path.join(DATA_DIR, 'collector-health.json'), health);
 
   state.prices = history;
+  state.trade_feed = tradeFeed;
   state.trades = trimmedTrades;
   state.alerts = alerts;
   state.backtested = [...backtested].slice(-500);

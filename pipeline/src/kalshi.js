@@ -269,7 +269,38 @@ export class KalshiClient {
       end_ts: endTs,
       period_interval: periodInterval,
     });
-    return data?.candlesticks || {};
+    // The batch route answers with {"markets":[{market_ticker, candlesticks}]}.
+    const out = {};
+    for (const entry of (data?.markets || [])) {
+      out[entry.market_ticker] = entry.candlesticks || [];
+    }
+    return out;
+  }
+
+  /**
+   * Recent trades across every market (or one market).
+   * https://docs.kalshi.com/api-reference/market/get-trades
+   */
+  async getTrades(params = {}) {
+    const data = await this.get('/markets/trades', params);
+    return data?.trades || [];
+  }
+
+  /** Page through the trades feed (newest first). */
+  async getTradesPaged({ limit = 1000, maxPages = 4, ticker = null } = {}) {
+    const out = [];
+    let cursor = '';
+    for (let page = 0; page < maxPages; page += 1) {
+      const query = { limit };
+      if (cursor) query.cursor = cursor;
+      if (ticker) query.ticker = ticker;
+      const data = await this.get('/markets/trades', query);
+      const list = data?.trades || [];
+      out.push(...list);
+      cursor = data?.cursor || '';
+      if (!cursor || list.length === 0) break;
+    }
+    return out;
   }
 
   async getEvent(eventTicker) {
