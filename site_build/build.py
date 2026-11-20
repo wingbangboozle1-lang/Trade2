@@ -31,6 +31,7 @@ SITE = "https://wingbangboozle1-lang.github.io/Trade2"
 DATA_DIR = os.path.join(ROOT, "data")
 SHORTLIST_PATH = os.path.join(DATA_DIR, "shortlist.json")
 NEWS_PATH = os.path.join(DATA_DIR, "news.json")
+VERIFICATION_PATH = os.path.join(DATA_DIR, "verification.json")
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
 TOPIC_FILE = {t: t for t in TOPIC_ORDER}
@@ -364,6 +365,57 @@ def build_overview(live: dict[str, Any]) -> str:
         </div>
         <section class="panel">
           <div class="panel-title">
+            <div><span class="section-icon">⌘</span><div>
+              <h2>How to use this site</h2>
+              <p>One desk, five topic pages, three reference pages. Everything
+              here is generated from the same verified snapshot.</p></div></div>
+          </div>
+          <div class="link-grid">
+            <a class="link-card" href="live.html"><span class="section-icon green">◈</span>
+              <b>Live desk</b>
+              <small>Price graph over seconds / minutes / hours, order-book depth
+              and the two scrolling alert chats.</small></a>
+            <a class="link-card" href="categories/gas-prices.html"><span class="section-icon">⌁</span>
+              <b>Gas prices</b>
+              <small>{count((live.get("topics") or {}).get("gas-prices", {}).get("tracked_market_count"))} markets tracked ·
+              settled against AAA.</small></a>
+            <a class="link-card" href="categories/elections.html"><span class="section-icon">◉</span>
+              <b>Elections</b>
+              <small>{count((live.get("topics") or {}).get("elections", {}).get("tracked_market_count"))} markets tracked ·
+              nomination and primary markets.</small></a>
+            <a class="link-card" href="categories/culture.html"><span class="section-icon">✳</span>
+              <b>Culture</b>
+              <small>{count((live.get("topics") or {}).get("culture", {}).get("tracked_market_count"))} markets tracked ·
+              filed by Kalshi under Entertainment.</small></a>
+            <a class="link-card" href="categories/crypto.html"><span class="section-icon">₿</span>
+              <b>Crypto</b>
+              <small>{count((live.get("topics") or {}).get("crypto", {}).get("tracked_market_count"))} markets tracked ·
+              price levels and 15-minute contracts.</small></a>
+            <a class="link-card" href="categories/golf.html"><span class="section-icon">⛳</span>
+              <b>Golf</b>
+              <small>{count((live.get("topics") or {}).get("golf", {}).get("tracked_market_count"))} markets tracked ·
+              PGA Tour and tournament markets.</small></a>
+            <a class="link-card" href="summary.html"><span class="section-icon">▤</span>
+              <b>Executive summary</b>
+              <small>What was built, what it measures, and the simulated
+              portfolio's results by strategy.</small></a>
+            <a class="link-card" href="methodology.html"><span class="section-icon">⚙</span>
+              <b>Methodology</b>
+              <small>Every rule, formula and endpoint, with the official source
+              for each one.</small></a>
+            <a class="link-card" href="review.html"><span class="section-icon amber">⚑</span>
+              <b>Flagged for review</b>
+              <small>Unverified values and data irregularities, each with a source
+              link so it can be checked in one click.</small></a>
+          </div>
+          <div class="table-foot"><span>Two further published views exist from
+          earlier work on this repository and are kept as independent
+          cross-checks of the same official API:
+          <a href="docs/index.html">docs/</a> and
+          <a href="kalshi-dashboard/index.html">kalshi-dashboard/</a>.</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
               <h2>Highest-dollar open events</h2>
               <p>Ranked by open-interest value (official open_interest_fp ×
@@ -654,7 +706,55 @@ def build_live(live: dict[str, Any]) -> str:
 # Methodology
 # ---------------------------------------------------------------------------
 
+def verification_panel(verification: dict[str, Any]) -> str:
+    """The result of the last automated re-check against the official API."""
+    if not verification:
+        return ('<p class="empty-state">No verification run has been recorded '
+                'yet. The scheduled pipeline re-opens every published market '
+                'response and compares it with what the site shows.</p>')
+    counts = verification.get("counts") or {}
+    rows = []
+    for row in (verification.get("checks") or [])[:40]:
+        badge = {"match": "tag-yes", "drift": "tag-purple",
+                 "mismatch": "tag-no"}.get(row.get("result"), "tag-purple")
+        rows.append(
+            "<tr>"
+            f'<td><span class="tag {badge}">{html.escape(str(row.get("result")).upper())}</span></td>'
+            f'<td>{esc(row.get("check"))}</td>'
+            f'<td><code>{esc(row.get("field"))}</code></td>'
+            f'<td>{esc(row.get("published"))}</td>'
+            f'<td>{esc(row.get("official"))}</td>'
+            f'<td><a class="source-link" href="{esc(row.get("url"))}" '
+            f'target="_blank" rel="noreferrer">official API ↗</a></td>'
+            "</tr>")
+    if not rows:
+        rows.append('<tr><td colspan="6" class="empty-state">No checks were '
+                    'recorded in the last run.</td></tr>')
+    return f"""<p>Every published row links to the exact official response it came
+          from. The scheduled pipeline re-opens those responses and compares them
+          with what this site shows, one market at a time. Last run
+          <b>{html.escape(verification.get("generated_at") or "n/a")}</b>:
+          <b>{count(verification.get("markets_checked"))}</b> markets and
+          <b>{count(verification.get("series_checked"))}</b> series re-checked —
+          {count(counts.get("match"))} match,
+          {count(counts.get("drift"))} drift (a live price moved inside the
+          tolerance), {count(counts.get("mismatch"))} mismatch,
+          {count(counts.get("unverified"))} unverified (the response could not be
+          read on that run).</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Result</th><th>Source</th><th>Field</th>
+              <th>Published here</th><th>Official API</th><th>Checked</th></tr></thead>
+            <tbody>{''.join(rows)}</tbody>
+          </table>
+        </div>
+        <p class="empty-state">Prices and sizes move between the snapshot and
+        the check, so a difference inside the tolerance is recorded as drift
+        rather than as an error.</p>"""
+
+
 def build_methodology(live: dict[str, Any]) -> str:
+    verification_block = verification_panel(live.get("verification") or {})
     return f"""{topbar("Methodology", live.get("generated_at", ""))}
         <section class="page-heading">
           <div><div class="eyebrow">HOW EVERY NUMBER IS PRODUCED</div>
@@ -782,6 +882,7 @@ def build_methodology(live: dict[str, Any]) -> str:
             <li>The model's fair value is a rule, not a forecast of where a price
             will settle.</li>
           </ul>
+          {verification_block}
         </section>"""
 
 
@@ -896,6 +997,7 @@ def main() -> dict[str, Any]:
     # the order-book model shortlist and the candidate-news lookup.
     live["shortlist"] = load_optional(SHORTLIST_PATH)
     live["news"] = load_optional(NEWS_PATH)
+    live["verification"] = load_optional(VERIFICATION_PATH)
     written = []
 
     def write(path: str, content: str) -> None:

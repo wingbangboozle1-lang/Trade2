@@ -60,6 +60,9 @@ jobs:
       - name: Candidate news for swings
         run: python3 -m collector.news --window-hours 24
 
+      - name: Verify the snapshot against the official API
+        run: python3 tools/verify_snapshot.py --per-topic 3
+
       - name: Rebuild static site data
         run: python3 -m site_build.build
 
