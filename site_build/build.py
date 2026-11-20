@@ -742,8 +742,10 @@ def build_methodology(live: dict[str, Any]) -> str:
           threshold and the spread is tight. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
           <h2>Settlement</h2>
-          <p>Positions settle from the market's official <code>result</code> field:
-          YES pays $1.00 per contract, NO pays nothing, as documented in
+          <p>Positions settle from the market's official <code>result</code> field.
+          On a <b>Yes</b> outcome, Yes contract holders receive $1.00 per contract;
+          on a <b>No</b> outcome, No contract holders receive $1.00 per contract —
+          the losing side pays nothing. Only net positions are settled. Source:
           <a href="https://docs.kalshi.com/getting_started/market_settlement"
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>

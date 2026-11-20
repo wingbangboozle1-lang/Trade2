@@ -280,6 +280,26 @@ STANDING = [
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
     {
+        "title": "Taker fees use a multiplier of 1 for every series",
+        "body": ("Kalshi's quadratic taker fee is round-up(M x 0.07 x C x P x (1-P)), "
+                 "and the published schedule sets M per series — 0 for fee-free "
+                 "series such as the yearly Bitcoin and Ether ranges, 2 for "
+                 "uncorrelated combos. The simulated ledger applies M = 1 everywhere "
+                 "instead of reading each series' own value "
+                 "(collector/engine.py calls kalshi_fee(price, contracts) with the "
+                 "default multiplier at both the entry and the exit site, although "
+                 "collector/topics.py already caches fee_multiplier per series). This "
+                 "was checked against the live demo record for KXBTCY on 2026-11-20, "
+                 "which returns fee_multiplier 1, so the fee shown for the open "
+                 "position on that series is correct for the demo environment — the "
+                 "exposure is to series whose demo multiplier is not 1, and to "
+                 "production, where the same series is listed at 0. Fees on those "
+                 "rows would be mis-stated until the engine threads the value "
+                 "through."),
+        "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY"),
+    },
+    {
         "title": "Each run tracks a ranked slice, not every market",
         "body": ("The collector reads a bounded number of the highest-value markets "
                  "per topic inside a fixed time budget, and reports the counts it "
