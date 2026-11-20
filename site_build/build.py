@@ -19,6 +19,7 @@ from __future__ import annotations
 import html
 import json
 import os
+import urllib.parse
 from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
@@ -103,6 +104,7 @@ def research_nav(active: str, prefix: str = "") -> str:
              ("index.html", "Overview", "◫"),
              ("summary.html", "Executive summary", "▤"),
              ("methodology.html", "Methodology", "⚙"),
+             ("suggestions.html", "Suggestions", "✦"),
              ("review.html", "Flagged for review", "⚑")]
     out = []
     for href, label, icon in items:
@@ -168,6 +170,7 @@ def topbar(crumb: str, generated: str, prefix: str = "") -> str:
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot {html.escape(generated or '')}</time>
+            <span class="snapshot-age" id="snapshotAge" title="Age of the published snapshot, computed in your browser"></span>
           </div>
         </header>"""
 
@@ -208,13 +211,25 @@ def build_overview(live: dict[str, Any]) -> str:
     for a in alerts:
         arrow = "▲" if a.get("direction") == "up" else "▼"
         cls = "up" if a.get("direction") == "up" else "down"
+        basis = a.get("basis") or ("mid" if a.get("thin_book") is None else "last_price")
+        badge = ""
+        if a.get("thin_book") or basis != "mid":
+            label = "thin book" if basis == "last_price" else "one-sided book"
+            badge = (f' <span class="tag tag-warn" title="Move measured on '
+                     f'{esc(label)} basis — the midpoint of a wide spread is '
+                     f'not an executable price. See Methodology.">{label}</span>')
+        news = (f' <a class="source-link" target="_blank" rel="noreferrer" '
+                f'href="https://news.google.com/search?q='
+                f'{urllib.parse.quote(a.get("title") or a.get("ticker") or "")}" '
+                f'title="Research link — possible context only; causality '
+                f'unverified">context ↗</a>')
         alert_rows.append(
             f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
             f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
             f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
             f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
             f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-            f'{esc(a.get("topic"))}</small></span></div>'
+            f'{esc(a.get("topic"))}</small>{badge}{news}</span></div>'
         )
     if not alert_rows:
         alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
@@ -467,6 +482,7 @@ def build_live(live: dict[str, Any]) -> str:
             </div>
             <div class="chart-frame"><canvas id="priceChart" role="img"
               aria-label="Contract price over time"></canvas></div>
+            <div class="chart-notes" id="chartNotes" aria-live="polite"></div>
             <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
@@ -711,6 +727,143 @@ def build_performance_section(live: dict[str, Any]) -> str:
         </section>"""
 
 
+# ---------------------------------------------------------------------------
+# Suggestions
+# ---------------------------------------------------------------------------
+
+def build_suggestions(live: dict[str, Any]) -> str:
+    """Concrete suggestions for a more live and interactive desk.
+
+    Each row states its status honestly: *implemented* (already on this site),
+    *proposed* (buildable with the public demo API), or *blocked* (needs
+    something this repo does not have). Claims about the API link to the
+    official docs page that states them.
+    """
+    rows = [
+        ("1", "Chart annotations for ≥ $0.10 jumps",
+         "The price chart now lists every swing observed on the selected "
+         "market under the plot, each row linking to the exact market and to a "
+         "clearly labelled research link. Cause is never asserted — see row 4.",
+         "implemented", "live.html"),
+        ("2", "Depth-aware alert basis, deduped swing chat",
+         "Swings are measured on an executable basis (tight-book mid, else last "
+         "trade) and one row is kept per market per reference window per "
+         "direction, so the chat shows moves, not repeats.",
+         "implemented", "review.html"),
+        ("3", "Snapshot age on every page",
+         "The topbar computes how old the published snapshot is in your "
+         "browser, so a 20-minute-old snapshot is never mistaken for a live "
+         "tick. The GitHub Actions collector runs on a best-effort 5-minute "
+         "schedule.", "implemented", "methodology.html"),
+        ("4", "Context links beside every swing",
+         "Each alert carries a research link (news search) labelled "
+         "'possible context only; causality unverified'. Attributing a move to "
+         "a headline needs evidence this repo cannot verify, so it is never "
+         "claimed — only linked for a human to judge.",
+         "implemented", "methodology.html"),
+        ("5", "WebSocket push instead of polling",
+         "Subscribe to the official demo WebSocket "
+         "(wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2) for "
+         "price/last_trade/quote deltas and drive both chats and the chart "
+         "from the stream. The static Pages host cannot hold a socket open "
+         "server-side, but the browser can connect directly, falling back to "
+         "polling when the socket is unavailable.",
+         "proposed",
+         "https://docs.kalshi.com/websockets"),
+        ("6", "Browser notifications for big swings",
+         "Offer an opt-in Notification when a tracked market moves ≥ $0.10 "
+         "within a minute, reusing the same swing rule. Purely client-side; no "
+         "account needed.", "proposed", "live.html"),
+        ("7", "Cumulative depth ladder chart",
+         "The collector already stores every book level (see Liquidity). Draw "
+         "it as a cumulative step chart — dollars to move the market by 1, 5, "
+         "10 cents — beside the price chart.", "proposed", "live.html"),
+        ("8", "Timeline scrubber / replay",
+         "Scrub the snapshot history to replay how a session unfolded, with "
+         "the swing chat and chart moving together. Needs the collector to "
+         "append to a history store (data/history.json already exists).",
+         "proposed", "live.html"),
+        ("9", "Event comparison + topic heat grid",
+         "Compare two contracts side by side and show a topic heat grid "
+         "(24h volume vs spread) on each category page to spot where the "
+         "action is before opening a chart.", "proposed", "categories/crypto.html"),
+        ("10", "Settlement-source panel per event",
+         "Events carry official settlement_sources (publisher names + URLs) in "
+         "GET /events. Show them on event rows so a trader can see exactly "
+         "which source resolves the contract.",
+         "proposed",
+         "https://docs.kalshi.com/api-reference/events/get-events"),
+        ("11", "Live demo-account sync (real fills)",
+         "Wire the signed-requests adapter to a real demo account: balances, "
+         "fills and order placement on demo.kalshi.co. Blocked until the "
+         "account owner supplies demo API credentials through GitHub Actions "
+         "secrets (KALSHI_API_KEY_ID + KALSHI_PRIVATE_KEY). Credentials must "
+         "never be committed or placed in the browser.",
+         "blocked",
+         "https://docs.kalshi.com/getting_started/quick_start_authenticated_requests"),
+        ("12", "Mobile-first layout pass",
+         "Condense the sidebar into a bottom tab bar on small screens and make "
+         "the two chats swipeable. Presentation only; no data changes.",
+         "proposed", "index.html"),
+    ]
+    body = []
+    for n, title, detail, status, link in rows:
+        tag = {"implemented": "tag-yes", "proposed": "tag-purple",
+               "blocked": "tag-warn"}[status]
+        href = link if link.startswith("http") else link
+        body.append(
+            "<tr>"
+            f"<td>{esc(n)}</td>"
+            f"<td><b>{esc(title)}</b><small class=\"ticker\">{esc(detail)}</small></td>"
+            f'<td><span class="tag {tag}">{esc(status)}</span></td>'
+            f'<td><a class="source-link" href="{html.escape(href)}">'
+            f'{"Docs ↗" if link.startswith("http") else "On this site →"}</a></td>'
+            "</tr>")
+    return f"""        <section class="page-heading">
+          <div>
+            <div class="eyebrow">ROADMAP · HONEST STATUS PER ITEM</div>
+            <h1>Suggestions</h1>
+            <p>How to make this desk more live and interactive — what is
+            already done, what is buildable against the public demo API, and
+            what is blocked on missing credentials. Nothing here is a claim
+            about performance.</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Live-interactivity roadmap</h2>
+              <p>Ordered by impact on a trader's minute-to-minute use</p></div></div>
+            <a class="source-link" href="https://docs.kalshi.com/websockets"
+               target="_blank" rel="noreferrer">Official WS docs ↗</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Suggestion</th><th>Status</th><th>Link</th></tr></thead>
+              <tbody>{''.join(body)}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Status checked against the current codebase</span>
+          <span>Blocked items never contain invented values</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">⚙</span><div>
+              <h2>Design principles for every future change</h2></div></div>
+          </div>
+          <ul class="bullets">
+            <li>Every displayed number links to the official API response or
+            docs page it came from; anything else is blank and flagged.</li>
+            <li>Never assert that a headline caused a move; link context and
+            label it unverified.</li>
+            <li>Alert only on executable price bases; a wide-spread midpoint is
+            not a price.</li>
+            <li>Show the snapshot's age wherever data is shown.</li>
+            <li>Keep topics separate; keep every event with its topic.</li>
+          </ul>
+        </section>"""
+
+
 def main() -> dict[str, Any]:
     live = load_json(LIVE_PATH, {})
     written = []
@@ -756,6 +909,11 @@ def main() -> dict[str, Any]:
 
     write("methodology.html", page("Methodology — Kalshi Monitor", "methodology.html",
                                    build_methodology(live)))
+
+    write("suggestions.html", page("Suggestions — Kalshi Monitor", "suggestions.html",
+                                   build_suggestions(live),
+                                   description="Honest roadmap for a more live and "
+                                               "interactive Kalshi demo dashboard."))
 
     write("review.html", page("Flagged for review — Kalshi Monitor", "review.html",
                               flagpage.render(live),

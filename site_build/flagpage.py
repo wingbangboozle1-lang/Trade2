@@ -89,6 +89,31 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
             "source": f"{API}/series?category=Culture",
         })
 
+    # 4. Alerts whose price basis is thin: the row is kept and labelled, never
+    #    silently dropped, but a human should know the move was not executable
+    #    at the midpoint (COORDINATION.md R-D-01).
+    for a in live.get("alerts") or []:
+        spread = a.get("spread")
+        if spread is None:
+            yb, ya = a.get("yes_bid"), a.get("yes_ask")
+            if yb is not None and ya is not None:
+                spread = round(ya - yb, 4)
+        if a.get("thin_book") or (spread is not None and spread > 0.20):
+            issues.append({
+                "kind": "Swing alert on a wide-spread book (labelled, not executable)",
+                "topic": a.get("topic"),
+                "ticker": a.get("ticker"),
+                "detail": (f"the {a.get('direction')} move "
+                           f"{a.get('previous')} → {a.get('current')} was "
+                           f"measured while the book quoted a spread of "
+                           f"{spread if spread is not None else 'unknown'} "
+                           f"(basis: {a.get('basis') or 'legacy midpoint'}); "
+                           f"the midpoint of a wide spread is not an "
+                           f"executable price — read the order book before "
+                           f"acting"),
+                "source": f"{API}/markets/{a.get('ticker')}/orderbook",
+            })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -122,11 +147,34 @@ STANDING = [
         "title": "No news article is attributed to a price move",
         "body": ("The brief asked for links to news that may have caused jumps. No "
                  "official source maps articles to Kalshi price moves, so guessing "
-                 "one would be fabrication. Instead every alert links to the market "
-                 "itself and the series page lists Kalshi's own settlement sources "
-                 "(AAA, CF Benchmarks, ESPN, pgatour.com), which are the official "
-                 "pages that explain the underlying."),
+                 "one would be fabrication. Every alert instead links to the market "
+                 "itself and carries a clearly labelled 'context ↗' research link "
+                 "(a news search on the event title) marked 'possible context only; "
+                 "causality unverified'. The series page also lists Kalshi's own "
+                 "settlement sources (AAA, CF Benchmarks, ESPN, pgatour.com), which "
+                 "are the official pages that explain the underlying."),
         "source": ("https://docs.kalshi.com/api-reference/market/get-series-list",),
+    },
+    {
+        "title": "Historical swing-chat rows were duplicated and midpoint-based (fixed 2026-11-20)",
+        "body": ("Before this revision the swing chat could show the same sustained "
+                 "move once per collector run (observed: 29 rows over only 3 "
+                 "tickers) and could alert on the midpoint of a $0.80-wide spread. "
+                 "Alerts are now deduplicated to one row per market per reference "
+                 "window per direction and measured on a depth-aware price basis "
+                 "(tight-book mid, else last trade). Rows that still carry a wide "
+                 "spread are labelled 'thin book' rather than dropped. See "
+                 "COORDINATION.md request R-D-01 for the evidence."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
+        "title": "Snapshot freshness is best-effort",
+        "body": ("The collector runs on a 5-minute GitHub Actions schedule, which "
+                 "GitHub itself documents as best-effort and subject to lag. A "
+                 "snapshot can therefore be older than its nominal cadence; the "
+                 "topbar computes and shows the snapshot's age in your browser so "
+                 "staleness is always visible."),
+        "source": ("https://docs.kalshi.com/getting_started/demo_env",),
     },
     {
         "title": "Live streaming uses polling, not the WebSocket",

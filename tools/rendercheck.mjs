@@ -8,11 +8,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const pages = [
-  "index.html", "live.html", "review.html", "methodology.html", "summary.html",
-  "categories/gas-prices.html", "categories/elections.html",
-  "categories/culture.html", "categories/crypto.html", "categories/golf.html",
-];
+// Discover every page the site serves (root + categories/), so new pages such
+// as suggestions.html are checked automatically instead of by hand.
+const pages = fs.readdirSync(root)
+  .filter((f) => f.endsWith(".html"))
+  .sort()
+  .concat(fs.readdirSync(path.join(root, "categories"))
+    .filter((f) => f.endsWith(".html"))
+    .sort()
+    .map((f) => `categories/${f}`));
 
 let failures = 0;
 for (const page of pages) {

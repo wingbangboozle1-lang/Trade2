@@ -140,16 +140,50 @@
     renderFeeds();
     renderDesk();
     fillMarketSelect();
-    if (state.market) refreshMarketNow(state.market);
+    if (state.market) {
+      renderChartNotes();
+      refreshMarketNow(state.market);
+    }
   }
 
   /* ------------------------------------------------------------------ */
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
 
+  // One row per market + reference window + direction, largest move winning.
+  // The same sustained swing is re-observed on later collector runs; without
+  // this fold the chat shows the identical row a dozen times (R-D-01).
+  function dedupeAlerts(rows) {
+    var best = {};
+    (rows || []).forEach(function (a) {
+      var key = a.id || (a.ticker + ":" + Math.round(a.previous_ts || a.ts || 0) +
+                         ":" + (a.direction || ""));
+      var cur = best[key];
+      if (!cur || (Number(a.abs_delta) || 0) > (Number(cur.abs_delta) || 0) ||
+          ((Number(a.abs_delta) || 0) === (Number(cur.abs_delta) || 0) &&
+           (Number(a.ts) || 0) > (Number(cur.ts) || 0))) {
+        best[key] = a;
+      }
+    });
+    return Object.keys(best).map(function (k) { return best[k]; })
+      .sort(function (x, y) { return (y.ts || 0) - (x.ts || 0); });
+  }
+
   function alertRow(a, isModel) {
     var up = a.direction === "up";
     var when = (a.iso || "").slice(11, 19) || hhmmss(a.ts);
+    var basis = a.basis || "mid";
+    var badge = "";
+    if (a.thin_book || (basis && basis !== "mid")) {
+      var label = basis === "quote" ? "one-sided book" : "thin book";
+      badge = '<span class="tag tag-warn" title="Move measured on ' + label +
+        " basis — the midpoint of a wide spread is not an executable price. " +
+        'See Methodology.">' + label + "</span>";
+    }
+    var q = encodeURIComponent(a.title || a.ticker || "");
+    var context = '<a class="source-link" target="_blank" rel="noreferrer" ' +
+      'href="https://news.google.com/search?q=' + q + '" title="Research link ' +
+      '— possible context only; causality unverified">context ↗</a>';
     var row = document.createElement("div");
     row.className = "chat-row" + (up ? " up" : " down");
     row.innerHTML =
@@ -162,7 +196,7 @@
       "<small>" + money(a.previous) + " → " + money(a.current) +
       " · " + esc(a.topic) +
       (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small></span>" +
+      "</small> " + badge + " " + context + "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
     return row;
@@ -171,7 +205,7 @@
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
-    var all = s.alerts || [];
+    var all = dedupeAlerts(s.alerts || []);
 
     // Model shortlist: alerts on markets the model scored as high ROI.
     var scoreByTicker = {};
@@ -310,10 +344,41 @@
     var label = document.getElementById("chartWindowLabel");
     if (label) label.textContent = WINDOWS[state.windowKey].label;
 
+    renderChartNotes();
     loadSeries(ticker, series || (found && found.series_ticker) || "").then(function () {
       drawChart();
     });
     pollBook(ticker);
+  }
+
+  /* Swing annotations under the chart: every >= $0.10 move observed on the
+   * selected market, with the market link and a clearly labelled research
+   * link. Cause is never asserted (R-D-01 / suggestions rows 1 and 4). */
+  function renderChartNotes() {
+    var el = document.getElementById("chartNotes");
+    if (!el) return;
+    var t = state.market;
+    var rows = dedupeAlerts((state.snapshot && state.snapshot.alerts) || [])
+      .filter(function (a) { return a.ticker === t; });
+    if (!rows.length) {
+      el.innerHTML = '<span class="muted">No ≥ $0.10 swing recorded for this ' +
+        "market in the snapshot. The chart still plots every observation.</span>";
+      return;
+    }
+    el.innerHTML = '<b>Jump annotations</b> — swings ≥ $0.10 on this market' +
+      rows.map(function (a) {
+        var q = encodeURIComponent(a.title || a.ticker || "");
+        return '<div class="chart-note-row"><time>' +
+          esc((a.iso || "").slice(11, 19) || hhmmss(a.ts)) + "</time>" +
+          '<span class="chat-delta ' + (a.direction === "up" ? "pos" : "neg") + '">' +
+          (a.direction === "up" ? "▲ +" : "▼ −") +
+          Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
+          '<a href="' + esc(a.market_url || "#") + '" target="_blank" ' +
+          'rel="noreferrer">event ↗</a>' +
+          '<a class="source-link" target="_blank" rel="noreferrer" href="https://news.google.com/search?q=' +
+          q + '" title="Research link — possible context only; causality ' +
+          'unverified">context ↗</a></div>';
+      }).join("");
   }
 
   function loadSeries(ticker, seriesTicker) {
@@ -568,6 +633,23 @@
     fetchSnapshot().then(function (payload) {
       if (payload) applySnapshot(payload, "poll");
     });
+
+    // Snapshot age: computed in the visitor's browser from the topbar
+    // timestamp, so a stale snapshot is visible at a glance (R-D-01).
+    function updateAge() {
+      var el = document.getElementById("snapshotAge");
+      var t = document.getElementById("updatedAt");
+      if (!el || !t) return;
+      var raw = (t.textContent || "").replace(/^Snapshot\s+/, "").trim();
+      if (!raw) { el.textContent = ""; return; }
+      var when = Date.parse(/(zZ|[+\-]\d\d:?\d\d)$/.test(raw) ? raw : raw + "Z");
+      if (isNaN(when)) { el.textContent = ""; return; }
+      var mins = Math.max(0, Math.round((Date.now() - when) / 60000));
+      el.textContent = mins < 1 ? "· age < 1 min" : "· age " + mins + " min";
+      el.className = "snapshot-age" + (mins >= 15 ? " stale" : "");
+    }
+    updateAge();
+    setInterval(updateAge, 30000);
 
     $all("#windowTabs button").forEach(function (btn) {
       btn.addEventListener("click", function () {
