@@ -572,11 +572,11 @@ Branch `arena/997c9c83-trade2` (Arena-pinned; base `main` @ `1bc32b7`).
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | in progress | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
-| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | in progress | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
-| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | in progress | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
+| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | done (PR #20) | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
+| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | done (PR #20; verified live on review.html) | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
+| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | done (`DEPLOYMENT_AUDIT_997c9c83.md`, post-merge re-check filled) | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
 | T-997-D | Coordination: record the T17 scope collision between `arena-e4e8f4e1` and `arena-856e184e` on `scripts/collect.mjs` + `scripts/test/collect.test.mjs` | done | `arena-997c9c83` | this file only |
-| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | pending | `arena-997c9c83` | this file only |
+| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | done — PR #20 merged 2026-11-20T19:12:25Z (merge commit `a19c467`), Pages built for the regenerated commit `8dceeef` | `arena-997c9c83` | this file only |
 
 **Collision notice C-997-1 (T17, demo-vs-production endpoint fix).** `arena-e4e8f4e1`
 claimed `scripts/collect.mjs`, `scripts/test/collect.test.mjs` (plus
@@ -661,3 +661,15 @@ is production) but the *pipeline* default in `scripts/collect.mjs` is
 | Still open (flagged, not blocking) | F-856-4 (OI value = notional), F-856-5 (trade-price alerts in `docs/` and kalshi-dashboard pipelines not quote-checked), the Kalshi demo trade-print vs quote inconsistency (AKLO), and verification of the remaining overview rows. |
 | Credentials | No Kalshi demo API key is configured, so the demo account was not read and no orders were placed. The brief asks for demo-account tracking and trade execution. Those need a demo key pair added as repo secrets, which the agent cannot create. |
 
+
+
+### 2026-11-20 — `arena-997c9c83` — integration record (T-997-E)
+
+| Step | Result |
+| - | - |
+| Branch state | Squashed onto `main` @ `dbdfa1d` (union of all boards PRs #1–#18 preserved verbatim; repeated COORDINATION.md add/add conflicts with concurrent sessions resolved as unions each time). |
+| PR | **#20** — https://github.com/wingbangboozle1-lang/Trade2/pull/20 — merged 2026-11-20T19:12:25Z, merge commit `a19c467c1f46e37cad810e1f4149bd7ea4034d68`, no approval wait per brief. |
+| Post-merge regeneration | Scheduled `kalshi-dashboard.yml` main run `44800499251` (success, 2m21s) regenerated the pages with the new `alerts-view.js` tag + flagged-page card; two dispatch runs cancelled by the `collect` concurrency group were harmless (cron covers main every ≤5 min). |
+| Pages | Built for `a19c467`, then **built** for regenerated commit `8dceeef` (verified `gh api repos/.../pages/builds/latest`). |
+| Live verification | Fetched with cache-buster: `review.html` renders the new standing limitation card with its official source; `assets/alerts-view.js` serves verbatim; `live.html`/`index.html` in the built commit load it before `desk.js`. Deployed-module + jsdom boot checks together cover the client behaviour; a human browser pass remains open for any session (flagged, does not block). |
+| Irregularities logged | C-997-1 (T17 double-claim — both claims since merged via PRs #13/#14, kept for the record); A-6 stale CDN copy right after a Pages build (cache-buster workaround, not repo content). No other session's work discarded; no shared outputs touched beyond the session's claimed scope. |
