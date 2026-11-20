@@ -1,7 +1,7 @@
 {
-  "last_run_at": "2026-11-20T13:29:13.773Z",
-  "duration_ms": 35823,
-  "api_calls": 251,
+  "last_run_at": "2026-11-20T13:32:40.029Z",
+  "duration_ms": 36640,
+  "api_calls": 244,
   "api_errors": 0,
   "errors": [],
   "calls": {
@@ -14,7 +14,7 @@
   },
   "exchange_active": true,
   "trading_active": true,
-  "runs": 3,
+  "runs": 4,
   "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
   "ws_base": "wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2",
   "notes": [
