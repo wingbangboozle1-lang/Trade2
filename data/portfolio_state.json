@@ -1,5 +1,5 @@
 {
- "bankroll": 8458.12,
+ "bankroll": 8277.59,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -196,8 +196,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795212914.5569293,
    "entry_fee": 11.62,
-   "current_price": 0.04,
-   "unrealized": 0.0,
+   "current_price": 0.015,
+   "unrealized": -108.0325,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -207,6 +207,32 @@
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B32500",
    "bankroll_at_entry": 8458.118,
+   "fee_multiplier": 1.0,
+   "fee_basis": "GET /series fee_multiplier=1, fee_type=quadratic"
+  },
+  {
+   "position_id": "pos-1f14bff812",
+   "ticker": "KXLPGATOUR-CMEGTC26-HAERYU",
+   "event_ticker": "KXLPGATOUR-CMEGTC26",
+   "topic": "golf",
+   "title": "Hae-Ran Ryu",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4229.06,
+   "entry_price": 0.04,
+   "entry_ts": 1795215737.9267995,
+   "entry_fee": 11.37,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 36% on a 0.04 spread",
+   "market_url": "https://kalshi.com/markets/KXLPGATOUR/KXLPGATOUR-CMEGTC26-HAERYU",
+   "bankroll_at_entry": 8277.5876,
    "fee_multiplier": 1.0,
    "fee_basis": "GET /series fee_multiplier=1, fee_type=quadratic"
   }
@@ -328,6 +354,19 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.03 spread"
+  },
+  {
+   "trade_id": "tr-e0be95c0b9",
+   "ts": 1795215737.9267995,
+   "ticker": "KXLPGATOUR-CMEGTC26-HAERYU",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4229.06,
+   "price": 0.04,
+   "fee": 11.37,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 36% on a 0.04 spread"
   }
  ],
  "equity_curve": [
@@ -546,6 +585,12 @@
    "equity": 9399.25,
    "realized": -166.91,
    "open": 1289.12
+  },
+  {
+   "ts": 1795215627.886616,
+   "equity": 9279.85,
+   "realized": -166.91,
+   "open": 1458.28
   }
  ],
  "started_at": 1795182592.2117689
