@@ -457,7 +457,7 @@ Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlappi
 | T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | done | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `tests/test_engine.py` (one test updated), `site_build/flagpage.py`, `site_build/build.py` (count formatting), `tools/rendercheck.mjs` (harness fetch shim) |
 | T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | done (landed on `main` by `arena-e4e8f4e1` in `28577c4`; this session kept `main`'s version on merge) | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
 | T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | done (sample; see log) | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
-| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | done | `arena-856e184e` | `COORDINATION.md` (this section only) |
 
 ### Log — `arena-856e184e` (2026-11-20)
 
@@ -647,3 +647,17 @@ jsdom boot of `live.html` with fetch stubbed: 32 raw alerts → 9 grouped rows,
 see above); `config/flags.json` F-05 note remains accurate (SDK default base URL
 is production) but the *pipeline* default in `scripts/collect.mjs` is
 `arena-e4e8f4e1`'s claimed fix — this session did not touch it.
+
+### Integration record — `arena-856e184e` (task T19, final)
+
+| Step | Result |
+| - | - |
+| PR #14 | https://github.com/wingbangboozle1-lang/Trade2/pull/14 — `arena/856e184e-trade2` → `main`. Had a conflict with PR #13 (`28577c4` and `17235ca` fixed the same two issues). Resolved by keeping `main`'s version of those files and rebuilding generated pages from the merged data. Merged `2026-11-20T19:07:58Z` as `adc26c9` (merge commit). Branch CI green. |
+| PR #22 | https://github.com/wingbangboozle1-lang/Trade2/pull/22 — follow-up: drop stored alerts without a verifiable quote basis (`reference_basis`). Conflict only in `COORDINATION.md` (both sections kept). Merged as `58be24d` (merge commit) on `main`. |
+| Verification before merge | `unittest` 73 OK (1 skipped, pre-existing), `collector.test_runner` PASS, `trading.test_engine` PASS, `npm test` 19/19, `tools/rendercheck.mjs` 10/10, `tools/linkcheck.py` 45 pages / 503 links / 0 errors, `site_build` regenerated. |
+| Pages | Legacy build of `main` `/`: `built` for `adc26c9` (2026-11-20T19:08:38Z) and for `8dceeef` (2026-11-20T19:18:54Z). Live: https://wingbangboozle1-lang.github.io/Trade2/review.html — Flagged page serves the new flags. |
+| Live effect | Stored root swing alerts: **29 → 3 → 0** (HBID phantom removed by PR #14; the AKLO legacy records removed by PR #22). Overview "Swings ≥ $0.10" card now shows **0**. Root and kalshi-dashboard status files record the **demo** host. |
+| Pipeline note | One `dashboard.yml` publish step failed on the PR #13 merge (run `44799192230`, "Commit and publish to main"). Later runs succeeded, including a scheduled run and `workflow_dispatch` `44799040872`. Looks like a push race between sessions. Not changed. Many `kalshi-dashboard` runs show `cancelled` because the workflow concurrency group supersedes queued runs. Expected behaviour. |
+| Still open (flagged, not blocking) | F-856-4 (OI value = notional), F-856-5 (trade-price alerts in `docs/` and kalshi-dashboard pipelines not quote-checked), the Kalshi demo trade-print vs quote inconsistency (AKLO), and verification of the remaining overview rows. |
+| Credentials | No Kalshi demo API key is configured, so the demo account was not read and no orders were placed. The brief asks for demo-account tracking and trade execution. Those need a demo key pair added as repo secrets, which the agent cannot create. |
+
