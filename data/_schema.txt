@@ -1,0 +1,11 @@
+=== events keys ===
+['category', 'collateral_return_type', 'event_ticker', 'exchange_index', 'last_updated_ts', 'markets', 'mutually_exclusive', 'series_ticker', 'settlement_sources', 'strike_period', 'sub_title', 'title']
+series_ticker= KXELONMARS
+category= World
+markets= 1
+mkt keys= ['can_close_early', 'close_time', 'created_time', 'early_close_condition', 'event_ticker', 'exchange_index', 'expected_expiration_time', 'expiration_value', 'last_price_dollars', 'latest_expiration_time', 'market_type', 'no_ask_dollars', 'no_bid_dollars', 'no_sub_title', 'notional_value_dollars', 'open_interest_fp', 'open_time', 'previous_price_dollars', 'previous_yes_ask_dollars', 'previous_yes_bid_dollars', 'price_level_structure', 'price_ranges', 'result', 'rules_primary', 'rules_secondary', 'settlement_bounds_type', 'settlement_timer_seconds', 'status', 'ticker', 'title', 'updated_time', 'volume_24h_fp', 'volume_fp', 'yes_ask_dollars', 'yes_ask_size_fp', 'yes_bid_dollars', 'yes_bid_size_fp', 'yes_sub_title']
+=== category histogram of open events ===
+events: 12200 pages: 61 unique series: 2701
+{'Elections': 8671, 'Sports': 1352, 'Politics': 627, 'Financials': 435, 'Entertainment': 413, 'Economics': 327, 'Mentions': 101, 'Companies': 74, 'Crypto': 71, 'Science and Technology': 64, 'Climate and Weather': 37, 'harrison-test': 9, 'Social': 5, 'AI': 4, 'World': 3, 'Commodities': 2, 'Test': 1, 'Business': 1, 'Health': 1, None: 1}
+=== settled with result ===
+{'ticker': 'KXMVECROSSCATEGORY-S2026X7ACJJ2OH3JAN2BN-HM7DAQ54B', 'event_ticker': 'KXMVECROSSCATEGORY-S2026X7ACJJ2OH3JAN2BN', 'result': 'no', 'status': 'finalized', 'settlement_ts': '2026-11-20T13:10:14.562728Z', 'settlement_value_dollars': '0.0000'}
