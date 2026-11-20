@@ -36,6 +36,7 @@ class Topic:
     include_tickers: tuple[str, ...] = ()
     exclude_tickers: tuple[str, ...] = ()
     notes: str = ""
+    series_pages: int = 4          # pages of 100-ish series to walk per query
     _cache: dict[str, Any] = field(default_factory=dict, compare=False)
 
     @property
@@ -81,6 +82,7 @@ ELECTIONS = Topic(
     slug="elections",
     label="Elections",
     queries=(("Elections", None),),
+    series_pages=8,   # Elections is by far the largest category (~1,450 series)
     matchers=(_kw("election", "electoral", "vote", "ballot", "primary",
                   "nominee", "nomination", "mayor", "governor", "senate",
                   "congress", "president", "parliament"),),
@@ -135,7 +137,8 @@ def resolve_series(client, topic: Topic) -> list[dict[str, Any]]:
     """Return the in-scope series for ``topic``, straight from GET /series."""
     seen: dict[str, dict[str, Any]] = {}
     for category, tags in topic.queries:
-        for series in client.series_list(category=category, tags=tags):
+        for series in client.series_list(category=category, tags=tags,
+                                         max_pages=topic.series_pages):
             ticker = series.get("ticker")
             if not ticker or ticker in seen:
                 continue

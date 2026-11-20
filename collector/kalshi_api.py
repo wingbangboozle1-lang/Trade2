@@ -202,11 +202,16 @@ class KalshiClient:
         return self._request("GET", "/exchange/status")
 
     def series_list(self, category: str | None = None, tags: str | None = None,
-                    include_volume: bool = True) -> list[dict[str, Any]]:
-        """GET /series — https://docs.kalshi.com/api-reference/market/get-series-list"""
+                    include_volume: bool = True, max_pages: int = 4) -> list[dict[str, Any]]:
+        """GET /series — https://docs.kalshi.com/api-reference/market/get-series-list
+
+        Paged with a cursor. ``max_pages`` bounds the work: the Elections
+        category alone returns thousands of series, and the collector only needs
+        enough of them to identify in-scope markets within its time budget.
+        """
         out: list[dict[str, Any]] = []
         cursor = None
-        for _ in range(40):  # hard stop; guard against a runaway loop
+        for _ in range(max_pages):  # hard stop; guard against a runaway loop
             page = self._request("GET", "/series", {
                 "category": category, "tags": tags,
                 "include_volume": "true" if include_volume else "false",
@@ -218,7 +223,7 @@ class KalshiClient:
                 break
         return out
 
-    def markets(self, **params: Any) -> list[dict[str, Any]]:
+    def markets(self, max_pages: int = 50, **params: Any) -> list[dict[str, Any]]:
         """GET /markets — https://docs.kalshi.com/api-reference/market/get-markets
 
         Paged with cursor; every matching market is de-duplicated by ticker as
@@ -227,7 +232,7 @@ class KalshiClient:
         out: list[dict[str, Any]] = []
         seen: set[str] = set()
         cursor = None
-        for _ in range(200):
+        for _ in range(max_pages):
             page = self._request("GET", "/markets", {**params, "cursor": cursor})
             for market in page.get("markets") or []:
                 ticker = market.get("ticker")

@@ -49,7 +49,7 @@ jobs:
             printf '%s\n' "$KALSHI_PRIVATE_KEY" > /tmp/kalshi.pem
             export KALSHI_PRIVATE_KEY_PATH=/tmp/kalshi.pem
           fi
-          python3 -m collector.collector --market-cap "$MARKET_CAP" --orderbook-cap 90
+          python3 -m collector.collector --market-cap "$MARKET_CAP" --orderbook-cap 55
 
       - name: Rebuild static site data
         run: python3 -m site_build.build

@@ -46,6 +46,9 @@ SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
 MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
 SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.5
+MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
+MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
+MIN_TOP_LEVEL_CONTRACTS = 1.0  # the best level must actually hold size
 
 
 @dataclass
@@ -266,6 +269,19 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
     if spread is not None and spread > max_spread:
         return None
 
+    # Tradability gates. Without resting size on both sides a quoted price is
+    # an artifact: several Kalshi markets carry a 1-2 cent stale bid on
+    # millions of open-interest contracts, which would otherwise look like an
+    # infinite-ROI trade. These three checks keep such markets out of the model.
+    depth_yes = liquidity.get("yes_bid_contracts") or 0.0
+    depth_no = liquidity.get("no_bid_contracts") or 0.0
+    if depth_yes + depth_no < MIN_DEPTH_CONTRACTS:
+        return None
+    top_yes = (liquidity.get("yes_bids") or [{}])[0].get("contracts") if liquidity.get("yes_bids") else 0.0
+    top_no = (liquidity.get("no_bids") or [{}])[0].get("contracts") if liquidity.get("no_bids") else 0.0
+    if max(top_yes or 0.0, top_no or 0.0) < MIN_TOP_LEVEL_CONTRACTS:
+        return None
+
     mid = obs.mid
     if mid is None:
         return None
@@ -274,13 +290,15 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
     weight = SHRINK * min(1.0, width / max_spread)
     fair = round(mid * (1 - weight) + prior * weight, 4)
 
-    # Buy YES at the ask, or buy NO at (1 - yes bid).
+    # Buy YES at the ask, or buy NO at (1 - yes bid). A crossed or zero quote
+    # can never be filled, so anything off the tradable grid is dropped.
     candidates = []
-    if obs.yes_ask is not None and 0.0 < obs.yes_ask < 1.0:
+    if obs.yes_ask is not None and MIN_EXECUTABLE_PRICE <= obs.yes_ask <= 1.0 - MIN_EXECUTABLE_PRICE:
         candidates.append(("yes", obs.yes_ask, fair))
-    if obs.yes_bid is not None and 0.0 < obs.yes_bid < 1.0:
-        candidates.append(("no", round(1.0 - obs.yes_bid, 4),
-                           round(1.0 - fair, 4)))
+    if obs.yes_bid is not None and MIN_EXECUTABLE_PRICE <= obs.yes_bid <= 1.0 - MIN_EXECUTABLE_PRICE:
+        no_price = round(1.0 - obs.yes_bid, 4)
+        if MIN_EXECUTABLE_PRICE <= no_price <= 1.0 - MIN_EXECUTABLE_PRICE:
+            candidates.append(("no", no_price, round(1.0 - fair, 4)))
 
     best: Signal | None = None
     for side, price, fair_side in candidates:

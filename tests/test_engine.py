@@ -159,17 +159,36 @@ class TestScoring(unittest.TestCase):
                            open_interest=10, series_ticker="S")
 
     def test_wide_spread_is_rejected(self):
-        liq = {"spread": 0.30, "yes_bid_contracts": 100, "no_bid_contracts": 100}
+        liq = {"spread": 0.30, "yes_bid_contracts": 100, "no_bid_contracts": 100,
+               "yes_bids": [{"price": 0.20, "contracts": 100}],
+               "no_bids": [{"price": 0.50, "contracts": 100}]}
         self.assertIsNone(score_market(self.obs(0.20, 0.50), liq))
 
     def test_fair_value_is_shrunk_toward_half(self):
-        liq = {"spread": 0.02, "yes_bid_contracts": 100, "no_bid_contracts": 100}
+        liq = {"spread": 0.02, "yes_bid_contracts": 100, "no_bid_contracts": 100,
+               "yes_bids": [{"price": 0.90, "contracts": 100}],
+               "no_bids": [{"price": 0.08, "contracts": 100}]}
         sig = score_market(self.obs(0.90, 0.92), liq)
         if sig is not None:
             self.assertLess(sig.model_fair, 0.92)
 
+    def test_no_signal_on_empty_or_thin_book(self):
+        # A stale 2c bid with no size must never produce a trade.
+        thin = {"spread": 0.01, "yes_bid_contracts": 0, "no_bid_contracts": 1,
+                "yes_bids": [{"price": 0.02, "contracts": 1}],
+                "no_bids": [{"price": 0.02, "contracts": 1}]}
+        self.assertIsNone(score_market(self.obs(0.02, 0.03), thin))
+
+    def test_no_signal_below_one_cent(self):
+        liq = {"spread": 0.01, "yes_bid_contracts": 500, "no_bid_contracts": 500,
+               "yes_bids": [{"price": 0.0, "contracts": 500}],
+               "no_bids": [{"price": 0.0, "contracts": 500}]}
+        self.assertIsNone(score_market(self.obs(0.0, 0.0), liq))
+
     def test_no_signal_without_edge(self):
-        liq = {"spread": 0.01, "yes_bid_contracts": 10, "no_bid_contracts": 10}
+        liq = {"spread": 0.01, "yes_bid_contracts": 100, "no_bid_contracts": 100,
+               "yes_bids": [{"price": 0.50, "contracts": 100}],
+               "no_bids": [{"price": 0.49, "contracts": 100}]}
         self.assertIsNone(score_market(self.obs(0.50, 0.51), liq))
 
 

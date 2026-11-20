@@ -99,7 +99,7 @@ def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 90,
-            settle_scan: int = 400, budget_seconds: float = 240.0) -> dict[str, Any]:
+            settle_scan: int = 400, budget_seconds: float = 330.0) -> dict[str, Any]:
     """One collection pass.
 
     ``budget_seconds`` is a hard wall-clock ceiling. Unauthenticated Kalshi has
@@ -371,10 +371,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--market-cap", type=int, default=150)
     ap.add_argument("--orderbook-cap", type=int, default=90)
-    ap.add_argument("--settle-scan", type=int, default=400)
+    ap.add_argument("--settle-scan", type=int, default=300)
+    ap.add_argument("--budget", type=float, default=330.0)
     args = ap.parse_args()
     started = time.time()
-    payload = collect(args.market_cap, args.orderbook_cap, args.settle_scan)
+    payload = collect(args.market_cap, args.orderbook_cap, args.settle_scan,
+                      args.budget)
     print(json.dumps({
         "generated_at": payload["generated_at"],
         "tracked_markets": payload["observation_count"],
