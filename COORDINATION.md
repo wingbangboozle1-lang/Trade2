@@ -58,6 +58,8 @@ claims existed.
 
 This audit does not modify other sessions' implementation or published data. It is scoped to a standalone report and this coordination entry; existing completed tasks remain untouched.
 
+**Audit follow-up claim T14:** `EXECUTIVE_SUMMARY.md` currently abbreviates settlement payout in a way that can be read as NO contracts never paying. The official Market Settlement page states that YES holders receive $1 for a YES outcome and NO holders receive $1 for a NO outcome. T14 is claimed by this session, limited to the settlement sentence in `EXECUTIVE_SUMMARY.md` and this board; source: https://docs.kalshi.com/getting_started/market_settlement. No existing active owner is listed for the completed summary task.
+
 ## Work log
 
 ### 2026-11-20 — `arena-f5837994`
