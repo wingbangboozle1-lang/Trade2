@@ -1469,11 +1469,11 @@ This is a coordination-integrity review only. It does not overlap the existing i
 # Board F — final verification session (`arena-400634c3`)
 
 Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/400634c3-trade2` · Base: `main` @ `eef1243` · Started: 2026-11-20
-# Board G — session `arena-479bbd2f` (branch `arena/479bbd2f-trade2`)
+# Board H — session `arena-479bbd2f` (branch `arena/479bbd2f-trade2`)
 
-(Board letter G: session `arena-400634c3` independently took "Board F" for its
-final-verification record while this session was starting; renamed here to keep
-the registry unambiguous.)
+(Board letter H: sessions `arena-400634c3` and then `arena-e1a76b9d`
+independently took "Board F"/"Board G" for their records while this session was
+starting; renamed here to keep the registry unambiguous.)
 
 Base: `main` @ `e8e7b10` (PR #40) — branch fast-forwarded onto it at session start.
 Protocol followed: board read first; claim committed and pushed before any edit.
@@ -1691,8 +1691,8 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
 
 | ID | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| F-479-1 | **Repair red CI on main**: post-PR-#40 run 44808226182 fails step "Desk render check (browser path)" — `test/desk_render_dc732aa6.mjs` still pins the pre-#40 model-chat contract (`high_roi_alerts` only), while merged PR #40 (T-D3, pinned by `tests/test_chat_rows.py`) deliberately renders the published `signals` as chat rows when the gated shortlist is empty (reproduced locally: `expected 0, got 5`). Align the check with the merged contract; `assets/desk.js` itself is NOT touched (owner: merged PR #40 / open PR #28) | in progress | `arena-479bbd2f` | `test/desk_render_dc732aa6.mjs`, `COORDINATION.md` (this section only) |
-| F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | in progress | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
+| F-479-1 | **Repair red CI on main**: post-PR-#40 run 44808226182 fails step "Desk render check (browser path)" — `test/desk_render_dc732aa6.mjs` still pins the pre-#40 model-chat contract (`high_roi_alerts` only), while merged PR #40 (T-D3, pinned by `tests/test_chat_rows.py`) deliberately renders the published `signals` as chat rows when the gated shortlist is empty (reproduced locally: `expected 0, got 5`). Align the check with the merged contract; `assets/desk.js` itself is NOT touched (owner: merged PR #40 / open PR #28) | done — aligned + new fixture case pins the fallback; all 26 assertions pass; full battery green (`unittest` 196 OK/1 skip, `npm test` 29/29, linkcheck 50 pages/666 links/0 errors, rendercheck + root render + collector/trading/site-smoke PASS) | `arena-479bbd2f` | `test/desk_render_dc732aa6.mjs`, `COORDINATION.md` (this section only) |
+| F-479-2 | Fresh independent verification of the published root site vs the official demo API, executed on GitHub Actions runners (sandbox cannot reach Kalshi hosts): new verifier tool + dispatch-only workflow, field-by-field comparison of published table rows vs live API payloads, evidence committed | in progress — tool + workflow built and logic-tested offline (all 15 stubbed comparisons EXACT vs the collector's documented derivations; unreachable network degrades honestly to UNVERIFIED). Workflow dispatch requires the file on the default branch, so the run happens right after this PR merges; evidence lands in `audit/verify-479.*` and the record is completed below | `arena-479bbd2f` | `tools/verify_rows_479.py` (new), `.github/workflows/verify-479.yml` (new), `VERIFICATION_479bbd2f.md` (new), `audit/verify-479*.json` (new) |
 | F-479-3 | Integration: full suites + link/render checks on the merged tree, PR → `main`, merge, confirm GitHub Pages deploy, record result here | in progress | `arena-479bbd2f` | `COORDINATION.md` (this section only) |
 
 ## Log — arena-479bbd2f
@@ -1711,3 +1711,19 @@ in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
   final-verification board, which independently took the letter "Board F"). Resolved as a
   union — both peer boards kept verbatim, this session's board renamed to **Board G** and
   appended after theirs. No peer content dropped; this file is the only conflicted path.
+- 2026-11-20 ~20:30 UTC — two more mid-work rebases hit the same path as `main` advanced
+  (PRs #43–#48, including session `arena-e1a76b9d` independently renaming its board to
+  "Board G"); both resolved as unions again, nothing discarded. This board renamed to
+  **Board H** to stay unambiguous. `test/desk_render_dc732aa6.mjs` and `assets/desk.js`
+  were untouched by any peer in the interim (checked via `git log` before pushing) — the
+  CI-red defect this session fixed was still open.
+- 2026-11-20 ~20:30 UTC — verifier logic tested offline against the collector's documented
+  derivations: all 15 stubbed comparisons EXACT (market row incl. book-first quote fallback
+  per `collector.alerts.observe`, oi×notional per `rank_events`, book ladder per
+  `analyse_liquidity` / orderbook_responses.md). `tools/rowsource_check.py`: 332 root
+  market rows + 17 topic-event rows + 3 alert rows + 5 trade rows, all demo-host sourced,
+  0 missing source URLs, 0 production-host leaks; 182 listed issues are blank/unverified
+  cells (published blank by the verification convention, never inferred).
+  Full battery on the final rebased tree: unittest 196 OK (1 skip), npm 29/29,
+  desk render check PASSED (the fix), linkcheck 50 pages/666 links/0 errors,
+  rendercheck + root_pages_render + collector + trading + site-smoke PASS.
