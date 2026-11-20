@@ -35,15 +35,15 @@ jobs:
           node-version: '22'
 
       - name: Install collector dependencies
-        working-directory: collector
+        working-directory: pipeline
         run: npm install --no-audit --no-fund
 
       - name: Unit tests (signing, alerts, liquidity, paper engine)
-        working-directory: collector
+        working-directory: pipeline
         run: npm test
 
       - name: Collect Kalshi demo snapshot
-        working-directory: collector
+        working-directory: pipeline
         env:
           KALSHI_API_BASE: https://external-api.demo.kalshi.co/trade-api/v2
         run: node src/collect.js
