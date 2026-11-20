@@ -163,3 +163,13 @@ test('topic classifier maps titles to the five tracked topics', () => {
   assert.ok(classify({ title: 'Will the Masters Tournament winner be a rookie?' }).includes('golf'));
   assert.ok(classify({ title: 'Will the album of the year win the Grammy?' }).includes('culture'));
 });
+
+test('price series helpers accept both [[ts,price]] and [{ts,price}] shapes', async () => {
+  const { priceMinutesAgo, toSeries } = await import('../src/roi.js');
+  const now = 1_700_000_000;
+  const arrays = [[now - 600, 0.4], [now - 300, 0.5]];
+  const objects = [{ ts: now - 600, price: 0.4 }, { ts: now - 300, price: 0.5 }];
+  assert.equal(priceMinutesAgo(arrays, 10, now), 0.4);
+  assert.equal(priceMinutesAgo(objects, 10, now), 0.4);
+  assert.deepEqual(toSeries(arrays), toSeries(objects));
+});

@@ -12,17 +12,34 @@ import { fp } from './kalshi.js';
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-/** Price `minutes` ago from a time series [[tsSeconds, price], ...]. */
+/**
+ * Price `minutes` ago from a time series.
+ * Accepts both shapes used in this project: [[tsSeconds, price], ...] and
+ * [{ts, price}, ...].
+ */
 export function priceMinutesAgo(points, minutes, now = Date.now() / 1000) {
   if (!points || !points.length) return null;
   const target = now - minutes * 60;
   let best = null;
   let bestDelta = Infinity;
-  for (const [ts, price] of points) {
+  for (const point of points) {
+    const ts = Array.isArray(point) ? point[0] : point.ts;
+    const price = Array.isArray(point) ? point[1] : point.price;
+    if (!Number.isFinite(ts) || !Number.isFinite(price)) continue;
     const delta = Math.abs(ts - target);
     if (delta < bestDelta) { bestDelta = delta; best = price; }
   }
   return best;
+}
+
+/** Normalise a time series into [{ts, price}, ...]. */
+export function toSeries(points) {
+  if (!points || !points.length) return [];
+  return points
+    .map((point) => (Array.isArray(point)
+      ? { ts: Number(point[0]), price: Number(point[1]) }
+      : { ts: Number(point.ts), price: Number(point.price) }))
+    .filter((p) => Number.isFinite(p.ts) && Number.isFinite(p.price));
 }
 
 export function mean(values) {
@@ -74,7 +91,8 @@ export function scoreMarket({ market, book, points = [], now = Date.now() / 1000
   }
 
   // ---- edge (0-15): distance of the last price from its own recent mean
-  const window = points.filter(([ts]) => ts >= now - 30 * 60).map(([, p]) => p);
+  const series = toSeries(points);
+  const window = series.filter((p) => p.ts >= now - 30 * 60).map((p) => p.price);
   const recentMean = window.length >= 3 ? mean(window) : null;
   const edge = recentMean !== null ? last - recentMean : 0;
   const edgeScore = clamp((Math.abs(edge) / 0.10) * 15, 0, 15);
