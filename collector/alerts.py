@@ -65,6 +65,11 @@ from .kalshi_api import (best_bid, count, dollars, implied_yes_ask, mid_price,
 SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
 MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
+# Swing alerts need a tight, two-sided quote. If the bid-ask spread is at least
+# the swing threshold, the mid can move by $0.10 purely because the quotes moved,
+# not because a trade happened. Design choice (not a Kalshi rule): require the
+# spread to be strictly below the $0.10 threshold. Logged in VERIFICATION_856e184e.md.
+ALERT_MAX_SPREAD = 0.10
 SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.5
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
@@ -154,36 +159,48 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     )
 
 
-def price_basis(o: Observation) -> tuple[float | None, str]:
-    """Depth-aware price for one observation. See the module docstring.
+def quoted_spread(yes_bid: float | None, yes_ask: float | None) -> float | None:
+    """YES ask minus YES bid, or None when either side is not quoted."""
+    if yes_bid is None or yes_ask is None:
+        return None
+    return round(yes_ask - yes_bid, 4)
 
-    Returns ``(price, basis_label)``:
 
-    * ``mid`` — a mid is only a price when the book quotes both sides and the
-      spread is at most ``MAX_SPREAD``;
-    * ``last_price`` — a wide or one-sided book has a meaningless mid, so the
-      last traded price is the only measured price;
-    * ``quote`` — last resort when no trade has printed: a single-sided quote
-      is still a real resting price (the official book is bids-only, so a
-      one-sided book is normal — see the orderbook docs);
-    * ``none`` — nothing measurable; the observation cannot alert.
+def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
+    """True only for a two-sided quote tighter than ALERT_MAX_SPREAD."""
+    spread = quoted_spread(yes_bid, yes_ask)
+    return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
+
+
+QUOTE_BASES = ("candle_quote_mid", "previous_snapshot_mid")
+
+
+def alert_record_valid(alert: dict[str, Any]) -> bool:
+    """Re-check a stored alert against the current quote rule.
+
+    Used to purge alerts written before the quote rule existed. Such records
+    have no ``reference_basis`` field, so their reference cannot be shown to be a
+    quote mid, and they are dropped even when their current quote looks tight.
+    Example: the 0.803 -> 0.0025 AKLO alert, whose reference was a trade print.
     """
-    if o.mid is None:
-        return None, "none"
-    if o.spread is not None and o.spread <= MAX_SPREAD:
-        return o.mid, "mid"
-    if o.last_price is not None:
-        return o.last_price, "last_price"
-    if (o.yes_bid is None) != (o.yes_ask is None):
-        return o.mid, "quote"
-    return None, "none"
+    if alert.get("reference_basis") not in QUOTE_BASES:
+        return False
+    return swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask"))
 
 
 def detect_swing(previous: Observation | None, current: Observation,
                  threshold: float = SWING_THRESHOLD,
                  reference: float | None = None,
-                 reference_ts: float | None = None) -> dict[str, Any] | None:
+                 reference_ts: float | None = None,
+                 reference_spread: float | None = None) -> dict[str, Any] | None:
     """Return an alert dict when the reference price moved by >= threshold.
+
+    Price basis: both sides of the comparison are YES *mid* prices built from
+    quotes (bid and ask). ``reference`` must therefore be the mid of the
+    reference bar's quote closes, with ``reference_spread`` its ask-bid width.
+    A last-trade price must never be compared with a quote mid. Both the current
+    and the reference quotes must be two-sided and narrower than
+    ALERT_MAX_SPREAD, otherwise no alert is raised.
 
     How the reference works, and why it is not simply "the previous snapshot":
 
@@ -192,7 +209,7 @@ def detect_swing(previous: Observation | None, current: Observation,
     every alert fire once and then reset, so a market that drifts 20 cents over
     an hour in 4-cent steps never alerts. The caller therefore passes the price
     at the start of the current 5-minute bar, taken from Kalshi's own published
-    candle close. That reference is still a measured price, never an
+    candle quote closes (yes_bid / yes_ask), not the last-trade close. That reference is still a measured price, never an
     interpolation, and it is used whenever available; the previous snapshot is
     the fallback for markets without candle history.
 
@@ -203,12 +220,22 @@ def detect_swing(previous: Observation | None, current: Observation,
     """
     if previous is None and reference is None:
         return None
-    cur_price, basis = price_basis(current)
+    # The current observation must itself be a tight, two-sided quote.
+    if not swing_quotes_ok(current.yes_bid, current.yes_ask):
+        return None
     # Prefer the bar-opening reference: it spans the whole bar rather than a
     # single inter-snapshot hop, so a gradual move is measurable. Fall back to
     # the previous snapshot when no bar is available.
+    basis = "candle_quote_mid"
     if reference is not None:
+        if reference_spread is None or not (0.0 <= reference_spread < ALERT_MAX_SPREAD):
+            return None
         base = reference
+    elif previous is not None:
+        if not swing_quotes_ok(previous.yes_bid, previous.yes_ask):
+            return None
+        base = previous.mid
+        basis = "previous_snapshot_mid"
     else:
         base, _ = price_basis(previous) if previous is not None else (None, "none")
     if base is None or cur_price is None:
@@ -253,6 +280,8 @@ def detect_swing(previous: Observation | None, current: Observation,
         "threshold": threshold,
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
+        "reference_basis": basis,
+        "spread": quoted_spread(current.yes_bid, current.yes_ask),
     }
 
 

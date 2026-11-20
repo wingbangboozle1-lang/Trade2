@@ -94,10 +94,36 @@
   }
 
   function connected() {
+    tickAge();
+  }
+
+  /* R-D-01 (arena-0b2d2a2a): show the snapshot age continuously, not only at
+   * sync time, so a stale view is never mistaken for a live one.
+   *
+   * The age is rendered server-side into the #snapshotAge badge so it is
+   * correct with JavaScript disabled; this only keeps it ticking. The
+   * wording comes from AlertsView.ageLabel, the shared helper module, so
+   * there is one implementation and one unit-tested format. */
+  function tickAge() {
     var el = document.getElementById("updatedAt");
-    if (state.lastSync && el) {
+    if (el && state.lastSync) {
       el.textContent = "Updated " + new Date(state.lastSync).toLocaleTimeString();
+      el.title = "Snapshot generated at " + state.lastSync + " (UTC)";
     }
+    var badge = document.getElementById("snapshotAge");
+    if (!badge) return;
+    var ts = parseFloat(badge.getAttribute("data-generated-ts") || "");
+    if (!isFinite(ts) || ts <= 0) {
+      if (!state.lastSync) return;
+      ts = new Date(state.lastSync).getTime() / 1000;
+    }
+    var seconds = Math.max(0, Math.floor(Date.now() / 1000 - ts));
+    var V = window.AlertsView;
+    badge.textContent = V
+      ? V.ageLabel(new Date(ts * 1000).toISOString())
+      : (seconds < 90 ? seconds + "s old"
+                      : Math.floor(seconds / 60) + "m old");
+    badge.className = "snap-age" + (seconds < 900 ? " fresh" : "");
   }
 
   function startStream() {
@@ -136,6 +162,7 @@
     state.snapshot = payload;
     state.lastSync = payload.generated_at;
     connected();
+    tickAge();
     if (source === "poll" || source === "sse") banner("LIVE STREAM", "live");
     renderFeeds();
     renderDesk();
@@ -150,23 +177,22 @@
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
 
-  // One row per market + reference window + direction, largest move winning.
-  // The same sustained swing is re-observed on later collector runs; without
-  // this fold the chat shows the identical row a dozen times (R-D-01).
-  function dedupeAlerts(rows) {
-    var best = {};
-    (rows || []).forEach(function (a) {
-      var key = a.id || (a.ticker + ":" + Math.round(a.previous_ts || a.ts || 0) +
-                         ":" + (a.direction || ""));
-      var cur = best[key];
-      if (!cur || (Number(a.abs_delta) || 0) > (Number(cur.abs_delta) || 0) ||
-          ((Number(a.abs_delta) || 0) === (Number(cur.abs_delta) || 0) &&
-           (Number(a.ts) || 0) > (Number(cur.ts) || 0))) {
-        best[key] = a;
-      }
-    });
-    return Object.keys(best).map(function (k) { return best[k]; })
-      .sort(function (x, y) { return (y.ts || 0) - (x.ts || 0); });
+  /* Kalshi's public event page carries Kalshi's own live news feed for that
+   * event, so it is the first place to look for something that may have
+   * moved the price. The second link is a news search built from the event
+   * title. Neither asserts a cause. */
+  function eventUrl(a) {
+    var series = a.series_ticker ||
+      String(a.event_ticker || "").split("-")[0] || "";
+    return "https://kalshi.com/markets/" + encodeURIComponent(series) + "/" +
+      encodeURIComponent(a.event_ticker || "");
+  }
+
+  function newsUrl(a) {
+    var label = String(a.topic || "").replace(/-/g, " ");
+    var q = (a.title || a.ticker || "") + " " + label + " Kalshi";
+    return "https://news.google.com/rss/search?q=" + encodeURIComponent(q) +
+      "&hl=en-US&gl=US&ceid=US:en";
   }
 
   function alertRow(a, isModel) {
@@ -186,8 +212,19 @@
       '— possible context only; causality unverified">context ↗</a>';
     var row = document.createElement("div");
     row.className = "chat-row" + (up ? " up" : " down");
+    var badges = "";
+    if (Number(a.repeat_count) > 1) {
+      badges += '<span class="tag tag-purple" title="The same ' +
+        "&ge; $0.10 step fired again on later snapshots; identical rows are " +
+        'grouped here.">×' + Number(a.repeat_count) + " repeats</span> ";
+    }
+    if (a.wide_spread) {
+      badges += '<span class="flag-badge" title="YES bid ' + money(a.yes_bid) +
+        " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
+        'this midpoint is not an executable price.">wide spread · not executable</span> ';
+    }
     row.innerHTML =
-      '<time>' + esc(when) + "</time>" +
+      "<time>" + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
       (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
       '<span class="chat-body">' +
@@ -196,7 +233,13 @@
       "<small>" + money(a.previous) + " → " + money(a.current) +
       " · " + esc(a.topic) +
       (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small> " + badge + " " + context + "</span>" +
+      "</small>" +
+      (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
+      '<span class="cause-links">' +
+      '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
+      '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
+      "</span>" +
+      "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
     return row;
@@ -205,14 +248,19 @@
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
-    var all = dedupeAlerts(s.alerts || []);
+    var raw = s.alerts || [];
+    /* R-D-01 (arena-0b2d2a2a): identical repeated rows are grouped and rows
+     * whose quoted YES spread is >= the $0.10 threshold are marked
+     * non-executable. Display-only: the raw rows stay in the snapshot. */
+    var V = window.AlertsView;
+    var all = V ? V.dedupeAlerts(raw) : raw;
 
     // Model shortlist: alerts on markets the model scored as high ROI.
     var scoreByTicker = {};
     (s.signals || []).forEach(function (sig) {
       scoreByTicker[sig.ticker] = sig;
     });
-    var model = all
+    var rawModel = raw
       .filter(function (a) {
         var sig = scoreByTicker[a.ticker];
         return sig && sig.net_roi >= 0.05;
@@ -222,6 +270,7 @@
         out.model_net_roi = scoreByTicker[a.ticker].net_roi;
         return out;
       });
+    var model = V ? V.dedupeAlerts(rawModel) : rawModel;
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -230,6 +279,8 @@
       if (!all.length) {
         feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move observed ' +
           "yet. The feed fills as successive snapshots are compared.</div>";
+      } else if (raw.length > all.length) {
+        feedAll.appendChild(feedNote(all, raw));
       }
       all.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
     }
@@ -243,9 +294,24 @@
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
     }
     var ac = document.getElementById("allCount");
-    if (ac) ac.textContent = all.length;
+    if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
     if (mc) mc.textContent = model.length;
+  }
+
+  /* One-line explainer shown above the "all events" feed whenever grouping
+   * actually collapsed rows, so the viewer knows what they are looking at. */
+  function feedNote(deduped, raw) {
+    var flagged = deduped.filter(function (a) { return a.wide_spread; }).length;
+    var div = document.createElement("div");
+    div.className = "chat-note";
+    div.innerHTML =
+      "<b>" + raw.length + " raw detections → " + deduped.length +
+      " distinct rows.</b> Identical repeats of the same ≥ $0.10 step are grouped " +
+      "(×N badge); rows whose YES bid/ask spread is ≥ $0.10 are marked " +
+      "<i>not executable</i>. Raw rows are never deleted from the snapshot." +
+      (flagged ? " " + flagged + " row(s) currently flagged wide-spread." : "");
+    return div;
   }
 
   document.addEventListener("click", function (ev) {
@@ -630,6 +696,7 @@
       banner("SNAPSHOT MODE", "");
       pollSnapshot();
     }
+    tickAge();
     fetchSnapshot().then(function (payload) {
       if (payload) applySnapshot(payload, "poll");
     });
@@ -676,6 +743,9 @@
     setInterval(function () {
       if (state.market) pollBook(state.market);
     }, 4000);
+
+    // Keep the visible snapshot age current (R-D-01).
+    setInterval(tickAge, 5000);
   }
 
   if (document.readyState === "loading") {

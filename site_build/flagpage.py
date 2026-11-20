@@ -14,7 +14,10 @@ Two kinds of items appear here, and they are generated, not hand-written:
 from __future__ import annotations
 
 import html
+from collections import Counter
 from typing import Any
+
+from collector.alerts import QUOTE_BASES
 
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
 
@@ -74,19 +77,65 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
                 "source": f"{API}/markets/{e.get('ticker')}/orderbook",
             })
 
-    # 3. Culture category anomaly.
+    # 3. Culture is a dashboard topic spanning two separate Kalshi categories.
+    # Do not substitute the combined topic count for the category=Culture result.
     culture = (live.get("topics") or {}).get("culture") or {}
     if culture.get("series_count") is not None:
         issues.append({
-            "kind": "Topic category is effectively empty",
+            "kind": "Culture topic combines categories",
             "topic": "culture",
-            "ticker": "category=Culture",
-            "detail": (f"Kalshi's own 'Culture' category returns "
-                       f"{culture.get('series_count')} series while "
-                       f"{culture.get('event_count')} open events exist for this "
-                       f"topic once 'Entertainment' is also queried. Culture "
-                       f"content is filed under Entertainment."),
-            "source": f"{API}/series?category=Culture",
+            "ticker": "Culture + Entertainment",
+            "detail": ("The dashboard's Culture topic includes series from both "
+                       "Kalshi categories, Culture and Entertainment. Its "
+                       "topic-level totals are combined and are not the result "
+                       "of the Culture-only query. Review both official series "
+                       "queries separately."),
+            "sources": [
+                {"label": "Culture series API", "url": f"{API}/series?category=Culture"},
+                {"label": "Entertainment series API", "url": f"{API}/series?category=Entertainment"},
+            ],
+        })
+
+    # 4. Repeated midpoint alerts are not evidence of executable fills. Publish
+    # a review item whenever the current snapshot repeats a ticker so traders
+    # can inspect the official current book before acting.
+    alert_rows = live.get("alerts") or []
+    alert_counts = Counter(a.get("ticker") for a in alert_rows if a.get("ticker"))
+    unverified_basis_count = sum(
+        a.get("reference_basis") not in QUOTE_BASES for a in alert_rows)
+    repeated_alerts = sorted(
+        ((ticker, n) for ticker, n in alert_counts.items() if n > 1),
+        key=lambda item: (-item[1], item[0]),
+    )
+    if repeated_alerts:
+        sources = [
+            {"label": f"{ticker} order book", "url": f"{API}/markets/{ticker}/orderbook"}
+            for ticker, _ in repeated_alerts[:5]
+        ]
+        sources.append({
+            "label": "Orderbook format and bid/ask explanation",
+            "url": "https://docs.kalshi.com/getting_started/orderbook_responses",
+        })
+        repeated_summary = "; ".join(
+            f"{ticker} ({n} alerts)" for ticker, n in repeated_alerts[:5])
+        topics = sorted({a.get("topic") for a in alert_rows if a.get("topic")})
+        unique_word = "ticker" if len(alert_counts) == 1 else "tickers"
+        repeat_word = "ticker" if len(repeated_alerts) == 1 else "tickers"
+        issues.append({
+            "kind": "Repeated midpoint alerts — review before trading",
+            "topic": ", ".join(topics) or "unverified",
+            "ticker": repeated_summary,
+            "detail": (f"The current snapshot has {len(alert_rows)} alert rows across "
+                       f"{len(alert_counts)} distinct {unique_word}, with repeated rows "
+                       f"for {len(repeated_alerts)} {repeat_word}. "
+                       f"{unverified_basis_count} stored row(s) lack a recognized "
+                       f"quote reference basis, so their original price comparison "
+                       f"cannot be verified. Alerts are detections, not executed "
+                       f"fills; the collector drops rows without a verifiable basis "
+                       f"on its next run. Check current bid/ask prices, resting "
+                       f"contracts, and snapshot time before treating a swing as "
+                       f"actionable."),
+            "sources": sources,
         })
 
     # 4. Alerts whose price basis is thin: the row is kept and labelled, never
@@ -128,6 +177,55 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
 
 STANDING = [
     {
+        "title": "Swing alerts compared a trade price with a quote midpoint (fixed on branch arena/856e184e-trade2)",
+        "body": ("Until this fix, a >= $0.10 alert compared the candle's last-trade close with the "
+                 "midpoint of the current bid and ask. On KXPRESNOMD-28-HBID the last trade and the ask were "
+                 "0.8110 while the bid was 0.0020, so the midpoint 0.4065 produced a 'swing' of -$0.4045 that no "
+                 "trade made. Alerts now compare quote mid with quote mid, require a two-sided quote narrower "
+                 "than $0.10, and drop stored alerts that fail that rule on the next run. The same rule removes "
+                 "trade prints the quotes do not support: KXPRESNOMD-28-AKLO printed 0.8030 in the hour before its "
+                 "alert while its bid and ask stayed at 0.0020 and 0.0030. The $0.10 narrow-spread rule is a design "
+                 "choice of this project, not a Kalshi rule."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
+            "https://docs.kalshi.com/api-reference/market/get-market.md",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook",
+        ),
+    },
+    {
+        "title": "The kalshi-dashboard snapshot was collected from the production host",
+        "body": ("This project is scoped to the Kalshi demo endpoint. The kalshi-dashboard collector "
+                 "(scripts/collect.mjs) defaulted to the production host external-api.kalshi.com. The default is "
+                 "now the demo host. Until the next scheduled run, the published status file still records the "
+                 "production base_url. The workflow step label still says 'production by default' (request "
+                 "logged on the coordination board)."),
+        "source": (
+            "https://docs.kalshi.com/getting_started/api_environments.md",
+            "https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/status.json",
+        ),
+    },
+    {
+        "title": "'OI value' is a notional figure, not dollars traded",
+        "body": ("The overview ranks markets by open_interest_fp x notional_value_dollars. Kalshi defines "
+                 "open interest as the number of contracts bought on the market (disregarding netting) and "
+                 "notional value as the value of one contract at settlement ($1.00). The product is the "
+                 "settlement value of open contracts. It is not dollars traded and not dollars currently at "
+                 "risk. The site labels it that way. Ranking by it is one reading of 'highest dollar amount'."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-market.md",),
+    },
+    {
+        "title": "Trade-price alerts in two other pipelines are not checked against quotes (open)",
+        "body": ("The docs/ pipeline (collector/runner.py) and the kalshi-dashboard pipeline alert on "
+                 "consecutive trade-price closes, so the quote rule above does not cover them. The docs/ alerts "
+                 "currently list hourly trade-price moves such as KXRT-FUR-85 0.43 to 0.05. Those moves have not "
+                 "been checked against the quotes and are not changed by this branch."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
+            "https://wingbangboozle1-lang.github.io/Trade2/docs/data/alerts.json",
+        ),
+    },
+    {
         "title": "Demo-account portfolio performance cannot be shown",
         "body": ("Reading a Kalshi demo balance, fills or positions requires signed "
                  "requests with an API key pair. No key is configured for this "
@@ -144,16 +242,52 @@ STANDING = [
         "source": ("https://docs.kalshi.com/getting_started/quick_start_create_order.md",),
     },
     {
+        "title": "Swing alerts are detections, not executed fills",
+        "body": ("The root collector compares quote midpoints from two-sided books, "
+                 "using the candle-opening quote or the previous snapshot as its "
+                 "reference, and rejects books with a spread of $0.10 or more. "
+                 "Stored rows without a recognized reference_basis are dropped on "
+                 "the next collector run. The live desk groups repeated rows for "
+                 "display and marks wide-spread rows as not executable, but no alert "
+                 "or display badge records an order or fill. Inspect the current "
+                 "official order book and snapshot time before acting."),
+        "source": (
+            "https://docs.kalshi.com/getting_started/orderbook_responses",
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
+        ),
+    },
+    {
         "title": "No news article is attributed to a price move",
         "body": ("The brief asked for links to news that may have caused jumps. No "
-                 "official source maps articles to Kalshi price moves, so guessing "
-                 "one would be fabrication. Every alert instead links to the market "
-                 "itself and carries a clearly labelled 'context ↗' research link "
-                 "(a news search on the event title) marked 'possible context only; "
-                 "causality unverified'. The series page also lists Kalshi's own "
-                 "settlement sources (AAA, CF Benchmarks, ESPN, pgatour.com), which "
-                 "are the official pages that explain the underlying."),
-        "source": ("https://docs.kalshi.com/api-reference/market/get-series-list",),
+                 "official source maps an article to a Kalshi price move, so the "
+                 "dashboard never asserts one. Every ≥ $0.10 row instead links to "
+                 "the Kalshi event page — which carries Kalshi's own live news feed "
+                 "for that event, with its sources — and to a news search built "
+                 "from the event title. Those are places to look, not claims of "
+                 "cause."),
+        "source": ("https://docs.kalshi.com/api-reference/events/get-events",),
+    },
+    {
+        "title": "A book with no resting size is shown as UNVERIFIED, not as $0.0000",
+        "body": ("For markets with no size on either side Kalshi reports "
+                 "yes_bid_dollars 0.0000 and yes_ask_dollars 1.0000. A full 0-to-1 "
+                 "book is not a price — averaging it produces a phantom $0.50 "
+                 "midpoint — so the collector treats it as no quote at all and the "
+                 "site leaves those cells blank and flagged rather than printing a "
+                 "price that cannot be filled. Check the linked market response to "
+                 "see the raw values."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
+        "title": "Topic grouping of resolved markets uses the ticker prefix",
+        "body": ("GET /markets returns market objects with no series_ticker field, "
+                 "so a settled market cannot be filed under a topic from that "
+                 "response alone. The series ticker is recovered from the market "
+                 "ticker prefix, which is Kalshi's own naming convention, and the "
+                 "API value is preferred whenever it is present. Settled markets "
+                 "outside the five tracked topics are counted separately rather "
+                 "than dropped without trace."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
     },
     {
         "title": "Historical swing-chat rows were duplicated and midpoint-based (fixed 2026-11-20)",
@@ -211,16 +345,22 @@ STANDING = [
 
 def render(live: dict[str, Any]) -> str:
     issues = detect_data_issues(live) if live else []
+    from .extras import age_label
+    age = age_label(live.get("generated_at"), live.get("generated_at_ts"))
     rows = []
     for i in issues:
+        sources = i.get("sources") or [{"label": "official API", "url": i.get("source")}]
+        source_links = " · ".join(
+            f'<a class="source-link" href="{esc(source.get("url"))}" '
+            f'target="_blank" rel="noreferrer">{esc(source.get("label") or "official API")} ↗</a>'
+            for source in sources)
         rows.append(
             "<tr>"
             f"<td><span class=\"tag tag-purple\">{esc(i['kind'])}</span></td>"
             f"<td>{esc(i.get('topic'))}</td>"
             f"<td><code>{esc(i.get('ticker'))}</code></td>"
             f"<td>{esc(i.get('detail'))}</td>"
-            f"<td><a class=\"source-link\" href=\"{esc(i.get('source'))}\" "
-            f"target=\"_blank\" rel=\"noreferrer\">official API ↗</a></td>"
+            f"<td>{source_links}</td>"
             "</tr>")
     if not rows:
         rows.append('<tr><td colspan="5" class="empty-state">No data irregularity '
@@ -238,7 +378,9 @@ def render(live: dict[str, Any]) -> str:
     return f"""        <header class="topbar">
           <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
-            <time>Snapshot {esc(live.get('generated_at'))}</time>
+            <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
+            <time id="updatedAt">Snapshot {esc(live.get('generated_at'))}</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="{esc(live.get('generated_at_ts'))}">{esc(age)}</span>
           </div>
         </header>
         <section class="page-heading">

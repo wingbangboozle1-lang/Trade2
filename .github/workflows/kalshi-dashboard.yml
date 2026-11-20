@@ -11,9 +11,9 @@ on:
         description: "Markets to track per topic"
         default: "150"
   push:
-    # main publishes the site; the working branch is included so the pipeline
-    # can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2"]
+    # main publishes the site; the working branches are included so the
+    # pipeline can be exercised before merge.
+    branches: ["main", "arena/f5837994-trade2", "arena/fb6cb424-trade2"]
 
 permissions:
   contents: write
@@ -39,7 +39,10 @@ jobs:
         run: python3 -m unittest discover -s tests -v
 
       - name: Syntax check the front-end
-        run: node --check assets/desk.js
+        run: |
+          node --check assets/alerts-view.js
+          node --check assets/desk.js
+          node --test test/alerts-view.test.mjs
 
       - name: Collect
         env:
@@ -56,6 +59,14 @@ jobs:
 
       - name: Rebuild static site data
         run: python3 -m site_build.build
+
+      - name: Render check (root pages must render offline with no errors)
+        run: |
+          npm ci --no-audit --no-fund
+          node test/root_render.mjs
+          # `npm ci` must not change the lock file; if it does, drop the
+          # drift so the rebase in the commit step is not blocked.
+          git checkout -- package-lock.json package.json || true
 
       - name: Link check
         run: python3 tools/linkcheck.py

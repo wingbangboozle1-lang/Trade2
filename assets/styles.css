@@ -1074,6 +1074,14 @@ tbody tr:hover {
   font-size: 11px; color: var(--muted); cursor: pointer; padding: 2px 7px;
 }
 .ghost-link:hover { border-color: var(--green); color: var(--green-dark); }
+/* R-D-01: grouped-repeat explainer and alert badges (alerts-view.js / desk.js). */
+.chat-note {
+  font-size: 11.5px; color: var(--muted); line-height: 1.45;
+  padding: 7px 8px; border: 1px dashed var(--line); border-radius: 6px;
+  margin-bottom: 6px; background: var(--canvas);
+}
+.chat-note b { color: var(--ink); }
+.chat-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
 
 .clickable { cursor: pointer; }
 .clickable:hover { background: var(--mint); }
@@ -1139,3 +1147,82 @@ table .source-link:hover { text-decoration: underline; }
 .flag-card p { margin: 0 0 8px; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .flag-card .source-link { font-size: 11.5px; color: var(--green-dark); text-decoration: none; }
 table code { font-size: 11px; }
+
+/* ------------------------------------------------------------------ */
+/* Session arena-fb6cb424 — components added with the topic-grouped    */
+/* overview, the two-chat landing page and the new research pages.     */
+/* ------------------------------------------------------------------ */
+
+/* Snapshot age in the top bar: a stale view must never read as live. */
+.snap-age {
+  background: #fff4e0; color: var(--amber); border: 1px solid #f2ddb4;
+  border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 600;
+  white-space: nowrap;
+}
+.snap-age.fresh { background: var(--mint); color: var(--green-dark); border-color: #c9ead9; }
+
+/* Topic jump strip above the grouped overview table. */
+.topic-jump {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 12px;
+}
+.topic-jump a {
+  border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px;
+  font-size: 12px; color: var(--green-dark); background: #fff;
+}
+.topic-jump a:hover { background: var(--mint); border-color: #c9ead9; }
+
+/* Topic separator rows inside the grouped table. */
+table tr.topic-head th {
+  background: var(--canvas); text-align: left; padding: 9px 12px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+table tr.topic-head th a { font-weight: 700; font-size: 13px; }
+.topic-head-meta {
+  display: block; color: var(--muted); font-size: 11px; font-weight: 400;
+  margin-top: 2px;
+}
+
+/* Cause links under an alert row. */
+.cause-links { display: inline-flex; gap: 10px; margin-top: 3px; }
+.cause-links a {
+  font-size: 10.5px; color: var(--green-dark); text-decoration: none;
+  border-bottom: 1px dotted #b7ddcd;
+}
+.cause-links a:hover { border-bottom-style: solid; }
+
+/* Suggestion cards. */
+.sug-grid {
+  display: grid; gap: 12px; padding: 4px 16px 16px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+.sug-card {
+  border: 1px solid var(--line); border-radius: 8px; padding: 13px 15px;
+  background: linear-gradient(180deg, #fff, #fcfdfd);
+  display: flex; flex-direction: column; gap: 7px;
+}
+.sug-head { display: flex; align-items: flex-start; gap: 10px; justify-content: space-between; }
+.sug-card h3 { margin: 0; font-size: 14px; line-height: 1.35; color: var(--ink); }
+.sug-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.sug-card p b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+.sug-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-top: 2px;
+}
+.sug-effort { font-size: 11px; color: var(--muted); }
+.sug-status {
+  border-radius: 4px; padding: 1px 7px; font-size: 10.5px; font-weight: 700;
+  white-space: nowrap; letter-spacing: .02em;
+}
+.sug-status.shipped { background: var(--mint); color: var(--green-dark); }
+.sug-status.next { background: #fff4e0; color: var(--amber); }
+.sug-status.review { background: #fdeaea; color: var(--red); }
+.sug-status.credentials { background: #efeafd; color: #5b3fc4; }
+.notice .sug-status { display: inline-block; margin: 0 2px; }
+
+/* Equity curve (plain SVG, no chart library). */
+.equity-chart { width: 100%; height: auto; display: block; padding: 6px 16px 0; }
+.eq-grid { stroke: var(--line); stroke-width: 1; }
+.eq-base { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; opacity: .65; }
+.eq-line { fill: none; stroke: var(--green); stroke-width: 2.2; stroke-linejoin: round; }
+.eq-dot { fill: #fff; stroke: var(--green); stroke-width: 1.8; }
+.eq-label { font-size: 10.5px; fill: var(--muted); font-family: system-ui, sans-serif; }

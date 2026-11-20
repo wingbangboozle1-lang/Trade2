@@ -119,9 +119,10 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
 
     ``GET /series/{series_ticker}/markets/{ticker}/candlesticks`` returns OHLC
     per period (https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md).
-    We take the most recent *completed* 1-minute candle's close and its timestamp
-    and use that as the baseline for the $0.10 swing test, so a gradual move
-    still alerts instead of being swallowed between two snapshots.
+    We take the most recent *completed* 1-minute candle and use its quote closes
+    (yes_bid and yes_ask) as the baseline for the $0.10 swing test, so a gradual
+    move still alerts instead of being swallowed between two snapshots. The
+    baseline is a quote mid with its spread, never a last-trade price.
 
     Returns None when the market has no trade history in the window, in which
     case the caller falls back to the previous snapshot.
@@ -144,14 +145,27 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     current_bar_start = now - (now % BAR_SECONDS)
     completed = [c for c in candles if c["end_period_ts"] <= current_bar_start]
     chosen = completed[-1] if completed else candles[0]
-    price = ((chosen.get("price") or {}).get("close_dollars"))
-    try:
-        value = float(price) if price not in (None, "") else None
-    except (TypeError, ValueError):
-        value = None
-    if value is None or not (0.0 < value < 1.0):
+    # Price basis: the swing test compares quote mids, so the reference must be
+    # a quote mid too. The candle's ``price`` block is the last *trade*; using it
+    # against a book mid produced phantom alerts (e.g. KXPRESNOMD-28-HBID: last
+    # trade 0.8110 vs mid of a 0.0020 / 0.8110 book = 0.4065). Use the candle's
+    # yes_bid / yes_ask close instead (both documented in the candlestick schema).
+    bid = _candle_close(chosen, "yes_bid")
+    ask = _candle_close(chosen, "yes_ask")
+    if bid is None or ask is None or not (0.0 <= bid <= ask <= 1.0):
         return None
-    return {"mid": value, "ts": float(chosen["end_period_ts"])}
+    return {"mid": round((bid + ask) / 2.0, 4),
+            "ts": float(chosen["end_period_ts"]),
+            "spread": round(ask - bid, 4)}
+
+
+def _candle_close(candle: dict[str, Any], side: str) -> float | None:
+    """``close_dollars`` of a candle's ``yes_bid`` or ``yes_ask`` block."""
+    block = candle.get(side) or {}
+    try:
+        return float(block.get("close_dollars"))
+    except (TypeError, ValueError):
+        return None
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 300,
@@ -340,14 +354,17 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             prev, obs,
             reference=(ref or {}).get("mid"),
             reference_ts=(ref or {}).get("ts"),
+            reference_spread=(ref or {}).get("spread"),
         )
         if alert:
             new_alerts.append(alert)
 
     existing = alerts_store.get("alerts", [])
-    # Fold repeats of the same market/reference-window/direction into one row
-    # (largest move wins) instead of appending a fresh id per run (R-D-01).
-    merged = alerts.dedupe_alerts(new_alerts + existing)[:MAX_ALERTS]
+    merged = new_alerts + [a for a in existing
+                           if a.get("id") not in {n["id"] for n in new_alerts}]
+    # Drop stored alerts that fail the current quote rule (written before it).
+    merged = [a for a in merged if alerts.alert_record_valid(a)]
+    merged = merged[:MAX_ALERTS]
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
