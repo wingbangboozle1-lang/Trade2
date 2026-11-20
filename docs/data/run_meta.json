@@ -9,14 +9,14 @@
   "resolutions": 300,
   "series": 59
  },
- "duration_s": 77.0,
+ "duration_s": 75.6,
  "environment": "github-actions",
  "errors": [],
  "exchange": {
   "indexes": 0,
   "status": null
  },
- "finished_at": "2026-11-20T16:06:09.345696+00:00",
+ "finished_at": "2026-11-20T16:43:49.463268+00:00",
  "series_matched": {
   "crypto": 237,
   "culture": 2493,
@@ -31,7 +31,7 @@
   "gas-prices": 12,
   "golf": 12
  },
- "started_at": "2026-11-20T16:04:52.328816+00:00",
+ "started_at": "2026-11-20T16:42:33.871258+00:00",
  "threshold": 0.1,
  "topics": [
   "gas-prices",

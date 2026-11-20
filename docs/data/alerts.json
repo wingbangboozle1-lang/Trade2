@@ -1,48 +1,28 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESPERSON/markets/KXPRESPERSON-28-VRAM/candlesticks?start_ts=1795187135&end_ts=1795190735&period_interval=1",
-   "delta": 0.799,
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795189396&end_ts=1795192996&period_interval=1",
+   "delta": 0.8,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.003,
-   "headlines": [
-    {
-     "published": "2026-11-20T12:00:00+00:00",
-     "source": "The Guardian",
-     "status": "verified-fetch",
-     "title": "Could Pete Buttigieg win the White House in 2028? | Politics Weekly America - The Guardian",
-     "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNb2tRWjdkbXNadzVhT25qdEhwS3VPd3c1Tk5fV1BoQ3g5QTlKRHA1dDZmSDB2SWZnenRYYXd2RnFyUGlIS3A3dmk2TTdVVk1qSk5SSkJuY1AxQnJiaE9OTW5CcG1vVHExc0Fpdmh4dXlUaVpwU09RRVNFSjlXc3A1QWRadG82QWhvRXpYQk5vZm9qWmVEOVo1blJNbHdEdkJWYS1ta2VDOWpHQ2RvdlAzcjNLM041MHhtM1k5ci04YmhPa0ZxTWc?oc=5"
-    },
-    {
-     "published": "2026-11-20T13:30:00+00:00",
-     "source": "The Hill",
-     "status": "verified-fetch",
-     "title": "Who gets to look presidential? - The Hill",
-     "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPanM3a3BrcksyZTlfblZ6em1rSExBYWhhU2cwQjN3Ym1NWVBZbmNvM29oMnhCX20tcFlFQUhlQlRzeTZFV05qOWxyNEhyREQ0V01pYnJJZmpENnFQbTNOem1nMUI2TnpINzZubnFCYlpHVnU2OUxpd0xPT2lXWThVb1g4NNIBiAFBVV95cUxOS2ZURzFRV0xnZnFMQjRkWFFQSjBKSXBaczJIQ2gyLWNCZnRoeEF6cWo0Q25lanlBcVhhMHV2MGYtbXhUM2l0SURYUWlZajBKQjBtWnBPSzB6eDFuNWJmdGExUHlzOHhmX3paNUt0QWFvOXk0NHQxT2NzZ1UyeXNKM053ZV8wUm9U?oc=5"
-    },
-    {
-     "published": "2026-11-20T14:47:00+00:00",
-     "source": "Business Insider",
-     "status": "verified-fetch",
-     "title": "Meet the Potential 2028 Presidential Frontrunners From Both Parties - Business Insider",
-     "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQV1h3VnIyV3M4bmc2OWxHcTA2QWlsaUtnd3MxMkNxaGdzM19KVjRSZnduQXFtSVNIWC1HMnFrVkdxbkxzU01palpqXzVEcmNnV2V0YnJNbVotQjBJM0ZqZmxIVUNjVE9zNEtOZXlOXzdZUVBsNFlUUWtQRk5IYlZBbjIzcw?oc=5"
-    }
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
    ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESPERSON-28-VRAM",
-   "t": 1795187280,
-   "t_iso": "2026-11-20T15:08:00+00:00",
+   "from": 0.003,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
+   "t": 1795189680,
+   "t_iso": "2026-11-20T15:48:00+00:00",
    "threshold": 0.1,
-   "ticker": "KXPRESPERSON-28-VRAM",
-   "title": "Who will win the next presidential election?",
-   "to": 0.802,
+   "ticker": "KXPRESNOMD-28-AKLO",
+   "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
+   "to": 0.803,
    "topic": "elections",
    "window": "seconds"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795169135&end_ts=1795190735&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks?start_ts=1795171396&end_ts=1795192996&period_interval=60",
    "delta": 0.806,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -63,7 +43,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795169135&end_ts=1795190735&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795171396&end_ts=1795192996&period_interval=60",
    "delta": 0.12,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -85,11 +65,11 @@
      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPNGtFYm9ubGFDWUFZMXo3UFpBcTU1Y0hsM1NKY216QVhXYVNpOUpTU3ZDQWtFdFFla054aEFaNEhkaVROVnZMcDFUcGtUWFhVaG9CWU9MZ3lmZ3BYdDBPa2Y5VENhZlVQalQ5YjNkR1NXTWNqb1pVYnhTVjdZWVh0Vk5rQmNNSFdGa3MxVEdBYmpVeUh2d1RwUVRhcWtqbmFfckJnUVVSVkpsMXJfeXlMdEQ2V3pZNXo4dmc2X29udXFzQWl3OF8ya1ZPUzdUamRmWVpzUVBTYU80bzZhWHYxak02ZWxWYzA?oc=5"
     },
     {
-     "published": "2026-11-20T09:50:28+00:00",
-     "source": "IMDb",
+     "published": "2026-11-20T16:20:41+00:00",
+     "source": "Kansas City Pitch",
      "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Draws Backlash Over Alleged Generative AI in Key Scenes - IMDb",
-     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFAtTTZMMUN1SHZESW1uX1BieXBpX0ZmWXkzVGluNS1Lb0ZVVHJ0SlhGeVdlMzE1cnhmT0ZmMjRueFpCeFFBM1BhWVJjUU5RVG02WllLWWJhREV3M2lBQ294T3kySU16TUE?oc=5"
+     "title": "For a stuntman sequel, The Further Mis-Adventures of Cliff Booth is in no rush to accomplish much - Kansas City Pitch",
+     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQQzdGZ3pZRjdaZF9pcGd3c3cxbG1OQXhtOEFYWEk1RlczMURSZDNsbldCXzdweWxPbHhoMkdhbEpfNjN2NUNVbU5kN0xtY3FLTjh6Mk56cFNOeFMyLUZ5Xy1NREc3Mjc0Vll3RW5WQ1M2LVlGdTNKek1zZEFnLXdYZDhMVEFQWW9qV2trbjVheXZ1aFlIb1VoVnhfeFNJRzFwQmpOWXZwT09BTFZKemxneGFzSGZiWXIzU2FxVTViTndvQQ?oc=5"
     },
     {
      "published": "2026-11-20T14:34:13+00:00",
@@ -118,7 +98,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794931535&end_ts=1795190735&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794933796&end_ts=1795192996&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -139,7 +119,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794931535&end_ts=1795190735&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794933796&end_ts=1795192996&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -152,13 +132,6 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
-    },
-    {
-     "published": "2026-11-19T06:49:53+00:00",
-     "source": "Peradaban.id",
-     "status": "verified-fetch",
-     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
-     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
     },
     {
      "published": "2026-11-19T03:29:34+00:00",
@@ -180,7 +153,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T16:06:09.341354+00:00",
+ "generated_at": "2026-11-20T16:43:49.459170+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

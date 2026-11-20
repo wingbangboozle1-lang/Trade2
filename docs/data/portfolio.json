@@ -1,10 +1,10 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 9786.28,
+  "cash": 10000.0,
   "daily_loss_cap": 150.0,
-  "equity": 10350.92,
-  "fees_paid": 13.72,
+  "equity": 10464.64,
+  "fees_paid": 0.0,
   "open_positions": 3,
   "realized_pnl": 0.0,
   "starting_cash": 10000.0
@@ -50,9 +50,14 @@
    "cash": 9786.28,
    "equity": 10350.92,
    "ts": "2026-11-20T16:06:09.413619+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 10464.64,
+   "ts": "2026-11-20T16:43:49.527216+00:00"
   }
  ],
- "generated_at": "2026-11-20T16:06:09.413624+00:00",
+ "generated_at": "2026-11-20T16:43:49.527247+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -71,7 +76,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 4,
+   "open_periods": 5,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
@@ -86,7 +91,7 @@
    "contracts": 1176,
    "entry_cost": 199.92,
    "entry_fee": 11.62,
-   "open_periods": 1,
+   "open_periods": 2,
    "opened_at": "2026-11-20T15:18:44.327370+00:00",
    "reason": "book edge fair=0.467 vs price=0.170 spread=0.030 net=+0.257",
    "side": "yes",
@@ -101,7 +106,7 @@
    "contracts": 10000,
    "entry_cost": 200.0,
    "entry_fee": 13.72,
-   "open_periods": 0,
+   "open_periods": 1,
    "opened_at": "2026-11-20T16:06:09.413595+00:00",
    "reason": "high-ROI: net edge +0.043 >= 0.02 (revert 30%x0.21 - fee 0.010 - spread 0.010)",
    "side": "yes",
@@ -131,18 +136,13 @@
   "by_trade_type": {}
  },
  "this_run": {
-  "equity": 10350.92,
+  "equity": 10464.64,
   "marks": {
    "KXAAAGASM-26NOV30-3.50": 0.5,
+   "KXAAAGASW-26NOV23-3.6400": 0.01,
    "KXRT-FUR-85": 0.14
   },
-  "opened": [
-   {
-    "signal": "high-roi-fade",
-    "strategy": "roi_edge",
-    "ticker": "KXAAAGASW-26NOV23-3.6400"
-   }
-  ]
+  "opened": []
  },
  "trades": [
   {
