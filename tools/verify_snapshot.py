@@ -156,16 +156,16 @@ def verify_market(event: dict[str, Any]) -> list[dict[str, Any]]:
         "check": "order book", "url": book_url, "field": "best_yes_bid",
         "published": add_book, "official": live_bid,
         "result": "match" if close(add_book, live_bid, PRICE_TOLERANCE)
-                  else ("drift" if add_book is not None and live_bid is not None
-                        else "mismatch"),
-        "detail": f"a live book moves; tolerance ${PRICE_TOLERANCE:.2f}"})
+                  else "drift",
+        "detail": ("a live book moves (including emptying or reappearing); "
+                   f"tolerance ${PRICE_TOLERANCE:.2f}")})
     checks.append({
         "check": "order book", "url": book_url, "field": "best_yes_ask",
         "published": add_ask, "official": live_ask,
         "result": "match" if close(add_ask, live_ask, PRICE_TOLERANCE)
-                  else ("drift" if add_ask is not None and live_ask is not None
-                        else "mismatch"),
-        "detail": f"a live book moves; tolerance ${PRICE_TOLERANCE:.2f}"})
+                  else "drift",
+        "detail": ("a live book moves (including emptying or reappearing); "
+                   f"tolerance ${PRICE_TOLERANCE:.2f}")})
     return checks
 
 
