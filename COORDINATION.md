@@ -23,7 +23,8 @@ Rules (agreed convention for this repo):
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | - | - | - | - | - |
-| `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | active |
+| `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | done |
+| `arena-e4e8f4e1` | `arena/e4e8f4e1-trade2` | Independent final audit, factual corrections, demo-only secondary collector integration | 2026-11-20 | active |
 
 No other sessions are registered as of the last update below. This session is
 doing the integration work itself because the board was empty and no competing
@@ -49,6 +50,26 @@ claims existed.
 | T12 | Integration: re-verify, link check, PR, merge, confirm Pages deploy | done | `arena-f5837994` | `COORDINATION.md` |
 
 ---
+
+## Current session claim — `arena-e4e8f4e1` (2026-11-20)
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T18 | Independent final audit of the integrated dashboard, tests, official-source traceability, deployment status, and unresolved limits | in progress | `arena-e4e8f4e1` | `COORDINATION.md`, `AUDIT_2026-11-20.md` |
+
+This audit does not modify other sessions' implementation or published data. It is scoped to a standalone report and this coordination entry; existing completed tasks remain untouched.
+
+**Audit follow-up claim T14:** `EXECUTIVE_SUMMARY.md` currently abbreviates settlement payout in a way that can be read as NO contracts never paying. The official Market Settlement page states that YES holders receive $1 for a YES outcome and NO holders receive $1 for a NO outcome. T14 is claimed by this session, limited to the settlement sentence in `EXECUTIVE_SUMMARY.md` and this board; source: https://docs.kalshi.com/getting_started/market_settlement. No existing active owner is listed for the completed summary task.
+
+**Audit follow-up claim T15:** `docs/summary.html` describes `period_interval=1` as an “s-series.” The official candlestick endpoint explicitly defines the allowed periods as minutes (1, 60, or 1440 minutes). T15 is claimed by this session, limited to that table row and this board; source: https://docs.kalshi.com/api-reference/market/get-market-candlesticks. The seconds/minutes/hours buttons are time-range windows, not seconds-based candle intervals.
+
+**Audit follow-up claim T16:** `tools/rendercheck.mjs` fails in local jsdom because `window.fetch` is not defined; that prevents the intended render assertion from running despite the site-smoke test passing. T16 is claimed by this session, limited to the test harness and this board. The fix will stub snapshot fetch as an offline miss (no network) so the checker verifies the inline snapshot-render path.
+
+**Audit follow-up claim T17:** The secondary `kalshi-dashboard/` pipeline was explicitly defaulting to the production REST host (`scripts/collect.mjs`, `config/flags.json`, `site/pages/summary.html`, and `.github/workflows/dashboard.yml`), contrary to this request's demo-only environment. Claim by `arena-e4e8f4e1`; scope: `scripts/collect.mjs`, `scripts/test/collect.test.mjs`, `.github/workflows/dashboard.yml`, `config/flags.json`, `config/sources.json`, `site/pages/summary.html`, and generated `kalshi-dashboard/**`. Fix: default to the documented demo host, reject production/custom API bases, accurately label the demo snapshot, isolate the paper-trade cache from production state, and add a regression test. Existing static production snapshot data must not be relabeled as demo unless refreshed from the official demo API.
+
+**Coordination update:** `origin/main` advanced while this session was working; PR #12 from `arena/0b2d2a2a-trade2` merged with an audit addendum and request R-D-01. This branch was rebased onto the new `origin/main`, preserving that merge and its files. The first push was rejected because the remote feature branch still held the pre-rebase versions of this session's own earlier commits. The remote branch history was inspected; it contained only those already-pushed session commits. A lease-protected push will update the current session branch without discarding another session's work. No merge conflict occurred.
+
+**Follow-up status:** T14 settlement wording, T15 candle interval wording, and T16 offline render-check harness are implemented and verified. T17 demo-only collector guard, regression tests, cache isolation, and source/summary updates are implemented; F-07 remains open until main publishes a successful demo snapshot. T18 final audit is pending the PR, demo refresh, and Pages confirmation.
 
 ## Work log
 
