@@ -334,9 +334,12 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
         head = ((rows[0].get("observation") or {}).get("_event_title")
                 or event_ticker)
         market_rows.append(
-            f'<tr class="group-row"><td colspan="8"><strong>{esc(head)}</strong> '
+            f'<tr class="group-row"><td colspan="7"><strong>{esc(head)}</strong> '
             f'<small class="ticker">{esc(event_ticker)}</small> '
-            f'<span class="tag tag-purple">{len(rows)} market(s)</span></td></tr>')
+            f'<span class="tag tag-purple">{len(rows)} market(s)</span></td>'
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{API}/events/{html.escape(event_ticker)}?with_nested_markets=true">'
+            f'event API ↗</a></td></tr>')
         for e in rows:
             if shown >= 60:
                 break
@@ -724,14 +727,23 @@ def build_performance_section(live: dict[str, Any]) -> str:
             f"<td>{cnt(a.get('trades'))}</td><td>{cnt(a.get('wins'))}</td>"
             f"<td>{cnt(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
             f"<td>{money(a.get('realized'))}</td><td>{money(a.get('expectancy'))}</td>"
-            f"<td>{pct(a.get('roi_on_cost'))}</td><td>{money(a.get('fees'))}</td></tr>")
+            f"<td>{pct(a.get('roi_on_cost'))}</td><td>{money(a.get('fees'))}</td>"
+            # Every row carries the official sources its arithmetic rests on:
+            # the fee schedule for the fee column, and the market endpoint for
+            # the prices the simulated fills used.
+            f'<td><a class="source-link" href="https://kalshi.com/docs/'
+            f'kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">fee ↗</a> '
+            f'<a class="source-link" href="{API}/markets" target="_blank" '
+            f'rel="noreferrer">prices ↗</a></td></tr>')
     topic_rows = []
     for slug, a in (p.get("by_topic") or {}).items():
         topic_rows.append(
             "<tr>"
             f"<td>{html.escape(slug)}</td><td>{cnt(a.get('trades'))}</td>"
             f"<td>{pct(a.get('win_rate'))}</td><td>{money(a.get('realized'))}</td>"
-            f"<td>{money(a.get('expectancy'))}</td></tr>")
+            f"<td>{money(a.get('expectancy'))}</td>"
+            f'<td><a class="source-link" href="{API}/markets" target="_blank" '
+            f'rel="noreferrer">API ↗</a></td></tr>')
     settled_rows = []
     for pos in (p.get("settled_positions") or [])[:50]:
         settled_rows.append(
@@ -743,9 +755,12 @@ def build_performance_section(live: dict[str, Any]) -> str:
             f"<td>{cents(pos.get('entry_price'))}</td>"
             f"<td>{result_chip(pos.get('result'))}</td>"
             f"<td class=\"{'pos' if (pos.get('realized') or 0) >= 0 else 'neg'}\">"
-            f"{money(pos.get('realized'))}</td></tr>")
+            f"{money(pos.get('realized'))}</td>"
+            f'<td><a class="source-link" href="{API}/markets/'
+            f'{html.escape(str(pos.get("ticker","")))}\u0022 target="_blank" '
+            f'rel="noreferrer">API ↗</a></td></tr>')
     if not settled_rows:
-        settled_rows.append('<tr><td colspan="6" class="empty-state">No simulated '
+        settled_rows.append('<tr><td colspan="7" class="empty-state">No simulated '
                             "position has resolved yet. The ledger fills as tracked "
                             "markets settle.</td></tr>")
     overall = p.get("overall", {})
@@ -777,7 +792,7 @@ def build_performance_section(live: dict[str, Any]) -> str:
             <table>
               <thead><tr><th>Strategy</th><th>Trades</th><th>Wins</th><th>Losses</th>
                 <th>Win rate</th><th>Realised</th><th>Expectancy</th>
-                <th>ROI on cost</th><th>Fees</th></tr></thead>
+                <th>ROI on cost</th><th>Fees</th><th>Source</th></tr></thead>
               <tbody>{''.join(rows)}</tbody>
             </table>
           </div>
@@ -792,7 +807,7 @@ def build_performance_section(live: dict[str, Any]) -> str:
           </div>
           <div class="table-wrap">
             <table><thead><tr><th>Topic</th><th>Trades</th><th>Win rate</th>
-              <th>Realised</th><th>Expectancy</th></tr></thead>
+              <th>Realised</th><th>Expectancy</th><th>Source</th></tr></thead>
               <tbody>{''.join(topic_rows) or '<tr><td colspan="5" class="empty-state">No settled trades yet</td></tr>'}</tbody>
             </table>
           </div>
@@ -805,7 +820,7 @@ def build_performance_section(live: dict[str, Any]) -> str:
           </div>
           <div class="table-wrap">
             <table><thead><tr><th>Market</th><th>Strategy</th><th>Side</th>
-              <th>Entry</th><th>Result</th><th>P&amp;L</th></tr></thead>
+              <th>Entry</th><th>Result</th><th>P&amp;L</th><th>Source</th></tr></thead>
               <tbody>{''.join(settled_rows)}</tbody>
             </table>
           </div>
