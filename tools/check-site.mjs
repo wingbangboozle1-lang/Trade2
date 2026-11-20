@@ -57,7 +57,10 @@ function resolveInternal(fromFile, href) {
   return null;
 }
 
-const htmlFiles = walk(DOCS).filter((f) => f.endsWith('.html'));
+const htmlFiles = [
+  ...walk(DOCS).filter((f) => f.endsWith('.html')),
+  ...walk(ROOT).filter((f) => f.endsWith('.html') && !f.startsWith(DOCS) && !f.includes(`${path.sep}node_modules${path.sep}`)),
+];
 let internalLinks = 0;
 let externalLinks = 0;
 

@@ -1,7 +1,7 @@
 /* =========================================================================
    Landing page: headline numbers + findings derived from the latest snapshot.
    ========================================================================= */
-import { loadData, renderNav, renderStatus, fmt, esc, TOPICS } from './common.js';
+import { loadData, renderNav, renderStatus, fmt, esc, TOPICS, pageBase } from './common.js';
 
 const TOPIC_BLURBS = {
   gas: 'Retail fuel thresholds and WTI front-month settlement targets.',
@@ -29,7 +29,7 @@ function renderTopicCards(data) {
         <dt>Live markets</dt><dd>${counts[key] || 0}</dd>
         <dt>Notional open interest</dt><dd>${fmt.money(notional[key] || 0, 0)}</dd>
       </div>
-      <p style="margin-top:12px"><a href="topics/${key}.html">Open ${esc(meta.short.toLowerCase())} →</a></p>
+      <p style="margin-top:12px"><a href="${pageBase()}topics/${key}.html">Open ${esc(meta.short.toLowerCase())} →</a></p>
     </div>`).join('');
 }
 

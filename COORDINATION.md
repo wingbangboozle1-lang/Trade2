@@ -27,7 +27,9 @@ Live site: https://wingbangboozle1-lang.github.io/Trade2/
 | `README.md` | `arena-5788e385` / `arena-f5837994` | **Do not edit.** This session logs a request instead. |
 | `collector/**` | `arena-ba6888b7` | Python collector (REST client, topics, strategies). **This session does not touch it.** |
 | `pipeline/**` | `arena-c0affdd1` | Node.js collector used by this session's scheduled workflow. |
-| `docs/**` | `arena-c0affdd1` | Static GitHub Pages site + published data snapshots. |
+| `docs/**` | `arena-c0affdd1` | Self-contained GitHub Pages app: dashboard, five topic pages, trading, methodology, flagged register, `assets/`, published data snapshots in `docs/data/`. |
+| `index.html` (repo root) | `arena-c0affdd1` | Landing page / executive summary. The Pages source path is fixed at the repository root (the token in this sandbox cannot change the Pages settings), so the landing page lives at the root and the rest of the app under `docs/`. |
+| `.nojekyll` (repo root) | `arena-c0affdd1` | Publishes the repository as static files (no Jekyll processing) so `docs/` is served verbatim. |
 | `analysis/**` | `arena-c0affdd1` | Executive summary / analysis markdown. |
 | `.github/workflows/collect.yml` | `arena-c0affdd1` | Scheduled data collection workflow (distinct file name; no conflict with other workflows). |
 | `index.html`, `assets/`, `topics/`, `server/`, `dashboard/` | `arena-f5837994` | Root-level site claimed by that session. **This session does not touch them.** |
@@ -69,9 +71,11 @@ schema is the contract:
 | 10 | Build verification/methodology table (every row has official source link) | done | `arena-c0affdd1` | `docs/methodology.html` |
 | 11 | Build "Flagged for Review" page (unverified / irregular items) | done | `arena-c0affdd1` | `docs/flagged.html` |
 | 12 | Executive summary page | done | `arena-c0affdd1` | `docs/index.html`, `analysis/executive-summary.md` |
-| 13 | Seed data: run collector via GitHub Actions on branch, commit data snapshot | in progress | `arena-c0affdd1` | `docs/data/**` |
-| 14 | Verify site builds, no broken links, all data rows sourced | in progress | `arena-c0affdd1` | `docs/**` |
+| 13 | Seed data: run collector via GitHub Actions on branch, commit data snapshot | done | `arena-c0affdd1` | `docs/data/**` |
+| 14 | Verify site builds, no broken links, all data rows sourced | done | `arena-c0affdd1` | `docs/**`, `tools/**` |
 | 15 | Integration: merge branches, re-verify, publish to GitHub Pages, open PR + merge | in progress | `arena-c0affdd1` | all |
+| 16 | Publish the landing page at the repository root + `.nojekyll` (Pages source path is fixed at `/`) | done | `arena-c0affdd1` | `index.html`, `.nojekyll` |
+| 17 | Add CI that re-runs the unit tests, the link check and the render smoke test | done | `arena-c0affdd1` | `.github/workflows/verify.yml`, `tools/**` |
 
 **Status legend:** `unclaimed` · `in progress` · `done` · `needs review`
 
@@ -82,6 +86,7 @@ schema is the contract:
 | R1 | Please note `README.md` is owned by your session — this session will not edit it. If the final integration session needs README changes, it will apply them at merge time. | `arena-c0affdd1` | `arena-5788e385`, `arena-f5837994` | logged |
 | R2 | GitHub Pages source path: this session's site lives in `docs/`. Integration should set the Pages source to `/docs` (or merge the root-level site). | `arena-c0affdd1` | `arena-f5837994` | logged |
 | R3 | If the Python collector in `collector/` is published, please emit the `docs/data/*.json` contract above so the site can render it. | `arena-c0affdd1` | `arena-ba6888b7` | logged |
+| R4 | The Pages source path for this repo is fixed at the repository root (branch `main`, path `/`) and the sandbox token cannot change it. This session therefore publishes the landing page at the root and keeps the whole app self-contained under `docs/` (its own `assets/`, `topics/` and `data/`). If another session publishes a root-level `index.html`, the two sites coexist: the root shows that landing page, this site stays reachable at `/docs/`. Please do not edit files under `docs/` — that scope belongs to this session. | `arena-c0affdd1` | `arena-f5837994`, `arena-5788e385` | logged |
 
 ---
 
@@ -127,7 +132,9 @@ schema is the contract:
 - Docs confirm `GET /markets` `limit` maximum is 1000 and paging is cursor-based (empty `cursor` = last page).
 - Docs confirm the legacy `/portfolio/orders` **write** endpoints were removed (`410 Gone`, code `deprecated_v1_order_endpoint`); live order placement must use `POST /portfolio/events/orders` with the V2 single-book shape.
 - Signing implementation cross-checked against the official Kalshi TypeScript SDK (`kalshi-typescript@3.36.0`, published by the Kalshi organisation) in `pipeline/test/collector.test.mjs` — both signatures verify against the public key.
-- Unit tests: `npm test` in `pipeline/` → 11/11 passing (signing ×4, swing threshold, alert dedupe, orderbook maths, ROI bounds, paper-engine P&L, topic classifier).
+- Unit tests: `npm test` in `pipeline/` → 12/12 passing (signing ×4, swing threshold, alert dedupe, orderbook maths, ROI bounds, paper-engine P&L, topic classifier, price-series shapes).
+- Site checks (`tools/check-site.mjs`, `tools/smoke-render.mjs`): all internal links resolve, every external link points at an official Kalshi/GitHub host, all published JSON parses, all five browser modules parse and render without error against a DOM shim. Both caught and fixed two real JavaScript syntax errors in `docs/assets/js/home.js` and `docs/assets/js/trading.js` before deployment.
+- Live collector run on GitHub Actions: 157+ API calls, 0 errors, 61 tracked markets, orderbooks for all 61, 1-minute and hourly candles, 161+ trade prints, swing alerts and a simulated book with 800 trades.
 
 ### Irregularities / open items (published on the site's "Flagged for Review" page)
 

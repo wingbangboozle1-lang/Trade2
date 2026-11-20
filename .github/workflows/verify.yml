@@ -1,0 +1,45 @@
+name: Verify collector and site
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Unit tests, link check and render smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install collector dependencies
+        working-directory: pipeline
+        run: npm install --no-audit --no-fund
+
+      - name: Collector unit tests
+        working-directory: pipeline
+        run: npm test
+
+      - name: Site link and asset check
+        run: node tools/check-site.mjs
+
+      - name: Page render smoke test
+        run: node tools/smoke-render.mjs

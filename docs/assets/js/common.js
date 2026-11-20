@@ -24,15 +24,21 @@ export const NAV = [
 ];
 
 /* ------------------------------------------------------------------ paths */
+/**
+ * Root of the published site, derived from this module's own location
+ * (docs/assets/js/common.js -> docs/). This keeps every link and data fetch
+ * correct no matter which sub-page or host the site is served from.
+ */
+export const SITE_ROOT = new URL('../../', import.meta.url);
+
 export function dataBase() {
   const attr = document.body?.dataset?.dataBase;
-  if (attr) return attr.endsWith('/') ? attr : `${attr}/`;
-  const depth = (location.pathname.match(/\//g) || []).length;
-  return depth > 2 ? '../data/' : 'data/';
+  if (attr) return new URL(attr.endsWith('/') ? attr : `${attr}/`, SITE_ROOT).href;
+  return new URL('data/', SITE_ROOT).href;
 }
+
 export function pageBase() {
-  const depth = (location.pathname.match(/\//g) || []).length;
-  return depth > 2 ? '../' : './';
+  return SITE_ROOT.href;
 }
 
 /* -------------------------------------------------------------- formatting */
