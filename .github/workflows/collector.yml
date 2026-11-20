@@ -82,16 +82,30 @@ jobs:
             echo "No data changes."
           else
             git commit -m "data: collector run $(date -u +%Y-%m-%dT%H:%MZ)"
+            # Test steps can leave drift outside docs/data (npm install rewrites
+            # package-lock.json); discard it now that docs/data is committed, or
+            # git pull --rebase refuses with "you have unstaged changes".
+            git checkout -- . || true
+            git status --porcelain | head -20 || true
             # Several sessions' collectors push to main; retry the rebase+push
             # on race instead of failing the whole collection run.
             for attempt in 1 2 3; do
-              if git pull --rebase origin "${GITHUB_REF_NAME}" && \
-                 git push origin "HEAD:${GITHUB_REF_NAME}"; then
-                echo "pushed on attempt $attempt"
-                break
+              if git -c rebase.autoStash=true pull --rebase origin "${GITHUB_REF_NAME}" 2>/tmp/pull.err; then
+                if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                  echo "pushed on attempt $attempt"
+                  break
+                fi
+                echo "::warning::push rejected on attempt $attempt (race with another collector); retrying"
+              else
+                echo "::warning::pull --rebase failed on attempt $attempt"
+                cat /tmp/pull.err || true
+                git rebase --abort || true
+                git checkout -- . || true
               fi
               if [ "$attempt" = 3 ]; then
-                echo "push failed after 3 attempts"
+                echo "::error::commit+push failed after 3 attempts"
+                cat /tmp/pull.err || true
+                git status --porcelain | head -30 || true
                 exit 1
               fi
               sleep 5
