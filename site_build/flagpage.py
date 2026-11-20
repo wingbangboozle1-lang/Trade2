@@ -168,6 +168,22 @@ STANDING = [
         "source": ("https://docs.kalshi.com/getting_started/quick_start_create_order.md",),
     },
     {
+        "title": "Alert rows can repeat, and midpoints may not be executable",
+        "body": ("The alert engine compares book midpoints between reference bars, "
+                 "so one sustained >= $0.10 move can fire again on each "
+                 "consecutive snapshot: the 2026-11-20 18:41 UTC snapshot carried "
+                 "29 raw alert rows over only 3 tickers, including a row whose "
+                 "quoted book was $0.002 bid / $0.811 ask against a $0.4065 "
+                 "midpoint — a spread wider than the alert threshold itself, so "
+                 "the midpoint was not an executable price. Until the engine-side "
+                 "fix lands (coordination request R-D-01), the live desk groups "
+                 "identical repeats client-side (xN badge) and marks rows whose "
+                 "YES spread is >= $0.10 as not executable; raw rows are never "
+                 "deleted from the snapshot. Treat each row as a detection "
+                 "event, not a tradable quote."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
         "title": "No news article is attributed to a price move",
         "body": ("The brief asked for links to news that may have caused jumps. No "
                  "official source maps articles to Kalshi price moves, so guessing "

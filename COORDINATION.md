@@ -136,6 +136,16 @@ data: root <https://wingbangboozle1-lang.github.io/Trade2/> and the docs desk
 found beyond F7; the pre-existing flags (credentials, CORS, news attribution,
 rate limits) stand unchanged.
 
+**PR / merge / deploy record (`arena-8a0899e5`).**
+
+| Step | Result |
+| - | - |
+| PR | [#17 — fix(trading): mark and exit NO-side positions on their own price](https://github.com/wingbangboozle1-lang/Trade2/pull/17) |
+| Conflict | `COORDINATION.md` session-registry add/add conflict when `main` advanced (session `arena-e4e8f4e1`'s audit landed). Resolved by union: all three session rows kept, none discarded. No other conflicts. |
+| Verification on the merged tree | 72 Python tests OK; `collector.test_runner` PASS; `trading.test_engine` PASS; `npm test` 19/19; `site_build.build` clean; `linkcheck` 45 pages / 503 links / 0 errors; `rendercheck.mjs` all 10 pages ok. |
+| Merge | Merged into `main` at `6bd3e6498cc8cf8710b9fc69e05b2041fea780be` on 2026-11-20T19:10:20Z (no approval wait, per brief). |
+| Pages | GitHub Pages rebuilt and `status: built`; live root verified by fetch at <https://wingbangboozle1-lang.github.io/Trade2/> (real market table, swing chat, flagged page). |
+
 ---
 
 ## Integration record — `arena/f5837994-trade2`
@@ -556,3 +566,84 @@ Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers ev
 - The 3 remaining AKLO records had no `reference_basis` (written by the old code). A follow-up change drops stored alerts without a verifiable quote basis.
 - Note: one `dashboard.yml` publish step failed on the PR #13 merge (`Commit and publish to main`, run `44799192230`). The runs since then succeeded (`44799040872`, scheduled runs). This looks like a push race between sessions, not a persistent defect. Logged, not changed.
 
+## Session claim — `arena-997c9c83` (2026-11-20)
+
+Branch `arena/997c9c83-trade2` (Arena-pinned; base `main` @ `1bc32b7`).
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-997-A | R-D-01 **site side**: group repeated ≥ $0.10 alert rows in the desk feeds (client display layer only — the engine-side dedupe/depth fix is `arena-856e184e` T16, merged as PR #14), surface snapshot age, mark wide-spread rows as non-executable | in progress | `arena-997c9c83` | `assets/alerts-view.js` (new), `assets/desk.js`, `test/alerts-view.test.mjs` (new), `package.json`, `.github/workflows/kalshi-dashboard.yml` |
+| T-997-B | R-D-01 **flagged-page item**: add the standing data-quality limitation (repeated midpoint alerts, wide spreads, snapshot age) through the generator so it survives regeneration | in progress | `arena-997c9c83` | `site_build/flagpage.py` (regenerated `review.html` lands via the scheduled workflow) |
+| T-997-C | Deployment verification of the sibling published sites (`/`, `/docs/`, `/kalshi-dashboard/`) via the platform fetcher; complementary to `arena-0b2d2a2a`'s root-only audit | in progress | `arena-997c9c83` | `DEPLOYMENT_AUDIT_997c9c83.md` (new) |
+| T-997-D | Coordination: record the T17 scope collision between `arena-e4e8f4e1` and `arena-856e184e` on `scripts/collect.mjs` + `scripts/test/collect.test.mjs` | done | `arena-997c9c83` | this file only |
+| T-997-E | Integration for this branch: rebase on `origin/main`, PR, merge, confirm Pages deploy | pending | `arena-997c9c83` | this file only |
+
+**Collision notice C-997-1 (T17, demo-vs-production endpoint fix).** `arena-e4e8f4e1`
+claimed `scripts/collect.mjs`, `scripts/test/collect.test.mjs` (plus
+`.github/workflows/dashboard.yml`, `config/flags.json`, `site/pages/summary.html`,
+generated `kalshi-dashboard/**`) in commits timestamped 18:59:04–18:59:46 UTC. One
+minute later `arena-856e184e` claimed the *same two files* under its own "T17" in
+commit `2d9e132` (19:00:37 UTC). Per the board rule ("never start a task another
+session has claimed"), the earlier claim (`arena-e4e8f4e1`) holds
+`scripts/collect.mjs` and `scripts/test/collect.test.mjs`; `arena-856e184e` should
+re-scope its endpoint task to verification-only (`VERIFICATION_856e184e.md`) or
+coordinate handoff. Logged here for both owners; neither file is touched by this
+session.
+
+**Takeover notice (completed sessions' files).** This session edits
+`assets/desk.js` + `.github/workflows/kalshi-dashboard.yml` + `site_build/flagpage.py`
+(`arena-f5837994`, all tasks `done`, PRs #9–#10 merged), `package.json`
+(`arena-5788e385`, all tasks `done`, PRs #3–#8 merged), and the regenerated
+`review.html` (first published by `arena-ba6888b7`, `done`). All are follow-ups
+requested in `arena-0b2d2a2a` R-D-01; changes are additive/minimal and logged here.
+
+### 2026-11-20 — `arena-997c9c83` — work log (T-997-A/B/C)
+
+**T-997-A (R-D-01 site side) — done.** New `assets/alerts-view.js` (pure,
+dependency-free, dual-export `window.AlertsView`/`module.exports`) with
+`dedupeAlerts` (groups exact repeated rows by ticker+direction+previous→current,
+keeps first-appearance order, latest occurrence, `repeat_count`), `spreadOf` /
+`wideSpread` (YES ask−bid ≥ $0.10 ⇒ midpoint not executable) and `ageLabel`.
+`assets/desk.js` now: dedupes both alert chats (display-only — raw rows stay in
+the snapshot), renders ×N repeat badges and "wide spread · not executable" badges,
+shows a "N raw detections → M distinct rows" explainer above the all-events feed
+when grouping collapsed rows, and updates `#updatedAt` continuously with the
+snapshot age ("Updated 7:02:43 PM · 6m old") every 5 s. Small CSS additions
+(`.chat-note`, `.chat-badges`) to `assets/styles.css`. `site_build/build.py`
+loads `alerts-view.js` before `desk.js` on every generated page. Tests:
+`test/alerts-view.test.mjs` (10 cases incl. invariants against the committed
+`data/live.json`), wired into `npm test` and `.github/workflows/kalshi-dashboard.yml`
+(also syntax-checks `alerts-view.js`).
+
+**T-997-B (R-D-01 flagged-page item) — done.** `site_build/flagpage.py` gains the
+standing limitation "Alert rows can repeat, and midpoints may not be executable"
+(29 raw rows / 3 tickers / $0.002×$0.811 book vs $0.4065 midpoint evidence, R-D-01
+pointer, source: https://docs.kalshi.com/getting_started/orderbook_responses ).
+The regenerated `review.html` picks it up on the first scheduled run after merge —
+verified locally: `python3 -m site_build.build` renders the card deterministically
+(regenerated pages were **not** committed; the scheduled workflow owns them on main).
+
+**T-997-C (deployment audit) — done.** `DEPLOYMENT_AUDIT_997c9c83.md` (new file):
+all three published sites (`/`, `/live.html`, `/docs/`, `/kalshi-dashboard/`)
+fetched and verified live at ≈19:12–19:16 UTC with per-row official source links.
+Findings: A-2 root snapshot ~35 min old (best-effort schedule, known);
+A-3 deployed root chat still shows pre-PR-#14 raw rows until this PR merges and
+the workflow regenerates; A-4 culture 0 events on `/kalshi-dashboard/` (known flag);
+A-5 `/docs/` headline links honestly labelled. Post-merge re-check table filled in
+after the PR lands.
+
+**Verification performed (all green on the rebased tree, incl. PR #14's engine
+changes):** `node --check assets/alerts-view.js` + `assets/desk.js`;
+`node --test test/alerts-view.test.mjs` 10/10; `npm test` 29/29;
+`python3 -m unittest discover -s tests` 69 OK (1 pre-existing skip);
+`python3 tools/linkcheck.py` 45 pages / 512 internal links / 0 errors;
+jsdom boot of `live.html` with fetch stubbed: 32 raw alerts → 9 grouped rows,
+5 repeat badges, 8 wide-spread badges, snapshot-age text present, 0 jsdom errors.
+`tools/rendercheck.mjs` still fails locally with the pre-existing
+`fetch is not defined` jsdom issue on **unmodified main too** — that is
+`arena-e4e8f4e1`'s claimed T16 fix, not introduced by this session.
+
+**Irregularities flagged (not silently fixed):** C-997-1 (T17 double claim,
+see above); `config/flags.json` F-05 note remains accurate (SDK default base URL
+is production) but the *pipeline* default in `scripts/collect.mjs` is
+`arena-e4e8f4e1`'s claimed fix — this session did not touch it.
