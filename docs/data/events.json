@@ -77,24 +77,6 @@
     "sub_title": "In 2028",
     "title": "Who will be the Democratic nominee in 2028?"
   },
-  "KXPRESPERSON-28": {
-    "category": "Elections",
-    "collateral_return_type": "MECNET",
-    "event_ticker": "KXPRESPERSON-28",
-    "exchange_index": 0,
-    "last_updated_ts": "2026-11-19T16:36:16.342205Z",
-    "mutually_exclusive": true,
-    "series_ticker": "KXPRESPERSON",
-    "settlement_sources": [
-      {
-        "name": "Office of the Presidency",
-        "url": "https://www.whitehouse.gov/administration/executive-office-of-the-president/"
-      }
-    ],
-    "strike_period": "",
-    "sub_title": "In 2028",
-    "title": "Who will win the next presidential election?"
-  },
   "KXGOVAK-26": {
     "category": "Politics",
     "collateral_return_type": "MECNET",

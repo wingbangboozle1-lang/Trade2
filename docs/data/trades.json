@@ -18,29 +18,8 @@
     "mark_price": 0.05,
     "mark_value": 5,
     "unrealized_pnl": -1,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
-  },
-  {
-    "strategy": "liquidity_capture",
-    "ticker": "KXPRESNOMD-28-AOC",
-    "event_ticker": "KXPRESNOMD-28",
-    "title": "Will Alexandria Ocasio-Cortez be the Democratic Presidential nominee in 2028?",
-    "topic": "elections",
-    "side": "YES",
-    "count": 50,
-    "entry_ts": 1795179600,
-    "entry_price": 0.15,
-    "entry_yes_price": 0.15,
-    "cost": 7.5,
-    "entry_reason": "Tight quote (spread $0.010) with resting size",
-    "mode": "backtest",
-    "status": "open",
-    "mark_price": 0.14,
-    "mark_value": 7,
-    "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
-    "close_time": "2028-11-07T15:00:00Z"
   },
   {
     "strategy": "liquidity_capture",
@@ -60,7 +39,7 @@
     "mark_price": 0.12,
     "mark_value": 6,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2026-12-06T00:00:00Z"
   },
   {
@@ -125,7 +104,7 @@
     "mark_price": 0.22,
     "mark_value": 11,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
   },
   {
@@ -146,7 +125,7 @@
     "mark_price": 0.16,
     "mark_value": 8,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
   },
   {
@@ -629,7 +608,7 @@
     "mark_price": 0.2,
     "mark_value": 10,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-12-31T15:00:00Z"
   },
   {
@@ -1068,7 +1047,7 @@
     "mark_price": 0.09,
     "mark_value": 4.5,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-12-31T15:00:00Z"
   },
   {
@@ -1441,7 +1420,7 @@
     "mark_price": 0.17,
     "mark_value": 8.5,
     "unrealized_pnl": -0.5,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
   },
   {
@@ -1616,6 +1595,33 @@
     "mark_price": 0.17,
     "mark_value": 17,
     "unrealized_pnl": 0,
+    "marked_at": "2026-11-20T13:34:22.000Z",
+    "close_time": "2027-01-01T05:00:00Z",
+    "exit_ts": 1795181775,
+    "exit_price": 0.17,
+    "proceeds": 17,
+    "pnl": 0,
+    "exit_reason": "exit_time",
+    "hold_minutes": 1116
+  },
+  {
+    "strategy": "mean_reversion",
+    "ticker": "KXBTCY-27JAN0100-B67500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "title": "BTC price  on Jan 1, 2027?",
+    "topic": "crypto",
+    "side": "YES",
+    "count": 100,
+    "entry_ts": 1795114800,
+    "entry_price": 0.17,
+    "entry_yes_price": 0.17,
+    "cost": 17,
+    "entry_reason": "Price $0.170 is $0.033 below the 30-period mean $0.203",
+    "mode": "live",
+    "status": "closed",
+    "mark_price": 0.17,
+    "mark_value": 17,
+    "unrealized_pnl": 0,
     "marked_at": "2026-11-20T13:32:39.000Z",
     "close_time": "2027-01-01T05:00:00Z",
     "exit_ts": 1795181662,
@@ -1753,7 +1759,7 @@
     "mark_price": 0.17,
     "mark_value": 17,
     "unrealized_pnl": 0,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
   },
   {
@@ -1928,7 +1934,7 @@
     "mark_price": 0.05,
     "mark_value": 2.55,
     "unrealized_pnl": -47.43,
-    "marked_at": "2026-11-20T13:34:22.000Z",
+    "marked_at": "2026-11-20T13:36:15.000Z",
     "close_time": "2027-01-01T05:00:00Z"
   },
   {
