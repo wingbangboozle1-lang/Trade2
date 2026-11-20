@@ -1047,7 +1047,7 @@ corrected · the fee-multiplier standing limitation on `review.html` ·
 `tools/root_pages_render.mjs` + `.github/workflows/site-check.yml` ·
 `tests/test_site_contract.py` · `VERIFICATION_79cc0bd5.md`.
 
-**Follow-up (PR #28).** Reading that deployed page is what caught it:
+**Follow-up (PR #31, merged at `856dc75`).** Reading that deployed page is what caught it:
 `methodology.html` claimed *"Fee-free series (multiplier 0) are respected via
 each series' own `fee_multiplier`"*, which is true of `trading/engine.py`
 (`:304`, `:387`) and false of `collector/engine.py:197/250` — the ledger whose
@@ -1171,3 +1171,32 @@ hand-merge generated markup, rebuild it.
 | Capability probe (post-merge dispatch on `main`, run 44804363290, success) | **Verified facts** now recorded in `docs/data/capabilities.json` with raw request/response evidence: (A) REST CORS for the Pages origin `https://wingbangboozle1-lang.github.io` is **enabled** — `access-control-allow-origin` echoed on both GET (200) and preflight (204), so the browser live layer runs in direct-API mode on the deployed site; (B) an anonymous browser-style WebSocket handshake is **rejected — `HTTP/1.1 401 Unauthorized`**, exactly as the official quick start states (handshake requires `KALSHI-ACCESS-*` headers, which browsers cannot send) — the site therefore never claims WS liveness; (C) `GET /markets/KXPRESNOMD-28-RW` → 200, 40 schema fields observed — `yes_bid_dollars`, `yes_ask_dollars`, `last_price_dollars`, `volume_fp`, `open_interest_fp`, `ticker`, `title`, `status`, `event_ticker` all confirmed, matching the live layer's field names 1:1. Re-run anytime via `gh workflow run live-probe.yml --ref main`. |
 | Verification after final merge | `python3 -m unittest discover -s tests` 107 pass / 1 skipped · `npm test` 18/18 · `python3 -m collector.test_runner` PASS · `python3 -m trading.test_engine` PASS · `node test/site_smoke.mjs docs/data` ALL PASS · `node tests/test_docs_live.mjs` ALL PASS · `python3 tools/linkcheck.py` 50 pages / 664 links / 0 errors · `python3 tools/rowsource_check.py` every published row links a demo-host URL (`missing=0`). |
 | Standing flagged items (non-blocking, published on the Flagged/limitations pages) | F-5b candle-window label quirk (`minutes`/`hours` keys = hourly/daily `interval`); F-5c docs-sim published `fees`/`net_pnl` exclude the closed trade's entry fee (cross-check table); F-5d live demo-account trading unverified (no credentials — never requested or stored); F-5e second-level charting needs live mode (official candles are 1-minute minimum); R-4f92-1/2 peer task-ID collisions remain open for those sessions. |
+
+---
+
+
+---
+
+### Final integration record — `arena-79cc0bd5`
+
+| PR | Head merged | Merge commit | Checks at merge | Pages |
+| - | --- | --- | --- | --- |
+| **#26** | `daf6b2a` | `dbea89c` | `check` pass · `collect` pass | build `dbea89ca6` **built**, `error: null` |
+| **#31** | `a74d5c0` | `856dc75` | `check` pass · `collect` pass | building at the time of writing, then verified on the live host |
+
+Rebase rounds: **four** (`1bc32b7` → `26fc801`-era main → `be3bcfc`/PR #21 →
+`8b5d701`/PR #25 → `53968df`). Every conflict was either a `COORDINATION.md`
+union or a generated page, and every generated page was resolved by taking
+`main`'s committed data and **regenerating** with the merged code — never by
+hand-picking a side of an HTML diff. Three of my own changes were withdrawn in
+favour of work that merged first (`count()` KPI formatting, the duplicate
+trades/roadmap pages, the client-side alert grouping and per-panel age), and one
+more was cut back when PR #25 pinned the opposite behaviour in a test
+(`count(None)` stays blank). Branch `arena/79cc0bd5-trade2` stays push-only to
+itself; nothing was renamed.
+
+**Open threads handed to other sessions:** R-79CC-1 (thread `fee_multiplier`
+through `collector/engine.py`; when it lands, retire K6's sentence and the
+standing flag together) · R-79CC-2 (`extras.age_label`'s `time.mktime` fallback
+should be `calendar.timegm`) · R-79CC-3 (update `tools/root_pages_render.mjs`
+with any topbar/nav/chat markup change) · R-79CC-4 (session-prefixed task IDs).
