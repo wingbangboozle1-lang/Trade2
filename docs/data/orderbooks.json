@@ -293,7 +293,7 @@
     "no_levels": [
       {
         "price": 0.07,
-        "count": 77.71
+        "count": 65.66
       },
       {
         "price": 0.06,
@@ -307,7 +307,7 @@
     "mid": 0.895,
     "spread": 0.07,
     "depth_yes_total": 1254.95,
-    "depth_no_total": 255.01,
+    "depth_no_total": 242.96,
     "depth_yes_within_5c": 389.86,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 348.92470000000003,
@@ -339,7 +339,7 @@
     "no_levels": [
       {
         "price": 0.057,
-        "count": 1119.56
+        "count": 1111.24
       },
       {
         "price": 0.056,
@@ -385,7 +385,7 @@
     "mid": 0.4765,
     "spread": 0.933,
     "depth_yes_total": 1,
-    "depth_no_total": 10342.56,
+    "depth_no_total": 10334.24,
     "depth_yes_within_5c": 0,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 0,
@@ -410,6 +410,72 @@
     "depth_yes_within_5c": 16,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 0.008,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESPERSON-28-GABB": {
+    "yes_levels": [
+      {
+        "price": 0.002,
+        "count": 83333.33
+      },
+      {
+        "price": 0.001,
+        "count": 166666.66
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.197,
+        "count": 136.72
+      },
+      {
+        "price": 0.196,
+        "count": 1972
+      },
+      {
+        "price": 0.195,
+        "count": 1929
+      },
+      {
+        "price": 0.194,
+        "count": 1950
+      },
+      {
+        "price": 0.193,
+        "count": 1855
+      },
+      {
+        "price": 0.192,
+        "count": 2020
+      },
+      {
+        "price": 0.191,
+        "count": 1828
+      },
+      {
+        "price": 0.19,
+        "count": 1962
+      },
+      {
+        "price": 0.189,
+        "count": 1774
+      },
+      {
+        "price": 0.188,
+        "count": 1922
+      }
+    ],
+    "best_yes_bid": 0.002,
+    "best_yes_ask": 0.803,
+    "best_no_bid": 0.197,
+    "best_no_ask": 0.998,
+    "mid": 0.4025,
+    "spread": 0.801,
+    "depth_yes_total": 249999.99,
+    "depth_no_total": 17348.72,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
     "notional_no_within_5c": 0
   },
   "KXGOVAK-26-NDAH": {
@@ -478,7 +544,7 @@
     "no_levels": [
       {
         "price": 0.967,
-        "count": 15009.68
+        "count": 15002.72
       },
       {
         "price": 0.966,
@@ -524,7 +590,7 @@
     "mid": 0.032,
     "spread": 0.002,
     "depth_yes_total": 50197.29000000001,
-    "depth_no_total": 56628.83,
+    "depth_no_total": 56621.87,
     "depth_yes_within_5c": 50197.29000000001,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 1606.3132800000003,
@@ -576,7 +642,7 @@
     "no_levels": [
       {
         "price": 0.729,
-        "count": 1031.02
+        "count": 1027.72
       },
       {
         "price": 0.728,
@@ -598,7 +664,7 @@
     "mid": 0.2655,
     "spread": 0.011,
     "depth_yes_total": 16404.89,
-    "depth_no_total": 3338.13,
+    "depth_no_total": 3334.83,
     "depth_yes_within_5c": 3862.34,
     "depth_no_within_5c": 34.96,
     "notional_yes_within_5c": 1025.45127,
@@ -663,7 +729,7 @@
     "no_levels": [
       {
         "price": 0.85,
-        "count": 248
+        "count": 241.44
       },
       {
         "price": 0.849,
@@ -689,7 +755,7 @@
     "mid": 0.145,
     "spread": 0.01,
     "depth_yes_total": 11054.56,
-    "depth_no_total": 6953.5599999999995,
+    "depth_no_total": 6946.999999999999,
     "depth_yes_within_5c": 10990.689999999999,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 1593.6500499999997,
@@ -741,7 +807,7 @@
     "no_levels": [
       {
         "price": 0.946,
-        "count": 6957.83
+        "count": 6947.16
       },
       {
         "price": 0.945,
@@ -775,7 +841,7 @@
     "mid": 0.053,
     "spread": 0.002,
     "depth_yes_total": 29521.36,
-    "depth_no_total": 26385.449999999997,
+    "depth_no_total": 26374.78,
     "depth_yes_within_5c": 29521.36,
     "depth_no_within_5c": 15,
     "notional_yes_within_5c": 1564.63208,
@@ -827,7 +893,7 @@
     "no_levels": [
       {
         "price": 0.967,
-        "count": 4106.54
+        "count": 4091.18
       },
       {
         "price": 0.966,
@@ -853,60 +919,10 @@
     "mid": 0.0325,
     "spread": 0.001,
     "depth_yes_total": 37632.77,
-    "depth_no_total": 37287.79,
+    "depth_no_total": 37272.43,
     "depth_yes_within_5c": 37632.77,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 1223.0650249999999,
-    "notional_no_within_5c": 0
-  },
-  "KXPRESNOMD-28-KH": {
-    "yes_levels": [
-      {
-        "price": 0.048,
-        "count": 10416.66
-      },
-      {
-        "price": 0.047,
-        "count": 10638.27
-      },
-      {
-        "price": 0.046,
-        "count": 10869.54
-      },
-      {
-        "price": 0.03,
-        "count": 33.4
-      },
-      {
-        "price": 0.001,
-        "count": 20
-      }
-    ],
-    "no_levels": [
-      {
-        "price": 0.95,
-        "count": 7572.97
-      },
-      {
-        "price": 0.949,
-        "count": 9803.91
-      },
-      {
-        "price": 0.948,
-        "count": 9615.36
-      }
-    ],
-    "best_yes_bid": 0.048,
-    "best_yes_ask": 0.05,
-    "best_no_bid": 0.95,
-    "best_no_ask": 0.952,
-    "mid": 0.049,
-    "spread": 0.002,
-    "depth_yes_total": 31977.87,
-    "depth_no_total": 26992.24,
-    "depth_yes_within_5c": 31977.87,
-    "depth_no_within_5c": 0,
-    "notional_yes_within_5c": 1566.91563,
     "notional_no_within_5c": 0
   },
   "KXOSCARPIC-27-ODY": {
@@ -1205,7 +1221,7 @@
       },
       {
         "price": 0.01,
-        "count": 40
+        "count": 60
       }
     ],
     "no_levels": [
@@ -1240,11 +1256,11 @@
     "best_no_ask": 0.95,
     "mid": 0.055,
     "spread": 0.01,
-    "depth_yes_total": 39206.62,
+    "depth_yes_total": 39226.62,
     "depth_no_total": 2018786.29,
-    "depth_yes_within_5c": 39206.62,
+    "depth_yes_within_5c": 39226.62,
     "depth_no_within_5c": 1998911.98,
-    "notional_yes_within_5c": 2156.3641000000002,
+    "notional_yes_within_5c": 2157.4641,
     "notional_no_within_5c": 1888971.8210999998
   },
   "KXBTCY-27JAN0100-B147500": {
@@ -1312,7 +1328,7 @@
       },
       {
         "price": 0.01,
-        "count": 60
+        "count": 40
       }
     ],
     "no_levels": [
@@ -1343,7 +1359,7 @@
     "best_no_ask": 0.78,
     "mid": 0.225,
     "spread": 0.01,
-    "depth_yes_total": 5724.31,
+    "depth_yes_total": 5704.31,
     "depth_no_total": 5372.95,
     "depth_yes_within_5c": 5606.61,
     "depth_no_within_5c": 0,
@@ -1378,7 +1394,7 @@
       },
       {
         "price": 0.01,
-        "count": 55.5
+        "count": 35.5
       }
     ],
     "no_levels": [
@@ -1409,7 +1425,7 @@
     "best_no_ask": 0.84,
     "mid": 0.165,
     "spread": 0.01,
-    "depth_yes_total": 10650.599999999999,
+    "depth_yes_total": 10630.599999999999,
     "depth_no_total": 5556.139999999999,
     "depth_yes_within_5c": 10590.099999999999,
     "depth_no_within_5c": 0,
@@ -1643,7 +1659,7 @@
       },
       {
         "price": 0.01,
-        "count": 1000020
+        "count": 1000000
       }
     ],
     "no_levels": [
@@ -1682,7 +1698,7 @@
     "best_no_ask": 0.92,
     "mid": 0.085,
     "spread": 0.01,
-    "depth_yes_total": 1107313.05,
+    "depth_yes_total": 1107293.05,
     "depth_no_total": 3004260.87,
     "depth_yes_within_5c": 7242.049999999999,
     "depth_no_within_5c": 999191.74,
@@ -1723,7 +1739,7 @@
     "no_levels": [
       {
         "price": 0.975,
-        "count": 5924.34
+        "count": 5913.58
       },
       {
         "price": 0.974,
@@ -1745,7 +1761,7 @@
     "mid": 0.0235,
     "spread": 0.003,
     "depth_yes_total": 822217.57,
-    "depth_no_total": 18733.42,
+    "depth_no_total": 18722.66,
     "depth_yes_within_5c": 822217.57,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 19322.112895,
@@ -1813,7 +1829,7 @@
     "no_levels": [
       {
         "price": 0.921,
-        "count": 1358.87
+        "count": 1352.62
       },
       {
         "price": 0.92,
@@ -1847,7 +1863,7 @@
     "mid": 0.0785,
     "spread": 0.001,
     "depth_yes_total": 99470.85999999999,
-    "depth_no_total": 24333.210000000003,
+    "depth_no_total": 24326.960000000003,
     "depth_yes_within_5c": 99470.85999999999,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 7808.462509999999,
@@ -1875,7 +1891,7 @@
     "no_levels": [
       {
         "price": 0.87,
-        "count": 1268.44
+        "count": 1266.33
       },
       {
         "price": 0.86,
@@ -1897,7 +1913,7 @@
     "mid": 0.125,
     "spread": 0.01,
     "depth_yes_total": 4610.6900000000005,
-    "depth_no_total": 3959.73,
+    "depth_no_total": 3957.62,
     "depth_yes_within_5c": 4570.6900000000005,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 571.3362500000001,
@@ -1941,7 +1957,7 @@
     "no_levels": [
       {
         "price": 0.995,
-        "count": 93833.9
+        "count": 93824.56
       },
       {
         "price": 0.994,
@@ -1971,7 +1987,7 @@
     "mid": 0.0045,
     "spread": 0.001,
     "depth_yes_total": 3666726.3200000003,
-    "depth_no_total": 1481002.77,
+    "depth_no_total": 1480993.4300000002,
     "depth_yes_within_5c": 3666726.3200000003,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 16500.26844,
@@ -2011,7 +2027,7 @@
     "no_levels": [
       {
         "price": 0.952,
-        "count": 2947.87
+        "count": 2940.23
       },
       {
         "price": 0.951,
@@ -2029,7 +2045,7 @@
     "mid": 0.0455,
     "spread": 0.005,
     "depth_yes_total": 171788.59,
-    "depth_no_total": 9682.560000000001,
+    "depth_no_total": 9674.92,
     "depth_yes_within_5c": 171788.59,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 7816.380845,
@@ -2073,7 +2089,7 @@
     "no_levels": [
       {
         "price": 0.978,
-        "count": 54400.78
+        "count": 54391.56
       },
       {
         "price": 0.977,
@@ -2091,7 +2107,7 @@
     "mid": 0.0205,
     "spread": 0.003,
     "depth_yes_total": 182368.71,
-    "depth_no_total": 167927.26,
+    "depth_no_total": 167918.03999999998,
     "depth_yes_within_5c": 182368.71,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 3738.558555,
@@ -2127,7 +2143,7 @@
     "no_levels": [
       {
         "price": 0.977,
-        "count": 6523.76
+        "count": 6513.26
       },
       {
         "price": 0.976,
@@ -2145,7 +2161,7 @@
     "mid": 0.022,
     "spread": 0.002,
     "depth_yes_total": 333924.03,
-    "depth_no_total": 20134.86,
+    "depth_no_total": 20124.36,
     "depth_yes_within_5c": 333924.03,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 7346.32866,
@@ -2177,7 +2193,7 @@
     "no_levels": [
       {
         "price": 0.962,
-        "count": 3683.34
+        "count": 3675.82
       },
       {
         "price": 0.961,
@@ -2195,10 +2211,39 @@
     "mid": 0.0355,
     "spread": 0.005,
     "depth_yes_total": 15978.42,
-    "depth_no_total": 12123.5,
+    "depth_no_total": 12115.98,
     "depth_yes_within_5c": 15978.42,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 567.2339099999999,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-JKEE": {
+    "yes_levels": [],
+    "no_levels": [
+      {
+        "price": 0.982,
+        "count": 15819.44
+      },
+      {
+        "price": 0.981,
+        "count": 17543.84
+      },
+      {
+        "price": 0.98,
+        "count": 16666.66
+      }
+    ],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0.018,
+    "best_no_bid": 0.982,
+    "best_no_ask": 0,
+    "mid": 0.009,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 50029.94,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
     "notional_no_within_5c": 0
   },
   "KXPGATOUR-THRC26-NSHI": {
@@ -2227,7 +2272,7 @@
     "no_levels": [
       {
         "price": 0.98,
-        "count": 43766.64
+        "count": 43759.45
       },
       {
         "price": 0.979,
@@ -2245,130 +2290,10 @@
     "mid": 0.0195,
     "spread": 0.001,
     "depth_yes_total": 188579.13999999998,
-    "depth_no_total": 136840.14,
+    "depth_no_total": 136832.95,
     "depth_yes_within_5c": 188579.13999999998,
     "depth_no_within_5c": 0,
     "notional_yes_within_5c": 3677.2932299999998,
-    "notional_no_within_5c": 0
-  },
-  "KXPGATOUR-THRC26-GHIG": {
-    "yes_levels": [
-      {
-        "price": 0.017,
-        "count": 10352.92
-      },
-      {
-        "price": 0.016,
-        "count": 10416.66
-      },
-      {
-        "price": 0.015,
-        "count": 11111.11
-      },
-      {
-        "price": 0.003,
-        "count": 166666.65
-      },
-      {
-        "price": 0.002,
-        "count": 249999.99
-      },
-      {
-        "price": 0.001,
-        "count": 500019.98
-      }
-    ],
-    "no_levels": [
-      {
-        "price": 0.98,
-        "count": 7850.17
-      },
-      {
-        "price": 0.979,
-        "count": 7936.5
-      },
-      {
-        "price": 0.978,
-        "count": 7575.75
-      }
-    ],
-    "best_yes_bid": 0.017,
-    "best_yes_ask": 0.02,
-    "best_no_bid": 0.98,
-    "best_no_ask": 0.983,
-    "mid": 0.0185,
-    "spread": 0.003,
-    "depth_yes_total": 948567.31,
-    "depth_no_total": 23362.42,
-    "depth_yes_within_5c": 948567.31,
-    "depth_no_within_5c": 0,
-    "notional_yes_within_5c": 17548.495235,
-    "notional_no_within_5c": 0
-  },
-  "KXPRESPERSON-28-GABB": {
-    "yes_levels": [
-      {
-        "price": 0.002,
-        "count": 166666.66
-      },
-      {
-        "price": 0.001,
-        "count": 333333.32
-      }
-    ],
-    "no_levels": [
-      {
-        "price": 0.997,
-        "count": 55555.55
-      },
-      {
-        "price": 0.996,
-        "count": 41666.66
-      },
-      {
-        "price": 0.995,
-        "count": 33333.33
-      },
-      {
-        "price": 0.197,
-        "count": 138.59
-      },
-      {
-        "price": 0.196,
-        "count": 1972
-      },
-      {
-        "price": 0.195,
-        "count": 1929
-      },
-      {
-        "price": 0.194,
-        "count": 1950
-      },
-      {
-        "price": 0.193,
-        "count": 1855
-      },
-      {
-        "price": 0.192,
-        "count": 2020
-      },
-      {
-        "price": 0.191,
-        "count": 1828
-      }
-    ],
-    "best_yes_bid": 0.002,
-    "best_yes_ask": 0.003,
-    "best_no_bid": 0.997,
-    "best_no_ask": 0.998,
-    "mid": 0.0025,
-    "spread": 0.001,
-    "depth_yes_total": 499999.98,
-    "depth_no_total": 142248.13,
-    "depth_yes_within_5c": 499999.98,
-    "depth_no_within_5c": 0,
-    "notional_yes_within_5c": 1249.99995,
     "notional_no_within_5c": 0
   }
 }

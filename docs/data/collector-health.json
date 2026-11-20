@@ -1,20 +1,20 @@
 {
-  "last_run_at": "2026-11-20T13:32:40.029Z",
-  "duration_ms": 36640,
-  "api_calls": 244,
+  "last_run_at": "2026-11-20T13:34:22.837Z",
+  "duration_ms": 38981,
+  "api_calls": 234,
   "api_errors": 0,
   "errors": [],
   "calls": {
     "markets": 46,
     "series": 1,
-    "orderbooks": 61,
-    "candles": 80,
+    "orderbooks": 60,
+    "candles": 78,
     "events": 13,
     "trades": 1
   },
   "exchange_active": true,
   "trading_active": true,
-  "runs": 4,
+  "runs": 5,
   "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
   "ws_base": "wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2",
   "notes": [

@@ -1,23 +1,23 @@
 {
   "start_cash": 10000,
-  "cash": 9016.17,
-  "deployed_open": 145.03,
-  "deployed_total": 10468.31,
-  "capital_returned": 9484.48,
+  "cash": 9029.72,
+  "deployed_open": 131.48,
+  "deployed_total": 10471.76,
+  "capital_returned": 9501.48,
   "realized_pnl": -838.81,
-  "unrealized_pnl": -52.48,
-  "cost_closed": 10323.28,
-  "open_positions": 11,
-  "closed_trades": 789,
+  "unrealized_pnl": -51.93,
+  "cost_closed": 10340.28,
+  "open_positions": 10,
+  "closed_trades": 790,
   "total_trades": 800,
   "wins": 15,
   "losses": 747,
   "win_rate": 1.9,
-  "open_value": 92.55,
-  "equity": 9108.72,
-  "total_pnl": -891.28,
+  "open_value": 79.55,
+  "equity": 9109.27,
+  "total_pnl": -890.73,
   "roi_pct": -8.91,
-  "avg_hold_minutes": 153,
+  "avg_hold_minutes": 155,
   "by_strategy": [
     {
       "key": "conviction",
@@ -35,31 +35,31 @@
     },
     {
       "key": "mean_reversion",
-      "trades": 37,
-      "closed": 36,
+      "trades": 38,
+      "closed": 37,
       "open": 1,
       "wins": 6,
       "losses": 20,
-      "win_rate": 16.67,
+      "win_rate": 16.22,
       "realized_pnl": -9.48,
       "unrealized_pnl": 0,
-      "deployed": 1410.74,
+      "deployed": 1427.74,
       "pnl": -9.48,
-      "roi_pct": -0.67
+      "roi_pct": -0.66
     },
     {
       "key": "liquidity_capture",
-      "trades": 742,
+      "trades": 741,
       "closed": 734,
-      "open": 8,
+      "open": 7,
       "wins": 7,
       "losses": 715,
       "win_rate": 0.95,
       "realized_pnl": -431.77,
-      "unrealized_pnl": -4.05,
-      "deployed": 8143.12,
+      "unrealized_pnl": -3.5,
+      "deployed": 8129.57,
       "pnl": -431.77,
-      "roi_pct": -5.3
+      "roi_pct": -5.31
     },
     {
       "key": "swing_momentum",
@@ -93,17 +93,17 @@
     },
     {
       "key": "crypto",
-      "trades": 280,
-      "closed": 274,
+      "trades": 281,
+      "closed": 275,
       "open": 6,
       "wins": 9,
       "losses": 252,
-      "win_rate": 3.28,
+      "win_rate": 3.27,
       "realized_pnl": -211.74,
       "unrealized_pnl": -49.93,
-      "deployed": 3124.13,
+      "deployed": 3141.13,
       "pnl": -211.74,
-      "roi_pct": -6.78
+      "roi_pct": -6.74
     },
     {
       "key": "golf",
@@ -121,17 +121,17 @@
     },
     {
       "key": "elections",
-      "trades": 342,
+      "trades": 341,
       "closed": 340,
-      "open": 2,
+      "open": 1,
       "wins": 2,
       "losses": 332,
       "win_rate": 0.59,
       "realized_pnl": -391.07,
-      "unrealized_pnl": -1.05,
-      "deployed": 4133.91,
+      "unrealized_pnl": -0.5,
+      "deployed": 4120.36,
       "pnl": -391.07,
-      "roi_pct": -9.46
+      "roi_pct": -9.49
     },
     {
       "key": "culture",
@@ -234,6 +234,20 @@
       "roi_pct": -1.59
     },
     {
+      "key": "mean_reversion|crypto|YES",
+      "trades": 3,
+      "closed": 2,
+      "open": 1,
+      "wins": 0,
+      "losses": 1,
+      "win_rate": 0,
+      "realized_pnl": -1,
+      "unrealized_pnl": 0,
+      "deployed": 52,
+      "pnl": -1,
+      "roi_pct": -1.92
+    },
+    {
       "key": "mean_reversion|culture|YES",
       "trades": 3,
       "closed": 3,
@@ -262,20 +276,6 @@
       "roi_pct": -2.33
     },
     {
-      "key": "mean_reversion|crypto|YES",
-      "trades": 2,
-      "closed": 1,
-      "open": 1,
-      "wins": 0,
-      "losses": 1,
-      "win_rate": 0,
-      "realized_pnl": -1,
-      "unrealized_pnl": 0,
-      "deployed": 35,
-      "pnl": -1,
-      "roi_pct": -2.86
-    },
-    {
       "key": "mean_reversion|gas|YES",
       "trades": 3,
       "closed": 3,
@@ -291,17 +291,17 @@
     },
     {
       "key": "liquidity_capture|elections|YES",
-      "trades": 320,
+      "trades": 319,
       "closed": 318,
-      "open": 2,
+      "open": 1,
       "wins": 0,
       "losses": 317,
       "win_rate": 0,
       "realized_pnl": -161.75,
-      "unrealized_pnl": -1.05,
-      "deployed": 3299.8,
+      "unrealized_pnl": -0.5,
+      "deployed": 3286.25,
       "pnl": -161.75,
-      "roi_pct": -4.9
+      "roi_pct": -4.92
     },
     {
       "key": "mean_reversion|elections|YES",
@@ -552,10 +552,10 @@
       "trades": 318,
       "win_rate": 0,
       "realized_pnl": -161.75,
-      "deployed": 3299.8,
-      "roi_pct": -4.9,
+      "deployed": 3286.25,
+      "roi_pct": -4.92,
       "qualified": false,
-      "description": "Buys the touch in a tight, deep market and aims for a 2-cent spread-sized gain. Applied to elections markets on the YES side: 318 closed trades, 0% win rate, $-161.75 realized on $3299.8 deployed (-4.9% ROI)."
+      "description": "Buys the touch in a tight, deep market and aims for a 2-cent spread-sized gain. Applied to elections markets on the YES side: 318 closed trades, 0% win rate, $-161.75 realized on $3286.25 deployed (-4.92% ROI)."
     }
   ]
 }
