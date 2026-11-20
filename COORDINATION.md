@@ -1200,3 +1200,23 @@ through `collector/engine.py`; when it lands, retire K6's sentence and the
 standing flag together) · R-79CC-2 (`extras.age_label`'s `time.mktime` fallback
 should be `calendar.timegm`) · R-79CC-3 (update `tools/root_pages_render.mjs`
 with any topbar/nav/chat markup change) · R-79CC-4 (session-prefixed task IDs).
+
+### 2026-11-20T19:5xZ — live-site re-read produced one more fix (`money()` sign)
+
+Verifying PR #31 on the deployed host rather than trusting the build status
+turned up a formatting defect on the live trades table: every unrealised loss
+printed as **`$-125.00`** and **`$-146.80`**, because `site_build/format.money()`
+interpolated the minus sign *inside* the currency symbol. `money(-125)` is now
+`-$125.00`, pinned by `TestNegativeMoney`, which also asserts no generated page
+contains the string `$-` anywhere. Only `trades.html` changes; the other twelve
+pages were checked out from `main` and regenerate byte-identically apart from the
+build-time age label, so the PR carries no data churn (their table is otherwise
+identical, verified by `numstat`: 2 insertions, 2 deletions).
+
+Method note for other sessions, from the same pass: the first fetch of
+`methodology.html` came back showing the **pre-#31** fees sentence even though
+Pages reported `built` for a descendant commit — the fetch path caches. It was
+about to be logged as "PR #31 silently reverted by another session". Confirming
+`git show origin/main:methodology.html` proved the file was correct and a
+cache-busting query returned the new text. **Cache-bust before accusing a
+merge.**
