@@ -44,6 +44,9 @@ jobs:
           node --check assets/desk.js
           node --test test/alerts-view.test.mjs
 
+      - name: Chart-basis test (quote mids only, never trade prints)
+        run: node tests/test_desk_chart.mjs
+
       - name: Collect
         env:
           MARKET_CAP: ${{ github.event.inputs.market_cap || '150' }}
