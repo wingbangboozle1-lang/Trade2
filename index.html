@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <meta
+      name="description"
+      content="A source-linked Kalshi demo market monitor, alerts, and paper-trading dashboard."
+    />
+    <title>Kalshi Monitor — Demo Dashboard</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body data-page="dashboard">
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark">K</span
+          ><span
+            ><b>Market Desk</b><small>Kalshi · Demo monitor</small></span
+          ></a
+        >
+        <div class="side-label">Workspace</div>
+        <nav class="side-nav" aria-label="Main navigation">
+          <a class="active" href="index.html"><span>◫</span> Overview</a>
+          <a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a>
+          <a href="categories/elections.html"><span>◉</span> Elections</a>
+          <a href="categories/culture.html"><span>✳</span> Culture</a>
+          <a href="categories/crypto.html"><span>₿</span> Crypto</a>
+          <a href="categories/golf.html"><span>⛳</span> Golf</a>
+        </nav>
+        <div class="side-label">Research</div>
+        <nav class="side-nav">
+          <a href="summary.html"><span>▤</span> Executive summary</a
+          ><a href="review.html"><span>⚑</span> Flagged for review</a>
+        </nav>
+        <div class="sidebar-foot">
+          <span class="dot"></span><span>Demo environment only</span
+          ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
+            >Open Kalshi demo ↗</a
+          >
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb">Workspace <span>/</span> Overview</div>
+          <div class="top-actions">
+            <span class="live-pill"><i></i> PUBLIC MARKET DATA</span
+            ><button
+              class="icon-button"
+              id="refreshButton"
+              aria-label="Refresh data"
+              title="Refresh data"
+            >
+              ↻</button
+            ><time id="updatedAt">Connecting…</time>
+          </div>
+        </header>
+        <section class="page-heading">
+          <div>
+            <div class="eyebrow">KALSHI DEMO · MARKET INTELLIGENCE</div>
+            <h1>Market overview</h1>
+            <p>
+              Track the biggest open markets, watch sudden price shifts, and
+              test rules with simulated trades.
+            </p>
+          </div>
+          <button class="button button-primary" id="refreshMain">
+            ↻ <span>Refresh markets</span>
+          </button>
+        </section>
+        <div id="apiNotice" class="notice notice-info">
+          <span>ⓘ</span>
+          <div>
+            <b>Connecting to Kalshi demo market data</b>
+            <p>
+              Live market details come directly from Kalshi’s public demo API.
+              No sample prices are substituted.
+            </p>
+          </div>
+        </div>
+        <section class="stats-grid" aria-label="Market summary">
+          <article class="stat-card">
+            <span>Open markets tracked</span><strong id="statMarkets">—</strong
+            ><small>Across selected topics</small>
+          </article>
+          <article class="stat-card">
+            <span>Alerts ≥ $0.10</span><strong id="statAlerts">0</strong
+            ><small>Observed by this browser</small>
+          </article>
+          <article class="stat-card">
+            <span>Simulated positions</span><strong id="statPositions">0</strong
+            ><small>Paper portfolio only</small>
+          </article>
+          <article class="stat-card">
+            <span>Paper P&amp;L</span><strong id="statPnl">—</strong
+            ><small>Settled simulated trades</small>
+          </article>
+        </section>
+        <section class="panel control-panel">
+          <div class="panel-title">
+            <div>
+              <span class="section-icon">⌕</span>
+              <div>
+                <h2>Market scanner</h2>
+                <p>
+                  Open events ranked by calculated open-interest value where
+                  official fields are available
+                </p>
+              </div>
+            </div>
+            <div class="control-row">
+              <label class="search-box"
+                ><span>⌕</span
+                ><input
+                  id="searchInput"
+                  type="search"
+                  placeholder="Search events or tickers"
+                  aria-label="Search events" /></label
+              ><select id="timeRange" aria-label="Chart time range">
+                <option value="seconds">Seconds</option>
+                <option value="minutes" selected>Minutes</option>
+                <option value="hours">Hours</option>
+              </select>
+            </div>
+          </div>
+          <div class="filter-tabs" id="topicTabs">
+            <button class="selected" data-topic="all">All topics</button
+            ><button data-topic="gas">Gas prices</button
+            ><button data-topic="elections">Elections</button
+            ><button data-topic="culture">Culture</button
+            ><button data-topic="crypto">Crypto</button
+            ><button data-topic="golf">Golf</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event / Market</th>
+                  <th>Topic</th>
+                  <th>YES price</th>
+                  <th>Δ observed</th>
+                  <th>Liquidity</th>
+                  <th>24h volume (contracts)</th>
+                  <th>Open-interest value*</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="marketRows">
+                <tr>
+                  <td colspan="9" class="empty-state">
+                    Loading official demo market data…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-foot">
+            <span id="tableCount">—</span
+            ><span
+              >* Open-interest value = open_interest_fp × notional_value_dollars
+              (per-contract settlement value), not traded-dollar volume.
+              Official Kalshi demo API · 15s polling.</span
+            >
+          </div>
+        </section>
+        <section class="panel resolved-panel">
+          <div class="panel-title">
+            <div>
+              <span class="section-icon green">✓</span>
+              <div>
+                <h2>Settled outcomes</h2>
+                <p>
+                  Official settled-event feed · YES/NO outcome when returned
+                </p>
+              </div>
+            </div>
+            <a
+              class="source-link"
+              href="https://docs.kalshi.com/api-reference/events/get-events"
+              target="_blank"
+              rel="noreferrer"
+              >Events API ↗</a
+            >
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event / Market</th>
+                  <th>Topic</th>
+                  <th>Result</th>
+                  <th>Settled / close time</th>
+                  <th>Official source</th>
+                </tr>
+              </thead>
+              <tbody id="resolvedRows">
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    Loading settled outcomes…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-foot">
+            <span
+              >One settled-event page only; not a full historical archive.</span
+            ><span>Refreshes at least once per minute</span>
+          </div>
+        </section>
+        <section class="content-grid">
+          <article class="panel chart-panel">
+            <div class="panel-title">
+              <div>
+                <span class="section-icon green">⌁</span>
+                <div>
+                  <h2>Price movement</h2>
+                  <p id="chartSubtitle">
+                    Select a market to view observed price history
+                  </p>
+                </div>
+              </div>
+              <select id="chartMarket" aria-label="Market for chart">
+                <option value="">Choose a market</option>
+              </select>
+            </div>
+            <div class="chart-metrics">
+              <div>
+                <small>Latest YES</small><strong id="chartPrice">—</strong>
+              </div>
+              <div>
+                <small>Observed change</small
+                ><strong id="chartChange">—</strong>
+              </div>
+              <div class="chart-legend"><i></i> YES price</div>
+            </div>
+            <div class="chart-frame">
+              <canvas
+                id="priceChart"
+                aria-label="Market price history chart"
+                role="img"
+              ></canvas>
+            </div>
+            <div class="chart-foot">
+              <span
+                >Price in dollars · X axis: local time · Y axis: YES bid</span
+              ><span id="chartWindow">Last 15 minutes</span>
+            </div>
+            <div class="depth-box">
+              <div class="depth-heading">
+                Orderbook depth <span id="depthStamp">Select a market</span>
+              </div>
+              <div id="depthLevels" class="depth-levels">
+                <span class="quiet">No market selected</span>
+              </div>
+            </div>
+          </article>
+          <article class="panel alert-panel">
+            <div class="panel-title">
+              <div>
+                <span class="section-icon amber">◉</span>
+                <div>
+                  <h2>Price alerts</h2>
+                  <p>Observed changes of at least $0.10</p>
+                </div>
+              </div>
+              <span class="count-badge" id="alertCount">0</span>
+            </div>
+            <div class="chat-switch">
+              <button class="selected" data-feed="all">All events</button
+              ><button data-feed="model">Model shortlist</button>
+            </div>
+            <div class="chat-feed" id="alertFeed" aria-live="polite">
+              <div class="empty-state inline">
+                Waiting for live price changes…
+              </div>
+            </div>
+            <div class="alert-note">
+              Alerts compare successive observed YES bids. Model watch requires
+              a threshold move plus positive calculated open-interest value; it
+              is not an ROI model or a news attribution.
+            </div>
+          </article>
+        </section>
+        <section class="content-grid lower-grid">
+          <article class="panel paper-panel">
+            <div class="panel-title">
+              <div>
+                <span class="section-icon violet">⇄</span>
+                <div>
+                  <h2>Paper-trading lab</h2>
+                  <p>Automated strategy simulation · never sends orders</p>
+                </div>
+              </div>
+              <span class="tag tag-purple">SIMULATED</span>
+            </div>
+            <div class="strategy-row">
+              <div>
+                <b>Momentum replay</b
+                ><small
+                  >Paper buy one YES contract after a +$0.10 observed jump; one
+                  entry per market per hour.</small
+                >
+              </div>
+              <label class="switch"
+                ><input type="checkbox" id="strategyToggle" /><span></span
+                ><em>Auto</em></label
+              >
+            </div>
+            <div class="paper-controls">
+              <label
+                >Simulated contracts
+                <select id="contractCount">
+                  <option>1</option>
+                  <option>5</option>
+                  <option>10</option>
+                </select></label
+              ><button class="button button-light" id="exportTrades">
+                Export trades</button
+              ><button class="button button-danger-light" id="resetPaper">
+                Reset paper ledger
+              </button>
+            </div>
+            <div class="table-wrap compact">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Market</th>
+                    <th>Side</th>
+                    <th>Entry</th>
+                    <th>Contracts</th>
+                    <th>Result</th>
+                    <th>Paper P&amp;L</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody id="tradeRows">
+                  <tr>
+                    <td colspan="7" class="empty-state">No paper trades yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="fine-print">
+              Simulated fills use the displayed YES bid and ignore fees,
+              slippage, and execution risk. Resolved outcomes are copied from
+              Kalshi’s market result; unsettled P&amp;L remains blank.
+            </p>
+          </article>
+        </section>
+        <footer class="site-footer">
+          <span
+            >Built for monitoring and strategy testing. Not investment
+            advice.</span
+          ><span
+            ><a href="summary.html">Methods &amp; sources</a
+            ><a href="review.html">Flagged for review</a></span
+          >
+        </footer>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>

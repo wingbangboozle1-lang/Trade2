@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <title>Flagged for review — Market Desk</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark">K</span
+          ><span
+            ><b>Market Desk</b><small>Kalshi · Demo monitor</small></span
+          ></a
+        >
+        <div class="side-label">Workspace</div>
+        <nav class="side-nav">
+          <a href="index.html"><span>◫</span> Overview</a
+          ><a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a
+          ><a href="categories/elections.html"><span>◉</span> Elections</a
+          ><a href="categories/culture.html"><span>✳</span> Culture</a
+          ><a href="categories/crypto.html"><span>₿</span> Crypto</a
+          ><a href="categories/golf.html"><span>⛳</span> Golf</a>
+        </nav>
+        <div class="side-label">Research</div>
+        <nav class="side-nav">
+          <a href="summary.html"><span>▤</span> Executive summary</a
+          ><a class="active" href="review.html"
+            ><span>⚑</span> Flagged for review</a
+          >
+        </nav>
+        <div class="sidebar-foot">
+          <span class="dot"></span><span>Demo environment only</span
+          ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
+            >Open Kalshi demo ↗</a
+          >
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <button class="mobile-menu" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb">
+            <a href="index.html">Workspace</a> <span>/</span> Flagged for review
+          </div>
+          <div class="top-actions">
+            <span class="flag-badge">OPEN ITEMS</span>
+          </div>
+        </header>
+        <section class="category-hero">
+          <div class="eyebrow">TRANSPARENCY · KNOWN LIMITATIONS</div>
+          <h1>Flagged for review</h1>
+          <p>
+            Items intentionally left unverified or out of scope. No missing
+            values are inferred.
+          </p>
+        </section>
+        <div class="notice notice-warn">
+          <span>⚑</span>
+          <div>
+            <b>Live listings are not a full exchange census</b>
+            <p>
+              At most four event pages (up to 800 open events) are scanned each
+              refresh; additional pages are not currently retrieved.
+            </p>
+          </div>
+        </div>
+        <section class="panel">
+          <div class="panel-title">
+            <div>
+              <span class="section-icon amber">⚑</span>
+              <div>
+                <h2>Unverified and constrained items</h2>
+                <p>Source-linked notes for review</p>
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="source-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Current treatment</th>
+                  <th>Why flagged</th>
+                  <th>Official reference</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Live event universe</td>
+                  <td>
+                    Up to 800 open events scanned per refresh; more may exist
+                    outside those pages.
+                  </td>
+                  <td>
+                    Pagination beyond the configured four-page cap is not
+                    currently fetched. Do not interpret dashboard counts as
+                    complete exchange-wide totals.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/events/get-events"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Events endpoint pagination and cursor ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Category labels</td>
+                  <td>
+                    Locally matched using explicit keywords against Kalshi
+                    event/category/ticker and market title/ticker.
+                  </td>
+                  <td>
+                    Not an official topic taxonomy. A keyword filter may miss
+                    relevant events or include false positives. Manual
+                    validation is not claimed.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/events/get-events"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official event fields ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Missing quote, size, volume, or open-interest inputs</td>
+                  <td>
+                    Left empty and marked UNVERIFIED when absent from the
+                    response.
+                  </td>
+                  <td>
+                    No replacement or inferred number is used. The displayed
+                    open-interest value is calculated only when both official
+                    inputs are present; otherwise it remains UNVERIFIED.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/market/get-markets"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Market response schema ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Alert history before page load</td>
+                  <td>
+                    Not available; alerts start after two in-session
+                    observations.
+                  </td>
+                  <td>
+                    Browser polling and local storage do not establish a
+                    historical baseline. Moves between polls may be missed;
+                    chart range labels only bound captured samples.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_market_data"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi market-data guidance ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Move attribution / news links</td>
+                  <td>No external articles are attached to price jumps.</td>
+                  <td>
+                    Price correlation does not verify cause. Event- or
+                    website-link attribution needs a source feed and evidence
+                    mapping not provided by the market API alone.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/events/get-events"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official event metadata schema ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Model shortlist / “high ROI”</td>
+                  <td>
+                    Experimental, transparent watch filter: threshold jump plus
+                    positive calculated open-interest value.
+                  </td>
+                  <td>
+                    It does not estimate expected returns and has not been
+                    backtested. It must not be described as a validated ROI
+                    model or trading recommendation.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_market_data"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official market data fields ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Demo account balance, fills, and executed orders</td>
+                  <td>
+                    Not connected. Dashboard does not accept credentials or
+                    place orders.
+                  </td>
+                  <td>
+                    Account endpoints require signed authentication. Safe
+                    integration needs a credential-protecting backend and
+                    user-provisioned demo API access; neither is available from
+                    this static site.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_create_order"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Authenticated order API quick start ↗</a
+                    >
+                    ·
+                    <a
+                      href="https://docs.kalshi.com/getting_started/api_keys"
+                      target="_blank"
+                      rel="noreferrer"
+                      >API Keys ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Simulated P&amp;L accuracy</td>
+                  <td>
+                    Local paper trades only; uses observed YES bid and reported
+                    YES/NO result if available.
+                  </td>
+                  <td>
+                    Sim fills ignore fees, queue position, partial execution,
+                    slippage, and realized exits. This is a software test
+                    ledger, not account performance.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/api-reference/market/get-market-orderbook"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Official orderbook and quantity data ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>WebSocket low-latency updates</td>
+                  <td>Not enabled. Dashboard polls REST every 15 seconds.</td>
+                  <td>
+                    Kalshi’s WebSocket quick start demonstrates authenticated
+                    connection headers. A static page with no user-provided
+                    credentials does not connect to it here.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/quick_start_websockets"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi WebSocket quick start ↗</a
+                    >
+                  </td>
+                </tr>
+                <tr>
+                  <td>Browser cross-origin access / GitHub Pages deployment</td>
+                  <td>
+                    Kalshi's API is called directly from the browser; CORS has
+                    not been verified from the hosted origin. Existing Pages is
+                    configured for built-in publishing from main; the new
+                    content's deployment is pending merge.
+                  </td>
+                  <td>
+                    API documentation does not confirm browser CORS. Verify the
+                    hosted page and its network requests after Pages publishes
+                    this change.
+                  </td>
+                  <td>
+                    <a
+                      href="https://docs.kalshi.com/getting_started/demo_env"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Kalshi demo endpoint ↗</a
+                    >
+                    ·
+                    <a
+                      href="https://docs.github.com/en/rest/pages/pages?apiVersion=2022-11-28#update-information-about-a-github-pages-site"
+                      target="_blank"
+                      rel="noreferrer"
+                      >GitHub Pages API ↗</a
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel text-panel">
+          <h2>Blank means unknown</h2>
+          <p>
+            Live tables never replace missing API values with estimates. They
+            display an explicit UNVERIFIED marker, and each market row links to
+            its official demo API market resource for manual review. Alert
+            timestamps, shortlist status, and paper trade entries are generated
+            by this dashboard and are labeled as locally observed or simulated.
+          </p>
+        </section>
+        <footer class="site-footer">
+          <span>Open limitations are documented, not hidden.</span
+          ><span
+            ><a href="index.html">Dashboard</a
+            ><a href="summary.html">Methods &amp; sources</a></span
+          >
+        </footer>
+      </main>
+    </div>
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>
