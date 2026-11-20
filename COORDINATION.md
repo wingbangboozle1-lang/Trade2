@@ -1605,3 +1605,75 @@ Method: read-only. Every definition is quoted from an official `docs.kalshi.com`
 - PR [#48](https://github.com/wingbangboozle1-lang/Trade2/pull/48) merged at **2026-11-20T20:17:47Z**, merge commit `9f6f44381eab551ce46b878a564dc6d20ed6dcc3`; its `check` and `collect` PR checks passed.
 - Pages workflow [44810053551](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44810053551) succeeded; the latest Pages API response was `built`, `error: null`, for the merge commit.
 - Post-merge `Site check` [44810053789](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44810053789) succeeded. Post-merge root collector/deploy pipeline [44810053873](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44810053873) **failed again** at `Desk render check (browser path)`. Its local reproduction and owner request R-901-02 remain in effect. PR #28 remains open; no overlapping files were edited.
+# Board H — review + fix session (`arena-a3137708`)
+
+_Board letter: F was already taken by `arena-400634c3`, G by `arena-e1a76b9d` (see their notes on the same problem); this session took the next free letter._
+
+Repo: `wingbangboozle1-lang/Trade2` · Branch: `arena/a3137708-trade2` (Arena-managed) · Base: `main` @ `eef1243` (collector run 2026-11-20T20:01:14Z)
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-a3137708` | `arena/a3137708-trade2` | Line-by-line review vs official docs, exchange-status field bug fix, false-claim guard on the overview page, site/link/test verification, PR → main → Pages | 2026-11-20 | integration complete — see record below |
+
+## Task board — `arena-a3137708`
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| A1 | Review the merged tree line-by-line against official Kalshi docs; record findings with links | done (`VERIFICATION-a3137708.md` §2–§3) | `arena-a3137708` | `VERIFICATION-a3137708.md`, `COORDINATION.md` |
+| A2 | Fix undocumented `exchange_status` / `exchange_indexes` reads in the collector audit trail + regression tests | done | `arena-a3137708` | `collector/runner.py`, `tests/test_exchange_status_a3137708.py` |
+| A3 | Stop the overview page asserting "not trading" when `trading_active` is absent | done | `arena-a3137708` | `site_build/build.py` |
+| A4 | Confirm the Pages build (tests, link check, render check), PR, merge, Pages status | done — record below | `arena-a3137708` | `COORDINATION.md` |
+
+No other session's file was edited. `collector/runner.py`, `site_build/build.py` and
+`tests/` carried no active claim on this board at the time of the edit (the only
+in-progress claim was `arena-e4e8f4e1` / T18, scoped to `COORDINATION.md` +
+`AUDIT_2026-11-20.md`, which this entry leaves intact).
+
+## Log — `arena-a3137708`
+
+- 2026-11-20 — the tree initially looked empty (one squashed commit), so a
+  parallel pipeline was prototyped under `kalshi/` (client, store, alerts, ROI
+  screen, paper broker, SSE UI). Board review showed five prior sessions had
+  already built and merged all of that. **The parallel package was deleted rather
+  than merged**: `tools/linkcheck.py` failed on it
+  (`missing asset -> /assets/app.js`) and I-R1 already flags "three parallel
+  dashboards … with differing numbers". Nothing was committed; details in
+  `VERIFICATION-a3137708.md` §1.
+- 2026-11-20 — **F1 fixed**: `collector/runner.py` summarized
+  `GET /exchange/status` via `exchange_status` / `exchange_indexes`, fields that
+  do not exist in the documented response
+  (<https://docs.kalshi.com/api-reference/exchange/get-exchange-status>
+  defines `exchange_active`, `trading_active`, `intra_exchange_transfers_active`,
+  `exchange_estimated_resume_time`, `exchange_index_statuses[]`). `run_meta.json`
+  therefore published `status: null, indexes: 0` on every run while
+  `data/live.json` carried `trading_active: true` and four index statuses. Now
+  `summarize_exchange_status()` projects the documented fields, keeps
+  `None` for anything absent, and records the docs URL as `source_url`.
+- 2026-11-20 — **F2 fixed**: `site_build/build.py` rendered
+  `"trading" if exchange.get("trading_active") else "not trading"`, so a missing
+  field became a positive claim about the exchange. It now prints
+  `unknown (trading_active not returned)` / `unknown (status call failed)`.
+- 2026-11-20 — **F3 recorded**: the demo API returns money as decimal *strings*
+  in dollars and the book as `orderbook_fp.{yes,no}_dollars`
+  (`collector/kalshi_api.py:14`,
+  <https://docs.kalshi.com/getting_started/orderbook_responses.md>). A
+  cents-assuming client silently blanks every price — which is exactly what the
+  dropped prototype would have done. No change needed in the shipped code; pinned
+  here so the contract is not "fixed" the wrong way later.
+- 2026-11-20 — **sandbox egress note**: the demo API was reachable early in this
+  session and became unreachable partway through (TLS reset on both
+  `external-api.demo.kalshi.co` and `demo-api.kalshi.co`; `docs.kalshi.com` kept
+  working). So this session did **not** regenerate any data file; the published
+  snapshot stays the Actions one (`run_meta.json` finished 2026-11-20T19:44:12Z,
+  `errors: 0`), and the corrected exchange summary appears on the next scheduled
+  collector run, which has full egress.
+- 2026-11-20 — verification gates run on the merged tree: `python3 -m unittest
+  discover -s tests` **180 pass** (1 skipped, was 174 before +6 new) ·
+  `npm test` **29 pass** · `node tools/rendercheck.mjs` all pages ok ·
+  `node test/site_smoke.mjs docs/data` **ALL PASS** · `python3 tools/linkcheck.py`
+  **50 pages / 666 internal links / 0 errors** · `python3 -m collector.test_runner`
+  PASS · `python3 -m trading.test_engine` PASS. A local `python3 -m
+  site_build.build` reproduced every committed page with only the snapshot-age
+  strings moving, so regenerated HTML was reverted and left to Actions.

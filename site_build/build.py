@@ -367,7 +367,14 @@ def build_overview(live: dict[str, Any]) -> str:
                            "model's net-ROI gate right now. An empty feed is an "
                            "honest answer.</div>")
 
-    status = "trading" if exchange.get("trading_active") else "not trading"
+    # Only assert a trading state when the API actually reported the documented
+    # ``trading_active`` boolean; an absent field is *unknown*, not "not trading".
+    if "trading_active" in exchange:
+        status = "trading" if exchange.get("trading_active") else "not trading"
+    elif exchange.get("error"):
+        status = f"unknown (status call failed)"
+    else:
+        status = "unknown (trading_active not returned)"
     return f"""{topbar("Overview", generated, generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div>

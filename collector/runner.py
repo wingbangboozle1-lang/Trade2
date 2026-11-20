@@ -57,6 +57,49 @@ SOURCE_DEMO = "https://docs.kalshi.com/getting_started/demo_env"
 CAT_URL = "{base}/series/?category={cat}&include_product_metadata=false"
 
 
+# --- exchange status summary --------------------------------------------------
+# Field names are exactly those documented for GET /exchange/status:
+# https://docs.kalshi.com/api-reference/exchange/get-exchange-status
+#   exchange_active, trading_active, intra_exchange_transfers_active,
+#   exchange_estimated_resume_time, exchange_index_statuses[]
+# The previous summary read ``exchange_status`` and ``exchange_indexes`` -- two
+# fields the API does not return -- so run_meta.json published ``status: null``
+# and ``indexes: 0`` on every single run while the raw response in
+# data/live.json carried the real flags (found line-by-line by session
+# arena-a3137708 on 2026-11-20; see VERIFICATION-a3137708.md).
+EXCHANGE_STATUS_DOC = "https://docs.kalshi.com/api-reference/exchange/get-exchange-status"
+
+
+def summarize_exchange_status(status):
+    """Project the documented exchange-status fields, None kept as None.
+
+    ``None`` is not coerced to ``False``: "the field was not returned" and
+    "trading is off" are different claims, and the site renders the first as
+    *unknown* instead of asserting it.
+    """
+    idx = status.get("exchange_index_statuses") or []
+    out = {
+        "exchange_active": status.get("exchange_active"),
+        "trading_active": status.get("trading_active"),
+        "intra_exchange_transfers_active": status.get("intra_exchange_transfers_active"),
+        "estimated_resume_time": status.get("exchange_estimated_resume_time"),
+        "indexes": len(idx),
+        "index_statuses": [
+            {
+                "exchange_index": row.get("exchange_index"),
+                "description": row.get("description"),
+                "exchange_active": row.get("exchange_active"),
+                "trading_active": row.get("trading_active"),
+            }
+            for row in idx
+        ],
+        "source_url": EXCHANGE_STATUS_DOC,
+    }
+    if status.get("error"):
+        out["error"] = str(status["error"])
+    return out
+
+
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -508,8 +551,10 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     try:
         status = client.exchange_status()
-        meta["exchange"] = {"status": status.get("exchange_status"), "indexes": len(status.get("exchange_indexes") or [])}
-        progress(f"exchange status: {meta['exchange']['status']}")
+        meta["exchange"] = summarize_exchange_status(status)
+        ex = meta["exchange"]
+        progress(f"exchange status: trading_active={ex['trading_active']} "
+                 f"exchange_active={ex['exchange_active']} indexes={ex['indexes']}")
     except Exception as exc:
         meta["errors"].append({"step": "exchange_status", "error": str(exc)})
         progress(f"exchange status FAILED: {exc}")
