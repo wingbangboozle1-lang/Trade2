@@ -103,18 +103,23 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
 
 STANDING = [
     {
-        "title": "Swing alerts compared a trade price with a quote midpoint (fixed on branch arena/856e184e-trade2)",
+        "title": "Swing alerts once compared a trade price with a quote midpoint (fixed; verified live 2026-11-20)",
         "body": ("Until this fix, a >= $0.10 alert compared the candle's last-trade close with the "
                  "midpoint of the current bid and ask. On KXPRESNOMD-28-HBID the last trade and the ask were "
                  "0.8110 while the bid was 0.0020, so the midpoint 0.4065 produced a 'swing' of -$0.4045 that no "
-                 "trade made. Alerts now compare quote mid with quote mid, require a two-sided quote narrower "
-                 "than $0.10, and drop stored alerts that fail that rule on the next run. The same rule removes "
-                 "trade prints the quotes do not support: KXPRESNOMD-28-AKLO printed 0.8030 in the hour before its "
-                 "alert while its bid and ask stayed at 0.0020 and 0.0030. The $0.10 narrow-spread rule is a design "
-                 "choice of this project, not a Kalshi rule."),
+                 "trade made. Alerts now compare quote mid with quote mid and only publish a move that can be "
+                 "dealt on: both quotes two-sided, and the spread strictly below $0.10. The requirement "
+                 "threshold itself is unchanged at $0.10 and is never raised; what is gated is dealability, "
+                 "because a book wider than the threshold can only move its mid by having a side pulled. "
+                 "Stored rows that cannot show a quote basis are dropped on the next run. The same rule removed "
+                 "KXPRESNOMD-28-AKLO, whose 0.8030 was a trade print on a book quoted 0.0020 / 0.0030. The "
+                 "$0.10 narrow-spread rule is a design choice of this project, not a Kalshi rule; the full rule "
+                 "is published at methodology.html#alert-rule. Confirmed on a live demo run at 2026-11-20T19:18Z: "
+                 "the feed went from 29 phantom rows to 0, and the model chat carried a real scored signal."),
         "source": (
             "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
             "https://docs.kalshi.com/api-reference/market/get-market.md",
+            "https://docs.kalshi.com/getting_started/orderbook_responses.md",
             "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
             "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook",
         ),
