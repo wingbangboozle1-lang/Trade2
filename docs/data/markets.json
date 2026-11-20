@@ -1,0 +1,3993 @@
+[
+  {
+    "ticker": "KXWTIMAX-26DEC31-T130",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $130.01 by Dec 31, 2026?",
+    "yes_sub_title": "$130.01 or above",
+    "no_sub_title": "$130.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:54.780951Z",
+    "last_price": 0.045,
+    "previous_price": 0.045,
+    "yes_bid": 0.041,
+    "yes_ask": 0.045,
+    "no_bid": 0.955,
+    "no_ask": 0.959,
+    "spread": 0.004,
+    "volume": 1010116,
+    "volume_24h": 0,
+    "open_interest": 296510.55,
+    "dollar_amount": 13342.97,
+    "dollar_volume": 45455.22,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $130 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 12505 contracts within 5c of mid",
+      "spread $0.004",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.045,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T135",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $135.01 by Dec 31, 2026?",
+    "yes_sub_title": "$135.01 or above",
+    "no_sub_title": "$135.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:54.98072Z",
+    "last_price": 0.055,
+    "previous_price": 0.055,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 674194.71,
+    "volume_24h": 0,
+    "open_interest": 169701.56,
+    "dollar_amount": 9333.59,
+    "dollar_volume": 37080.71,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $135 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.055,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T115",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $115.01 by Dec 31, 2026?",
+    "yes_sub_title": "$115.01 or above",
+    "no_sub_title": "$115.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:54.280971Z",
+    "last_price": 0.081,
+    "previous_price": 0.082,
+    "yes_bid": 0.001,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.999,
+    "spread": 0.999,
+    "volume": 438930.03,
+    "volume_24h": 944,
+    "open_interest": 110992.26,
+    "dollar_amount": 8990.37,
+    "dollar_volume": 35553.33,
+    "dollar_volume_24h": 76.46,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $115 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 24,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 3,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 20 contracts within 5c of mid",
+      "spread $-0.001",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.081,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T125",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $125.01 by Dec 31, 2026?",
+    "yes_sub_title": "$125.01 or above",
+    "no_sub_title": "$125.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:54.631386Z",
+    "last_price": 0.064,
+    "previous_price": 0.064,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 508298.18,
+    "volume_24h": 0,
+    "open_interest": 151319.55,
+    "dollar_amount": 9684.45,
+    "dollar_volume": 32531.08,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $125 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.064,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXAAAGASM-26NOV30-3.90",
+    "event_ticker": "KXAAAGASM-26NOV30",
+    "series_ticker": "KXAAAGASM",
+    "title": "Will average **gas prices** be above $3.90?",
+    "yes_sub_title": "Above 3.90",
+    "no_sub_title": "Above 3.90",
+    "topic": "gas",
+    "topics": [
+      "gas",
+      "crypto"
+    ],
+    "category": "Economics",
+    "status": "active",
+    "close_time": "2026-11-30T04:59:00Z",
+    "open_time": "2026-10-27T20:34:13Z",
+    "updated_time": "2026-10-27T20:34:13.48488Z",
+    "last_price": 0.75,
+    "previous_price": 0.75,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 31027.52,
+    "volume_24h": 0,
+    "open_interest": 24988.65,
+    "dollar_amount": 18741.49,
+    "dollar_volume": 23270.64,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If average regular gas prices for United States are strictly greater than $3.90 on Nov 30, 2026 according to AAA, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxaaagasm",
+    "market_url": "https://kalshi.co/markets/kxaaagasm",
+    "settlement_sources": [
+      {
+        "name": "AAA",
+        "url": "https://gasprices.aaa.com/"
+      }
+    ],
+    "roi_score": 13,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 13
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 10d"
+    ],
+    "roi_fair_yes": 0.75,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 231.63,
+    "event_title": "Gas prices in the US in Nov 2026?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T150",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $150.01 by Dec 31, 2026?",
+    "yes_sub_title": "$150.01 or above",
+    "no_sub_title": "$150.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:55.33076Z",
+    "last_price": 0.028,
+    "previous_price": 0.028,
+    "yes_bid": 0.024,
+    "yes_ask": 0.03,
+    "no_bid": 0.97,
+    "no_ask": 0.976,
+    "spread": 0.006,
+    "volume": 1112846.01,
+    "volume_24h": 0,
+    "open_interest": 268563.56,
+    "dollar_amount": 7519.78,
+    "dollar_volume": 31159.69,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $150 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 21767 contracts within 5c of mid",
+      "spread $0.006",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.028,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T120",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $120.01 by Dec 31, 2026?",
+    "yes_sub_title": "$120.01 or above",
+    "no_sub_title": "$120.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:54.431261Z",
+    "last_price": 0.059,
+    "previous_price": 0.073,
+    "yes_bid": 0.058,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.942,
+    "spread": 0.942,
+    "volume": 432239.47,
+    "volume_24h": 2.58,
+    "open_interest": 172081.48,
+    "dollar_amount": 10152.81,
+    "dollar_volume": 25502.13,
+    "dollar_volume_24h": 0.15,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $120 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 8777 contracts within 5c of mid",
+      "spread $-0.058",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.059,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T180",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $180.01 by Dec 31, 2026?",
+    "yes_sub_title": "$180.01 or above",
+    "no_sub_title": "$180.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-03-23T21:12:54.714515Z",
+    "last_price": 0.017,
+    "previous_price": 0.017,
+    "yes_bid": 0.001,
+    "yes_ask": 0.99,
+    "no_bid": 0.01,
+    "no_ask": 0.999,
+    "spread": 0.989,
+    "volume": 1490046.98,
+    "volume_24h": 0,
+    "open_interest": 569608.28,
+    "dollar_amount": 9683.34,
+    "dollar_volume": 25330.8,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $180 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "spread $0.989",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.017,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXAAAGASM-26NOV30-3.80",
+    "event_ticker": "KXAAAGASM-26NOV30",
+    "series_ticker": "KXAAAGASM",
+    "title": "Will average **gas prices** be above $3.80?",
+    "yes_sub_title": "Above 3.80",
+    "no_sub_title": "Above 3.80",
+    "topic": "gas",
+    "topics": [
+      "gas",
+      "crypto"
+    ],
+    "category": "Economics",
+    "status": "active",
+    "close_time": "2026-11-30T04:59:00Z",
+    "open_time": "2026-10-27T20:34:13Z",
+    "updated_time": "2026-10-27T20:34:13.48488Z",
+    "last_price": 0.75,
+    "previous_price": 0.75,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 27330.22,
+    "volume_24h": 0,
+    "open_interest": 17463.58,
+    "dollar_amount": 13097.69,
+    "dollar_volume": 20497.67,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If average regular gas prices for United States are strictly greater than $3.80 on Nov 30, 2026 according to AAA, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxaaagasm",
+    "market_url": "https://kalshi.co/markets/kxaaagasm",
+    "settlement_sources": [
+      {
+        "name": "AAA",
+        "url": "https://gasprices.aaa.com/"
+      }
+    ],
+    "roi_score": 13,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 13
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 10d"
+    ],
+    "roi_fair_yes": 0.75,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 231.63,
+    "event_title": "Gas prices in the US in Nov 2026?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T160",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $160.01 by Dec 31, 2026?",
+    "yes_sub_title": "$160.01 or above",
+    "no_sub_title": "$160.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:55.480979Z",
+    "last_price": 0.02,
+    "previous_price": 0.02,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 1213270.6,
+    "volume_24h": 0,
+    "open_interest": 457722.32,
+    "dollar_amount": 9154.45,
+    "dollar_volume": 24265.41,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $160 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.02,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXWTIMAX-26DEC31-T140",
+    "event_ticker": "KXWTIMAX-26DEC31",
+    "series_ticker": "KXWTIMAX",
+    "title": "Will the maximum WTI front month settle price reach $140.01 by Dec 31, 2026?",
+    "yes_sub_title": "$140.01 or above",
+    "no_sub_title": "$140.01 or above",
+    "topic": "gas",
+    "topics": [
+      "gas"
+    ],
+    "category": "Financials",
+    "status": "active",
+    "close_time": "2026-12-31T19:30:00Z",
+    "open_time": "2026-03-06T18:58:38Z",
+    "updated_time": "2026-04-09T17:21:55.130777Z",
+    "last_price": 0.03,
+    "previous_price": 0.03,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 741538.53,
+    "volume_24h": 0,
+    "open_interest": 226154.88,
+    "dollar_amount": 6784.65,
+    "dollar_volume": 22246.16,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If ICE reports that the maximum price of oil (as defined exclusively by the set of WTI front-month settle prices) is above $140 between Issuance and Dec 31, 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxwtimax",
+    "market_url": "https://kalshi.co/markets/kxwtimax",
+    "settlement_sources": [
+      {
+        "name": "ICE",
+        "url": "https://www.ice.com/report-center"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 990.15,
+    "event_title": "How high will WTI oil get by end of year?",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXAAAGASW-26NOV23-3.6200",
+    "event_ticker": "KXAAAGASW-26NOV23",
+    "series_ticker": "KXAAAGASW",
+    "title": "Will average **gas prices** be above $3.6200?",
+    "yes_sub_title": "Above 3.6200",
+    "no_sub_title": "Above 3.6200",
+    "topic": "gas",
+    "topics": [
+      "gas",
+      "crypto"
+    ],
+    "category": "Economics",
+    "status": "active",
+    "close_time": "2026-11-23T04:59:00Z",
+    "open_time": "2026-11-15T21:34:40Z",
+    "updated_time": "2026-11-15T21:34:40.182554Z",
+    "last_price": 0.93,
+    "previous_price": 0.81,
+    "yes_bid": 0.87,
+    "yes_ask": 0.93,
+    "no_bid": 0.07,
+    "no_ask": 0.13,
+    "spread": 0.06,
+    "volume": 14514.11,
+    "volume_24h": 4455.43,
+    "open_interest": 11370.27,
+    "dollar_amount": 10574.35,
+    "dollar_volume": 13498.12,
+    "dollar_volume_24h": 4143.55,
+    "result": "",
+    "rules_primary": "If average regular gas prices for United States are strictly greater than $3.6200 on Nov 23, 2026 according to AAA, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxaaagasw",
+    "market_url": "https://kalshi.co/markets/kxaaagasw",
+    "settlement_sources": [
+      {
+        "name": "AAA",
+        "url": "https://gasprices.aaa.com/"
+      }
+    ],
+    "roi_score": 35,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 13,
+      "spread": 7,
+      "edge": 0,
+      "time": 15
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 199 contracts within 5c of mid",
+      "spread $0.060",
+      "not enough history for a 30m mean",
+      "closes in 64h"
+    ],
+    "roi_fair_yes": 0.93,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 63.63,
+    "event_title": "US gas prices this week",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXPRESNOMD-28-GPLA",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Graham Platner be the nominee for the Presidency for the Democratic party?",
+    "yes_sub_title": "Graham Platner",
+    "no_sub_title": "Graham Platner",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2026-03-31T21:37:32Z",
+    "updated_time": "2026-04-09T17:04:56.980825Z",
+    "last_price": 0.99,
+    "previous_price": 0.99,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 465856531.27,
+    "volume_24h": 0,
+    "open_interest": 44108150.17,
+    "dollar_amount": 43667068.67,
+    "dollar_volume": 461197965.96,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Graham Platner wins and accepts the nomination for the Presidency for the Democratic party, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.99,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-JP",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Jared Polis be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Jared Polis",
+    "no_sub_title": "Jared Polis",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2025-02-07T19:24:58Z",
+    "updated_time": "2026-10-30T23:38:58.449001Z",
+    "last_price": 0.943,
+    "previous_price": 0.935,
+    "yes_bid": 0.01,
+    "yes_ask": 0.943,
+    "no_bid": 0.057,
+    "no_ask": 0.99,
+    "spread": 0.933,
+    "volume": 186513442.51,
+    "volume_24h": 7738.19,
+    "open_interest": 89344735.06,
+    "dollar_amount": 84252085.16,
+    "dollar_volume": 175882176.29,
+    "dollar_volume_24h": 7297.11,
+    "result": "",
+    "rules_primary": "If Jared Polis wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "spread $0.933",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.943,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-HCLI",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Hilary Clinton be the nominee for the Presidency for the Democratic party?",
+    "yes_sub_title": "Hillary Clinton",
+    "no_sub_title": "Hillary Clinton",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2025-03-24T14:14:56Z",
+    "updated_time": "2026-04-09T17:04:51.930843Z",
+    "last_price": 0.99,
+    "previous_price": 0.99,
+    "yes_bid": 0.001,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.999,
+    "spread": 0.999,
+    "volume": 151138724.32,
+    "volume_24h": 0,
+    "open_interest": 65512934.4,
+    "dollar_amount": 64857805.06,
+    "dollar_volume": 149627337.08,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Hillary Clinton wins and accepts the nomination for the Presidency for the Democratic party, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 23,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 2,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 16 contracts within 5c of mid",
+      "spread $-0.001",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.99,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESPERSON-28-GABB",
+    "event_ticker": "KXPRESPERSON-28",
+    "series_ticker": "KXPRESPERSON",
+    "title": "Who will win the next presidential election?",
+    "yes_sub_title": "Greg Abbott",
+    "no_sub_title": "Greg Abbott",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2029-11-07T15:00:00Z",
+    "open_time": "2025-05-19T22:39:51Z",
+    "updated_time": "2026-04-09T17:02:39.038183Z",
+    "last_price": 0.803,
+    "previous_price": 0.003,
+    "yes_bid": 0.002,
+    "yes_ask": 0.003,
+    "no_bid": 0.997,
+    "no_ask": 0.998,
+    "spread": 0.001,
+    "volume": 136141055.71,
+    "volume_24h": 61112.16,
+    "open_interest": 65749902.78,
+    "dollar_amount": 52797171.93,
+    "dollar_volume": 109321267.74,
+    "dollar_volume_24h": 49073.06,
+    "result": "",
+    "rules_primary": "If Greg Abbott is the next person inaugurated as President for the term beginning in 2029, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresperson",
+    "market_url": "https://kalshi.co/markets/kxpresperson",
+    "settlement_sources": [
+      {
+        "name": "Office of the Presidency",
+        "url": "https://www.whitehouse.gov/administration/executive-office-of-the-president/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 500000 contracts within 5c of mid",
+      "spread $0.001",
+      "not enough history for a 30m mean",
+      "closes in 1083d (distant)"
+    ],
+    "roi_fair_yes": 0.803,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 25993.65,
+    "event_title": "Who will win the next presidential election?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXGOVAK-26-NDAH",
+    "event_ticker": "KXGOVAK-26",
+    "series_ticker": "KXGOVAK",
+    "title": "Who will win the governorship in Alaska?",
+    "yes_sub_title": "Nancy Dahlstrom",
+    "no_sub_title": "Nancy Dahlstrom",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Politics",
+    "status": "active",
+    "close_time": "2027-11-03T15:00:00Z",
+    "open_time": "2025-07-03T03:35:08Z",
+    "updated_time": "2026-11-02T23:03:56.879429Z",
+    "last_price": 0.9,
+    "previous_price": 0.9,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 59562109.26,
+    "volume_24h": 0,
+    "open_interest": 5098212.83,
+    "dollar_amount": 4588391.55,
+    "dollar_volume": 53605898.33,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Nancy Dahlstrom is sworn in as the governor of Alaska pursuant to the election in 2026, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxgovak",
+    "market_url": "https://kalshi.co/markets/kxgovak",
+    "settlement_sources": [
+      {
+        "name": "The New York Times",
+        "url": "https://www.nytimes.com/"
+      },
+      {
+        "name": "the Associated Press",
+        "url": "https://apnews.com/"
+      },
+      {
+        "name": "Reuters",
+        "url": "https://www.reuters.com/"
+      },
+      {
+        "name": "Axios",
+        "url": "https://www.axios.com/"
+      },
+      {
+        "name": "Politico",
+        "url": "https://www.politico.com/"
+      },
+      {
+        "name": "Semafor",
+        "url": "https://www.semafor.com/"
+      },
+      {
+        "name": "The Information",
+        "url": "https://www.theinformation.com/"
+      },
+      {
+        "name": "The Washington Post",
+        "url": "https://www.washingtonpost.com/"
+      },
+      {
+        "name": "The Wall Street Journal",
+        "url": "https://www.wsj.com/"
+      },
+      {
+        "name": "ABC",
+        "url": "https://www.abc.net.au/"
+      },
+      {
+        "name": "CBS",
+        "url": "https://www.cbsnews.com/"
+      },
+      {
+        "name": "CNN",
+        "url": "https://www.cnn.com/"
+      },
+      {
+        "name": "Fox News",
+        "url": "https://www.foxnews.com/"
+      },
+      {
+        "name": "MSNBC",
+        "url": "https://www.msnbc.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 348d (distant)"
+    ],
+    "roi_fair_yes": 0.9,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 8353.65,
+    "event_title": "Who will win the governorship in Alaska?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMR-28-NMIN",
+    "event_ticker": "KXPRESNOMR-28",
+    "series_ticker": "KXPRESNOMR",
+    "title": "Will Nicki Minaj be the nominee for the Presidency for the Republican party?",
+    "yes_sub_title": "Nicki Minaj",
+    "no_sub_title": "Nicki Minaj",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2025-12-22T16:24:04Z",
+    "updated_time": "2026-04-09T17:04:39.810389Z",
+    "last_price": 0.98,
+    "previous_price": 0.98,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 20292670.28,
+    "volume_24h": 0,
+    "open_interest": 5249947.98,
+    "dollar_amount": 5144949.02,
+    "dollar_volume": 19886816.87,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Nicki Minaj wins and accepts the nomination for the Presidency for the Republican party, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomr",
+    "market_url": "https://kalshi.co/markets/kxpresnomr",
+    "settlement_sources": [
+      {
+        "name": "Republican Party",
+        "url": "https://gop.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.98,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Republican nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-RW",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Raphael Warnock be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Raphael Warnock",
+    "no_sub_title": "Raphael Warnock",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2024-12-10T03:33:22Z",
+    "updated_time": "2026-10-30T23:38:58.184248Z",
+    "last_price": 0.033,
+    "previous_price": 0.033,
+    "yes_bid": 0.031,
+    "yes_ask": 0.033,
+    "no_bid": 0.967,
+    "no_ask": 0.969,
+    "spread": 0.002,
+    "volume": 414908673.24,
+    "volume_24h": 7647.93,
+    "open_interest": 189529515.91,
+    "dollar_amount": 6254474.03,
+    "dollar_volume": 13691986.22,
+    "dollar_volume_24h": 252.38,
+    "result": "",
+    "rules_primary": "If Raphael Warnock wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 50197 contracts within 5c of mid",
+      "spread $0.002",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.033,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-JOSS",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Jon Ossoff be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Jon Ossoff",
+    "no_sub_title": "Jon Ossoff",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2025-05-23T17:01:15Z",
+    "updated_time": "2026-10-30T23:38:59.126421Z",
+    "last_price": 0.271,
+    "previous_price": 0.27,
+    "yes_bid": 0.26,
+    "yes_ask": 0.271,
+    "no_bid": 0.729,
+    "no_ask": 0.74,
+    "spread": 0.011,
+    "volume": 54530461.04,
+    "volume_24h": 7634.19,
+    "open_interest": 10488313.14,
+    "dollar_amount": 2842332.86,
+    "dollar_volume": 14777754.94,
+    "dollar_volume_24h": 2068.87,
+    "result": "",
+    "rules_primary": "If Jon Ossoff wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 3862 contracts within 5c of mid",
+      "spread $0.011",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.271,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMR-28-MG",
+    "event_ticker": "KXPRESNOMR-28",
+    "series_ticker": "KXPRESNOMR",
+    "title": "Will Matt Gaetz be the nominee for the Presidency for the Republican party?",
+    "yes_sub_title": "Matt Gaetz",
+    "no_sub_title": "Matt Gaetz",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2024-12-10T03:33:22Z",
+    "updated_time": "2026-10-30T23:38:57.451022Z",
+    "last_price": 0.98,
+    "previous_price": 0.98,
+    "yes_bid": 0.03,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.97,
+    "spread": 0.97,
+    "volume": 12348861.94,
+    "volume_24h": 0,
+    "open_interest": 5154305.08,
+    "dollar_amount": 5051218.98,
+    "dollar_volume": 12101884.7,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Matt Gaetz wins and accepts the nomination for the Presidency for the Republican party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomr",
+    "market_url": "https://kalshi.co/markets/kxpresnomr",
+    "settlement_sources": [
+      {
+        "name": "Republican Party",
+        "url": "https://gop.com/"
+      }
+    ],
+    "roi_score": 21,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 1 contracts within 5c of mid",
+      "spread $-0.030",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.98,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Republican nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-AOC",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Alexandria Ocasio-Cortez be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Alexandria Ocasio-Cortez",
+    "no_sub_title": "Alexandria Ocasio-Cortez",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2024-12-10T03:33:22Z",
+    "updated_time": "2026-10-30T23:38:57.245115Z",
+    "last_price": 0.15,
+    "previous_price": 0.15,
+    "yes_bid": 0.14,
+    "yes_ask": 0.15,
+    "no_bid": 0.85,
+    "no_ask": 0.86,
+    "spread": 0.01,
+    "volume": 59042401.63,
+    "volume_24h": 7690.06,
+    "open_interest": 14795880.46,
+    "dollar_amount": 2219382.07,
+    "dollar_volume": 8856360.24,
+    "dollar_volume_24h": 1153.51,
+    "result": "",
+    "rules_primary": "If Alexandria Ocasio-Cortez wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 10991 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.15,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-PB",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Pete Buttigieg be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Pete Buttigieg",
+    "no_sub_title": "Pete Buttigieg",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2024-12-10T03:33:22Z",
+    "updated_time": "2026-10-30T23:38:57.378736Z",
+    "last_price": 0.054,
+    "previous_price": 0.054,
+    "yes_bid": 0.052,
+    "yes_ask": 0.054,
+    "no_bid": 0.946,
+    "no_ask": 0.948,
+    "spread": 0.002,
+    "volume": 118658523.65,
+    "volume_24h": 7800.5,
+    "open_interest": 34089180.06,
+    "dollar_amount": 1840815.72,
+    "dollar_volume": 6407560.28,
+    "dollar_volume_24h": 421.23,
+    "result": "",
+    "rules_primary": "If Pete Buttigieg wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 29521 contracts within 5c of mid",
+      "spread $0.002",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.054,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPRESNOMD-28-MK",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "title": "Will Mark Kelly be the Democratic Presidential nominee in 2028?",
+    "yes_sub_title": "Mark Kelly",
+    "no_sub_title": "Mark Kelly",
+    "topic": "elections",
+    "topics": [
+      "elections"
+    ],
+    "category": "Elections",
+    "status": "active",
+    "close_time": "2028-11-07T15:00:00Z",
+    "open_time": "2025-02-07T19:24:58Z",
+    "updated_time": "2026-10-30T23:38:58.320204Z",
+    "last_price": 0.033,
+    "previous_price": 0.035,
+    "yes_bid": 0.032,
+    "yes_ask": 0.033,
+    "no_bid": 0.967,
+    "no_ask": 0.968,
+    "spread": 0.001,
+    "volume": 201919064.69,
+    "volume_24h": 37354.21,
+    "open_interest": 38595763.54,
+    "dollar_amount": 1273660.2,
+    "dollar_volume": 6663329.13,
+    "dollar_volume_24h": 1232.69,
+    "result": "",
+    "rules_primary": "If Mark Kelly wins and accepts the nomination for the Presidency for the Democratic party in 2028, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxpresnomd",
+    "market_url": "https://kalshi.co/markets/kxpresnomd",
+    "settlement_sources": [
+      {
+        "name": "Democratic Party",
+        "url": "https://democrats.org/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 37633 contracts within 5c of mid",
+      "spread $0.001",
+      "not enough history for a 30m mean",
+      "closes in 718d (distant)"
+    ],
+    "roi_fair_yes": 0.033,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 17233.65,
+    "event_title": "Who will be the Democratic nominee in 2028?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-ODY",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will The Odyssey win Best Picture at the Oscars?",
+    "yes_sub_title": "The Odyssey",
+    "no_sub_title": "The Odyssey",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:41.380704Z",
+    "last_price": 0.99,
+    "previous_price": 0.53,
+    "yes_bid": 0,
+    "yes_ask": 0.99,
+    "no_bid": 0.01,
+    "no_ask": 1,
+    "spread": 0.99,
+    "volume": 1577862.98,
+    "volume_24h": 44,
+    "open_interest": 524760.6,
+    "dollar_amount": 519512.99,
+    "dollar_volume": 1562084.35,
+    "dollar_volume_24h": 43.56,
+    "result": "",
+    "rules_primary": "If The Odyssey has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.99,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-BLA",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will The Black Ball win Best Picture at the Oscars?",
+    "yes_sub_title": "The Black Ball",
+    "no_sub_title": "The Black Ball",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-05-27T16:45:53Z",
+    "updated_time": "2026-05-27T16:45:53.443653Z",
+    "last_price": 0.49,
+    "previous_price": 0.11,
+    "yes_bid": 0.01,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.99,
+    "spread": 0.99,
+    "volume": 2035929.23,
+    "volume_24h": 1.14,
+    "open_interest": 1398527.76,
+    "dollar_amount": 685278.6,
+    "dollar_volume": 997605.32,
+    "dollar_volume_24h": 0.56,
+    "result": "",
+    "rules_primary": "If The Black Ball has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 24,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 3,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 20 contracts within 5c of mid",
+      "spread $-0.010",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.49,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-YOU",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will You Can See Everything win Best Picture at the Oscars?",
+    "yes_sub_title": "You Can See Everything",
+    "no_sub_title": "You Can See Everything",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-09-09T00:04:04Z",
+    "updated_time": "2026-09-09T00:04:04.454742Z",
+    "last_price": 0.2,
+    "previous_price": 0.21,
+    "yes_bid": 0.2,
+    "yes_ask": 0.21,
+    "no_bid": 0.79,
+    "no_ask": 0.8,
+    "spread": 0.01,
+    "volume": 1365994.68,
+    "volume_24h": 128.4,
+    "open_interest": 924332.63,
+    "dollar_amount": 184866.53,
+    "dollar_volume": 273198.94,
+    "dollar_volume_24h": 25.68,
+    "result": "",
+    "rules_primary": "If You Can See Everything has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99thth Academy Awards are expected to be held in March 2027.\n\nThis market and these products have not been endorsed by the Oscars. Any references to Oscars, or any associated marks are descriptive only and do not indicate an endorsement of this product or any affiliation between Oscars and Kalshi.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 5273 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.2,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-DUN",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Dune: Part Three win Best Picture at the Oscars?",
+    "yes_sub_title": "Dune: Part Three",
+    "no_sub_title": "Dune: Part Three",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:42.43103Z",
+    "last_price": 0.1,
+    "previous_price": 0.09,
+    "yes_bid": 0.09,
+    "yes_ask": 0.1,
+    "no_bid": 0.9,
+    "no_ask": 0.91,
+    "spread": 0.01,
+    "volume": 1646470.3,
+    "volume_24h": 153,
+    "open_interest": 1288198.97,
+    "dollar_amount": 128819.9,
+    "dollar_volume": 164647.03,
+    "dollar_volume_24h": 15.3,
+    "result": "",
+    "rules_primary": "If Dune: Part Three has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 12632 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.1,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-JOS",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Josephine win Best Picture at the Oscars?",
+    "yes_sub_title": "Josephine",
+    "no_sub_title": "Josephine",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:44.531379Z",
+    "last_price": 0.03,
+    "previous_price": 0.03,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 5094932.09,
+    "volume_24h": 0,
+    "open_interest": 3472191.58,
+    "dollar_amount": 104165.75,
+    "dollar_volume": 152847.96,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Josephine has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-DIG",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Digger win Best Picture at the Oscars?",
+    "yes_sub_title": "Digger",
+    "no_sub_title": "Digger",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:41.630785Z",
+    "last_price": 0.01,
+    "previous_price": 0.01,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 11957661.89,
+    "volume_24h": 0,
+    "open_interest": 8563926.46,
+    "dollar_amount": 85639.26,
+    "dollar_volume": 119576.62,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Digger has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.01,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-WIL",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Wild Horse Nine win Best Picture at the Oscars?",
+    "yes_sub_title": "Wild Horse Nine",
+    "no_sub_title": "Wild Horse Nine",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:41.880817Z",
+    "last_price": 0.03,
+    "previous_price": 0.03,
+    "yes_bid": 0.01,
+    "yes_ask": 0.02,
+    "no_bid": 0.98,
+    "no_ask": 0.99,
+    "spread": 0.01,
+    "volume": 2454880.75,
+    "volume_24h": 13888.88,
+    "open_interest": 1206919.88,
+    "dollar_amount": 36207.6,
+    "dollar_volume": 73646.42,
+    "dollar_volume_24h": 416.67,
+    "result": "",
+    "rules_primary": "If Wild Horse Nine has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 33334 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXFEATURE-26GTA6-NF",
+    "event_ticker": "KXFEATURE-26GTA6",
+    "series_ticker": "KXFEATURE",
+    "title": "Will NF be featured on Grand Theft Auto VI: The Album?",
+    "yes_sub_title": "NF",
+    "no_sub_title": "NF",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2026-12-31T04:59:00Z",
+    "open_time": "2026-09-17T15:36:54Z",
+    "updated_time": "2026-09-17T15:36:54.790378Z",
+    "last_price": 0.51,
+    "previous_price": 0.14,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 118460.33,
+    "volume_24h": 285.68,
+    "open_interest": 95106.35,
+    "dollar_amount": 48504.24,
+    "dollar_volume": 60414.77,
+    "dollar_volume_24h": 145.7,
+    "result": "",
+    "rules_primary": "If NF is featured on the album Grand Theft Auto VI: The Album, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxfeature",
+    "market_url": "https://kalshi.co/markets/kxfeature",
+    "settlement_sources": [
+      {
+        "name": "Spotify",
+        "url": "https://open.spotify.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.51,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 975.63,
+    "event_title": "Grand Theft Auto VI: The Album · Features",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXOSCARPIC-27-DEB",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will The Debut win Best Picture at the Oscars?",
+    "yes_sub_title": "The Debut",
+    "no_sub_title": "The Debut",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-06-24T04:48:52Z",
+    "updated_time": "2026-06-24T04:48:52.656219Z",
+    "last_price": 0.02,
+    "previous_price": 0.02,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 2102395.74,
+    "volume_24h": 0,
+    "open_interest": 962505.52,
+    "dollar_amount": 19250.11,
+    "dollar_volume": 42047.91,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If The Debut has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99thth Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.02,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-PRO",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Project Hail Mary win Best Picture at the Oscars?",
+    "yes_sub_title": "Project Hail Mary",
+    "no_sub_title": "Project Hail Mary",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-03-19T23:57:06Z",
+    "updated_time": "2026-04-09T17:07:42.131058Z",
+    "last_price": 0.03,
+    "previous_price": 0.03,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 906442.65,
+    "volume_24h": 0,
+    "open_interest": 653142.17,
+    "dollar_amount": 19594.27,
+    "dollar_volume": 27193.28,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Project Hail Mary has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99th Academy Awards are expected to be held in March 2027.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXOSCARPIC-27-ELS",
+    "event_ticker": "KXOSCARPIC-27",
+    "series_ticker": "KXOSCARPIC",
+    "title": "Will Elsinore win Best Picture at the Oscars?",
+    "yes_sub_title": "Elsinore",
+    "no_sub_title": "Elsinore",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2027-12-31T15:00:00Z",
+    "open_time": "2026-07-20T16:04:42Z",
+    "updated_time": "2026-07-20T16:04:42.962135Z",
+    "last_price": 0.03,
+    "previous_price": 0.03,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 770343.91,
+    "volume_24h": 0,
+    "open_interest": 698120.56,
+    "dollar_amount": 20943.62,
+    "dollar_volume": 23110.32,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Elsinore has won Best Picture at the 99th Academy Awards, then the market resolves to Yes.",
+    "rules_secondary": "The 99thth Academy Awards are expected to be held in March 2027.\n\nThis market and these products have not been endorsed by the Oscars. Any references to Oscars, or any associated marks are descriptive only and do not indicate an endorsement of this product or any affiliation between Oscars and Kalshi.",
+    "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+    "market_url": "https://kalshi.co/markets/kxoscarpic",
+    "settlement_sources": [
+      {
+        "name": "Academy of Motion Picture Arts and Sciences",
+        "url": "https://www.oscars.org/oscars"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 406d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 9745.65,
+    "event_title": "Oscar for Best Picture?",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXFEATURE-26GTA6-THU",
+    "event_ticker": "KXFEATURE-26GTA6",
+    "series_ticker": "KXFEATURE",
+    "title": "Will Young Thug be featured on Grand Theft Auto VI: The Album?",
+    "yes_sub_title": "Young Thug",
+    "no_sub_title": "Young Thug",
+    "topic": "culture",
+    "topics": [
+      "culture"
+    ],
+    "category": "Entertainment",
+    "status": "active",
+    "close_time": "2026-12-31T04:59:00Z",
+    "open_time": "2026-09-17T15:36:54Z",
+    "updated_time": "2026-09-17T15:36:54.790378Z",
+    "last_price": 0.99,
+    "previous_price": 0.99,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 18245.3,
+    "volume_24h": 0,
+    "open_interest": 15160.84,
+    "dollar_amount": 15009.23,
+    "dollar_volume": 18062.85,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Young Thug is featured on the album Grand Theft Auto VI: The Album, then the market resolves to Yes.",
+    "rules_secondary": "",
+    "kalshi_url": "https://kalshi.co/markets/kxfeature",
+    "market_url": "https://kalshi.co/markets/kxfeature",
+    "settlement_sources": [
+      {
+        "name": "Spotify",
+        "url": "https://open.spotify.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 41d (distant)"
+    ],
+    "roi_fair_yes": 0.99,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 975.63,
+    "event_title": "Grand Theft Auto VI: The Album · Features",
+    "event_strike_period": "",
+    "mutually_exclusive": false
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B47500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "45,000 to 49,999.99",
+    "no_sub_title": "45,000 to 49,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.98,
+    "previous_price": 0.06,
+    "yes_bid": 0.05,
+    "yes_ask": 0.06,
+    "no_bid": 0.94,
+    "no_ask": 0.95,
+    "spread": 0.01,
+    "volume": 80178705.51,
+    "volume_24h": 460.75,
+    "open_interest": 26587876.94,
+    "dollar_amount": 26056119.4,
+    "dollar_volume": 78575131.4,
+    "dollar_volume_24h": 451.53,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 45000.00-49999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 1998912 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.98,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B147500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "145,000 to 149,999.99",
+    "no_sub_title": "145,000 to 149,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.98,
+    "previous_price": 0.98,
+    "yes_bid": 0.02,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 0.98,
+    "spread": 0.98,
+    "volume": 65336335.23,
+    "volume_24h": 0,
+    "open_interest": 6920631.49,
+    "dollar_amount": 6782218.86,
+    "dollar_volume": 64029608.53,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 145000.00-149999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 34,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 13,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 200 contracts within 5c of mid",
+      "spread $-0.020",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.98,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXETHY-27JAN0100-T4999.99",
+    "event_ticker": "KXETHY-27JAN0100",
+    "series_ticker": "KXETHY",
+    "title": "ETH price  on Jan 1, 2027?",
+    "yes_sub_title": "5,000 or above",
+    "no_sub_title": "5,000 or above",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T04:09:26.733864Z",
+    "last_price": 0.9,
+    "previous_price": 0.9,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 18263278.14,
+    "volume_24h": 0,
+    "open_interest": 1382157.55,
+    "dollar_amount": 1243941.8,
+    "dollar_volume": 16436950.33,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' ETHUSD_RTI before 12 AM EST is above 4999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxethy",
+    "market_url": "https://kalshi.co/markets/kxethy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.9,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Ethereum price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B62500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "60,000 to 64,999.99",
+    "no_sub_title": "60,000 to 64,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.23,
+    "previous_price": 0.24,
+    "yes_bid": 0.22,
+    "yes_ask": 0.23,
+    "no_bid": 0.77,
+    "no_ask": 0.78,
+    "spread": 0.01,
+    "volume": 49013410.91,
+    "volume_24h": 2642.27,
+    "open_interest": 8366925.9,
+    "dollar_amount": 1924392.96,
+    "dollar_volume": 11273084.51,
+    "dollar_volume_24h": 607.72,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 60000.00-64999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 46,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 25,
+      "spread": 15,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "liquidity 5607 contracts within 5c of mid",
+      "spread $0.010",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.23,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B57500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "55,000 to 59,999.99",
+    "no_sub_title": "55,000 to 59,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.16,
+    "previous_price": 0.18,
+    "yes_bid": 0.16,
+    "yes_ask": 0.17,
+    "no_bid": 0.83,
+    "no_ask": 0.84,
+    "spread": 0.01,
+    "volume": 65010685.37,
+    "volume_24h": 8058.29,
+    "open_interest": 13409310.77,
+    "dollar_amount": 2145489.72,
+    "dollar_volume": 10401709.66,
+    "dollar_volume_24h": 1289.33,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 55000.00-59999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.16,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXETHY-27JAN0100-B3875",
+    "event_ticker": "KXETHY-27JAN0100",
+    "series_ticker": "KXETHY",
+    "title": "ETH price  on Jan 1, 2027?",
+    "yes_sub_title": "3,750 to 3,999.99",
+    "no_sub_title": "3,750 to 3,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T04:09:26.733864Z",
+    "last_price": 0.5,
+    "previous_price": 0.5,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 22811788.56,
+    "volume_24h": 0,
+    "open_interest": 1702686,
+    "dollar_amount": 851343,
+    "dollar_volume": 11405894.28,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' ETHUSD_RTI before 12 AM EST is between 3750.00-3999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxethy",
+    "market_url": "https://kalshi.co/markets/kxethy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.5,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Ethereum price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B67500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "65,000 to 69,999.99",
+    "no_sub_title": "65,000 to 69,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.17,
+    "previous_price": 0.18,
+    "yes_bid": 0.17,
+    "yes_ask": 0.18,
+    "no_bid": 0.82,
+    "no_ask": 0.83,
+    "spread": 0.01,
+    "volume": 42982186.8,
+    "volume_24h": 2434.28,
+    "open_interest": 7164867.64,
+    "dollar_amount": 1218027.5,
+    "dollar_volume": 7306971.76,
+    "dollar_volume_24h": 413.83,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 65000.00-69999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.17,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B52500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "50,000 to 54,999.99",
+    "no_sub_title": "50,000 to 54,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.09,
+    "previous_price": 0.1,
+    "yes_bid": 0.08,
+    "yes_ask": 0.09,
+    "no_bid": 0.91,
+    "no_ask": 0.92,
+    "spread": 0.01,
+    "volume": 61711409.8,
+    "volume_24h": 4652.03,
+    "open_interest": 7787531.9,
+    "dollar_amount": 700877.87,
+    "dollar_volume": 5554026.88,
+    "dollar_volume_24h": 418.68,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 50000.00-54999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.09,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B42500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "40,000 to 44,999.99",
+    "no_sub_title": "40,000 to 44,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.04,
+    "previous_price": 0.04,
+    "yes_bid": 0.03,
+    "yes_ask": 0.04,
+    "no_bid": 0.96,
+    "no_ask": 0.97,
+    "spread": 0.01,
+    "volume": 89207336.93,
+    "volume_24h": 466.31,
+    "open_interest": 25229904.76,
+    "dollar_amount": 1009196.19,
+    "dollar_volume": 3568293.48,
+    "dollar_volume_24h": 18.65,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 40000.00-44999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.04,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B117500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "115,000 to 119,999.99",
+    "no_sub_title": "115,000 to 119,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.03,
+    "previous_price": 0.01,
+    "yes_bid": 0,
+    "yes_ask": 0.01,
+    "no_bid": 0.99,
+    "no_ask": 1,
+    "spread": 0.01,
+    "volume": 125391764.66,
+    "volume_24h": 58548.52,
+    "open_interest": 21106124.34,
+    "dollar_amount": 633183.73,
+    "dollar_volume": 3761752.94,
+    "dollar_volume_24h": 1756.46,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 115000.00-119999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B127500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "125,000 to 129,999.99",
+    "no_sub_title": "125,000 to 129,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.03,
+    "previous_price": 0.01,
+    "yes_bid": 0,
+    "yes_ask": 0.01,
+    "no_bid": 0.99,
+    "no_ask": 1,
+    "spread": 0.01,
+    "volume": 83444025.31,
+    "volume_24h": 61221.22,
+    "open_interest": 39622137.23,
+    "dollar_amount": 1188664.12,
+    "dollar_volume": 2503320.76,
+    "dollar_volume_24h": 1836.64,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 125000.00-129999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.03,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXBTCY-27JAN0100-B72500",
+    "event_ticker": "KXBTCY-27JAN0100",
+    "series_ticker": "KXBTCY",
+    "title": "BTC price  on Jan 1, 2027?",
+    "yes_sub_title": "70,000 to 74,999.99",
+    "no_sub_title": "70,000 to 74,999.99",
+    "topic": "crypto",
+    "topics": [
+      "crypto"
+    ],
+    "category": "Crypto",
+    "status": "active",
+    "close_time": "2027-01-01T05:00:00Z",
+    "open_time": "2026-02-26T00:47:19Z",
+    "updated_time": "2026-04-28T02:27:21.580016Z",
+    "last_price": 0.09,
+    "previous_price": 0.09,
+    "yes_bid": 0.08,
+    "yes_ask": 0.09,
+    "no_bid": 0.91,
+    "no_ask": 0.92,
+    "spread": 0.01,
+    "volume": 35275802.08,
+    "volume_24h": 465.59,
+    "open_interest": 4723628.03,
+    "dollar_amount": 425126.52,
+    "dollar_volume": 3174822.19,
+    "dollar_volume_24h": 41.9,
+    "result": "",
+    "rules_primary": "If the simple average of the sixty seconds of CF Benchmarks' BRTI before 12 AM EST is between 70000.00-74999.99 at 12 AM EST on Jan 1, 2027, then the market resolves to Yes.",
+    "rules_secondary": "Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+    "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+    "market_url": "https://kalshi.co/markets/kxbtcy",
+    "settlement_sources": [
+      {
+        "name": "CF Benchmarks",
+        "url": "https://www.cfbenchmarks.com/"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 42d (distant)"
+    ],
+    "roi_fair_yes": 0.09,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 999.65,
+    "event_title": "Bitcoin price at the end of 2026",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-SSTR",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Sepp Straka wins",
+    "yes_sub_title": "Sepp Straka",
+    "no_sub_title": "Sepp Straka",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.598793Z",
+    "last_price": 0.025,
+    "previous_price": 0.011,
+    "yes_bid": 0.022,
+    "yes_ask": 0.025,
+    "no_bid": 0.975,
+    "no_ask": 0.978,
+    "spread": 0.003,
+    "volume": 759307.77,
+    "volume_24h": 515270.02,
+    "open_interest": 681894.62,
+    "dollar_amount": 17047.37,
+    "dollar_volume": 18982.69,
+    "dollar_volume_24h": 12881.75,
+    "result": "",
+    "rules_primary": "If Sepp Straka wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.025,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-MAST27-MFIT",
+    "event_ticker": "KXPGATOUR-MAST27",
+    "series_ticker": "KXPGATOUR",
+    "title": "Masters Tournament: Matt Fitzpatrick wins",
+    "yes_sub_title": "Matt Fitzpatrick",
+    "no_sub_title": "Matt Fitzpatrick",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2027-04-25T23:00:00Z",
+    "open_time": "2026-09-14T16:49:20Z",
+    "updated_time": "2026-09-14T16:49:20.312684Z",
+    "last_price": 0.02,
+    "previous_price": 0.02,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 826114.18,
+    "volume_24h": 0,
+    "open_interest": 826086.18,
+    "dollar_amount": 16521.72,
+    "dollar_volume": 16522.28,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Matt Fitzpatrick wins the Masters Tournament, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the PGA or Augusta National, Inc. All trademarks, logos, and brand names are the property of their respective owners.",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      },
+      {
+        "name": "the Governing Body",
+        "url": "https://www.masters.com/index.html"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 156d (distant)"
+    ],
+    "roi_fair_yes": 0.02,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 3753.65,
+    "event_title": "2027 The Masters Champion",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-KMIT",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Keith Mitchell wins",
+    "yes_sub_title": "Keith Mitchell",
+    "no_sub_title": "Keith Mitchell",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.079,
+    "previous_price": 0.028,
+    "yes_bid": 0.078,
+    "yes_ask": 0.079,
+    "no_bid": 0.921,
+    "no_ask": 0.922,
+    "spread": 0.001,
+    "volume": 128583.53,
+    "volume_24h": 59163.57,
+    "open_interest": 123001.68,
+    "dollar_amount": 9717.13,
+    "dollar_volume": 10158.1,
+    "dollar_volume_24h": 4673.92,
+    "result": "",
+    "rules_primary": "If Keith Mitchell wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.079,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-MTHO",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Michael Thorbjornsen wins",
+    "yes_sub_title": "Michael Thorbjornsen",
+    "no_sub_title": "Michael Thorbjornsen",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.13,
+    "previous_price": 0.032,
+    "yes_bid": 0.12,
+    "yes_ask": 0.13,
+    "no_bid": 0.87,
+    "no_ask": 0.88,
+    "spread": 0.01,
+    "volume": 84031.45,
+    "volume_24h": 41186.53,
+    "open_interest": 53056.78,
+    "dollar_amount": 6897.38,
+    "dollar_volume": 10924.09,
+    "dollar_volume_24h": 5354.25,
+    "result": "",
+    "rules_primary": "If Michael Thorbjornsen wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.13,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-MAST27-SSCH",
+    "event_ticker": "KXPGATOUR-MAST27",
+    "series_ticker": "KXPGATOUR",
+    "title": "Masters Tournament: Scottie Scheffler wins",
+    "yes_sub_title": "Scottie Scheffler",
+    "no_sub_title": "Scottie Scheffler",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2027-04-25T23:00:00Z",
+    "open_time": "2026-09-14T16:49:20Z",
+    "updated_time": "2026-09-14T16:49:20.312684Z",
+    "last_price": 0.16,
+    "previous_price": 0.16,
+    "yes_bid": 0,
+    "yes_ask": 1,
+    "no_bid": 0,
+    "no_ask": 1,
+    "spread": 1,
+    "volume": 46934,
+    "volume_24h": 0,
+    "open_interest": 46296,
+    "dollar_amount": 7407.36,
+    "dollar_volume": 7509.44,
+    "dollar_volume_24h": 0,
+    "result": "",
+    "rules_primary": "If Scottie Scheffler wins the Masters Tournament, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the PGA or Augusta National, Inc. All trademarks, logos, and brand names are the property of their respective owners.",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      },
+      {
+        "name": "the Governing Body",
+        "url": "https://www.masters.com/index.html"
+      }
+    ],
+    "roi_score": 6,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 6
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 156d (distant)"
+    ],
+    "roi_fair_yes": 0.16,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 3753.65,
+    "event_title": "2027 The Masters Champion",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-TMOO",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Taylor Moore wins",
+    "yes_sub_title": "Taylor Moore",
+    "no_sub_title": "Taylor Moore",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.598793Z",
+    "last_price": 0.005,
+    "previous_price": 0.006,
+    "yes_bid": 0.004,
+    "yes_ask": 0.005,
+    "no_bid": 0.995,
+    "no_ask": 0.996,
+    "spread": 0.001,
+    "volume": 1155264.35,
+    "volume_24h": 841087.46,
+    "open_interest": 1149775.46,
+    "dollar_amount": 5748.88,
+    "dollar_volume": 5776.32,
+    "dollar_volume_24h": 4205.44,
+    "result": "",
+    "rules_primary": "If Taylor Moore wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.01,
+    "roi_ev_yes": 0.005,
+    "roi_ev_no": -0.005,
+    "roi_pct": 100,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-MGRE",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Max Greyserman wins",
+    "yes_sub_title": "Max Greyserman",
+    "no_sub_title": "Max Greyserman",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.048,
+    "previous_price": 0.011,
+    "yes_bid": 0.043,
+    "yes_ask": 0.048,
+    "no_bid": 0.952,
+    "no_ask": 0.957,
+    "spread": 0.005,
+    "volume": 125098.74,
+    "volume_24h": 109195.49,
+    "open_interest": 111780.78,
+    "dollar_amount": 5365.48,
+    "dollar_volume": 6004.74,
+    "dollar_volume_24h": 5241.38,
+    "result": "",
+    "rules_primary": "If Max Greyserman wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.048,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-RCAS",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Ricky Castillo wins",
+    "yes_sub_title": "Ricky Castillo",
+    "no_sub_title": "Ricky Castillo",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.022,
+    "previous_price": 0.011,
+    "yes_bid": 0.019,
+    "yes_ask": 0.022,
+    "no_bid": 0.978,
+    "no_ask": 0.981,
+    "spread": 0.003,
+    "volume": 230917.32,
+    "volume_24h": 215826.62,
+    "open_interest": 224563.74,
+    "dollar_amount": 4940.4,
+    "dollar_volume": 5080.18,
+    "dollar_volume_24h": 4748.19,
+    "result": "",
+    "rules_primary": "If Ricky Castillo wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.022,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-LHOD",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Lee Hodges wins",
+    "yes_sub_title": "Lee Hodges",
+    "no_sub_title": "Lee Hodges",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.023,
+    "previous_price": 0.008,
+    "yes_bid": 0.021,
+    "yes_ask": 0.023,
+    "no_bid": 0.977,
+    "no_ask": 0.979,
+    "spread": 0.002,
+    "volume": 221098.76,
+    "volume_24h": 209621.55,
+    "open_interest": 208378.35,
+    "dollar_amount": 4792.7,
+    "dollar_volume": 5085.27,
+    "dollar_volume_24h": 4821.3,
+    "result": "",
+    "rules_primary": "If Lee Hodges wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.023,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-JSVE",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Jesper Svensson wins",
+    "yes_sub_title": "Jesper Svensson",
+    "no_sub_title": "Jesper Svensson",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.038,
+    "previous_price": 0.005,
+    "yes_bid": 0.033,
+    "yes_ask": 0.038,
+    "no_bid": 0.962,
+    "no_ask": 0.967,
+    "spread": 0.005,
+    "volume": 134966.8,
+    "volume_24h": 119017.51,
+    "open_interest": 124297.29,
+    "dollar_amount": 4723.3,
+    "dollar_volume": 5128.74,
+    "dollar_volume_24h": 4522.67,
+    "result": "",
+    "rules_primary": "If Jesper Svensson wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.038,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-NSHI",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Neal Shipley wins",
+    "yes_sub_title": "Neal Shipley",
+    "no_sub_title": "Neal Shipley",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.02,
+    "previous_price": 0.008,
+    "yes_bid": 0.019,
+    "yes_ask": 0.02,
+    "no_bid": 0.98,
+    "no_ask": 0.981,
+    "spread": 0.001,
+    "volume": 190534.83,
+    "volume_24h": 174582.67,
+    "open_interest": 184139.81,
+    "dollar_amount": 3682.8,
+    "dollar_volume": 3810.7,
+    "dollar_volume_24h": 3491.65,
+    "result": "",
+    "rules_primary": "If Neal Shipley wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.02,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  },
+  {
+    "ticker": "KXPGATOUR-THRC26-GHIG",
+    "event_ticker": "KXPGATOUR-THRC26",
+    "series_ticker": "KXPGATOUR",
+    "title": "The RSM Classic: Garrick Higgo wins",
+    "yes_sub_title": "Garrick Higgo",
+    "no_sub_title": "Garrick Higgo",
+    "topic": "golf",
+    "topics": [
+      "golf"
+    ],
+    "category": "Sports",
+    "status": "active",
+    "close_time": "2026-12-06T00:00:00Z",
+    "open_time": "2026-11-16T01:34:34Z",
+    "updated_time": "2026-11-16T01:34:34.569351Z",
+    "last_price": 0.02,
+    "previous_price": 0.005,
+    "yes_bid": 0.017,
+    "yes_ask": 0.02,
+    "no_bid": 0.98,
+    "no_ask": 0.983,
+    "spread": 0.003,
+    "volume": 188196.84,
+    "volume_24h": 176569.36,
+    "open_interest": 178279.94,
+    "dollar_amount": 3565.6,
+    "dollar_volume": 3763.94,
+    "dollar_volume_24h": 3531.39,
+    "result": "",
+    "rules_primary": "If Garrick Higgo wins the The RSM Classic, then the market resolves to Yes.",
+    "rules_secondary": "If a golfer forfeits, withdraws, or does not participate prior to teeing off, their contracts will resolve as follows:\nTournament Winner and End of Round Leader markets will resolve to No\nFinishing Position, Make the Cut, Head-to-Head, and 3-Ball markets will resolve to Fair Market Value",
+    "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+    "market_url": "https://kalshi.co/markets/kxpgatour",
+    "settlement_sources": [
+      {
+        "name": "Fox Sports",
+        "url": "https://www.foxsports.com"
+      },
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com/"
+      },
+      {
+        "name": "the Governing League",
+        "url": "https://www.pgatour.com/"
+      }
+    ],
+    "roi_score": 11,
+    "roi_components": {
+      "momentum": 0,
+      "liquidity": 0,
+      "spread": 0,
+      "edge": 0,
+      "time": 11
+    },
+    "roi_reasons": [
+      "momentum 0.000 (below the $0.10 swing bar)",
+      "no resting size within 5c of mid",
+      "no two-sided quote",
+      "not enough history for a 30m mean",
+      "closes in 15d"
+    ],
+    "roi_fair_yes": 0.02,
+    "roi_ev_yes": 0,
+    "roi_ev_no": 0,
+    "roi_pct": 0,
+    "hours_to_close": 370.65,
+    "event_title": "The RSM Classic Winner",
+    "event_strike_period": "",
+    "mutually_exclusive": true
+  }
+]

@@ -1,0 +1,1693 @@
+{
+  "KXWTIMAX-26DEC31-T130": {
+    "yes_levels": [
+      {
+        "price": 0.041,
+        "count": 4065.04
+      },
+      {
+        "price": 0.04,
+        "count": 4166.66
+      },
+      {
+        "price": 0.039,
+        "count": 4273.5
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.955,
+        "count": 3703.7
+      },
+      {
+        "price": 0.954,
+        "count": 3623.18
+      },
+      {
+        "price": 0.953,
+        "count": 3546.09
+      }
+    ],
+    "best_yes_bid": 0.041,
+    "best_yes_ask": 0.045,
+    "best_no_bid": 0.955,
+    "best_no_ask": 0.959,
+    "mid": 0.043,
+    "spread": 0.004,
+    "depth_yes_total": 12505.2,
+    "depth_no_total": 10872.970000000001,
+    "depth_yes_within_5c": 12505.2,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 537.7236,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T135": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T115": {
+    "yes_levels": [
+      {
+        "price": 0.001,
+        "count": 20
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.001,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.999,
+    "mid": 0.0005,
+    "spread": -0.001,
+    "depth_yes_total": 20,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 20,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0.01,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T125": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXAAAGASM-26NOV30-3.90": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T150": {
+    "yes_levels": [
+      {
+        "price": 0.024,
+        "count": 6944.44
+      },
+      {
+        "price": 0.023,
+        "count": 7246.37
+      },
+      {
+        "price": 0.022,
+        "count": 7575.75
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.97,
+        "count": 5555.55
+      },
+      {
+        "price": 0.969,
+        "count": 5376.34
+      },
+      {
+        "price": 0.968,
+        "count": 5208.33
+      }
+    ],
+    "best_yes_bid": 0.024,
+    "best_yes_ask": 0.03,
+    "best_no_bid": 0.97,
+    "best_no_ask": 0.976,
+    "mid": 0.027,
+    "spread": 0.006,
+    "depth_yes_total": 21766.559999999998,
+    "depth_no_total": 16140.220000000001,
+    "depth_yes_within_5c": 21766.559999999998,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 587.6971199999999,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T120": {
+    "yes_levels": [
+      {
+        "price": 0.058,
+        "count": 2873.56
+      },
+      {
+        "price": 0.057,
+        "count": 2923.97
+      },
+      {
+        "price": 0.056,
+        "count": 2976.19
+      },
+      {
+        "price": 0.02,
+        "count": 3.16
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.058,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.942,
+    "mid": 0.029,
+    "spread": -0.058,
+    "depth_yes_total": 8776.88,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 8776.88,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 254.52952,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T180": {
+    "yes_levels": [
+      {
+        "price": 0.001,
+        "count": 40
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.01,
+        "count": 10
+      }
+    ],
+    "best_yes_bid": 0.001,
+    "best_yes_ask": 0.99,
+    "best_no_bid": 0.01,
+    "best_no_ask": 0.999,
+    "mid": 0.4955,
+    "spread": 0.989,
+    "depth_yes_total": 40,
+    "depth_no_total": 10,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXAAAGASM-26NOV30-3.80": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T160": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXWTIMAX-26DEC31-T140": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXAAAGASW-26NOV23-3.6200": {
+    "yes_levels": [
+      {
+        "price": 0.87,
+        "count": 5
+      },
+      {
+        "price": 0.86,
+        "count": 193.79
+      },
+      {
+        "price": 0.85,
+        "count": 196.07
+      },
+      {
+        "price": 0.84,
+        "count": 198.41
+      },
+      {
+        "price": 0.8,
+        "count": 208.33
+      },
+      {
+        "price": 0.79,
+        "count": 210.97
+      },
+      {
+        "price": 0.78,
+        "count": 213.67
+      },
+      {
+        "price": 0.39,
+        "count": 33.71
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.07,
+        "count": 132.5
+      },
+      {
+        "price": 0.06,
+        "count": 177.3
+      }
+    ],
+    "best_yes_bid": 0.87,
+    "best_yes_ask": 0.93,
+    "best_no_bid": 0.07,
+    "best_no_ask": 0.13,
+    "mid": 0.9,
+    "spread": 0.06,
+    "depth_yes_total": 1259.95,
+    "depth_no_total": 309.8,
+    "depth_yes_within_5c": 198.79,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 178.911,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-GPLA": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-JP": {
+    "yes_levels": [
+      {
+        "price": 0.01,
+        "count": 1
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.057,
+        "count": 1191.03
+      },
+      {
+        "price": 0.056,
+        "count": 896
+      },
+      {
+        "price": 0.055,
+        "count": 1099
+      },
+      {
+        "price": 0.054,
+        "count": 1053
+      },
+      {
+        "price": 0.053,
+        "count": 1052
+      },
+      {
+        "price": 0.052,
+        "count": 904
+      },
+      {
+        "price": 0.051,
+        "count": 1045
+      },
+      {
+        "price": 0.05,
+        "count": 1143
+      },
+      {
+        "price": 0.049,
+        "count": 1029
+      },
+      {
+        "price": 0.048,
+        "count": 1002
+      }
+    ],
+    "best_yes_bid": 0.01,
+    "best_yes_ask": 0.943,
+    "best_no_bid": 0.057,
+    "best_no_ask": 0.99,
+    "mid": 0.4765,
+    "spread": 0.933,
+    "depth_yes_total": 1,
+    "depth_no_total": 10414.03,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-HCLI": {
+    "yes_levels": [
+      {
+        "price": 0.001,
+        "count": 16
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.001,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.999,
+    "mid": 0.0005,
+    "spread": -0.001,
+    "depth_yes_total": 16,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 16,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0.008,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESPERSON-28-GABB": {
+    "yes_levels": [
+      {
+        "price": 0.002,
+        "count": 166666.66
+      },
+      {
+        "price": 0.001,
+        "count": 333333.32
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.997,
+        "count": 55555.55
+      },
+      {
+        "price": 0.996,
+        "count": 41666.66
+      },
+      {
+        "price": 0.995,
+        "count": 33333.33
+      },
+      {
+        "price": 0.197,
+        "count": 164.54
+      },
+      {
+        "price": 0.196,
+        "count": 1972
+      },
+      {
+        "price": 0.195,
+        "count": 1929
+      },
+      {
+        "price": 0.194,
+        "count": 1950
+      },
+      {
+        "price": 0.193,
+        "count": 1855
+      },
+      {
+        "price": 0.192,
+        "count": 2020
+      },
+      {
+        "price": 0.191,
+        "count": 1828
+      }
+    ],
+    "best_yes_bid": 0.002,
+    "best_yes_ask": 0.003,
+    "best_no_bid": 0.997,
+    "best_no_ask": 0.998,
+    "mid": 0.0025,
+    "spread": 0.001,
+    "depth_yes_total": 499999.98,
+    "depth_no_total": 142274.08000000002,
+    "depth_yes_within_5c": 499999.98,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1249.99995,
+    "notional_no_within_5c": 0
+  },
+  "KXGOVAK-26-NDAH": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMR-28-NMIN": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-RW": {
+    "yes_levels": [
+      {
+        "price": 0.031,
+        "count": 16129.02
+      },
+      {
+        "price": 0.03,
+        "count": 16666.65
+      },
+      {
+        "price": 0.029,
+        "count": 17241.36
+      },
+      {
+        "price": 0.02,
+        "count": 8
+      },
+      {
+        "price": 0.019,
+        "count": 0.16
+      },
+      {
+        "price": 0.01,
+        "count": 32.1
+      },
+      {
+        "price": 0.001,
+        "count": 120
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.967,
+        "count": 15076.36
+      },
+      {
+        "price": 0.966,
+        "count": 14705.88
+      },
+      {
+        "price": 0.965,
+        "count": 14285.7
+      },
+      {
+        "price": 0.196,
+        "count": 321.57
+      },
+      {
+        "price": 0.195,
+        "count": 1998
+      },
+      {
+        "price": 0.194,
+        "count": 1976
+      },
+      {
+        "price": 0.193,
+        "count": 2298
+      },
+      {
+        "price": 0.192,
+        "count": 1937
+      },
+      {
+        "price": 0.191,
+        "count": 1921
+      },
+      {
+        "price": 0.19,
+        "count": 2176
+      }
+    ],
+    "best_yes_bid": 0.031,
+    "best_yes_ask": 0.033,
+    "best_no_bid": 0.967,
+    "best_no_ask": 0.969,
+    "mid": 0.032,
+    "spread": 0.002,
+    "depth_yes_total": 50197.29000000001,
+    "depth_no_total": 56695.51,
+    "depth_yes_within_5c": 50197.29000000001,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1606.3132800000003,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-JOSS": {
+    "yes_levels": [
+      {
+        "price": 0.26,
+        "count": 1282.04
+      },
+      {
+        "price": 0.259,
+        "count": 1287
+      },
+      {
+        "price": 0.258,
+        "count": 1291.98
+      },
+      {
+        "price": 0.22,
+        "count": 1.32
+      },
+      {
+        "price": 0.12,
+        "count": 1.12
+      },
+      {
+        "price": 0.1,
+        "count": 105.78
+      },
+      {
+        "price": 0.08,
+        "count": 1.15
+      },
+      {
+        "price": 0.06,
+        "count": 10
+      },
+      {
+        "price": 0.04,
+        "count": 12400
+      },
+      {
+        "price": 0.03,
+        "count": 24.5
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.729,
+        "count": 1095.07
+      },
+      {
+        "price": 0.728,
+        "count": 1225.48
+      },
+      {
+        "price": 0.25,
+        "count": 34.96
+      },
+      {
+        "price": 0.01,
+        "count": 1046.67
+      }
+    ],
+    "best_yes_bid": 0.26,
+    "best_yes_ask": 0.271,
+    "best_no_bid": 0.729,
+    "best_no_ask": 0.74,
+    "mid": 0.2655,
+    "spread": 0.011,
+    "depth_yes_total": 16404.89,
+    "depth_no_total": 3402.1800000000003,
+    "depth_yes_within_5c": 3862.34,
+    "depth_no_within_5c": 34.96,
+    "notional_yes_within_5c": 1025.45127,
+    "notional_no_within_5c": 25.67812
+  },
+  "KXPRESNOMR-28-MG": {
+    "yes_levels": [
+      {
+        "price": 0.03,
+        "count": 1
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.03,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.97,
+    "mid": 0.015,
+    "spread": -0.03,
+    "depth_yes_total": 1,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 1,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0.015,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-AOC": {
+    "yes_levels": [
+      {
+        "price": 0.14,
+        "count": 3571.41
+      },
+      {
+        "price": 0.139,
+        "count": 3597.12
+      },
+      {
+        "price": 0.138,
+        "count": 3623.16
+      },
+      {
+        "price": 0.1,
+        "count": 189
+      },
+      {
+        "price": 0.096,
+        "count": 10
+      },
+      {
+        "price": 0.03,
+        "count": 31.5
+      },
+      {
+        "price": 0.01,
+        "count": 12.37
+      },
+      {
+        "price": 0.001,
+        "count": 20
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.85,
+        "count": 305.73
+      },
+      {
+        "price": 0.849,
+        "count": 3287.14
+      },
+      {
+        "price": 0.848,
+        "count": 3289.47
+      },
+      {
+        "price": 0.81,
+        "count": 125
+      },
+      {
+        "price": 0.55,
+        "count": 3.95
+      }
+    ],
+    "best_yes_bid": 0.14,
+    "best_yes_ask": 0.15,
+    "best_no_bid": 0.85,
+    "best_no_ask": 0.86,
+    "mid": 0.145,
+    "spread": 0.01,
+    "depth_yes_total": 11054.56,
+    "depth_no_total": 7011.289999999999,
+    "depth_yes_within_5c": 10990.689999999999,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1593.6500499999997,
+    "notional_no_within_5c": 0
+  },
+  "KXPRESNOMD-28-PB": {
+    "yes_levels": [
+      {
+        "price": 0.052,
+        "count": 9615.36
+      },
+      {
+        "price": 0.051,
+        "count": 9803.91
+      },
+      {
+        "price": 0.05,
+        "count": 9999.99
+      },
+      {
+        "price": 0.041,
+        "count": 20
+      },
+      {
+        "price": 0.039,
+        "count": 10
+      },
+      {
+        "price": 0.037,
+        "count": 10
+      },
+      {
+        "price": 0.031,
+        "count": 10
+      },
+      {
+        "price": 0.03,
+        "count": 32.1
+      },
+      {
+        "price": 0.019,
+        "count": 10
+      },
+      {
+        "price": 0.015,
+        "count": 10
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.946,
+        "count": 7018.03
+      },
+      {
+        "price": 0.945,
+        "count": 9090.9
+      },
+      {
+        "price": 0.944,
+        "count": 8928.57
+      },
+      {
+        "price": 0.91,
+        "count": 200
+      },
+      {
+        "price": 0.85,
+        "count": 187.55
+      },
+      {
+        "price": 0.84,
+        "count": 1005.6
+      },
+      {
+        "price": 0.03,
+        "count": 15
+      }
+    ],
+    "best_yes_bid": 0.052,
+    "best_yes_ask": 0.054,
+    "best_no_bid": 0.946,
+    "best_no_ask": 0.948,
+    "mid": 0.053,
+    "spread": 0.002,
+    "depth_yes_total": 29521.36,
+    "depth_no_total": 26445.649999999998,
+    "depth_yes_within_5c": 29521.36,
+    "depth_no_within_5c": 15,
+    "notional_yes_within_5c": 1564.63208,
+    "notional_no_within_5c": 14.205
+  },
+  "KXPRESNOMD-28-MK": {
+    "yes_levels": [
+      {
+        "price": 0.032,
+        "count": 15624.99
+      },
+      {
+        "price": 0.031,
+        "count": 10752.68
+      },
+      {
+        "price": 0.03,
+        "count": 11111.1
+      },
+      {
+        "price": 0.024,
+        "count": 20
+      },
+      {
+        "price": 0.023,
+        "count": 10
+      },
+      {
+        "price": 0.022,
+        "count": 20
+      },
+      {
+        "price": 0.021,
+        "count": 40
+      },
+      {
+        "price": 0.02,
+        "count": 14
+      },
+      {
+        "price": 0.017,
+        "count": 10
+      },
+      {
+        "price": 0.016,
+        "count": 30
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.967,
+        "count": 4168.91
+      },
+      {
+        "price": 0.966,
+        "count": 9803.92
+      },
+      {
+        "price": 0.965,
+        "count": 14243.21
+      },
+      {
+        "price": 0.964,
+        "count": 4629.62
+      },
+      {
+        "price": 0.963,
+        "count": 4504.5
+      }
+    ],
+    "best_yes_bid": 0.032,
+    "best_yes_ask": 0.033,
+    "best_no_bid": 0.967,
+    "best_no_ask": 0.968,
+    "mid": 0.0325,
+    "spread": 0.001,
+    "depth_yes_total": 37632.77,
+    "depth_no_total": 37350.16,
+    "depth_yes_within_5c": 37632.77,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1223.0650249999999,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-ODY": {
+    "yes_levels": [],
+    "no_levels": [
+      {
+        "price": 0.01,
+        "count": 8113.63
+      }
+    ],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0.99,
+    "best_no_bid": 0.01,
+    "best_no_ask": 0,
+    "mid": 0.495,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 8113.63,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-BLA": {
+    "yes_levels": [
+      {
+        "price": 0.01,
+        "count": 20
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.01,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.99,
+    "mid": 0.005,
+    "spread": -0.01,
+    "depth_yes_total": 20,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 20,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0.1,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-YOU": {
+    "yes_levels": [
+      {
+        "price": 0.2,
+        "count": 1666.66
+      },
+      {
+        "price": 0.19,
+        "count": 1754.38
+      },
+      {
+        "price": 0.18,
+        "count": 1851.84
+      },
+      {
+        "price": 0.01,
+        "count": 40
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.79,
+        "count": 1587.3
+      },
+      {
+        "price": 0.78,
+        "count": 1515.14
+      },
+      {
+        "price": 0.77,
+        "count": 1449.26
+      }
+    ],
+    "best_yes_bid": 0.2,
+    "best_yes_ask": 0.21,
+    "best_no_bid": 0.79,
+    "best_no_ask": 0.8,
+    "mid": 0.205,
+    "spread": 0.01,
+    "depth_yes_total": 5312.88,
+    "depth_no_total": 4551.7,
+    "depth_yes_within_5c": 5272.88,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1080.9404,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-DUN": {
+    "yes_levels": [
+      {
+        "price": 0.09,
+        "count": 3703.7
+      },
+      {
+        "price": 0.08,
+        "count": 4166.66
+      },
+      {
+        "price": 0.07,
+        "count": 4761.9
+      },
+      {
+        "price": 0.01,
+        "count": 40
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.9,
+        "count": 3333.32
+      },
+      {
+        "price": 0.89,
+        "count": 3030.3
+      },
+      {
+        "price": 0.88,
+        "count": 2777.76
+      }
+    ],
+    "best_yes_bid": 0.09,
+    "best_yes_ask": 0.1,
+    "best_no_bid": 0.9,
+    "best_no_ask": 0.91,
+    "mid": 0.095,
+    "spread": 0.01,
+    "depth_yes_total": 12672.259999999998,
+    "depth_no_total": 9141.380000000001,
+    "depth_yes_within_5c": 12632.259999999998,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1200.0647,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-JOS": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-DIG": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-WIL": {
+    "yes_levels": [
+      {
+        "price": 0.01,
+        "count": 33334.32
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.98,
+        "count": 8333.33
+      },
+      {
+        "price": 0.97,
+        "count": 5555.55
+      },
+      {
+        "price": 0.96,
+        "count": 8333.32
+      }
+    ],
+    "best_yes_bid": 0.01,
+    "best_yes_ask": 0.02,
+    "best_no_bid": 0.98,
+    "best_no_ask": 0.99,
+    "mid": 0.015,
+    "spread": 0.01,
+    "depth_yes_total": 33334.32,
+    "depth_no_total": 22222.199999999997,
+    "depth_yes_within_5c": 33334.32,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 500.0148,
+    "notional_no_within_5c": 0
+  },
+  "KXFEATURE-26GTA6-NF": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-DEB": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-PRO": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXOSCARPIC-27-ELS": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXFEATURE-26GTA6-THU": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B47500": {
+    "yes_levels": [
+      {
+        "price": 0.05,
+        "count": 9999.99
+      },
+      {
+        "price": 0.04,
+        "count": 12499.98
+      },
+      {
+        "price": 0.03,
+        "count": 16666.65
+      },
+      {
+        "price": 0.01,
+        "count": 40
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.94,
+        "count": 2777.77
+      },
+      {
+        "price": 0.93,
+        "count": 7142.85
+      },
+      {
+        "price": 0.92,
+        "count": 6249.99
+      },
+      {
+        "price": 0.91,
+        "count": 3703.7
+      },
+      {
+        "price": 0.02,
+        "count": 998905.98
+      },
+      {
+        "price": 0.01,
+        "count": 1000006
+      }
+    ],
+    "best_yes_bid": 0.05,
+    "best_yes_ask": 0.06,
+    "best_no_bid": 0.94,
+    "best_no_ask": 0.95,
+    "mid": 0.055,
+    "spread": 0.01,
+    "depth_yes_total": 39206.62,
+    "depth_no_total": 2018786.29,
+    "depth_yes_within_5c": 39206.62,
+    "depth_no_within_5c": 1998911.98,
+    "notional_yes_within_5c": 2156.3641000000002,
+    "notional_no_within_5c": 1888971.8210999998
+  },
+  "KXBTCY-27JAN0100-B147500": {
+    "yes_levels": [
+      {
+        "price": 0.02,
+        "count": 200
+      }
+    ],
+    "no_levels": [],
+    "best_yes_bid": 0.02,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0.98,
+    "mid": 0.01,
+    "spread": -0.02,
+    "depth_yes_total": 200,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 200,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 2,
+    "notional_no_within_5c": 0
+  },
+  "KXETHY-27JAN0100-T4999.99": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B62500": {
+    "yes_levels": [
+      {
+        "price": 0.22,
+        "count": 1515.14
+      },
+      {
+        "price": 0.21,
+        "count": 2380.95
+      },
+      {
+        "price": 0.2,
+        "count": 833.33
+      },
+      {
+        "price": 0.19,
+        "count": 877.19
+      },
+      {
+        "price": 0.03,
+        "count": 25
+      },
+      {
+        "price": 0.02,
+        "count": 32.7
+      },
+      {
+        "price": 0.01,
+        "count": 40
+      }
+    ],
+    "no_levels": [
+      {
+        "price": 0.77,
+        "count": 13.55
+      },
+      {
+        "price": 0.76,
+        "count": 2075.42
+      },
+      {
+        "price": 0.75,
+        "count": 1999.98
+      },
+      {
+        "price": 0.74,
+        "count": 1282.04
+      },
+      {
+        "price": 0.28,
+        "count": 1.96
+      }
+    ],
+    "best_yes_bid": 0.22,
+    "best_yes_ask": 0.23,
+    "best_no_bid": 0.77,
+    "best_no_ask": 0.78,
+    "mid": 0.225,
+    "spread": 0.01,
+    "depth_yes_total": 5704.31,
+    "depth_no_total": 5372.95,
+    "depth_yes_within_5c": 5606.61,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 1261.48725,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B57500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXETHY-27JAN0100-B3875": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B67500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B52500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B42500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B117500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B127500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXBTCY-27JAN0100-B72500": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-SSTR": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-MAST27-MFIT": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-KMIT": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-MTHO": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-MAST27-SSCH": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-TMOO": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-MGRE": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-RCAS": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-LHOD": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-JSVE": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-NSHI": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  },
+  "KXPGATOUR-THRC26-GHIG": {
+    "yes_levels": [],
+    "no_levels": [],
+    "best_yes_bid": 0,
+    "best_yes_ask": 0,
+    "best_no_bid": 0,
+    "best_no_ask": 0,
+    "mid": 0,
+    "spread": null,
+    "depth_yes_total": 0,
+    "depth_no_total": 0,
+    "depth_yes_within_5c": 0,
+    "depth_no_within_5c": 0,
+    "notional_yes_within_5c": 0,
+    "notional_no_within_5c": 0
+  }
+}

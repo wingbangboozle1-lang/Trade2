@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-11-20T13:20:57.117Z",
+  "generator": "collector/src/collect.js",
+  "source": {
+    "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
+    "ws_base": "wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2",
+    "docs": "https://docs.kalshi.com/getting_started/demo_env"
+  },
+  "threshold": {
+    "swing_usd": 0.1,
+    "roi_chat_score": 60
+  },
+  "counts": {
+    "series_seen": 16643,
+    "candidate_markets": 8201,
+    "topic_markets": 60,
+    "events": 13,
+    "orderbooks": 60,
+    "candles_series": 60,
+    "alerts_total": 7,
+    "alerts_this_run": 7,
+    "trades_total": 0,
+    "trades_open": 0,
+    "trades_closed": 0
+  },
+  "exchange_status": {
+    "exchange_active": true,
+    "exchange_index_statuses": [
+      {
+        "description": "Default",
+        "exchange_active": true,
+        "exchange_index": 0,
+        "intra_exchange_transfers_active": true,
+        "trading_active": true
+      },
+      {
+        "description": "Demo shard 1",
+        "exchange_active": true,
+        "exchange_index": 1,
+        "intra_exchange_transfers_active": true,
+        "trading_active": true
+      },
+      {
+        "description": "Demo shard 2",
+        "exchange_active": true,
+        "exchange_index": 2,
+        "intra_exchange_transfers_active": true,
+        "trading_active": true
+      },
+      {
+        "description": "",
+        "exchange_active": true,
+        "exchange_index": 3,
+        "intra_exchange_transfers_active": true,
+        "trading_active": true
+      }
+    ],
+    "intra_exchange_transfers_active": true,
+    "trading_active": true
+  },
+  "account": {
+    "available": false,
+    "reason": "No Kalshi API credentials found (KALSHI_API_KEY_ID + KALSHI_PRIVATE_KEY_PATH). Demo account signup requires an email inbox that can receive a verification message, so no account could be provisioned in this environment. See https://help.kalshi.com/en/articles/13823775-creating-and-using-a-demo-account",
+    "source": "https://help.kalshi.com/en/articles/13823775-creating-and-using-a-demo-account",
+    "portfolio": null
+  }
+}

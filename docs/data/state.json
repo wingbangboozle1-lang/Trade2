@@ -1,0 +1,611 @@
+{
+  "prices": {
+    "KXWTIMAX-26DEC31-T130": [
+      [
+        1795180857,
+        0.045
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T135": [
+      [
+        1795180857,
+        0.055
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T115": [
+      [
+        1795180857,
+        0.081
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T125": [
+      [
+        1795180857,
+        0.064
+      ]
+    ],
+    "KXAAAGASM-26NOV30-3.90": [
+      [
+        1795180857,
+        0.75
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T150": [
+      [
+        1795180857,
+        0.028
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T120": [
+      [
+        1795180857,
+        0.059
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T180": [
+      [
+        1795180857,
+        0.017
+      ]
+    ],
+    "KXAAAGASM-26NOV30-3.80": [
+      [
+        1795180857,
+        0.75
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T160": [
+      [
+        1795180857,
+        0.02
+      ]
+    ],
+    "KXWTIMAX-26DEC31-T140": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXAAAGASW-26NOV23-3.6200": [
+      [
+        1795180857,
+        0.93
+      ]
+    ],
+    "KXPRESNOMD-28-GPLA": [
+      [
+        1795180857,
+        0.99
+      ]
+    ],
+    "KXPRESNOMD-28-JP": [
+      [
+        1795180857,
+        0.943
+      ]
+    ],
+    "KXPRESNOMD-28-HCLI": [
+      [
+        1795180857,
+        0.99
+      ]
+    ],
+    "KXPRESPERSON-28-GABB": [
+      [
+        1795180857,
+        0.803
+      ]
+    ],
+    "KXGOVAK-26-NDAH": [
+      [
+        1795180857,
+        0.9
+      ]
+    ],
+    "KXPRESNOMR-28-NMIN": [
+      [
+        1795180857,
+        0.98
+      ]
+    ],
+    "KXPRESNOMD-28-RW": [
+      [
+        1795180857,
+        0.033
+      ]
+    ],
+    "KXPRESNOMD-28-JOSS": [
+      [
+        1795180857,
+        0.271
+      ]
+    ],
+    "KXPRESNOMR-28-MG": [
+      [
+        1795180857,
+        0.98
+      ]
+    ],
+    "KXPRESNOMD-28-AOC": [
+      [
+        1795180857,
+        0.15
+      ]
+    ],
+    "KXPRESNOMD-28-PB": [
+      [
+        1795180857,
+        0.054
+      ]
+    ],
+    "KXPRESNOMD-28-MK": [
+      [
+        1795180857,
+        0.033
+      ]
+    ],
+    "KXOSCARPIC-27-ODY": [
+      [
+        1795180857,
+        0.99
+      ]
+    ],
+    "KXOSCARPIC-27-BLA": [
+      [
+        1795180857,
+        0.49
+      ]
+    ],
+    "KXOSCARPIC-27-YOU": [
+      [
+        1795180857,
+        0.2
+      ]
+    ],
+    "KXOSCARPIC-27-DUN": [
+      [
+        1795180857,
+        0.1
+      ]
+    ],
+    "KXOSCARPIC-27-JOS": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXOSCARPIC-27-DIG": [
+      [
+        1795180857,
+        0.01
+      ]
+    ],
+    "KXOSCARPIC-27-WIL": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXFEATURE-26GTA6-NF": [
+      [
+        1795180857,
+        0.51
+      ]
+    ],
+    "KXOSCARPIC-27-DEB": [
+      [
+        1795180857,
+        0.02
+      ]
+    ],
+    "KXOSCARPIC-27-PRO": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXOSCARPIC-27-ELS": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXFEATURE-26GTA6-THU": [
+      [
+        1795180857,
+        0.99
+      ]
+    ],
+    "KXBTCY-27JAN0100-B47500": [
+      [
+        1795180857,
+        0.98
+      ]
+    ],
+    "KXBTCY-27JAN0100-B147500": [
+      [
+        1795180857,
+        0.98
+      ]
+    ],
+    "KXETHY-27JAN0100-T4999.99": [
+      [
+        1795180857,
+        0.9
+      ]
+    ],
+    "KXBTCY-27JAN0100-B62500": [
+      [
+        1795180857,
+        0.23
+      ]
+    ],
+    "KXBTCY-27JAN0100-B57500": [
+      [
+        1795180857,
+        0.16
+      ]
+    ],
+    "KXETHY-27JAN0100-B3875": [
+      [
+        1795180857,
+        0.5
+      ]
+    ],
+    "KXBTCY-27JAN0100-B67500": [
+      [
+        1795180857,
+        0.17
+      ]
+    ],
+    "KXBTCY-27JAN0100-B52500": [
+      [
+        1795180857,
+        0.09
+      ]
+    ],
+    "KXBTCY-27JAN0100-B42500": [
+      [
+        1795180857,
+        0.04
+      ]
+    ],
+    "KXBTCY-27JAN0100-B117500": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXBTCY-27JAN0100-B127500": [
+      [
+        1795180857,
+        0.03
+      ]
+    ],
+    "KXBTCY-27JAN0100-B72500": [
+      [
+        1795180857,
+        0.09
+      ]
+    ],
+    "KXPGATOUR-THRC26-SSTR": [
+      [
+        1795180857,
+        0.025
+      ]
+    ],
+    "KXPGATOUR-MAST27-MFIT": [
+      [
+        1795180857,
+        0.02
+      ]
+    ],
+    "KXPGATOUR-THRC26-KMIT": [
+      [
+        1795180857,
+        0.079
+      ]
+    ],
+    "KXPGATOUR-THRC26-MTHO": [
+      [
+        1795180857,
+        0.13
+      ]
+    ],
+    "KXPGATOUR-MAST27-SSCH": [
+      [
+        1795180857,
+        0.16
+      ]
+    ],
+    "KXPGATOUR-THRC26-TMOO": [
+      [
+        1795180857,
+        0.005
+      ]
+    ],
+    "KXPGATOUR-THRC26-MGRE": [
+      [
+        1795180857,
+        0.048
+      ]
+    ],
+    "KXPGATOUR-THRC26-RCAS": [
+      [
+        1795180857,
+        0.022
+      ]
+    ],
+    "KXPGATOUR-THRC26-LHOD": [
+      [
+        1795180857,
+        0.023
+      ]
+    ],
+    "KXPGATOUR-THRC26-JSVE": [
+      [
+        1795180857,
+        0.038
+      ]
+    ],
+    "KXPGATOUR-THRC26-NSHI": [
+      [
+        1795180857,
+        0.02
+      ]
+    ],
+    "KXPGATOUR-THRC26-GHIG": [
+      [
+        1795180857,
+        0.02
+      ]
+    ]
+  },
+  "trades": [],
+  "alerts": [
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXBTCY-27JAN0100-B47500",
+      "event_ticker": "KXBTCY-27JAN0100",
+      "title": "BTC price  on Jan 1, 2027?",
+      "topic": "crypto",
+      "topics": [
+        "crypto"
+      ],
+      "category": "Crypto",
+      "direction": "up",
+      "from": 0.06,
+      "to": 0.98,
+      "delta": 0.92,
+      "abs_delta": 0.92,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.98,
+      "yes_bid": 0.05,
+      "yes_ask": 0.06,
+      "no_bid": 0.94,
+      "no_ask": 0.95,
+      "close_time": "2027-01-01T05:00:00Z",
+      "dollar_amount": 26056119.4,
+      "roi_score": 46,
+      "kalshi_url": "https://kalshi.co/markets/kxbtcy",
+      "settlement_sources": [
+        {
+          "name": "CF Benchmarks",
+          "url": "https://www.cfbenchmarks.com/"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXPRESPERSON-28-GABB",
+      "event_ticker": "KXPRESPERSON-28",
+      "title": "Who will win the next presidential election?",
+      "topic": "elections",
+      "topics": [
+        "elections"
+      ],
+      "category": "Elections",
+      "direction": "up",
+      "from": 0.003,
+      "to": 0.803,
+      "delta": 0.8,
+      "abs_delta": 0.8,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.803,
+      "yes_bid": 0.002,
+      "yes_ask": 0.003,
+      "no_bid": 0.997,
+      "no_ask": 0.998,
+      "close_time": "2029-11-07T15:00:00Z",
+      "dollar_amount": 52797171.93,
+      "roi_score": 46,
+      "kalshi_url": "https://kalshi.co/markets/kxpresperson",
+      "settlement_sources": [
+        {
+          "name": "Office of the Presidency",
+          "url": "https://www.whitehouse.gov/administration/executive-office-of-the-president/"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXOSCARPIC-27-ODY",
+      "event_ticker": "KXOSCARPIC-27",
+      "title": "Will The Odyssey win Best Picture at the Oscars?",
+      "topic": "culture",
+      "topics": [
+        "culture"
+      ],
+      "category": "Entertainment",
+      "direction": "up",
+      "from": 0.53,
+      "to": 0.99,
+      "delta": 0.46,
+      "abs_delta": 0.46,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.99,
+      "yes_bid": 0,
+      "yes_ask": 0.99,
+      "no_bid": 0.01,
+      "no_ask": 1,
+      "close_time": "2027-12-31T15:00:00Z",
+      "dollar_amount": 519512.99,
+      "roi_score": 6,
+      "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+      "settlement_sources": [
+        {
+          "name": "Academy of Motion Picture Arts and Sciences",
+          "url": "https://www.oscars.org/oscars"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXOSCARPIC-27-BLA",
+      "event_ticker": "KXOSCARPIC-27",
+      "title": "Will The Black Ball win Best Picture at the Oscars?",
+      "topic": "culture",
+      "topics": [
+        "culture"
+      ],
+      "category": "Entertainment",
+      "direction": "up",
+      "from": 0.11,
+      "to": 0.49,
+      "delta": 0.38,
+      "abs_delta": 0.38,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.49,
+      "yes_bid": 0.01,
+      "yes_ask": 1,
+      "no_bid": 0,
+      "no_ask": 0.99,
+      "close_time": "2027-12-31T15:00:00Z",
+      "dollar_amount": 685278.6,
+      "roi_score": 24,
+      "kalshi_url": "https://kalshi.co/markets/kxoscarpic",
+      "settlement_sources": [
+        {
+          "name": "Academy of Motion Picture Arts and Sciences",
+          "url": "https://www.oscars.org/oscars"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXFEATURE-26GTA6-NF",
+      "event_ticker": "KXFEATURE-26GTA6",
+      "title": "Will NF be featured on Grand Theft Auto VI: The Album?",
+      "topic": "culture",
+      "topics": [
+        "culture"
+      ],
+      "category": "Entertainment",
+      "direction": "up",
+      "from": 0.14,
+      "to": 0.51,
+      "delta": 0.37,
+      "abs_delta": 0.37,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.51,
+      "yes_bid": 0,
+      "yes_ask": 1,
+      "no_bid": 0,
+      "no_ask": 1,
+      "close_time": "2026-12-31T04:59:00Z",
+      "dollar_amount": 48504.24,
+      "roi_score": 6,
+      "kalshi_url": "https://kalshi.co/markets/kxfeature",
+      "settlement_sources": [
+        {
+          "name": "Spotify",
+          "url": "https://open.spotify.com/"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXAAAGASW-26NOV23-3.6200",
+      "event_ticker": "KXAAAGASW-26NOV23",
+      "title": "Will average **gas prices** be above $3.6200?",
+      "topic": "gas",
+      "topics": [
+        "gas",
+        "crypto"
+      ],
+      "category": "Economics",
+      "direction": "up",
+      "from": 0.81,
+      "to": 0.93,
+      "delta": 0.12,
+      "abs_delta": 0.12,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.93,
+      "yes_bid": 0.87,
+      "yes_ask": 0.93,
+      "no_bid": 0.07,
+      "no_ask": 0.13,
+      "close_time": "2026-11-23T04:59:00Z",
+      "dollar_amount": 10574.35,
+      "roi_score": 35,
+      "kalshi_url": "https://kalshi.co/markets/kxaaagasw",
+      "settlement_sources": [
+        {
+          "name": "AAA",
+          "url": "https://gasprices.aaa.com/"
+        }
+      ]
+    },
+    {
+      "ts": "2026-11-20T13:20:57.000Z",
+      "ticker": "KXPGATOUR-THRC26-MTHO",
+      "event_ticker": "KXPGATOUR-THRC26",
+      "title": "The RSM Classic: Michael Thorbjornsen wins",
+      "topic": "golf",
+      "topics": [
+        "golf"
+      ],
+      "category": "Sports",
+      "direction": "up",
+      "from": 0.032,
+      "to": 0.13,
+      "delta": 0.098,
+      "abs_delta": 0.098,
+      "threshold": 0.1,
+      "reference": "Kalshi previous_price_dollars",
+      "last_price": 0.13,
+      "yes_bid": 0.12,
+      "yes_ask": 0.13,
+      "no_bid": 0.87,
+      "no_ask": 0.88,
+      "close_time": "2026-12-06T00:00:00Z",
+      "dollar_amount": 6897.38,
+      "roi_score": 11,
+      "kalshi_url": "https://kalshi.co/markets/kxpgatour",
+      "settlement_sources": [
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/"
+        },
+        {
+          "name": "the Governing League",
+          "url": "https://www.pgatour.com/"
+        }
+      ]
+    }
+  ],
+  "runs": 1,
+  "lastRunAt": "2026-11-20T13:20:57.120Z",
+  "backtested": [],
+  "errorLog": []
+}

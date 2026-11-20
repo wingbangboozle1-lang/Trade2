@@ -1,0 +1,44 @@
+{
+  "last_run_at": "2026-11-20T13:20:57.117Z",
+  "duration_ms": 31812,
+  "api_calls": 123,
+  "api_errors": 5,
+  "errors": [
+    {
+      "where": "markets/orderbooks",
+      "error": "HTTP 400 (/markets/orderbooks)"
+    },
+    {
+      "where": "markets/orderbooks",
+      "error": "HTTP 400 (/markets/orderbooks)"
+    },
+    {
+      "where": "markets/orderbooks",
+      "error": "HTTP 400 (/markets/orderbooks)"
+    },
+    {
+      "where": "markets/candlesticks",
+      "error": "[object Object] (/markets/candlesticks)"
+    },
+    {
+      "where": "markets/candlesticks",
+      "error": "[object Object] (/markets/candlesticks)"
+    }
+  ],
+  "calls": {
+    "markets": 46,
+    "series": 1,
+    "orderbooks": 40,
+    "candles": 0,
+    "events": 13
+  },
+  "exchange_active": true,
+  "trading_active": true,
+  "runs": 1,
+  "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
+  "ws_base": "wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2",
+  "notes": [
+    "All market data is read from the public Kalshi demo REST API (no credentials).",
+    "Orderbook and candle counts reflect the per-run request budget in collector/src/config.js."
+  ]
+}
