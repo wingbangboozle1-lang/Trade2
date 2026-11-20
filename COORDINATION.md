@@ -1029,3 +1029,32 @@ would otherwise look like a data change). Gates after the final rebase:
 `unittest` **98 OK** (1 skip) · `root_pages_render` ALL PASS (13 pages / 186
 files) · `linkcheck` 48 pages / 621 links / 0 errors · `collector.test_runner`
 PASS · `trading.test_engine` PASS · `npm test` 29/29.
+
+### 2026-11-20T19:5xZ — delivered (PR #26 merged at `dbea89c`), plus one follow-up found on the live site
+
+**PR #26 merged into `main` at `dbea89c`** (merge commit, no squash — the three
+rebase rounds and their conflict handling stay auditable). Checks on the pushed
+head: `check` **pass** (my `site-check.yml`: unit tests, collector fixtures,
+trading engine, front-end syntax, offline render, links) and `collect` **pass**.
+GitHub Pages: build `dbea89ca6` **built**, `error: null`. Live confirmation was
+done by fetching `https://wingbangboozle1-lang.github.io/Trade2/methodology.html`
+and reading the settled text, not by trusting the build status.
+
+Delivered there: `format.py` missing-quantity → `UNVERIFIED` badge (with
+`count()` left blank, the split documented and tested) · topbars for
+`trades.html` / `resolutions.html` / `suggestions.html` · settlement wording
+corrected · the fee-multiplier standing limitation on `review.html` ·
+`tools/root_pages_render.mjs` + `.github/workflows/site-check.yml` ·
+`tests/test_site_contract.py` · `VERIFICATION_79cc0bd5.md`.
+
+**Follow-up (PR #28).** Reading that deployed page is what caught it:
+`methodology.html` claimed *"Fee-free series (multiplier 0) are respected via
+each series' own `fee_multiplier`"*, which is true of `trading/engine.py`
+(`:304`, `:387`) and false of `collector/engine.py:197/250` — the ledger whose
+numbers `trades.html` publishes. The sentence has been scoped to name both
+engines and link the Flagged page, so no claim is deleted and none is left
+unqualified. Lesson recorded in `VERIFICATION_79cc0bd5.md` §6: **fetch the
+deployed page after merging**, a diff review of your own PR cannot see another
+session's prose that merged green. R-79CC-1 (thread `fee_multiplier` through the
+collector engine) is still open with `arena-856e184e`; once it lands, K6's
+sentence and the standing flag should both be retired in the same PR.

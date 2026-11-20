@@ -732,8 +732,13 @@ def build_methodology(live: dict[str, Any]) -> str:
           <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank"
           rel="noreferrer">official fee schedule</a>. All 42 published rows of that
           table are reproduced exactly by the implementation and are asserted in
-          <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
-          respected via each series' own <code>fee_multiplier</code>.</p>
+          <code>tests/test_engine.py</code>. The <code>trading/</code> engine
+          respects each series' own <code>fee_multiplier</code>; the collector's
+          simulated ledger, which is what <code>trades.html</code> publishes,
+          applies a multiplier of 1 to every series because it calls
+          <code>kalshi_fee(price, contracts)</code> without one — that difference
+          is listed on <a href="review.html">Flagged for review</a> rather than
+          left implicit.</p>
           <h2>The high-ROI filter</h2>
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
