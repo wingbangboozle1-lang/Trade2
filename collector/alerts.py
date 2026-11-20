@@ -39,8 +39,8 @@ import time
 from dataclasses import dataclass, field, asdict
 from typing import Any, Iterable
 
-from .kalshi_api import (best_bid, count, dollars, implied_yes_ask, mid_price,
-                         kalshi_fee)
+from .kalshi_api import (DEMO_REST, best_bid, count, dollars, implied_yes_ask,
+                         mid_price, kalshi_fee)
 
 SWING_THRESHOLD = 0.10   # USD per contract, either direction (project brief)
 MIN_EDGE = 0.02          # USD minimum modelled edge to call something "high ROI"
@@ -54,6 +54,19 @@ SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
 MIN_TOP_LEVEL_CONTRACTS = 1.0  # the best level must actually hold size
+
+# --- alert hygiene (session arena-dc732aa6, request R-D-01) ---------------
+# The published snapshot of 2026-11-20T18:41Z buffered 29 alerts describing
+# only 8 distinct moves: every run stamps a fresh id, and the merge only
+# excluded exact id matches, so one sustained swing re-fired on every run.
+#   * one row per (market, direction, reference bar); repeats fold into it
+#   * a later bar earns its own row only when the move grows by ESCALATION_STEP
+#   * every row states its price basis, and whether the move was executable at
+#     the top of the book (a midpoint move with no size behind it is labelled
+#     "indicative", and is reported as a suppression rather than hidden)
+ESCALATION_STEP = SWING_THRESHOLD
+MIN_ACTIONABLE_SIZE = 1.0     # contracts resting at the level you would trade
+MODEL_MIN_NET_ROI = 0.05      # one gate for the shortlist: generator and browser
 
 
 @dataclass
@@ -71,7 +84,18 @@ class Observation:
     open_interest: float | None
     yes_bid_size: float | None = None
     no_bid: float | None = None
+    no_bid_size: float | None = None   # contracts at the best NO bid = YES ask size
     notional: float | None = None      # notional_value_dollars per contract
+    # Reference prices from the official candlestick record of the bar being
+    # measured against, when the collector has one (all three are documented
+    # closes at https://docs.kalshi.com/api-reference/market/get-market-candlesticks):
+    #   ref_yes_bid / ref_yes_ask -> yes_bid.close_dollars / yes_ask.close_dollars
+    #   ref_trade_close           -> price.close_dollars (last trade, never used
+    #                                 as a swing basis - see 856e184e's quote rule)
+    ref_ts: float | None = None
+    ref_yes_bid: float | None = None
+    ref_yes_ask: float | None = None
+    ref_trade_close: float | None = None
     status: str = "active"
     result: str = ""
     series_ticker: str = ""
@@ -83,7 +107,11 @@ class Observation:
 
 
 def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
-            topic: str, ts: float | None = None) -> Observation:
+            topic: str, ts: float | None = None,
+            reference: dict[str, Any] | None = None) -> Observation:
+    """``reference`` is the optional bar-open record from the candlestick
+    endpoint; attaching it lets the swing test and the UI state exactly which
+    Kalshi-published numbers the comparison used."""
     """Build an Observation from GET /markets plus GET /markets/{t}/orderbook."""
     ob = (orderbook or {}).get("orderbook_fp") or {}
     yes_levels = ob.get("yes_dollars") or []
@@ -94,6 +122,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     yes_bid = yb[0] if yb else None
     yes_bid_size = yb[1] if yb else None
     no_bid = nb[0] if nb else None
+    no_bid_size = nb[1] if nb else None
     yes_ask = implied_yes_ask(no_bid)
 
     # Fall back to the market record's own quotes when the book is empty...
@@ -103,6 +132,9 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         yes_bid = dollars(market.get("yes_bid_dollars"))
     if yes_bid is None and yes_bid_size is None:
         yes_bid_size = count(market.get("yes_bid_size_fp"))
+    if no_bid_size is None:
+        # The ask side of the market record, when the book did not give one.
+        no_bid_size = count(market.get("yes_ask_size_fp"))
 
     # ...but a market with no quotes at all reports 0.0000 bid / 1.0000 ask.
     # Averaging that pair produces a phantom 0.50 mid, which is how a golf
@@ -112,8 +144,14 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
             and yes_bid <= 0.0 and yes_ask >= 1.0):
         yes_bid, yes_ask = None, None
 
+    ref = reference or {}
     return Observation(
         ts=ts if ts is not None else time.time(),
+        ref_ts=ref.get("ts"),
+        ref_yes_bid=ref.get("yes_bid"),
+        ref_yes_ask=ref.get("yes_ask"),
+        ref_trade_close=ref.get("trade_close"),
+        no_bid_size=no_bid_size,
         ticker=market.get("ticker", ""),
         event_ticker=market.get("event_ticker", ""),
         topic=topic,
@@ -163,62 +201,127 @@ def alert_record_valid(alert: dict[str, Any]) -> bool:
     return swing_quotes_ok(alert.get("yes_bid"), alert.get("yes_ask"))
 
 
-def detect_swing(previous: Observation | None, current: Observation,
-                 threshold: float = SWING_THRESHOLD,
-                 reference: float | None = None,
-                 reference_ts: float | None = None,
-                 reference_spread: float | None = None) -> dict[str, Any] | None:
-    """Return an alert dict when the reference price moved by >= threshold.
+def _mid_and_spread(mid: float | None, spread: float | None
+                    ) -> tuple[float | None, float | None]:
+    """Recover (bid, ask) from a reference mid and its quoted spread."""
+    if mid is None or spread is None:
+        return None, None
+    return round(mid - spread / 2.0, 4), round(mid + spread / 2.0, 4)
 
-    Price basis: both sides of the comparison are YES *mid* prices built from
-    quotes (bid and ask). ``reference`` must therefore be the mid of the
-    reference bar's quote closes, with ``reference_spread`` its ask-bid width.
-    A last-trade price must never be compared with a quote mid. Both the current
-    and the reference quotes must be two-sided and narrower than
-    ALERT_MAX_SPREAD, otherwise no alert is raised.
 
-    How the reference works, and why it is not simply "the previous snapshot":
+def _swing(previous: Observation | None, current: Observation,
+           threshold: float, reference: float | None,
+           reference_ts: float | None, reference_spread: float | None,
+           bar_seconds: int) -> tuple[dict[str, Any] | None,
+                                      dict[str, Any] | None]:
+    """Single implementation of the swing test. Returns (alert, suppression).
 
-    The collector samples roughly every 5-15 minutes while a market can move
-    continuously. Comparing only against the immediately previous sample makes
-    every alert fire once and then reset, so a market that drifts 20 cents over
-    an hour in 4-cent steps never alerts. The caller therefore passes the price
-    at the start of the current 5-minute bar, taken from Kalshi's own published
-    candle quote closes (yes_bid / yes_ask), not the last-trade close. That reference is still a measured price, never an
-    interpolation, and it is used whenever available; the previous snapshot is
-    the fallback for markets without candle history.
+    ``alert`` is the row the chat shows, or None when the move is not measured
+    or does not clear the threshold. ``suppression`` is a record of a *midpoint*
+    move that would have cleared the threshold but was refused by the quote rule
+    — published so nothing disappears silently (R-D-01).
     """
+    # A reference attached to the observation (from the candlestick endpoint)
+    # fills in for callers that did not pass one, and gives us both sides of
+    # the reference quote rather than only its midpoint.
+    if reference is None and current.ref_yes_bid is not None \
+            and current.ref_yes_ask is not None:
+        reference = round((current.ref_yes_bid + current.ref_yes_ask) / 2.0, 4)
+        reference_ts = current.ref_ts if reference_ts is None else reference_ts
+        reference_spread = quoted_spread(current.ref_yes_bid, current.ref_yes_ask)
+
+    def naive_delta() -> float | None:
+        base = reference if reference is not None else (
+            previous.mid if previous is not None else None)
+        if base is None or current.mid is None:
+            return None
+        return round(current.mid - base, 4)
+
+    def suppress(reason: str) -> tuple[None, dict[str, Any] | None]:
+        d = naive_delta()
+        if d is None or abs(d) + 1e-9 < threshold:
+            return None, None
+        return None, {
+            "id": f"suppressed:{current.ticker}:{int(current.ts)}",
+            "ticker": current.ticker,
+            "event_ticker": current.event_ticker,
+            "series_ticker": current.series_ticker,
+            "topic": current.topic,
+            "title": current.title,
+            "abs_delta": abs(d),
+            "direction": "up" if d > 0 else "down",
+            "yes_bid": current.yes_bid,
+            "yes_ask": current.yes_ask,
+            "spread": quoted_spread(current.yes_bid, current.yes_ask),
+            "reason": reason,
+            "market_url": current.market_url,
+            "ts": current.ts,
+            "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(current.ts)),
+            "threshold": threshold,
+        }
+
     if previous is None and reference is None:
-        return None
+        return None, None
     # The current observation must itself be a tight, two-sided quote.
     if not swing_quotes_ok(current.yes_bid, current.yes_ask):
-        return None
-    # Prefer the bar-opening reference: it spans the whole bar rather than a
-    # single inter-snapshot hop, so a gradual move is measurable. Fall back to
-    # the previous snapshot when no bar is available.
+        spread = quoted_spread(current.yes_bid, current.yes_ask)
+        if spread is None:
+            return suppress("one-sided book: only one side is quoted")
+        return suppress(f"YES spread {spread:.4f} is not tighter than the "
+                        f"${ALERT_MAX_SPREAD:.2f} alert threshold, so the "
+                        "midpoint can move without a trade")
     basis = "candle_quote_mid"
     if reference is not None:
         if reference_spread is None or not (0.0 <= reference_spread < ALERT_MAX_SPREAD):
-            return None
+            return suppress("reference quote is missing or wider than the "
+                            f"${ALERT_MAX_SPREAD:.2f} threshold")
         base = reference
     elif previous is not None:
         if not swing_quotes_ok(previous.yes_bid, previous.yes_ask):
-            return None
+            return suppress("previous snapshot is one-sided or too wide to be "
+                            "a valid reference")
         base = previous.mid
         basis = "previous_snapshot_mid"
     else:
         base = None
     if base is None or current.mid is None:
-        return None
+        return None, None
     prev_ts = reference_ts if reference is not None else (
         previous.ts if previous is not None else None)
     delta = round(current.mid - base, 4)
     if abs(delta) + 1e-9 < threshold:
-        return None
+        return None, None
     direction = "up" if delta > 0 else "down"
-    prev_mid = base
-    return {
+    spread = quoted_spread(current.yes_bid, current.yes_ask)
+
+    # --- executability ---------------------------------------------------
+    # Buy YES at the ask (implied by the best NO bid); sell YES into the YES bid.
+    ref_bid, ref_ask = _mid_and_spread(base, reference_spread)
+    if current.ref_yes_bid is not None and current.ref_yes_ask is not None:
+        ref_bid, ref_ask = current.ref_yes_bid, current.ref_yes_ask
+    if direction == "up":
+        cur_exec, ref_exec = current.yes_ask, ref_ask
+        size, size_name = current.no_bid_size, "contracts offered at the implied YES ask"
+    else:
+        cur_exec, ref_exec = current.yes_bid, ref_bid
+        size, size_name = current.yes_bid_size, "contracts bid at the top YES bid"
+    exec_delta = (round(cur_exec - ref_exec, 4)
+                  if cur_exec is not None and ref_exec is not None else None)
+    quality, reasons = "executable", []
+    if size is not None and size < MIN_ACTIONABLE_SIZE:
+        quality = "indicative"
+        reasons.append("no size at the level you would trade")
+    if exec_delta is not None and abs(exec_delta) + 1e-9 < threshold:
+        quality = "indicative"
+        reasons.append(f"the executable side moved only {exec_delta:+.4f} while "
+                       f"the midpoint moved {delta:+.4f}")
+    bar_start = int(current.ts // bar_seconds * bar_seconds)
+    alert = {
         "id": f"{current.ticker}:{int(current.ts)}",
+        # Stable identity for the rolling buffer: one row per market, per
+        # direction, per reference bar. Repeated runs fold into it.
+        "key": f"{current.ticker}:{direction}:{bar_start}",
+        "bar_start": bar_start,
         "ts": current.ts,
         "iso": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(current.ts)),
         "ticker": current.ticker,
@@ -226,7 +329,7 @@ def detect_swing(previous: Observation | None, current: Observation,
         "series_ticker": current.series_ticker,
         "topic": current.topic,
         "title": current.title,
-        "previous": prev_mid,
+        "previous": base,
         "previous_ts": prev_ts,
         "current": current.mid,
         "delta": delta,
@@ -242,69 +345,243 @@ def detect_swing(previous: Observation | None, current: Observation,
         "observed_gap_seconds": round(
             current.ts - (prev_ts if prev_ts is not None else current.ts), 1),
         "reference_basis": basis,
-        "spread": quoted_spread(current.yes_bid, current.yes_ask),
+        "basis": basis,                       # alias used by the site templates
+        "price_pair": "quote mid to quote mid",
+        "spread": spread,
+        "size_at_top": size,
+        "size_name": size_name,
+        "executable": {
+            "side": ("buy YES at the ask" if direction == "up"
+                     else "sell YES into the YES bid"),
+            "reference_price": ref_exec,
+            "current_price": cur_exec,
+            "delta": exec_delta,
+            "clears_threshold": (exec_delta is not None
+                                 and abs(exec_delta) + 1e-9 >= threshold),
+        },
+        "quality": quality,
+        "quality_reason": "; ".join(reasons) if reasons else (
+            "two-sided book tighter than the threshold, move present on the "
+            "executable side"),
+        "first_seen_ts": current.ts,
+        "last_seen_ts": current.ts,
+        "repeat_count": 0,
+    }
+    return alert, None
+
+
+def detect_swing(previous: Observation | None, current: Observation,
+                 threshold: float = SWING_THRESHOLD,
+                 reference: float | None = None,
+                 reference_ts: float | None = None,
+                 reference_spread: float | None = None,
+                 bar_seconds: int = 300) -> dict[str, Any] | None:
+    """Return an alert dict when the reference price moved by >= threshold.
+
+    Price basis: both sides of the comparison are YES *mid* prices built from
+    quotes (bid and ask). ``reference`` must therefore be the mid of the
+    reference bar's quote closes, with ``reference_spread`` its ask-bid width.
+    A last-trade price must never be compared with a quote mid. Both the current
+    and the reference quotes must be two-sided and narrower than
+    ALERT_MAX_SPREAD, otherwise no alert is raised (that suppression is
+    published by ``swing_rejection`` instead of being dropped).
+
+    How the reference works, and why it is not simply "the previous snapshot":
+
+    The collector samples roughly every 5-15 minutes while a market can move
+    continuously. Comparing only against the immediately previous sample makes
+    every alert fire once and then reset, so a market that drifts 20 cents over
+    an hour in 4-cent steps never alerts. The caller therefore passes the price
+    at the start of the current 5-minute bar, taken from Kalshi's own published
+    candle quote closes (yes_bid / yes_ask), not the last-trade close. That
+    reference is still a measured price, never an interpolation, and it is used
+    whenever available; the previous snapshot is the fallback for markets
+    without candle history.
+    """
+    return _swing(previous, current, threshold, reference, reference_ts,
+                  reference_spread, bar_seconds)[0]
+
+
+def swing_rejection(previous: Observation | None, current: Observation,
+                    threshold: float = SWING_THRESHOLD,
+                    reference: float | None = None,
+                    reference_ts: float | None = None,
+                    reference_spread: float | None = None,
+                    bar_seconds: int = 300) -> dict[str, Any] | None:
+    """Why a >= $0.10 *midpoint* move did not become an alert, if that happened.
+
+    Kept deliberately separate from ``detect_swing`` so the alert rule stays
+    strict while the reviewer still sees what the rule refused.
+    """
+    return _swing(previous, current, threshold, reference, reference_ts,
+                  reference_spread, bar_seconds)[1]
+
+
+def book_record_divergence(market: dict[str, Any], orderbook: dict[str, Any] | None,
+                           threshold: float = SWING_THRESHOLD) -> dict[str, Any] | None:
+    """Report a market whose order book and market record disagree by >= threshold.
+
+    Both numbers come from Kalshi, from two documented endpoints, and they can
+    disagree in the demo environment. Observed on 2026-11-20T19:1xZ for
+    KXPRESNOMD-28-HBID:
+
+        GET /markets/KXPRESNOMD-28-HBID
+            yes_bid_dollars 0.0020   yes_ask_dollars 0.0030   -> mid 0.0025
+        GET /markets/KXPRESNOMD-28-HBID/orderbook
+            best YES bid 0.0020, best NO bid 0.1890
+            -> implied YES ask 1.00 - 0.1890 = 0.8110         -> mid 0.4065
+
+    A $0.8080 gap on the same market, at the same moment. Whichever is stale, a
+    dashboard must not present either as "the price" without saying so, because
+    the alert engine and the chart read the book while the market table reads
+    the record. This function exists to make that visible instead of picking a
+    winner.
+    """
+    ob = (orderbook or {}).get("orderbook_fp") or {}
+    yb = best_bid(ob.get("yes_dollars") or [])
+    nb = best_bid(ob.get("no_dollars") or [])
+    book_bid = yb[0] if yb else None
+    book_ask = implied_yes_ask(nb[0] if nb else None)
+    rec_bid = dollars(market.get("yes_bid_dollars"))
+    rec_ask = dollars(market.get("yes_ask_dollars"))
+    if book_bid is None and book_ask is None:
+        return None
+    if rec_bid is None and rec_ask is None:
+        return None
+    book_mid = mid_price(book_bid, book_ask)
+    rec_mid = mid_price(rec_bid, rec_ask)
+    if book_mid is None or rec_mid is None:
+        return None
+    gap = round(book_mid - rec_mid, 4)
+    if abs(gap) + 1e-9 < threshold:
+        return None
+    return {
+        "ticker": market.get("ticker", ""),
+        "event_ticker": market.get("event_ticker", ""),
+        "title": (market.get("yes_sub_title") or market.get("title") or "").strip(),
+        "book_mid": book_mid, "record_mid": rec_mid, "gap": gap,
+        "abs_gap": abs(gap),
+        "book_yes_bid": book_bid, "book_yes_ask": book_ask,
+        "record_yes_bid": rec_bid, "record_yes_ask": rec_ask,
+        "threshold": threshold,
+        "source_book": (f"{DEMO_REST}/markets/{market.get('ticker')}/orderbook"),
+        "source_record": f"{DEMO_REST}/markets/{market.get('ticker')}",
     }
 
 
-def alert_window_key(alert: dict[str, Any]) -> str:
-    """Structural identity of a swing: market + reference window + direction.
+def fold_alerts(new_alerts: list[dict[str, Any]], existing: list[dict[str, Any]],
+                max_alerts: int = 400,
+                escalation: float = ESCALATION_STEP) -> dict[str, Any]:
+    """Merge this run's alerts into the rolling chat buffer without duplicates.
 
-    The alert ``id`` embeds the run timestamp, so the same sustained move
-    re-observed on a later run gets a fresh id. This key is what actually
-    identifies "the same move" (COORDINATION.md R-D-01).
+    * same ``key`` (market + direction + reference bar) -> update that row and
+      keep the largest move, counting the repeat;
+    * later bar, same market + direction -> a new row only when the move has
+      grown by at least ``escalation``; smaller repeats fold into it;
+    * the opposite direction is always its own row.
+
+    Returns ``{"alerts": [...], "added": n, "escalated": n, "folded": n}``.
     """
-    window = int(alert.get("previous_ts") or alert.get("ts") or 0)
-    return f"{alert.get('ticker','')}:{window}:{alert.get('direction','')}"
+    merged = [dict(a) for a in existing]
+    stats = {"folded": 0, "added": 0, "escalated": 0}
+
+    def index_of(row: dict[str, Any]) -> dict[Any, int]:
+        return {a.get("key"): i for i, a in enumerate(merged) if a.get("key")}
+
+    by_key = index_of({})
+    for fresh in new_alerts:
+        row = dict(fresh)
+        idx = by_key.get(row.get("key"))
+        if idx is not None:
+            cur = merged[idx]
+            if (row.get("abs_delta") or 0) > (cur.get("abs_delta") or 0):
+                row["first_seen_ts"] = cur.get("first_seen_ts", row["first_seen_ts"])
+                row["repeat_count"] = (cur.get("repeat_count") or 0) + 1
+                if cur.get("news") and not row.get("news"):
+                    row["news"] = cur["news"]
+                merged[idx] = row
+            else:
+                cur["last_seen_ts"] = row["ts"]
+                cur["iso"] = row["iso"]
+                cur["repeat_count"] = (cur.get("repeat_count") or 0) + 1
+            stats["folded"] += 1
+            continue
+        newest = None
+        for i, cur in enumerate(merged):
+            if (cur.get("ticker") == row.get("ticker")
+                    and cur.get("direction") == row.get("direction")):
+                if newest is None or ((cur.get("ts") or 0)
+                                       > (merged[newest].get("ts") or 0)):
+                    newest = i
+        if newest is not None:
+            cur = merged[newest]
+            grows = ((row.get("abs_delta") or 0)
+                     >= ((cur.get("abs_delta") or 0) + escalation - 1e-9))
+            if not grows:
+                cur["last_seen_ts"] = row["ts"]
+                cur["iso"] = row["iso"]
+                cur["repeat_count"] = (cur.get("repeat_count") or 0) + 1
+                for field in ("current", "yes_bid", "yes_ask", "spread",
+                              "size_at_top", "quality", "quality_reason",
+                              "volume", "open_interest", "executable", "news"):
+                    if row.get(field) is not None:
+                        cur[field] = row[field]
+                stats["folded"] += 1
+                continue
+            row["escalated_from"] = cur.get("key")
+            stats["escalated"] += 1
+        merged.insert(0, row)
+        by_key = index_of({})
+        stats["added"] += 1
+
+    merged.sort(key=lambda a: (a.get("last_seen_ts") or a.get("ts") or 0,
+                               a.get("abs_delta") or 0), reverse=True)
+    return {"alerts": merged[:max_alerts], **stats}
 
 
-def dedupe_alerts(rows: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
-    """One row per distinct move; largest / newest surviving. Newest first.
+def clears_model_gate(signal: dict[str, Any] | None,
+                      min_net_roi: float = MODEL_MIN_NET_ROI) -> bool:
+    """One definition of "the model likes this", shared by the generator, the
+    JSON payload and the browser. The server used to gate the shortlist on
+    ``score >= 0.10`` while the page gated it on ``net_roi >= 0.05``, so the two
+    views of the same feed disagreed."""
+    if not signal:
+        return False
+    roi = signal.get("net_roi")
+    if roi is None:
+        return False
+    try:
+        return float(roi) >= min_net_roi
+    except (TypeError, ValueError):
+        return False
 
-    Two folds (COORDINATION.md R-D-01):
 
-    1. Per (market, reference window, direction) — the collector re-observes
-       the same sustained swing on every run against the same reference bar;
-       without this fold the store accumulates the identical row per run (the
-       view layer already folds for display; this keeps the store honest too).
-       Among duplicates the row with the largest ``abs_delta`` — the total move
-       in that window — survives.
-    2. Per (market, direction, previous -> current) within 24 hours — the same
-       numeric move measured again on a *later* bar is the same sustained
-       condition, not a new event; only the newest observation of it is kept.
+def high_roi_alerts(alerts_: Iterable[dict[str, Any]],
+                    signals: Iterable[dict[str, Any]],
+                    min_net_roi: float = MODEL_MIN_NET_ROI,
+                    require_executable: bool = True) -> list[dict[str, Any]]:
+    """Alerts the model also likes: a >= $0.10 swing *and* a live high-ROI signal.
+
+    Rows whose move is only indicative are left out on purpose — the shortlist
+    is the feed a trader would act on, so it must be executable.
     """
-    best: dict[str, dict[str, Any]] = {}
-    for row in rows:
-        if not row.get("ticker"):
+    liked: dict[str, dict[str, Any]] = {}
+    for sig in signals:
+        if clears_model_gate(sig, min_net_roi):
+            liked[sig.get("ticker")] = sig
+    out = []
+    for alert in alerts_:
+        if require_executable and alert.get("quality") == "indicative":
             continue
-        key = alert_window_key(row)
-        cur = best.get(key)
-        if cur is None:
-            best[key] = row
+        sig = liked.get(alert.get("ticker"))
+        if not sig:
             continue
-        new_delta = row.get("abs_delta") or 0
-        cur_delta = cur.get("abs_delta") or 0
-        if new_delta > cur_delta or (new_delta == cur_delta
-                                     and (row.get("ts") or 0) > (cur.get("ts") or 0)):
-            best[key] = row
-
-    day = 86400.0
-    distinct: list[dict[str, Any]] = []
-    for row in sorted(best.values(), key=lambda r: r.get("ts") or 0, reverse=True):
-        sig = (row.get("ticker"), row.get("direction"),
-               round(row.get("previous") or 0, 4),
-               round(row.get("current") or 0, 4))
-        ts = row.get("ts") or 0
-        dup = False
-        for kept in distinct:
-            ksig = (kept.get("ticker"), kept.get("direction"),
-                    round(kept.get("previous") or 0, 4),
-                    round(kept.get("current") or 0, 4))
-            if ksig == sig and abs((kept.get("ts") or 0) - ts) <= day:
-                dup = True
-                break
-        if not dup:
-            distinct.append(row)
-    return distinct
+        row = dict(alert)
+        row["model_net_roi"] = sig.get("net_roi")
+        row["model_side"] = sig.get("side")
+        row["model_executable_price"] = sig.get("executable_price")
+        out.append(row)
+    return out
 
 
 def _all_levels(rows: list[Any]) -> list[dict[str, float]]:

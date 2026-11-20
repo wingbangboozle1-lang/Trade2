@@ -8,15 +8,20 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-// Discover every page the site serves (root + categories/), so new pages such
-// as suggestions.html are checked automatically instead of by hand.
-const pages = fs.readdirSync(root)
-  .filter((f) => f.endsWith(".html"))
-  .sort()
-  .concat(fs.readdirSync(path.join(root, "categories"))
-    .filter((f) => f.endsWith(".html"))
-    .sort()
-    .map((f) => `categories/${f}`));
+/* The named pages must always be checked, even if a build step is skipped; the
+ * glob then adds whatever else the generator published (resolutions, trades,
+ * suggestions and any future page) so a new page cannot ship unrendered. */
+const required = [
+  "index.html", "live.html", "review.html", "methodology.html", "summary.html",
+  "suggestions.html", "resolutions.html", "trades.html",
+  "categories/gas-prices.html", "categories/elections.html",
+  "categories/culture.html", "categories/crypto.html", "categories/golf.html",
+];
+const generated = [
+  ...fs.readdirSync(root).filter((f) => f.endsWith(".html")),
+  ...fs.readdirSync(path.join(root, "categories")).map((f) => `categories/${f}`),
+];
+const pages = [...new Set([...required, ...generated])];
 
 let failures = 0;
 for (const page of pages) {

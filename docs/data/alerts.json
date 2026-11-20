@@ -1,7 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1",
    "delta": 0.8,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -12,8 +12,8 @@
    "headlines": [],
    "news_status": "no-headlines-found",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
-   "t": 1795197900,
-   "t_iso": "2026-11-20T18:05:00+00:00",
+   "t": 1795200300,
+   "t_iso": "2026-11-20T18:45:00+00:00",
    "threshold": 0.1,
    "ticker": "KXPRESNOMD-28-AKLO",
    "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
@@ -22,7 +22,7 @@
    "window": "seconds"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -43,7 +43,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -98,28 +98,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
-   "delta": 0.37,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.13,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
-   "t": 1795150800,
-   "t_iso": "2026-11-20T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXBTCMINY-27JAN01-50000.00",
-   "title": "Will Bitcoin be below $50000.00 by Jan 1, 2027 at 12:00am ET?",
-   "to": 0.5,
-   "topic": "crypto",
-   "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -132,13 +111,6 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
-    },
-    {
-     "published": "2026-11-19T06:49:53+00:00",
-     "source": "Peradaban.id",
-     "status": "verified-fetch",
-     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
-     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
     },
     {
      "published": "2026-11-19T03:29:34+00:00",
@@ -160,7 +132,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T19:04:28.301576+00:00",
+ "generated_at": "2026-11-20T19:44:12.930483+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

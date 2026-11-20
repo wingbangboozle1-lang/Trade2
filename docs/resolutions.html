@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resolutions (YES / NO) — Kalshi Demo Dashboard</title>
+<meta name="description" content="Every tracked Kalshi demo event followed live until settlement: resolved YES or NO, grouped by topic, each row linked to its official API source.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="resolutions">
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="dot" id="live-dot"></span> Kalshi Demo Dashboard</div>
+    <nav class="main">
+      <a href="index.html">Home</a>
+      <a href="gas-prices.html">Gas prices</a>
+      <a href="elections.html">Elections</a>
+      <a href="culture.html">Culture</a>
+      <a href="crypto.html">Crypto</a>
+      <a href="golf.html">Golf</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="strategies.html">Strategy lab</a>
+      <a href="resolutions.html" class="active">Resolutions</a>
+      <a href="summary.html">Executive summary</a>
+      <a href="flagged.html">Flagged for review</a>
+    </nav>
+    <div class="top-right"><span id="freshness">loading…</span></div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page">Event resolutions — tracked until settled <span class="badge topic">YES / NO</span></h1>
+  <p class="sub">Every tracked event is followed live until it resolves. Settlement rules:
+    winning <b>YES</b> contracts pay $1 each on a YES outcome, winning <b>NO</b> contracts pay $1 each
+    on a NO outcome
+    (<a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">official settlement docs ↗</a>).
+    Rows are grouped by topic, newest settlement first. Each row links its official demo API source;
+    any value that could not be confirmed is left blank and flagged.</p>
+
+  <div class="grid c4" id="resolutions-stats"></div>
+
+  <div id="resolutions-all" style="margin-top:18px">
+    <div class="empty">loading…</div>
+  </div>
+</main>
+
+<footer>
+  Data: <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled" target="_blank" rel="noopener">demo REST API ↗</a> ·
+  Settlement rules: <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">docs ↗</a> ·
+  Repo: <a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">wingbangboozle1-lang/Trade2 ↗</a><br>
+  Unverified items live on the <a href="flagged.html">Flagged for Review</a> page.
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

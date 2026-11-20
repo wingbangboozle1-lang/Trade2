@@ -56,9 +56,14 @@ def cents(value: Any) -> str:
 
 
 def num(value: Any) -> str:
-    """A quantity that may legitimately carry decimals (contracts, volume)."""
+    """A quantity that may legitimately carry decimals (contracts, volume).
+
+    A missing value is flagged, never left blank: rule 1 of this module promises
+    an ``UNVERIFIED`` badge, and an empty cell in a price table is
+    indistinguishable from a legitimate zero.
+    """
     if value is None or value == "":
-        return ""
+        return esc(value)
     try:
         return f"{float(value):,.2f}"
     except (TypeError, ValueError):
@@ -73,6 +78,11 @@ def count(value: Any) -> str:
     quantities, prices, and money continue to use their separate formatters.
     """
     if value is None or value == "":
+        # Blank, on purpose — unlike num(). A missing *count* is a KPI tile with
+        # nothing to report yet (observation_count, open_positions,
+        # resolutions_count), pinned by tests/test_site_build.py as merged in
+        # PR #25; a missing *quantity* is an API read that failed and must show
+        # the badge. If these should agree, change the test and this line together.
         return ""
     try:
         number = Decimal(str(value))
@@ -133,6 +143,21 @@ def kalshi_event_url(event_ticker: Any, series_ticker: Any = None) -> str:
     """Public Kalshi page for an event (the whole ticket, with its news feed)."""
     series = series_ticker or series_prefix(event_ticker)
     return f"{KALSHI_SITE}/markets/{series}/{event_ticker}"
+
+
+def safe_url(value: Any) -> str:
+    """Return an http(s) URL, or "" for anything else.
+
+    Every external href on the site is either built by us from a ticker or read
+    out of a payload the collector wrote — and one field of that payload (a news
+    headline link) is supplied by a third party. A renderer that trusts it can be
+    handed ``javascript:`` or ``data:`` and turn a headline into a click handler,
+    so the scheme is checked here, once, for both renderers to share.
+    """
+    text = str(value or "").strip()
+    if text.lower().startswith(("https://", "http://")):
+        return html.escape(text, quote=True)
+    return ""
 
 
 def news_search_url(text: Any, topic_label: Any = "") -> str:

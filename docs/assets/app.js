@@ -106,6 +106,12 @@
   function freshness() {
     const el = $("#freshness");
     if (!el) return;
+    if (S.liveLabel) {
+      // set by docs/assets/live.js: shows the verified connection mode + age
+      el.innerHTML = S.liveLabel;
+      el.className = "";
+      return;
+    }
     if (liveMode) {
       el.textContent = `local live stream · ${S.meta && S.meta.finished_at ? "snapshot " + ts(S.meta.finished_at) : "SSE connected"}`;
       el.className = "";
@@ -127,6 +133,22 @@
      from the demo API every 5s. On GitHub Pages that endpoint 404s and we simply
      keep polling the published JSON — no error surfaced to the user. */
   let liveMode = false;
+  // Live swing alerts pushed by docs/assets/live.js are deduplicated here:
+  // one alert per ticker+direction per 120 s window (repeated same-direction
+  // re-alerts on one sustained move are a flagged data-quality issue, R-D-01).
+  const liveAlertSeen = [];
+  function pushLiveAlert(a) {
+    const dir = a.delta >= 0 ? "up" : "down";
+    const nowT = a.t || Date.now() / 1000;
+    const dup = liveAlertSeen.find(x => x.ticker === a.ticker && x.dir === dir && nowT - x.t < 120);
+    if (dup) return false;
+    liveAlertSeen.push({ ticker: a.ticker, dir: dir, t: nowT });
+    while (liveAlertSeen.length > 200) liveAlertSeen.shift();
+    a.live = true;
+    S.alerts.unshift(a);
+    while (S.alerts.length > 80) S.alerts.pop();
+    return true;
+  }
   function fnum(x) { const v = parseFloat(x); return isNaN(v) ? null : v; }
   function parseBook(ob) {
     const fp = (ob && ob.orderbook_fp) || {};
@@ -206,7 +228,7 @@
     c.clearRect(0, 0, w, h);
     if (!pts || pts.length < 2) {
       c.fillStyle = "#6e7681"; c.font = "13px sans-serif"; c.textAlign = "center";
-      c.fillText("No official price series for this window yet", w / 2, h / 2);
+      c.fillText(opts.emptyMsg || "No official price series for this window yet", w / 2, h / 2);
       return;
     }
     const padL = 46, padR = 12, padT = 12, padB = 26;
@@ -314,7 +336,7 @@
     const news = headlines ||
       `<span class="flag" style="font-size:11px">no verified headline in window — link left blank</span>`;
     return `<div class="msg ${roi ? "roi" : dir}">
-      <div class="t">${esc(clock(a.t) || ts(a.t_iso))}Z ${roi ? "· high-ROI" : ""}</div>
+      <div class="t">${esc(clock(a.t) || ts(a.t_iso))}Z ${roi ? "· high-ROI" : ""}${a.live ? ' · <span class="badge ok">live</span>' : ""}</div>
       <div><span class="hd ${dir}">${a.delta >= 0 ? "▲" : "▼"} ${money(Math.abs(a.delta))}</span>
         <span class="tk">${esc(a.ticker)}</span></div>
       <div>${esc(a.title || "")} · ${esc(topicLabel(a.topic))}</div>
@@ -536,14 +558,31 @@
   function drawTopicCharts(topicKey, ticker) {
     if (!ticker) return;
     const win = chartWindow;
-    const series = (S.candles[ticker] || {})[win] || {};
+    // Window mapping (verified against the official candlestick reference:
+    // valid periods are 1, 60 and 1440 MINUTES — there are no second-level
+    // official candles):
+    //   "seconds" -> session tick series (live mode; blank + explanation otherwise)
+    //   "minutes" -> live 1-minute candles when present, else the recorded
+    //                interval-60 window (labelled honestly in chart-meta)
+    //   "hours"   -> the recorded interval-1440 window (daily candles)
+    let series = {}, emptyMsg = null;
+    if (win === "seconds") {
+      const ticks = (S.liveTicks || {})[ticker] || [];
+      series = { points: ticks.map(t => ({ t: t.t, close: t.y })), interval: null,
+                 source_url: "https://external-api.demo.kalshi.co/trade-api/v2/markets/" + encodeURIComponent(ticker) };
+      if (ticks.length < 2) emptyMsg = "No second-level series: official candles are 1-minute minimum (see chart notes) — needs live mode";
+    } else if (win === "minutes" && (S.candles[ticker] || {}).live_1min) {
+      series = (S.candles[ticker] || {}).live_1min || {};
+    } else {
+      series = (S.candles[ticker] || {})[win] || {};
+    }
     const pts = (series.points || []).map(p => ({ t: p.t, y: p.close })).filter(p => p.y != null);
     const t0 = pts.length ? Math.min(...pts.map(p => p.t)) : 0;
     const t1 = pts.length ? Math.max(...pts.map(p => p.t)) : 0;
     const markers = S.alerts.filter(a => a.ticker === ticker && a.t >= t0 && a.t <= t1)
       .map(a => ({ t: a.t, y: a.to, delta: a.delta }));
     const cv = $("#price-chart");
-    if (cv) drawLine(cv, pts, { window: win, markers });
+    if (cv) drawLine(cv, pts, { window: win, markers, emptyMsg });
     const book = S.books[ticker] || {};
     const dv = $("#depth-chart");
     if (dv) drawDepth(dv, book);
@@ -552,7 +591,8 @@
       const yb = book.best_yes_bid, nb = book.best_no_bid;
       const ask = nb != null ? 1 - nb : null;
       const iv = series.interval;
-      const ivLabel = iv === 1 ? "1-minute" : iv === 60 ? "1-hour" : iv === 1440 ? "1-day" : "unknown";
+      const ivLabel = iv === 1 ? "1-minute" : iv === 60 ? "1-hour" : iv === 1440 ? "1-day"
+        : (win === "seconds" ? "session ticks (live polls)" : "unknown");
       meta.innerHTML = `
         <span>candles: <b>${ivLabel}</b> (finest official interval)</span>
         <span>best bid <b>${yb != null ? money(yb) : "—"}</b></span>
@@ -696,6 +736,54 @@
       : '<div class="empty">No unverified values or collector errors in the latest run.</div>';
   }
 
+  /* ------------------------------------------------------- resolutions page */
+  function renderResolutions() {
+    const wrap = $("#resolutions-all");
+    if (!wrap) return;
+    const rows = S.resolutions || [];
+    const byTopic = {};
+    rows.forEach(r => {
+      const k = r.topic || "";
+      (byTopic[k] = byTopic[k] || []).push(r);
+    });
+    const keys = Object.keys(byTopic).sort((a, b) =>
+      (byTopic[b].length - byTopic[a].length) || a.localeCompare(b));
+    const total = rows.length;
+    const yesN = rows.filter(r => String(r.result).toLowerCase() === "yes").length;
+    const noN = rows.filter(r => String(r.result).toLowerCase() === "no").length;
+    const head = $("#resolutions-stats");
+    if (head) {
+      head.innerHTML = `
+        <div class="stat"><div class="k">Tracked events resolved</div><div class="v">${total}</div>
+          <div class="s">followed live until settlement</div></div>
+        <div class="stat"><div class="k">Resolved YES</div><div class="v up">${yesN}</div>
+          <div class="s">winning YES side pays $1 per contract</div></div>
+        <div class="stat"><div class="k">Resolved NO</div><div class="v down">${noN}</div>
+          <div class="s">winning NO side pays $1 per contract</div></div>
+        <div class="stat"><div class="k">Other / blank</div><div class="v">${total - yesN - noN}</div>
+          <div class="s">result not confirmed — left blank, never inferred</div></div>`;
+    }
+    wrap.innerHTML = keys.length ? keys.map(k => {
+      const list = byTopic[k].slice().sort((a, b) =>
+        String(b.settlement_ts || "").localeCompare(String(a.settlement_ts || "")));
+      const yes = list.filter(r => String(r.result).toLowerCase() === "yes").length;
+      return `<h2 class="page">${esc(k ? topicLabel(k) : "Unlabelled")} — ${list.length} resolved
+        <span class="badge topic">${yes} YES · ${list.length - yes} NO</span></h2>
+        <table class="data"><thead><tr>
+          <th>Market</th><th>Title</th><th>Outcome</th><th>Settlement value</th>
+          <th>Settled at (UTC)</th><th>Volume</th><th>Source</th>
+        </tr></thead><tbody>${list.map(r => `<tr>
+          <td><a class="mono" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/${encodeURIComponent(r.ticker)}" target="_blank" rel="noopener">${esc(r.ticker)}</a></td>
+          <td>${esc(r.title || "")}</td>
+          <td>${r.result ? `<b class="${String(r.result).toLowerCase() === "yes" ? "up" : "down"}">${esc(String(r.result).toUpperCase())}</b>` : blank()}</td>
+          <td class="num">${r.settlement_value != null ? money(r.settlement_value) : blank()}</td>
+          <td>${r.settlement_ts ? esc(ts(r.settlement_ts)) : blank()}</td>
+          <td class="num">${r.volume_fp != null ? num(r.volume_fp) : blank()}</td>
+          <td>${srcLink(r.source_url, "api")} ${srcLink(r.docs_url, "rules")}</td>
+        </tr>`).join("")}</tbody></table>`;
+    }).join("") : '<div class="empty">No resolved markets yet — settlements appear as tracked events resolve (YES / NO).</div>';
+  }
+
   /* ---------------------------------------------------------------- pages */
   const page = document.body.dataset.page;
 
@@ -706,6 +794,9 @@
       portfolio: page === "portfolio" || page === "index",
       meta: true,
     });
+    // live layer (docs/assets/live.js) re-applies its freshest ticks after any
+    // snapshot load so published JSON can never overwrite newer live prices
+    if (typeof window.__deskLiveMerge === "function") window.__deskLiveMerge();
     render();
   }
 
@@ -714,6 +805,7 @@
     if (page === "index") { renderIndex(); renderChats(); }
     if (page === "topic") { renderTopic(document.body.dataset.topic); renderChats(); }
     if (page === "portfolio") renderPortfolio();
+    if (page === "resolutions") renderResolutions();
     if (page === "flagged") renderFlagged();
     flashDot();
   }
@@ -741,4 +833,21 @@
       else if (!pollTimer) { refresh(); pollTimer = setInterval(refresh, POLL_MS); }
     });
   });
+
+  // Hooks for docs/assets/live.js (browser live layer, task T31). live.js
+  // feeds verified live ticks through the same ingest/render path so every
+  // table row keeps its official source link.
+  window.__desk = {
+    S: S,
+    ingest: ingest,
+    render: render,
+    parseBook: parseBook,
+    flashDot: flashDot,
+    pushLiveAlert: pushLiveAlert,
+    redrawChart: function () {
+      const sel = $("#pick-market");
+      const topic = document.body.dataset.topic;
+      if (topic && sel) drawTopicCharts(topic, sel.value);
+    },
+  };
 })();
