@@ -388,8 +388,22 @@ Verified: dispatch run `44769581312` on `main` → **success**, data commit
 
 | # | Task | Status | Owner | File scope |
 | --- | --- | --- | --- | --- |
-| T13 | Re-audit merged deliverable and current deployment; record freshness, verification evidence, and remaining blockers | in progress | `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` |
+| T13 | Re-audit merged deliverable and current deployment; record freshness, verification evidence, and remaining blockers | done (follow-up R-D-01 needs review) | `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` |
 
-The task is documentation-only and does not edit the root dashboard, data pipeline,
-site templates, or another session's claimed implementation. Existing audit found
-three pipelines and parallel sessions; see `AUDIT_ADDENDUM.md` for verified findings.
+The task was documentation-only and did not edit the root dashboard, data pipeline,
+site templates, or another session's claimed implementation. See `AUDIT_ADDENDUM.md`
+for official sources, test output, and review findings.
+
+### 2026-11-20 — `arena-0b2d2a2a` — fresh integration audit
+
+- **Official source rechecks:** Kalshi demo-environment documentation confirms the requested REST URL and supported REST/WebSocket alternatives; authenticated-request guide, Get Markets, Get Events, Get Market Orderbook, and Get Market Candlesticks were fetched and checked. Live demo GETs for `KXPRESNOMD-28-RW` and its order book returned the listed official schema fields. Full URLs and observed claims are recorded in `AUDIT_ADDENDUM.md`.
+- **Build/tests:** Python unit suite 42 pass / 1 skipped (Python `cryptography` not installed); Node suite 18/18; collector fixture suite PASS; trading test engine PASS; `node test/site_smoke.mjs docs/data` PASS; link check 45 pages / 503 internal links / 0 errors; static site rebuild PASS.
+- **Deployment:** Pages build metadata reported `built`, commit `1bc32b745cc2d8f5c7e6261caf05423857d7ef01`, 2026-11-20 18:53:55 UTC. Public root, live desk, summary and flagged pages fetched successfully.
+- **Freshness review:** root snapshot timestamp was 2026-11-20 18:41:08 UTC at 19:01 UTC; latest observed successful root collector run was at 18:40:59 UTC. Pages build was later, but the root snapshot itself remained about 20 minutes old. The dashboard labels the root as a snapshot; scheduled cadence is best-effort.
+- **Irregularities (not silently fixed):** repeated same-market alerts occur 29 times over three tickers in the current snapshot; the code measures midpoint shifts, including a displayed `$0.002`–`$0.811` spread on one triggering market. The snapshot's OI notional is not traded-dollar volume. The live demo account adapter cannot be exercised without private demo credentials. No verified news-cause link was present for observed jumps. These remain review items, not claims of live ROI or tradability.
+- **Parallel session coordination:** observed successful Actions runs on `arena/e4e8f4e1-trade2` near 18:59 UTC; that branch was not registered in the prior board, so this audit did not edit or merge its work.
+- **PR:** this session will publish its documentation-only audit on the current Arena branch, then open/merge a PR if repository checks permit. No live trading credentials are requested or stored.
+
+| Request | Needed work | From | To | Status |
+| --- | --- | --- | --- | --- |
+| R-D-01 | Review repeated and non-executable midpoint alerts; deduplicate by market/reference window, apply consistent depth-aware price rules, show snapshot age, and publish a clearly labelled code/data-quality item on Flagged for Review. Scope requested: `collector/alerts.py`, `collector/collector.py`, `assets/desk.js`, `review.html` / flagged-page data as owned by the relevant sessions. Source and evidence: [`AUDIT_ADDENDUM.md`](AUDIT_ADDENDUM.md), official Kalshi market/order-book URLs cited there. | `arena-0b2d2a2a` | alert/site owners | needs review |
