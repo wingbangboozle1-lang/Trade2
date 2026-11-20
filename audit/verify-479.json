@@ -5,7 +5,7 @@
  "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
  "snapshot_path": "./data/live.json",
  "snapshot_generated_at": "2026-11-20T19:58:45Z",
- "verified_at": "2026-11-20T20:30:02Z",
+ "verified_at": "2026-11-20T20:32:20Z",
  "subjects": [
   {
    "topic": "gas-prices",
@@ -17,9 +17,9 @@
     {
      "field": "title (yes_sub_title fallback, stripped)",
      "published": "Above 4.70",
-     "fresh": "yes Bristol City,yes Penn St.",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "fresh": "Above 4.70",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
@@ -27,7 +27,7 @@
      "published": null,
      "fresh": 0.0,
      "verdict": "UNVERIFIED",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": "published value blank"
     },
     {
@@ -35,23 +35,23 @@
      "published": null,
      "fresh": 1.0,
      "verdict": "UNVERIFIED",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": "published value blank"
     },
     {
      "field": "open_interest (open_interest_fp)",
      "published": 58062.52,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "fresh": 58062.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
      "field": "volume (volume_fp)",
      "published": 58071.52,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "fresh": 58071.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
@@ -59,15 +59,15 @@
      "published": 1.0,
      "fresh": 1.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
      "field": "open_interest_notional = oi x notional",
      "published": 58062.52,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "fresh": 58062.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
     },
     {
@@ -75,15 +75,15 @@
      "published": "active",
      "fresh": "active",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
      "field": "close_time",
      "published": "2026-11-30T04:59:00Z",
-     "fresh": "2026-11-23T20:00:00Z",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "fresh": "2026-11-30T04:59:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
@@ -91,7 +91,7 @@
      "published": "",
      "fresh": "",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "note": ""
     },
     {
@@ -137,9 +137,9 @@
    ],
    "raw": {
     "market": {
-     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXAAAGASM-26NOV30-4.70",
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
      "status": 200,
-     "body_head": "{\"cursor\": \"CgsIoc6C2AYQ6L7mRxIyS1hNVkVDUk9TU0NBVEVHT1JZLVMyMDI2RjZSWjc1TFBFWVkzTEtMNS00Q0ZGNVRZM1I\", \"markets\": [{\"can_close_early\": true, \"close_time\": \"2026-11-23T20:00:00Z\", \"created_time\": \"2026-11-20T20:29:27.957105Z\", \"custom_strike\": {\"Associated Events\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC,KXNCAAFGAME-26NOV21RUTGPSU\", \"Associated Market Sides\": \"yes,yes\", \"Associated Markets\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC-BRC,KXNCAAFGAME-26NOV21RUTGPSU-PSU\", \"Multivariate Event Ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\"}, \"event_ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\", \"e"
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2026-11-30T04:59:00Z\", \"created_time\": \"2026-10-27T20:06:21.261994Z\", \"event_ticker\": \"KXAAAGASM-26NOV30\", \"exchange_index\": 0, \"expected_expiration_time\": \"2026-11-30T15:00:00Z\", \"expiration_value\": \"\", \"floor_strike\": 4.7, \"last_price_dollars\": \"0.0200\", \"latest_expiration_time\": \"2026-12-30T15:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.0000\", \"no_sub_title\": \"Above 4.70\", \"notional_value_dollars\": \"1.0000\", \"open_interest_fp\": \"58062.52\", \"open_time\": \"2026-10-27T20:34:13Z\", \"previous_price_dollars\":"
     },
     "orderbook": {
      "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
@@ -158,9 +158,9 @@
     {
      "field": "title (yes_sub_title fallback, stripped)",
      "published": "Raphael Warnock",
-     "fresh": "yes Bristol City,yes Penn St.",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "fresh": "Raphael Warnock",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
@@ -168,7 +168,7 @@
      "published": 0.035,
      "fresh": 0.035,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
@@ -176,23 +176,23 @@
      "published": 0.038,
      "fresh": 0.038,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
      "field": "open_interest (open_interest_fp)",
      "published": 189529515.91,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "fresh": 189529515.91,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
      "field": "volume (volume_fp)",
      "published": 414925171.17,
-     "fresh": 100.0,
+     "fresh": 414925388.58,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
@@ -200,15 +200,15 @@
      "published": 1.0,
      "fresh": 1.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
      "field": "open_interest_notional = oi x notional",
      "published": 189529515.91,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "fresh": 189529515.91,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
     },
     {
@@ -216,15 +216,15 @@
      "published": "active",
      "fresh": "active",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
      "field": "close_time",
      "published": "2028-11-07T15:00:00Z",
-     "fresh": "2026-11-23T20:00:00Z",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "fresh": "2028-11-07T15:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
@@ -232,7 +232,7 @@
      "published": "",
      "fresh": "",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "note": ""
     },
     {
@@ -262,7 +262,7 @@
     {
      "field": "book YES bid-side depth (contracts)",
      "published": 10077.19,
-     "fresh": 10117.19,
+     "fresh": 10097.19,
      "verdict": "DRIFT",
      "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
      "note": ""
@@ -270,7 +270,7 @@
     {
      "field": "book NO bid-side depth (contracts)",
      "published": 427351.5,
-     "fresh": 57816.1,
+     "fresh": 57798.23,
      "verdict": "DRIFT",
      "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
      "note": ""
@@ -278,14 +278,14 @@
    ],
    "raw": {
     "market": {
-     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPRESNOMD-28-RW",
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
      "status": 200,
-     "body_head": "{\"cursor\": \"CgsIoc6C2AYQ6L7mRxIyS1hNVkVDUk9TU0NBVEVHT1JZLVMyMDI2RjZSWjc1TFBFWVkzTEtMNS00Q0ZGNVRZM1I\", \"markets\": [{\"can_close_early\": true, \"close_time\": \"2026-11-23T20:00:00Z\", \"created_time\": \"2026-11-20T20:29:27.957105Z\", \"custom_strike\": {\"Associated Events\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC,KXNCAAFGAME-26NOV21RUTGPSU\", \"Associated Market Sides\": \"yes,yes\", \"Associated Markets\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC-BRC,KXNCAAFGAME-26NOV21RUTGPSU-PSU\", \"Multivariate Event Ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\"}, \"event_ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\", \"e"
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2028-11-07T15:00:00Z\", \"created_time\": \"2024-12-10T03:33:23.198124Z\", \"custom_strike\": {\"Candidate\": \"Raphael Warnock\", \"politician\": \"552fca58-daa2-4282-9b37-b30c957505b8\"}, \"early_close_condition\": \"This market will close after the Democratic party nominates an individual for the Presidency and they accept that nomination.\", \"event_ticker\": \"KXPRESNOMD-28\", \"exchange_index\": 0, \"expected_expiration_time\": \"2028-11-07T15:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.0380\", \"latest_expiration_time\": \"2028-11-07T15:00:00Z\", \"market"
     },
     "orderbook": {
      "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
      "status": 200,
-     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.1750\", \"2025.00\"], [\"0.1760\", \"2198.00\"], [\"0.1770\", \"1856.00\"], [\"0.1780\", \"2375.00\"], [\"0.1790\", \"1959.00\"], [\"0.1800\", \"2370.00\"], [\"0.1810\", \"2223.00\"], [\"0.1820\", \"2298.00\"], [\"0.1830\", \"2066.00\"], [\"0.1840\", \"2373.00\"], [\"0.1850\", \"2126.00\"], [\"0.1860\", \"2635.00\"], [\"0.1870\", \"2158.00\"], [\"0.1880\", \"1984.00\"], [\"0.1890\", \"2151.00\"], [\"0.1900\", \"2176.00\"], [\"0.1910\", \"1921.00\"], [\"0.1920\", \"1937.00\"], [\"0.1930\", \"2298.00\"], [\"0.1940\", \"1976.00\"], [\"0.1950\", \"1998.00\"], [\"0.1960\", \"321.57\"], [\"0.9600\", \"4166.66\"], [\"0.9610\", \"4273.50\"], [\"0.9620\", \"3951"
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.1750\", \"2025.00\"], [\"0.1760\", \"2198.00\"], [\"0.1770\", \"1856.00\"], [\"0.1780\", \"2375.00\"], [\"0.1790\", \"1959.00\"], [\"0.1800\", \"2370.00\"], [\"0.1810\", \"2223.00\"], [\"0.1820\", \"2298.00\"], [\"0.1830\", \"2066.00\"], [\"0.1840\", \"2373.00\"], [\"0.1850\", \"2126.00\"], [\"0.1860\", \"2635.00\"], [\"0.1870\", \"2158.00\"], [\"0.1880\", \"1984.00\"], [\"0.1890\", \"2151.00\"], [\"0.1900\", \"2176.00\"], [\"0.1910\", \"1921.00\"], [\"0.1920\", \"1937.00\"], [\"0.1930\", \"2298.00\"], [\"0.1940\", \"1976.00\"], [\"0.1950\", \"1998.00\"], [\"0.1960\", \"321.57\"], [\"0.9600\", \"4166.66\"], [\"0.9610\", \"4273.50\"], [\"0.9620\", \"3933"
     }
    }
   },
@@ -299,9 +299,9 @@
     {
      "field": "title (yes_sub_title fallback, stripped)",
      "published": "La Bola Negra",
-     "fresh": "yes Bristol City,yes Penn St.",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "fresh": "La Bola Negra",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
@@ -309,7 +309,7 @@
      "published": null,
      "fresh": 0.0,
      "verdict": "UNVERIFIED",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": "published value blank"
     },
     {
@@ -317,23 +317,23 @@
      "published": null,
      "fresh": 1.0,
      "verdict": "UNVERIFIED",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": "published value blank"
     },
     {
      "field": "open_interest (open_interest_fp)",
      "published": 473339.45,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "fresh": 473339.45,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
      "field": "volume (volume_fp)",
      "published": 671773.31,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "fresh": 671773.31,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
@@ -341,15 +341,15 @@
      "published": 1.0,
      "fresh": 1.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
      "field": "open_interest_notional = oi x notional",
      "published": 473339.45,
-     "fresh": 100.0,
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "fresh": 473339.45,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
     },
     {
@@ -357,15 +357,15 @@
      "published": "active",
      "fresh": "active",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
      "field": "close_time",
      "published": "2028-01-04T15:00:00Z",
-     "fresh": "2026-11-23T20:00:00Z",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "fresh": "2028-01-04T15:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
@@ -373,7 +373,7 @@
      "published": "",
      "fresh": "",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "note": ""
     },
     {
@@ -419,9 +419,9 @@
    ],
    "raw": {
     "market": {
-     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXCRITICSFOREIGN-27-LAB",
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
      "status": 200,
-     "body_head": "{\"cursor\": \"CgsIoc6C2AYQ6L7mRxIyS1hNVkVDUk9TU0NBVEVHT1JZLVMyMDI2RjZSWjc1TFBFWVkzTEtMNS00Q0ZGNVRZM1I\", \"markets\": [{\"can_close_early\": true, \"close_time\": \"2026-11-23T20:00:00Z\", \"created_time\": \"2026-11-20T20:29:27.957105Z\", \"custom_strike\": {\"Associated Events\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC,KXNCAAFGAME-26NOV21RUTGPSU\", \"Associated Market Sides\": \"yes,yes\", \"Associated Markets\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC-BRC,KXNCAAFGAME-26NOV21RUTGPSU-PSU\", \"Multivariate Event Ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\"}, \"event_ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\", \"e"
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2028-01-04T15:00:00Z\", \"created_time\": \"2026-10-06T23:09:45.472046Z\", \"early_close_condition\": \"The market will close and expire early following nominations being released (if La Bola Negra is not nominated) or the awards show.\", \"event_ticker\": \"KXCRITICSFOREIGN-27\", \"exchange_index\": 0, \"expected_expiration_time\": \"2027-01-04T15:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.1900\", \"latest_expiration_time\": \"2028-01-04T15:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.0000\", \"no_sub_title\": \"La"
     },
     "orderbook": {
      "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
@@ -440,9 +440,9 @@
     {
      "field": "title (yes_sub_title fallback, stripped)",
      "published": "125,000 to 129,999.99",
-     "fresh": "yes Bristol City,yes Penn St.",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "fresh": "125,000 to 129,999.99",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
@@ -450,7 +450,7 @@
      "published": 0.0,
      "fresh": 0.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
@@ -458,23 +458,23 @@
      "published": 0.01,
      "fresh": 0.01,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
      "field": "open_interest (open_interest_fp)",
      "published": 39622305.88,
-     "fresh": 100.0,
+     "fresh": 39622503.12,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
      "field": "volume (volume_fp)",
      "published": 83444193.96,
-     "fresh": 100.0,
+     "fresh": 83444391.2,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
@@ -482,15 +482,15 @@
      "published": 1.0,
      "fresh": 1.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
      "field": "open_interest_notional = oi x notional",
      "published": 39622305.88,
-     "fresh": 100.0,
+     "fresh": 39622503.12,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
     },
     {
@@ -498,15 +498,15 @@
      "published": "active",
      "fresh": "active",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
      "field": "close_time",
      "published": "2027-01-01T05:00:00Z",
-     "fresh": "2026-11-23T20:00:00Z",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "fresh": "2027-01-01T05:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
@@ -514,7 +514,7 @@
      "published": "",
      "fresh": "",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "note": ""
     },
     {
@@ -552,7 +552,7 @@
     {
      "field": "book NO bid-side depth (contracts)",
      "published": 30386.01,
-     "fresh": 30206.38,
+     "fresh": 30187.21,
      "verdict": "DRIFT",
      "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
      "note": ""
@@ -560,14 +560,14 @@
    ],
    "raw": {
     "market": {
-     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXBTCY-27JAN0100-B127500",
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
      "status": 200,
-     "body_head": "{\"cursor\": \"CgsIoc6C2AYQ6L7mRxIyS1hNVkVDUk9TU0NBVEVHT1JZLVMyMDI2RjZSWjc1TFBFWVkzTEtMNS00Q0ZGNVRZM1I\", \"markets\": [{\"can_close_early\": true, \"close_time\": \"2026-11-23T20:00:00Z\", \"created_time\": \"2026-11-20T20:29:27.957105Z\", \"custom_strike\": {\"Associated Events\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC,KXNCAAFGAME-26NOV21RUTGPSU\", \"Associated Market Sides\": \"yes,yes\", \"Associated Markets\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC-BRC,KXNCAAFGAME-26NOV21RUTGPSU-PSU\", \"Multivariate Event Ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\"}, \"event_ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\", \"e"
+     "body_head": "{\"market\": {\"can_close_early\": true, \"cap_strike\": 129999.99, \"close_time\": \"2027-01-01T05:00:00Z\", \"created_time\": \"2026-02-26T00:18:49.149249Z\", \"event_ticker\": \"KXBTCY-27JAN0100\", \"exchange_index\": 0, \"expected_expiration_time\": \"2027-01-01T05:05:00Z\", \"expiration_value\": \"\", \"floor_strike\": 125000, \"last_price_dollars\": \"0.0100\", \"latest_expiration_time\": \"2027-01-08T05:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.9900\", \"no_sub_title\": \"125,000 to 129,999.99\", \"notional_value_dollars\": \"1.0000\", \"open_interest_fp\": \"39622503.12\", \"open_time\": \"2026-02"
     },
     "orderbook": {
      "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
      "status": 200,
-     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9700\", \"5555.55\"], [\"0.9800\", \"8333.33\"], [\"0.9900\", \"16317.50\"]], \"yes_dollars\": []}}"
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9700\", \"5555.55\"], [\"0.9800\", \"8333.33\"], [\"0.9900\", \"16298.33\"]], \"yes_dollars\": []}}"
     }
    }
   },
@@ -581,9 +581,9 @@
     {
      "field": "title (yes_sub_title fallback, stripped)",
      "published": "Taylor Moore",
-     "fresh": "yes Bristol City,yes Penn St.",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "fresh": "Taylor Moore",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
@@ -591,7 +591,7 @@
      "published": 0.003,
      "fresh": 0.003,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
@@ -599,23 +599,23 @@
      "published": 0.005,
      "fresh": 0.005,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
      "field": "open_interest (open_interest_fp)",
      "published": 1152105.33,
-     "fresh": 100.0,
+     "fresh": 1152302.87,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
      "field": "volume (volume_fp)",
      "published": 1157594.22,
-     "fresh": 100.0,
+     "fresh": 1157791.76,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
@@ -623,15 +623,15 @@
      "published": 1.0,
      "fresh": 1.0,
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
      "field": "open_interest_notional = oi x notional",
      "published": 1152105.33,
-     "fresh": 100.0,
+     "fresh": 1152302.87,
      "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
     },
     {
@@ -639,15 +639,15 @@
      "published": "active",
      "fresh": "active",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
      "field": "close_time",
      "published": "2026-12-06T00:00:00Z",
-     "fresh": "2026-11-23T20:00:00Z",
-     "verdict": "DRIFT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "fresh": "2026-12-06T00:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
@@ -655,7 +655,7 @@
      "published": "",
      "fresh": "",
      "verdict": "EXACT",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "note": ""
     },
     {
@@ -693,7 +693,7 @@
     {
      "field": "book NO bid-side depth (contracts)",
      "published": 84830.46,
-     "fresh": 84640.25,
+     "fresh": 84632.92,
      "verdict": "DRIFT",
      "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
      "note": ""
@@ -701,22 +701,22 @@
    ],
    "raw": {
     "market": {
-     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?ticker=KXPGATOUR-THRC26-TMOO",
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
      "status": 200,
-     "body_head": "{\"cursor\": \"CgsIoc6C2AYQ6L7mRxIyS1hNVkVDUk9TU0NBVEVHT1JZLVMyMDI2RjZSWjc1TFBFWVkzTEtMNS00Q0ZGNVRZM1I\", \"markets\": [{\"can_close_early\": true, \"close_time\": \"2026-11-23T20:00:00Z\", \"created_time\": \"2026-11-20T20:29:27.957105Z\", \"custom_strike\": {\"Associated Events\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC,KXNCAAFGAME-26NOV21RUTGPSU\", \"Associated Market Sides\": \"yes,yes\", \"Associated Markets\": \"KXEFLCHAMPIONSHIPGAME-26NOV21MIDBRC-BRC,KXNCAAFGAME-26NOV21RUTGPSU-PSU\", \"Multivariate Event Ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\"}, \"event_ticker\": \"KXMVECROSSCATEGORY-S2026TYDIWYYIJURHQ2YE\", \"e"
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2026-12-06T00:00:00Z\", \"created_time\": \"2026-11-16T01:06:32.067865Z\", \"custom_strike\": {\"golf_competitor\": \"4e93ec3d-3ca8-4755-a874-4d1e5c18ccbf\"}, \"early_close_condition\": \"This market will close and expire after a winner is declared.\", \"event_ticker\": \"KXPGATOUR-THRC26\", \"exchange_index\": 0, \"expected_expiration_time\": \"2026-11-22T00:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.0050\", \"latest_expiration_time\": \"2026-12-06T00:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"0.9970\", \"no_bid_dollars\": \"0.9950\", \"no_sub_title\""
     },
     "orderbook": {
      "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
      "status": 200,
-     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9930\", \"23809.52\"], [\"0.9940\", \"27777.77\"], [\"0.9950\", \"33052.96\"]], \"yes_dollars\": [[\"0.0010\", \"166726.66\"], [\"0.0020\", \"83333.33\"], [\"0.0030\", \"55555.55\"]]}}"
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9930\", \"23809.52\"], [\"0.9940\", \"27777.77\"], [\"0.9950\", \"33045.63\"]], \"yes_dollars\": [[\"0.0010\", \"166726.66\"], [\"0.0020\", \"83333.33\"], [\"0.0030\", \"55555.55\"]]}}"
     }
    }
   }
  ],
  "notes": [],
  "summary": {
-  "DRIFT": 30,
+  "EXACT": 47,
   "UNVERIFIED": 16,
-  "EXACT": 29
+  "DRIFT": 12
  }
 }
