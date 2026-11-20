@@ -80,8 +80,8 @@ def num(value: Any) -> str:
         return esc(value)
 
 
-def count(value: Any) -> str:
-    """Whole numbers: market counts, positions, resolutions.
+def cnt(value: Any) -> str:
+    """Whole-number count (markets, positions, trades). Never shown as 750.00.
 
     ``num`` renders two decimals because open interest and volume are
     fractional contract counts. Counts of things (how many markets, how many
@@ -254,6 +254,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
         </footer>
       </main>
     </div>
+    <script src="{prefix}assets/alerts-view.js" defer></script>
     <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
@@ -325,8 +326,8 @@ def build_overview(live: dict[str, Any]) -> str:
     shortlist = live.get("shortlist") or {}
     model_rows = model_chat_rows(shortlist)
     pick_count = shortlist.get("picks_count") or 0
-    model_note = (f"{count(pick_count)} pick(s) from "
-                  f"{count(shortlist.get('markets_seen'))} markets priced")
+    model_note = (f"{cnt(pick_count)} pick(s) from "
+                  f"{cnt(shortlist.get('markets_seen'))} markets priced")
 
     status = "trading" if exchange.get("trading_active") else "not trading"
     return f"""{topbar("Overview", generated)}
@@ -341,19 +342,19 @@ def build_overview(live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{count(live.get("observation_count"))}</strong>
+            <strong>{cnt(live.get("observation_count"))}</strong>
             <small>This snapshot</small></article>
           <article class="stat-card"><span>Swings ≥ $0.10</span>
             <strong>{len(live.get("alerts", []))}</strong>
             <small>Rolling alert buffer</small></article>
           <article class="stat-card"><span>Open positions</span>
-            <strong>{count(portfolio.get("open_positions"))}</strong>
+            <strong>{cnt(portfolio.get("open_positions"))}</strong>
             <small>Simulated</small></article>
           <article class="stat-card"><span>Equity</span>
             <strong>{money(portfolio.get("equity"))}</strong>
             <small>Start {money(portfolio.get("starting_bankroll"))}</small></article>
           <article class="stat-card"><span>Resolved tracked</span>
-            <strong>{count(live.get("resolutions_count"))}</strong>
+            <strong>{cnt(live.get("resolutions_count"))}</strong>
             <small>YES/NO from official result</small></article>
         </section>
         <div class="notice notice-info">
@@ -377,23 +378,23 @@ def build_overview(live: dict[str, Any]) -> str:
               and the two scrolling alert chats.</small></a>
             <a class="link-card" href="categories/gas-prices.html"><span class="section-icon">⌁</span>
               <b>Gas prices</b>
-              <small>{count((live.get("topics") or {}).get("gas-prices", {}).get("tracked_market_count"))} markets tracked ·
+              <small>{cnt((live.get("topics") or {}).get("gas-prices", {}).get("tracked_market_count"))} markets tracked ·
               settled against AAA.</small></a>
             <a class="link-card" href="categories/elections.html"><span class="section-icon">◉</span>
               <b>Elections</b>
-              <small>{count((live.get("topics") or {}).get("elections", {}).get("tracked_market_count"))} markets tracked ·
+              <small>{cnt((live.get("topics") or {}).get("elections", {}).get("tracked_market_count"))} markets tracked ·
               nomination and primary markets.</small></a>
             <a class="link-card" href="categories/culture.html"><span class="section-icon">✳</span>
               <b>Culture</b>
-              <small>{count((live.get("topics") or {}).get("culture", {}).get("tracked_market_count"))} markets tracked ·
+              <small>{cnt((live.get("topics") or {}).get("culture", {}).get("tracked_market_count"))} markets tracked ·
               filed by Kalshi under Entertainment.</small></a>
             <a class="link-card" href="categories/crypto.html"><span class="section-icon">₿</span>
               <b>Crypto</b>
-              <small>{count((live.get("topics") or {}).get("crypto", {}).get("tracked_market_count"))} markets tracked ·
+              <small>{cnt((live.get("topics") or {}).get("crypto", {}).get("tracked_market_count"))} markets tracked ·
               price levels and 15-minute contracts.</small></a>
             <a class="link-card" href="categories/golf.html"><span class="section-icon">⛳</span>
               <b>Golf</b>
-              <small>{count((live.get("topics") or {}).get("golf", {}).get("tracked_market_count"))} markets tracked ·
+              <small>{cnt((live.get("topics") or {}).get("golf", {}).get("tracked_market_count"))} markets tracked ·
               PGA Tour and tournament markets.</small></a>
             <a class="link-card" href="summary.html"><span class="section-icon">▤</span>
               <b>Executive summary</b>
@@ -453,7 +454,7 @@ def build_overview(live: dict[str, Any]) -> str:
               <h2>Model shortlist — what the model would trade</h2>
               <p>Selective filter over the same swings, priced from the order
               book only</p></div></div>
-            <span class="count-badge">{count(pick_count)}</span>
+            <span class="count-badge">{cnt(pick_count)}</span>
           </div>
           <div class="chat-feed">{''.join(model_rows)}</div>
           <div class="alert-note">{html.escape(model_note)}. The model takes the
@@ -576,13 +577,13 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
         </section>
         <section class="stats-grid">
           <article class="stat-card"><span>Series in scope</span>
-            <strong>{count(topic.get("series_count"))}</strong><small>Matched live</small></article>
+            <strong>{cnt(topic.get("series_count"))}</strong><small>Matched live</small></article>
           <article class="stat-card"><span>Open events</span>
-            <strong>{count(topic.get("event_count"))}</strong><small>This snapshot</small></article>
+            <strong>{cnt(topic.get("event_count"))}</strong><small>This snapshot</small></article>
           <article class="stat-card"><span>Markets tracked</span>
-            <strong>{count(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
+            <strong>{cnt(topic.get("tracked_market_count"))}</strong><small>With order book</small></article>
           <article class="stat-card"><span>Resolved captured</span>
-            <strong>{count(len(resolutions))}</strong><small>YES/NO logged</small></article>
+            <strong>{cnt(len(resolutions))}</strong><small>YES/NO logged</small></article>
         </section>
         <section class="panel">
           <div class="panel-title">
@@ -600,7 +601,7 @@ def build_topic(slug: str, live: dict[str, Any]) -> str:
               <tbody>{''.join(market_rows)}</tbody>
             </table>
           </div>
-          <div class="table-foot"><span>{count(topic.get("market_count"))} markets matched;
+          <div class="table-foot"><span>{cnt(topic.get("market_count"))} markets matched;
           top {len(events)} shown</span><span>Bid depth = resting YES bid contracts</span></div>
         </section>
         <section class="panel">
@@ -789,12 +790,12 @@ def verification_panel(verification: dict[str, Any]) -> str:
           from. The scheduled pipeline re-opens those responses and compares them
           with what this site shows, one market at a time. Last run
           <b>{html.escape(verification.get("generated_at") or "n/a")}</b>:
-          <b>{count(verification.get("markets_checked"))}</b> markets and
-          <b>{count(verification.get("series_checked"))}</b> series re-checked —
-          {count(counts.get("match"))} match,
-          {count(counts.get("drift"))} drift (a live price moved inside the
-          tolerance), {count(counts.get("mismatch"))} mismatch,
-          {count(counts.get("unverified"))} unverified (the response could not be
+          <b>{cnt(verification.get("markets_checked"))}</b> markets and
+          <b>{cnt(verification.get("series_checked"))}</b> series re-checked —
+          {cnt(counts.get("match"))} match,
+          {cnt(counts.get("drift"))} drift (a live price moved inside the
+          tolerance), {cnt(counts.get("mismatch"))} mismatch,
+          {cnt(counts.get("unverified"))} unverified (the response could not be
           read on that run).</p>
         <div class="table-wrap">
           <table>
@@ -955,15 +956,15 @@ def build_performance_section(live: dict[str, Any]) -> str:
             "<tr>"
             f"<td><b>{html.escape(s.get('label', slug))}</b>"
             f"<small class=\"ticker\">{html.escape(s.get('description',''))}</small></td>"
-            f"<td>{count(a.get('trades'))}</td><td>{count(a.get('wins'))}</td>"
-            f"<td>{count(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
+            f"<td>{cnt(a.get('trades'))}</td><td>{cnt(a.get('wins'))}</td>"
+            f"<td>{cnt(a.get('losses'))}</td><td>{pct(a.get('win_rate'))}</td>"
             f"<td>{money(a.get('realized'))}</td><td>{money(a.get('expectancy'))}</td>"
             f"<td>{pct(a.get('roi_on_cost'))}</td><td>{money(a.get('fees'))}</td></tr>")
     topic_rows = []
     for slug, a in (p.get("by_topic") or {}).items():
         topic_rows.append(
             "<tr>"
-            f"<td>{html.escape(slug)}</td><td>{count(a.get('trades'))}</td>"
+            f"<td>{html.escape(slug)}</td><td>{cnt(a.get('trades'))}</td>"
             f"<td>{pct(a.get('win_rate'))}</td><td>{money(a.get('realized'))}</td>"
             f"<td>{money(a.get('expectancy'))}</td></tr>")
     settled_rows = []
@@ -996,10 +997,10 @@ def build_performance_section(live: dict[str, Any]) -> str:
               <small>from {money(p.get('starting_bankroll'))}</small></article>
             <article class="stat-card"><span>Realised P&amp;L</span>
               <strong>{money(p.get('realized_pnl'))}</strong>
-              <small>{count(overall.get('trades'))} settled</small></article>
+              <small>{cnt(overall.get('trades'))} settled</small></article>
             <article class="stat-card"><span>Win rate</span>
               <strong>{pct(overall.get('win_rate'))}</strong>
-              <small>{count(overall.get('wins'))}W / {count(overall.get('losses'))}L</small></article>
+              <small>{cnt(overall.get('wins'))}W / {cnt(overall.get('losses'))}L</small></article>
             <article class="stat-card"><span>Fees paid</span>
               <strong>{money(p.get('fees_paid'))}</strong>
               <small>official quadratic fee</small></article>

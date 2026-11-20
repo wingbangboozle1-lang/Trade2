@@ -83,6 +83,7 @@ against every row of Kalshi's published fee table by an automated test.
 | E6 | Fee arithmetic is exact | 42-row table test | **Verified.** |
 | E7 | The simulator reproduces demo-account performance | — | **NOT VERIFIED.** It is a paper ledger. Flagged. |
 | E8 | The model is profitable | — | **NOT CLAIMED.** No settled trade history long enough to say. Flagged. |
+| E9 | A NO-side position is marked, exited and valued on its own side's price | unit tests (`TestExits`, added 2026-11-20) + hand reproduction | **Verified after fix.** A NO position's value is `1 − YES mid`; `mark()` stores that held-side value, `exit_signals()` tests the held-side swing, and `equity` agrees with `unrealized`. See F7. |
 
 ## F. Irregularities found (also published on the site)
 
@@ -94,6 +95,7 @@ against every row of Kalshi's published fee table by an automated test.
 | F4 | No published unauthenticated rate limits and no rate-limit headers on demo responses. | Collector enforces its own budget and reports skips. |
 | F5 | The fee PDF's rounding prose ("fee + positionCost … centicent") and its published table disagree in the 4th decimal. The table is authoritative for pricing ($0.0001 is the tick size that matters), so the implementation matches the table. | Documented here and in the code. |
 | F6 | Repository had no `COORDINATION.md` and other sessions were editing it concurrently; a merge conflict occurred. | Resolved without discarding the other board's content; both are kept in the file. |
+| F7 | **Defect found and fixed (session `arena-8a0899e5`, 2026-11-20).** `collector/engine.py` marked a NO-side position with the **YES mid** and compared the NO entry price to the **YES mid** in `exit_signals()`. Because `obs.mid` is the YES mid and a NO position's value is `1 − mid`, a NO position entered at $0.30 with the YES mid at $0.75 (a **−$0.05** loss) was read as a **+$0.45** favourable swing and force-closed at a loss, and `equity` overstated the open value. Reproduced before the fix (`equity $10,290.19` vs the correct `$9,956.86`; exit decision `+$0.45 favourable swing — take profit` on a losing trade). | Fixed in `collector/engine.py`: `mark()` now stores the **held-side** value in `current_price`, and `exit_signals()` computes the swing as `(YES mid for YES, 1 − YES mid for NO) − entry_price`. Regression tests added to `tests/test_engine.py::TestExits` (hold on a real NO loss, take profit on a real NO gain, equity uses the held-side value). All 45 unit tests pass. |
 
 ## G. Not verified / not implemented
 

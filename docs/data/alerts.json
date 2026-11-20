@@ -1,7 +1,28 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1",
+   "delta": 0.8,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.003,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
+   "t": 1795197900,
+   "t_iso": "2026-11-20T18:05:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPRESNOMD-28-AKLO",
+   "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
+   "to": 0.803,
+   "topic": "elections",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -22,7 +43,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -77,7 +98,28 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794940766&end_ts=1795199966&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
+   "delta": 0.37,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.13,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "title": "Will Bitcoin be below $50000.00 by Jan 1, 2027 at 12:00am ET?",
+   "to": 0.5,
+   "topic": "crypto",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -118,7 +160,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T18:39:58.401055+00:00",
+ "generated_at": "2026-11-20T19:04:28.301576+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

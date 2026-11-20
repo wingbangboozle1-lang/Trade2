@@ -219,13 +219,19 @@ class Portfolio:
         return pos
 
     def mark(self, ticker: str, price: float | None) -> None:
+        """Mark an open position to market.
+
+        ``price`` is the YES mid. ``current_price`` always stores the value of
+        the side we actually hold (YES mid for a YES position, ``1 - YES mid``
+        for a NO position) so that ``equity`` and ``unrealized`` agree.
+        """
         if price is None:
             return
         for pos in self.positions.values():
             if pos.status == "open" and pos.ticker == ticker:
-                pos.current_price = price
                 # Value of one contract of the held side.
                 held = price if pos.side == "yes" else round(1.0 - price, 4)
+                pos.current_price = held
                 pos.unrealized = round((held - pos.entry_price) * pos.contracts, 4)
 
     def close(self, ticker: str, side_price: float, ts: float | None = None,
@@ -468,7 +474,12 @@ def exit_signals(portfolio: Portfolio, observations: dict[str, Any]) -> list[tup
         obs = observations.get(pos.ticker)
         if obs is None or obs.mid is None:
             continue
-        change = obs.mid - pos.entry_price
+        # Move of the held side since entry. ``obs.mid`` is the YES mid, so a NO
+        # position's value is ``1 - mid``; comparing a NO entry price to the YES
+        # mid directly would read a losing NO trade as a large favourable swing
+        # and force it out at a loss.
+        held_value = obs.mid if pos.side == "yes" else round(1.0 - obs.mid, 4)
+        change = held_value - pos.entry_price
         # Price we would receive for the side we hold.
         if pos.side == "yes":
             exit_price = obs.yes_bid

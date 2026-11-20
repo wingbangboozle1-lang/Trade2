@@ -32,6 +32,9 @@ for (const page of pages) {
     virtualConsole: vc,
   });
   const w = dom.window;
+  // This checker must be hermetic: prevent the desk's optional polling request
+  // from reaching the network, while still exercising its inline snapshot path.
+  w.fetch = async () => ({ ok: false, json: async () => null });
   w.HTMLCanvasElement.prototype.getContext = () =>
     new Proxy({}, { get: (t, k) => (k === "canvas" ? {} : () => {}), set: () => true });
   w.HTMLCanvasElement.prototype.getBoundingClientRect = () =>

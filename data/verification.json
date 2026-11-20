@@ -1,0 +1,211 @@
+{
+ "generated_at": "2026-11-20T19:19:16Z",
+ "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
+ "snapshot_generated_at": "2026-11-20T19:09:37Z",
+ "markets_checked": 16,
+ "series_checked": 5,
+ "checks": [
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+   "field": "ticker",
+   "published": "KXPRESNOMD-28-RW",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+   "field": "ticker",
+   "published": "KXPRESNOMD-28-GW",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+   "field": "ticker",
+   "published": "KXPRESNOMD-28-SAS",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+   "field": "ticker",
+   "published": "KXBTCY-27JAN0100-B127500",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+   "field": "ticker",
+   "published": "KXBTCY-27JAN0100-B142500",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+   "field": "ticker",
+   "published": "KXBTCY-27JAN0100-B47500",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+   "field": "ticker",
+   "published": "KXPGATOUR-THRC26-TMOO",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+   "field": "ticker",
+   "published": "KXPGATOUR-MAST27-MFIT",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+   "field": "ticker",
+   "published": "KXPGATOUR-THRC26-SSTR",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+   "field": "ticker",
+   "published": "KXCRITICSFOREIGN-27-LAB",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+   "field": "ticker",
+   "published": "KXCRITICSFOREIGN-27-FJO",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+   "field": "ticker",
+   "published": "KXCRITICSFOREIGN-27-ROS",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+   "field": "ticker",
+   "published": "KXAAAGASM-26NOV30-4.70",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+   "field": "ticker",
+   "published": "KXAAAGASM-26NOV30-4.50",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+   "field": "ticker",
+   "published": "KXAAAGASM-26NOV30-4.80",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "market record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
+   "field": "ticker",
+   "published": "KXPRESNOMD-28-AKLO",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "series record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/BITCOINMAXY",
+   "field": "ticker",
+   "published": "BITCOINMAXY",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "series record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/1SONG-DRAKE",
+   "field": "ticker",
+   "published": "1SONG-DRAKE",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "series record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/CONTROLS",
+   "field": "ticker",
+   "published": "CONTROLS",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "series record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/AAAGASD",
+   "field": "ticker",
+   "published": "AAAGASD",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  },
+  {
+   "check": "series record",
+   "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBDSHOLEINONE",
+   "field": "ticker",
+   "published": "KXBDSHOLEINONE",
+   "official": null,
+   "result": "unverified",
+   "detail": "could not read (<urlopen error TLS/SSL connection has been closed (EOF) (_ssl.c:992)>)"
+  }
+ ],
+ "counts": {
+  "match": 0,
+  "drift": 0,
+  "mismatch": 0,
+  "unverified": 21
+ },
+ "mismatches": [],
+ "ok": true,
+ "tolerances": {
+  "price_dollars": 0.02,
+  "relative": 0.02
+ },
+ "note": "Prices and sizes move between the snapshot and this check, so a difference inside the tolerance is recorded as drift, not as an error. Every row records the official URL it was checked against."
+}

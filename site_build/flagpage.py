@@ -140,6 +140,55 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
 
 STANDING = [
     {
+        "title": "Swing alerts compared a trade price with a quote midpoint (fixed on branch arena/856e184e-trade2)",
+        "body": ("Until this fix, a >= $0.10 alert compared the candle's last-trade close with the "
+                 "midpoint of the current bid and ask. On KXPRESNOMD-28-HBID the last trade and the ask were "
+                 "0.8110 while the bid was 0.0020, so the midpoint 0.4065 produced a 'swing' of -$0.4045 that no "
+                 "trade made. Alerts now compare quote mid with quote mid, require a two-sided quote narrower "
+                 "than $0.10, and drop stored alerts that fail that rule on the next run. The same rule removes "
+                 "trade prints the quotes do not support: KXPRESNOMD-28-AKLO printed 0.8030 in the hour before its "
+                 "alert while its bid and ask stayed at 0.0020 and 0.0030. The $0.10 narrow-spread rule is a design "
+                 "choice of this project, not a Kalshi rule."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
+            "https://docs.kalshi.com/api-reference/market/get-market.md",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook",
+        ),
+    },
+    {
+        "title": "The kalshi-dashboard snapshot was collected from the production host",
+        "body": ("This project is scoped to the Kalshi demo endpoint. The kalshi-dashboard collector "
+                 "(scripts/collect.mjs) defaulted to the production host external-api.kalshi.com. The default is "
+                 "now the demo host. Until the next scheduled run, the published status file still records the "
+                 "production base_url. The workflow step label still says 'production by default' (request "
+                 "logged on the coordination board)."),
+        "source": (
+            "https://docs.kalshi.com/getting_started/api_environments.md",
+            "https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/status.json",
+        ),
+    },
+    {
+        "title": "'OI value' is a notional figure, not dollars traded",
+        "body": ("The overview ranks markets by open_interest_fp x notional_value_dollars. Kalshi defines "
+                 "open interest as the number of contracts bought on the market (disregarding netting) and "
+                 "notional value as the value of one contract at settlement ($1.00). The product is the "
+                 "settlement value of open contracts. It is not dollars traded and not dollars currently at "
+                 "risk. The site labels it that way. Ranking by it is one reading of 'highest dollar amount'."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-market.md",),
+    },
+    {
+        "title": "Trade-price alerts in two other pipelines are not checked against quotes (open)",
+        "body": ("The docs/ pipeline (collector/runner.py) and the kalshi-dashboard pipeline alert on "
+                 "consecutive trade-price closes, so the quote rule above does not cover them. The docs/ alerts "
+                 "currently list hourly trade-price moves such as KXRT-FUR-85 0.43 to 0.05. Those moves have not "
+                 "been checked against the quotes and are not changed by this branch."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
+            "https://wingbangboozle1-lang.github.io/Trade2/docs/data/alerts.json",
+        ),
+    },
+    {
         "title": "Demo-account portfolio performance cannot be shown",
         "body": ("Reading a Kalshi demo balance, fills or positions requires signed "
                  "requests with an API key pair. No key is configured for this "
@@ -154,6 +203,21 @@ STANDING = [
                  "inert without credentials. Nothing on this site can move real or "
                  "demo funds."),
         "source": ("https://docs.kalshi.com/getting_started/quick_start_create_order.md",),
+    },
+    {
+        "title": "Alert rows can repeat, and midpoints may not be executable",
+        "body": ("The alert engine compares book midpoints between reference bars, "
+                 "so one sustained >= $0.10 move can fire again on each "
+                 "consecutive snapshot: the 2026-11-20 18:41 UTC snapshot carried "
+                 "29 raw alert rows over only 3 tickers, including a row whose "
+                 "quoted book was $0.002 bid / $0.811 ask against a $0.4065 "
+                 "midpoint — a spread wider than the alert threshold itself, so "
+                 "the midpoint was not an executable price. The live desk groups "
+                 "identical repeats client-side (xN badge) and marks rows whose "
+                 "YES spread is >= $0.10 as not executable; raw rows are never "
+                 "deleted from the snapshot. Treat each row as a detection "
+                 "event, not a tradable quote."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
     },
     {
         "title": "News headlines are candidates, never a confirmed cause",
