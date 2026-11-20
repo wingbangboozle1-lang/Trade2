@@ -1,0 +1,22 @@
+### Origin: https://wingbangboozle1-lang.github.io
+HTTP/2 204 
+access-control-allow-origin: https://wingbangboozle1-lang.github.io
+### Origin: http://localhost:8000
+HTTP/2 204 
+access-control-allow-origin: http://localhost:8000
+### Origin: https://evil.example.com
+HTTP/2 204 
+access-control-allow-origin: https://evil.example.com
+### Origin: null
+HTTP/2 204 
+access-control-allow-origin: null
+### GET with Origin
+HTTP/2 200 
+access-control-allow-credentials: true
+access-control-allow-origin: https://wingbangboozle1-lang.github.io
+access-control-expose-headers: X-Csrf-Token,X-Ratelimit-Limit,X-Ratelimit-Remaining,X-Ratelimit-Reset,X-Ratelimit-Cost
+vary: Origin, Accept-Encoding, Accept-Language
+### unauth rate limit headers
+no ratelimit headers
+### series KXAAAGASM
+{"series":{"additional_prohibitions":["Persons who are employed by any of the Source Agencies are not permitted to trade on the Contract.","Persons who hold any material, non-public information on the Underlying are not permitted to trade on the Contract."],"categories":["Economics"],"category":"Economics","contract_terms_url":"https://assets.kalshi.com/contract_terms/AAAGAS.pdf","contract_url":"https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/AAAGAS.pdf","exchange_index":0,"fee_multiplier":1,"fee_type":"quadratic","frequency":"monthly","last_updated_ts":"2026-11-20T12:40:30.998646Z","product_metadata":{"scope":"Gasoline"},"settlement_sources":[
