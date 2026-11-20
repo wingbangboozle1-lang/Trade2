@@ -119,6 +119,47 @@ class TestFeeAssumptionIsFlagged(unittest.TestCase):
         self.assertIn("trade-api/v2/series/KXBTCY", page)
 
 
+class TestNegativeMoney(unittest.TestCase):
+    """A loss must read as a loss: ``-$125.00``, not ``$-125.00``."""
+
+    def test_sign_sits_outside_the_currency_symbol(self):
+        self.assertEqual(fmt.money(-125), "-$125.00")
+        self.assertEqual(fmt.money(-0.5, 4), "-$0.5000")
+        self.assertEqual(fmt.money(125), "$125.00")
+        self.assertEqual(fmt.money(0), "$0.00")
+
+    def test_no_page_shows_the_wrong_form(self):
+        for page in ("index.html", "trades.html", "resolutions.html", "live.html"):
+            path = os.path.join(ROOT, page)
+            if not os.path.exists(path):
+                self.skipTest("generated pages not built yet")
+            with self.subTest(page=page):
+                self.assertNotIn("$-", read(page))
+
+
+class TestFeeClaimIsScoped(unittest.TestCase):
+    """The methodology page must not overstate fee coverage.
+
+    ``trading/engine.py`` reads each market's ``fee_multiplier``;
+    ``collector/engine.py`` — the ledger behind ``trades.html`` — does not. A
+    blanket "fee-free series are respected" sentence on the page that publishes
+    the collector's numbers is a factual claim about code, so it is pinned here.
+    """
+
+    def test_fees_section_names_both_engines(self):
+        blob = re.sub(r"\s+", " ", read("methodology.html"))
+        i = blob.index("Fees")
+        section = blob[i:i + 1600]
+        self.assertIn("trading/", section)
+        self.assertIn("applies a multiplier of 1", section)
+        self.assertIn("review.html", section)
+
+    def test_the_unqualified_claim_is_gone(self):
+        blob = re.sub(r"\s+", " ", read("methodology.html"))
+        self.assertNotIn("Fee-free series (multiplier 0) are respected via each "
+                         "series' own <code>fee_multiplier</code>.</p>", blob)
+
+
 class TestAgeLabel(unittest.TestCase):
     def test_deterministic_for_a_fixed_reference_time(self):
         ts = 1_795_200_000.0

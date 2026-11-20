@@ -97,7 +97,7 @@ class TestSwingChatGrouping(unittest.TestCase):
 
     def test_empty_feed_renders_honest_empty_state(self):
         html = page(alerts=[])
-        self.assertIn("No ≥ $0.10 swing observed", html)
+        self.assertIn("No ≥ $0.10 swing on a two-sided book", html)
 
 
 class TestModelShortlist(unittest.TestCase):

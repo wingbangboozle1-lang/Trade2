@@ -37,12 +37,20 @@ def esc(value: Any) -> str:
 
 
 def money(value: Any, places: int = 2) -> str:
+    """An amount of dollars. A loss reads ``-$125.00``, never ``$-125.00``.
+
+    The sign belongs outside the currency symbol: the old f-string put it
+    between ``$`` and the digits, which is what the live trades table showed for
+    every unrealised loss on 2026-11-20.
+    """
     if value is None or value == "":
         return '<span class="flag-badge">UNVERIFIED</span>'
     try:
-        return f"${float(value):,.{places}f}"
+        number = float(value)
     except (TypeError, ValueError):
         return esc(value)
+    sign = "-" if number < 0 else ""
+    return f"{sign}${abs(number):,.{places}f}"
 
 
 def cents(value: Any) -> str:
@@ -143,6 +151,21 @@ def kalshi_event_url(event_ticker: Any, series_ticker: Any = None) -> str:
     """Public Kalshi page for an event (the whole ticket, with its news feed)."""
     series = series_ticker or series_prefix(event_ticker)
     return f"{KALSHI_SITE}/markets/{series}/{event_ticker}"
+
+
+def safe_url(value: Any) -> str:
+    """Return an http(s) URL, or "" for anything else.
+
+    Every external href on the site is either built by us from a ticker or read
+    out of a payload the collector wrote — and one field of that payload (a news
+    headline link) is supplied by a third party. A renderer that trusts it can be
+    handed ``javascript:`` or ``data:`` and turn a headline into a click handler,
+    so the scheme is checked here, once, for both renderers to share.
+    """
+    text = str(value or "").strip()
+    if text.lower().startswith(("https://", "http://")):
+        return html.escape(text, quote=True)
+    return ""
 
 
 def news_search_url(text: Any, topic_label: Any = "") -> str:

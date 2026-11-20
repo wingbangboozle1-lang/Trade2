@@ -152,6 +152,29 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
 
 STANDING = [
     {
+        "title": "Moves the alert rule refuses are listed below, not hidden",
+        "body": ("A midpoint move of $0.10 or more on a one-sided or wide book does not "
+                 "become an alert, because no trade made it: on KXPRESNOMD-28-HBID the "
+                 "bid and ask were 0.0020 and 0.8110, so the mid could print 0.4065 "
+                 "while nothing traded. Those refusals are now counted and the individual "
+                 "ones are published in the 'Refused midpoint moves' table with the reason, "
+                 "so a reviewer can disagree with the rule using the same numbers."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook"),
+    },
+    {
+        "title": "The model shortlist and the generator now share one gate",
+        "body": ("The page filtered the shortlist on net ROI >= 0.05 while the collector "
+                 "published it on model score >= 0.10, so the same feed had two "
+                 "definitions and the overview chat looked emptier than the data. Both "
+                 "sides now read one constant, alerts.model.MODEL_MIN_NET_ROI = 0.05, "
+                 "and the browser renders the published list rather than re-deriving "
+                 "it. Rows marked indicative are excluded from the shortlist on purpose: "
+                 "a shortlist is something a trader would act on."),
+        "source": ("https://wingbangboozle1-lang.github.io/Trade2/methodology.html",
+                   "https://docs.kalshi.com/getting_started/orderbook_responses"),
+    },
+    {
         "title": "Swing alerts compared a trade price with a quote midpoint (fixed on branch arena/856e184e-trade2)",
         "body": ("Until this fix, a >= $0.10 alert compared the candle's last-trade close with the "
                  "midpoint of the current bid and ask. On KXPRESNOMD-28-HBID the last trade and the ask were "
@@ -225,22 +248,38 @@ STANDING = [
                  "the next collector run. The live desk groups repeated rows for "
                  "display and marks wide-spread rows as not executable, but no alert "
                  "or display badge records an order or fill. Inspect the current "
-                 "official order book and snapshot time before acting."),
+                 "official order book and snapshot time before acting. The engine "
+                 "rule behind that wording, in full: one row per market, direction and "
+                 "reference bar; a repeat inside the same bar updates that row and "
+                 "counts itself in 'N sightings'; a later bar only opens a new row "
+                 "when the move has grown by a further $0.10; a reversal is always a "
+                 "new row; and a midpoint move the quote rule refuses is published in "
+                 "the refusal table below rather than dropped. The $0.10 narrow-spread "
+                 "rule and the folding rule are this project's design choices, not "
+                 "Kalshi rules — nothing here is Kalshi's fault."),
         "source": (
             "https://docs.kalshi.com/getting_started/orderbook_responses",
             "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
-        ),
-    },
+            "https://wingbangboozle1-lang.github.io/Trade2/data/alerts.json",
+        ),    },
     {
-        "title": "No news article is attributed to a price move",
-        "body": ("The brief asked for links to news that may have caused jumps. No "
-                 "official source maps an article to a Kalshi price move, so the "
-                 "dashboard never asserts one. Every ≥ $0.10 row instead links to "
-                 "the Kalshi event page — which carries Kalshi's own live news feed "
-                 "for that event, with its sources — and to a news search built "
-                 "from the event title. Those are places to look, not claims of "
-                 "cause."),
-        "source": ("https://docs.kalshi.com/api-reference/events/get-events",),
+        "title": "News links are candidate catalysts, never confirmed causes",
+        "body": ("The brief asked for links to news that may have caused a jump. No "
+                 "official source maps an article to a Kalshi price move, so "
+                 "causality is never asserted. Two mechanisms are published instead: "
+                 "every ≥ $0.10 row links to the Kalshi event page — which carries "
+                 "Kalshi's own live news feed for that event, with its sources — and "
+                 "to a news search built from the event title; and the collector "
+                 "attaches up to six RSS headlines published within ± six hours of "
+                 "the alert, printed under the row as 'candidate headline, not "
+                 "confirmed'. A row with no result says so with the reason instead of "
+                 "a plausible guess, and settlement sources (AAA, CF Benchmarks, "
+                 "ESPN, pgatour.com) remain the only officially named references. "
+                 "Headline lookup needs outbound network access, so on a run without "
+                 "it every row shows the reason it is empty rather than a link."),
+        "source": ("https://docs.kalshi.com/api-reference/events/get-events",
+                   "https://docs.kalshi.com/api-reference/market/get-series-list",
+                   "https://news.google.com/rss/search"),
     },
     {
         "title": "A book with no resting size is shown as UNVERIFIED, not as $0.0000",
@@ -262,7 +301,7 @@ STANDING = [
                  "API value is preferred whenever it is present. Settled markets "
                  "outside the five tracked topics are counted separately rather "
                  "than dropped without trace."),
-        "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-markets",)
     },
     {
         "title": "Live streaming uses polling, not the WebSocket",
@@ -307,6 +346,28 @@ STANDING = [
         "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
     },
     {
+        "title": "Three scheduled workflows collect the same data, and the most "
+                 "frequent one rarely runs",
+        "body": ("Verified from the repository and the Actions API, not inferred. "
+                 "Three workflows collect from the demo API and commit to `main`: "
+                 "`kalshi-dashboard.yml` (cron `*/5`), `collector.yml` (`*/15`) and "
+                 "`dashboard.yml` (`*/30`). The `*/5` one groups its runs under "
+                 "`concurrency: collect` with `cancel-in-progress: false`, and on a "
+                 "repository this busy a run in that group spends longer than five "
+                 "minutes than not — so new runs replace queued ones instead of "
+                 "waiting. Two runs of it on 2026-11-20 ended `cancelled` after 17 s "
+                 "and 43 s (runs 44804717748 and 44804612803), while the `collector` "
+                 "workflow triggered by the same merge completed in 19 s. Consequence "
+                 "for a trader: the published snapshot's age is what the top bar shows, "
+                 "not five minutes. Reading of the queueing behaviour above is this "
+                 "project's interpretation of the workflow configuration and the two "
+                 "cancelled runs, not a confirmed GitHub guarantee — see the "
+                 "concurrency documentation for the rule."),
+        "source": ("https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804717748",
+                   "https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804612803",
+                   "https://github.com/wingbangboozle1-lang/Trade2/blob/main/.github/workflows/kalshi-dashboard.yml"),
+    },
+    {
         "title": "Fee-schedule rounding prose and its own table disagree",
         "body": ("The fee PDF says to round so that 'fee + positionCost is rounded to "
                  "a centicent', but its published table is reproduced exactly by "
@@ -349,6 +410,60 @@ def render(live: dict[str, Any]) -> str:
             f'<article class="flag-card"><h3>{esc(item["title"])}</h3>'
             f"<p>{esc(item['body'])}</p><div>{links}</div></article>")
 
+    refused = []
+    for rec in (live or {}).get("suppressed_alerts", []) or []:
+        refused.append(
+            "<tr>"
+            f"<td><code>{esc(rec.get('ticker'))}</code>"
+            f"<small>{esc(rec.get('title'))}</small></td>"
+            f"<td>{esc(rec.get('topic'))}</td>"
+            f"<td>{esc(rec.get('direction'))}</td>"
+            f"<td>{('$' + format(float(rec['abs_delta']), '.4f')) if rec.get('abs_delta') is not None else '—'}</td>"
+            f"<td>{esc(rec.get('yes_bid'))} / {esc(rec.get('yes_ask'))}</td>"
+            f"<td>{esc(rec.get('reason'))}</td>"
+            f"<td>{esc(rec.get('iso'))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{esc((live or {}).get("api_root") or "https://external-api.demo.kalshi.co/trade-api/v2")}'
+            f'/markets/{esc(rec.get("ticker"))}">API ↗</a></td>'
+            "</tr>")
+    if not refused:
+        refused.append('<tr><td colspan="8" class="empty-state">No midpoint move was '
+                       "refused by the quote rule in the last collector run, or the "
+                       "snapshot predates that reporting.</td></tr>")
+    gaps = (live or {}).get("book_record_gaps") or []
+    gap_rows = []
+    for g in gaps:
+        gap_rows.append(
+            "<tr>"
+            f"<td><code>{esc(g.get('ticker'))}</code>"
+            f"<small>{esc(g.get('title'))}</small></td>"
+            f"<td>{esc(g.get('topic'))}</td>"
+            f"<td>{esc(g.get('book_yes_bid'))} / {esc(g.get('book_yes_ask'))}</td>"
+            f"<td>{esc(g.get('book_mid'))}</td>"
+            f"<td>{esc(g.get('record_yes_bid'))} / {esc(g.get('record_yes_ask'))}</td>"
+            f"<td>{esc(g.get('record_mid'))}</td>"
+            f"<td><b>{esc(g.get('gap'))}</b></td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{esc(g.get("source_book"))}">book ↗</a> '
+            f'<a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{esc(g.get("source_record"))}">record ↗</a></td>'
+            "</tr>")
+    if not gap_rows:
+        gap_rows.append('<tr><td colspan="8" class="empty-state">No tracked market '
+                        "shows a ≥ $0.10 disagreement between the order-book "
+                        "response and the market record in this snapshot.</td></tr>")
+    gap_count = (live or {}).get("book_record_gap_count")
+    gap_note = (f"{gap_count} of the tracked markets show such a gap"
+                if gap_count is not None else "coverage depends on how many books "
+                "the run had budget to fetch")
+    alert_stats = (live or {}).get("alert_stats") or {}
+    refused_note = (
+        f"{alert_stats.get('suppressed_this_run', '—')} refused this run · "
+        f"{alert_stats.get('folded_duplicates', '—')} repeat sightings folded · "
+        f"{alert_stats.get('buffer', '—')} buffered rows · "
+        f"{alert_stats.get('distinct_moves', '—')} distinct moves"
+        if alert_stats else "no alert statistics in this snapshot yet")
+
     return f"""        <header class="topbar">
           <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
@@ -382,6 +497,48 @@ def render(live: dict[str, Any]) -> str:
           </div>
           <div class="table-foot"><span>Blank or absent values are never inferred</span>
           <span>Recomputed on every collector run</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">⊘</span><div>
+              <h2 id="refused">Refused midpoint moves (audit the rule, not the data)</h2>
+              <p>Moves of $0.10 or more that did <b>not</b> become alerts, with the
+              reason. {esc(refused_note)}</p></div></div>
+            <a class="source-link" target="_blank" rel="noreferrer"
+               href="https://docs.kalshi.com/getting_started/orderbook_responses">Book
+               semantics ↗</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Topic</th><th>Direction</th>
+                <th>Midpoint move</th><th>YES bid / ask</th><th>Why it was refused</th>
+                <th>Seen at</th><th>Source</th></tr></thead>
+              <tbody>{''.join(refused)}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Recomputed on every collector run</span>
+          <span>A refusal is a judgement by this project's rule, not by Kalshi</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">≠</span><div>
+              <h2 id="book-vs-record">Kalshi's order book and its market record disagree</h2>
+              <p>Same market, same moment, two official endpoints, both linked.
+              {esc(gap_note)} The chart and the swing rule read the <em>book</em>;
+              the market record carries its own summary quote. Neither is
+              discarded — the gap is published so nobody has to trust which one
+              the dashboard picked.</p></div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Market</th><th>Topic</th><th>Book YES bid / ask</th>
+                <th>Book mid</th><th>Record YES bid / ask</th><th>Record mid</th>
+                <th>Gap</th><th>Sources</th></tr></thead>
+              <tbody>{''.join(gap_rows)}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Threshold: the same $0.10 as the alert rule</span>
+          <span>A gap is Kalshi demo data, not a calculation by this project</span></div>
         </section>
         <section class="panel">
           <div class="panel-title">

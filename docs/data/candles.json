@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-20T19:04:28.296725+00:00",
+ "generated_at": "2026-11-20T19:44:12.926047+00:00",
  "series": {
   "KXAAAGASW-26NOV23-3.6200": {
    "hours": {
@@ -31,7 +31,7 @@
       "volume": 4010.58
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -62,22 +62,238 @@
       "volume": 1.0
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
      {
-      "close": 0.93,
-      "high": 0.93,
-      "low": 0.93,
-      "open": 0.93,
-      "t": 1795198140,
-      "volume": 1.0
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202160,
+      "volume": 2.97
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202220,
+      "volume": 0.0
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202280,
+      "volume": 4.08
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202340,
+      "volume": 3.32
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202400,
+      "volume": 0.0
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202460,
+      "volume": 8.41
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202520,
+      "volume": 3.92
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202580,
+      "volume": 4.12
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202640,
+      "volume": 2.53
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202700,
+      "volume": 1.71
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202760,
+      "volume": 5.12
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202820,
+      "volume": 5.26
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202880,
+      "volume": 5.05
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795202940,
+      "volume": 4.21
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203000,
+      "volume": 3.72
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203060,
+      "volume": 1.51
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203120,
+      "volume": 1.25
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203180,
+      "volume": 2.51
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203240,
+      "volume": 8.21
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203300,
+      "volume": 3.12
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203360,
+      "volume": 1.41
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203420,
+      "volume": 1.47
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203480,
+      "volume": 7.86
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203540,
+      "volume": 5.76
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203600,
+      "volume": 2.52
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203660,
+      "volume": 4.6
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203720,
+      "volume": 3.99
+     },
+     {
+      "close": 0.97,
+      "high": 0.97,
+      "low": 0.97,
+      "open": 0.97,
+      "t": 1795203780,
+      "volume": 4.02
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   },
   "KXAAAGASW-26NOV23-3.6400": {
@@ -110,7 +326,7 @@
       "volume": 9096.85
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -165,332 +381,12 @@
       "volume": 390.2
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795197840,
-      "volume": 4.37
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795197900,
-      "volume": 7.72
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795197960,
-      "volume": 6.92
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198020,
-      "volume": 9.26
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198080,
-      "volume": 5.89
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795198140,
-      "volume": 2.55
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795198200,
-      "volume": 12.55
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198260,
-      "volume": 3.96
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198320,
-      "volume": 3.96
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795198380,
-      "volume": 7.44
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198440,
-      "volume": 5.14
-     },
-     {
-      "close": 0.02,
-      "high": 0.02,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198500,
-      "volume": 1.78
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198560,
-      "volume": 3.65
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198620,
-      "volume": 4.07
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795198680,
-      "volume": 6.31
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198740,
-      "volume": 9.73
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198800,
-      "volume": 8.89
-     },
-     {
-      "close": 0.02,
-      "high": 0.02,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198860,
-      "volume": 4.11
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795198920,
-      "volume": 2.59
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795198980,
-      "volume": 2.47
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795199040,
-      "volume": 6.26
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199100,
-      "volume": 9.3
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199160,
-      "volume": 6.12
-     },
-     {
-      "close": 0.02,
-      "high": 0.02,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199220,
-      "volume": 5.21
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199280,
-      "volume": 12.31
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795199340,
-      "volume": 5.54
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795199400,
-      "volume": 10.12
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199460,
-      "volume": 4.62
-     },
-     {
-      "close": 0.02,
-      "high": 0.02,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199520,
-      "volume": 10.41
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199580,
-      "volume": 2.35
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795199640,
-      "volume": 4.71
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199700,
-      "volume": 9.9
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199760,
-      "volume": 7.35
-     },
-     {
-      "close": 0.02,
-      "high": 0.02,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199820,
-      "volume": 6.26
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795199880,
-      "volume": 8.48
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795199940,
-      "volume": 6.97
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795200000,
-      "volume": 5.48
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.08,
-      "t": 1795200060,
-      "volume": 5.76
-     },
-     {
-      "close": 0.08,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795200120,
-      "volume": 10.06
-     },
-     {
-      "close": 0.02,
-      "high": 0.08,
-      "low": 0.02,
-      "open": 0.02,
-      "t": 1795200180,
-      "volume": 10.68
-     },
      {
       "close": 0.02,
       "high": 0.08,
@@ -650,1255 +546,1504 @@
       "open": 0.02,
       "t": 1795201380,
       "volume": 3.4
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
-   }
-  },
-  "KXBTCMINY-27JAN01-50000.00": {
-   "hours": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1440,
-    "points": [
-     {
-      "close": 0.13,
-      "high": 0.16,
-      "low": 0.13,
-      "open": 0.16,
-      "t": 1794978000,
-      "volume": 8.13
-     },
-     {
-      "close": 0.5,
-      "high": 0.5,
-      "low": 0.5,
-      "open": 0.5,
-      "t": 1795150800,
-      "volume": 4.0
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
-   },
-   "minutes": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 60,
-    "points": [
-     {
-      "close": 0.24,
-      "high": 0.24,
-      "low": 0.24,
-      "open": 0.24,
-      "t": 1795186800,
-      "volume": 64.93
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795201200,
-      "volume": 0.0
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
-   },
-   "seconds": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1,
-    "points": [
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198140,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795201080,
-      "volume": 0.0
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY/markets/KXBTCMINY-27JAN01-50000.00/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
-   }
-  },
-  "KXPGATOUR-THRC26-LHOD": {
-   "hours": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1440,
-    "points": [
-     {
-      "close": 0.008,
-      "high": 0.008,
-      "low": 0.008,
-      "open": 0.008,
-      "t": 1794978000,
-      "volume": 1787.4
-     },
-     {
-      "close": 0.008,
-      "high": 0.008,
-      "low": 0.008,
-      "open": 0.008,
-      "t": 1795064400,
-      "volume": 7302.94
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.008,
-      "open": 0.008,
-      "t": 1795150800,
-      "volume": 209172.54
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
-   },
-   "minutes": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 60,
-    "points": [
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795183200,
-      "volume": 274.34
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795186800,
-      "volume": 388.57
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795190400,
-      "volume": 311.61
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795194000,
-      "volume": 361.93
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795197600,
-      "volume": 389.68
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201200,
-      "volume": 409.73
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
-   },
-   "seconds": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1,
-    "points": [
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795197840,
-      "volume": 4.66
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795197900,
-      "volume": 5.55
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795197960,
-      "volume": 8.45
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198020,
-      "volume": 9.85
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198080,
-      "volume": 6.3
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198140,
-      "volume": 11.85
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198200,
-      "volume": 4.04
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198260,
-      "volume": 7.52
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198320,
-      "volume": 4.14
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198380,
-      "volume": 6.17
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198440,
-      "volume": 3.67
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198500,
-      "volume": 3.07
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198560,
-      "volume": 5.41
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198620,
-      "volume": 10.08
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198680,
-      "volume": 6.07
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198740,
-      "volume": 7.09
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198800,
-      "volume": 6.93
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198860,
-      "volume": 5.65
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198920,
-      "volume": 6.67
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795198980,
-      "volume": 7.6
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199040,
-      "volume": 3.7
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199100,
-      "volume": 3.61
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199160,
-      "volume": 3.51
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199220,
-      "volume": 10.72
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199280,
-      "volume": 7.76
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199340,
-      "volume": 0.16
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199400,
-      "volume": 4.9
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199460,
-      "volume": 7.44
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199520,
-      "volume": 9.26
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199580,
-      "volume": 5.65
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199640,
-      "volume": 7.44
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199700,
-      "volume": 7.39
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199760,
-      "volume": 3.84
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199820,
-      "volume": 4.82
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199880,
-      "volume": 8.99
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795199940,
-      "volume": 12.43
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200000,
-      "volume": 7.13
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200060,
-      "volume": 6.91
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200120,
-      "volume": 8.2
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200180,
-      "volume": 8.41
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200240,
-      "volume": 5.78
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200300,
-      "volume": 13.16
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200360,
-      "volume": 7.05
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200420,
-      "volume": 1.95
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200480,
-      "volume": 4.65
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200540,
-      "volume": 5.47
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200600,
-      "volume": 7.02
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200660,
-      "volume": 6.85
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200720,
-      "volume": 10.22
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200780,
-      "volume": 8.95
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200840,
-      "volume": 5.82
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200900,
-      "volume": 9.88
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795200960,
-      "volume": 8.1
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201020,
-      "volume": 8.01
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201080,
-      "volume": 8.76
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201140,
-      "volume": 8.52
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201200,
-      "volume": 7.25
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201260,
-      "volume": 4.9
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201320,
-      "volume": 6.28
-     },
-     {
-      "close": 0.023,
-      "high": 0.023,
-      "low": 0.023,
-      "open": 0.023,
-      "t": 1795201380,
-      "volume": 5.8
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-LHOD/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
-   }
-  },
-  "KXPGATOUR-THRC26-SSTR": {
-   "hours": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1440,
-    "points": [
-     {
-      "close": 0.013,
-      "high": 0.013,
-      "low": 0.013,
-      "open": 0.013,
-      "t": 1794978000,
-      "volume": 1942.7
-     },
-     {
-      "close": 0.011,
-      "high": 0.013,
-      "low": 0.011,
-      "open": 0.013,
-      "t": 1795064400,
-      "volume": 239664.82
-     },
-     {
-      "close": 0.028,
-      "high": 0.028,
-      "low": 0.01,
-      "open": 0.011,
-      "t": 1795150800,
-      "volume": 514834.34
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
-   },
-   "minutes": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 60,
-    "points": [
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795183200,
-      "volume": 354.28
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795186800,
-      "volume": 330.28
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795190400,
-      "volume": 290.73
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795194000,
-      "volume": 380.56
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795197600,
-      "volume": 360.48
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201200,
-      "volume": 370.54
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
-   },
-   "seconds": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1,
-    "points": [
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795197840,
-      "volume": 6.18
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795197900,
-      "volume": 2.5
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795197960,
-      "volume": 6.83
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198020,
-      "volume": 2.05
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198080,
-      "volume": 7.27
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198140,
-      "volume": 8.92
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198200,
-      "volume": 6.87
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198260,
-      "volume": 10.13
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198320,
-      "volume": 3.93
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198380,
-      "volume": 8.37
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198440,
-      "volume": 3.45
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198500,
-      "volume": 6.97
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198560,
-      "volume": 1.93
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198620,
-      "volume": 6.11
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198680,
-      "volume": 9.0
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201440,
+      "volume": 3.11
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198740,
-      "volume": 8.51
+      "close": 0.02,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.08,
+      "t": 1795201500,
+      "volume": 8.0
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198800,
-      "volume": 3.41
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201560,
+      "volume": 12.13
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198860,
-      "volume": 7.17
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201620,
+      "volume": 12.63
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198920,
-      "volume": 6.97
+      "close": 0.02,
+      "high": 0.02,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201680,
+      "volume": 3.92
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795198980,
-      "volume": 3.99
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.08,
+      "t": 1795201740,
+      "volume": 9.29
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199040,
+      "close": 0.02,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.08,
+      "t": 1795201800,
       "volume": 2.51
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199100,
-      "volume": 6.78
+      "close": 0.02,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.08,
+      "t": 1795201860,
+      "volume": 8.12
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199160,
-      "volume": 3.07
+      "close": 0.02,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201920,
+      "volume": 11.78
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199220,
-      "volume": 8.74
+      "close": 0.02,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795201980,
+      "volume": 5.49
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199280,
-      "volume": 4.79
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.08,
+      "t": 1795202040,
+      "volume": 7.82
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199340,
-      "volume": 6.99
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795202100,
+      "volume": 6.03
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199400,
-      "volume": 7.29
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202160,
+      "volume": 3.93
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199460,
-      "volume": 8.19
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795202220,
+      "volume": 4.32
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199520,
-      "volume": 5.12
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202280,
+      "volume": 4.42
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199580,
-      "volume": 7.17
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795202340,
+      "volume": 9.36
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199640,
-      "volume": 6.68
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202400,
+      "volume": 2.98
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199700,
-      "volume": 10.52
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202460,
+      "volume": 8.66
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199760,
-      "volume": 7.65
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202520,
+      "volume": 9.7
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199820,
-      "volume": 6.24
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202580,
+      "volume": 9.12
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199880,
-      "volume": 12.01
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202640,
+      "volume": 6.08
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795199940,
-      "volume": 5.81
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202700,
+      "volume": 3.53
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200000,
-      "volume": 4.3
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202760,
+      "volume": 7.1
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200060,
-      "volume": 5.15
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202820,
+      "volume": 7.49
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200120,
-      "volume": 6.2
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795202880,
+      "volume": 3.01
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200180,
-      "volume": 5.47
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795202940,
+      "volume": 6.28
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200240,
-      "volume": 3.66
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203000,
+      "volume": 9.71
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200300,
-      "volume": 6.29
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795203060,
+      "volume": 5.67
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200360,
-      "volume": 10.1
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795203120,
+      "volume": 10.09
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200420,
-      "volume": 6.77
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795203180,
+      "volume": 5.59
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200480,
-      "volume": 5.39
+      "close": 0.03,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203240,
+      "volume": 5.28
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200540,
-      "volume": 3.81
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200600,
-      "volume": 8.21
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200660,
-      "volume": 2.14
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200720,
-      "volume": 4.85
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200780,
-      "volume": 10.27
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200840,
-      "volume": 7.75
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200900,
-      "volume": 5.23
-     },
-     {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795200960,
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203300,
       "volume": 9.5
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201080,
-      "volume": 10.6
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203360,
+      "volume": 1.56
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201140,
-      "volume": 5.6
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.08,
+      "t": 1795203420,
+      "volume": 8.39
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201200,
-      "volume": 7.04
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203480,
+      "volume": 9.23
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201260,
-      "volume": 6.96
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203540,
+      "volume": 2.15
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201320,
-      "volume": 6.21
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203600,
+      "volume": 4.95
      },
      {
-      "close": 0.025,
-      "high": 0.025,
-      "low": 0.025,
-      "open": 0.025,
-      "t": 1795201380,
-      "volume": 1.23
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203660,
+      "volume": 2.18
+     },
+     {
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.03,
+      "open": 0.03,
+      "t": 1795203720,
+      "volume": 5.72
+     },
+     {
+      "close": 0.08,
+      "high": 0.08,
+      "low": 0.08,
+      "open": 0.08,
+      "t": 1795203780,
+      "volume": 0.3
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-SSTR/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   },
-  "KXPGATOUR-THRC26-TMOO": {
+  "KXPGATOUR-THRC26-CPHI": {
    "hours": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1440,
     "points": [
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.006,
+      "high": 0.006,
+      "low": 0.006,
+      "open": 0.006,
       "t": 1794978000,
-      "volume": 6073.24
+      "volume": 6102.16
      },
      {
       "close": 0.006,
       "high": 0.006,
+      "low": 0.006,
+      "open": 0.006,
+      "t": 1795064400,
+      "volume": 7355.78
+     },
+     {
+      "close": 0.006,
+      "high": 0.006,
+      "low": 0.006,
+      "open": 0.006,
+      "t": 1795150800,
+      "volume": 7190.42
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-CPHI/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
+   },
+   "minutes": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 60,
+    "points": [
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795183200,
+      "volume": 321.11
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795186800,
+      "volume": 326.6
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795190400,
+      "volume": 327.03
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795194000,
+      "volume": 377.1
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795197600,
+      "volume": 364.67
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201200,
+      "volume": 375.67
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-CPHI/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
+   },
+   "seconds": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1,
+    "points": [
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200240,
+      "volume": 3.77
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200300,
+      "volume": 12.23
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200360,
+      "volume": 4.78
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200420,
+      "volume": 3.35
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200480,
+      "volume": 5.14
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200540,
+      "volume": 4.04
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200600,
+      "volume": 4.23
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200660,
+      "volume": 9.04
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200720,
+      "volume": 4.61
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200780,
+      "volume": 5.73
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200840,
+      "volume": 2.95
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200900,
+      "volume": 3.1
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795200960,
+      "volume": 14.02
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201020,
+      "volume": 6.66
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201080,
+      "volume": 2.98
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201140,
+      "volume": 6.05
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201200,
+      "volume": 6.19
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201260,
+      "volume": 3.3
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201320,
+      "volume": 0.93
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201380,
+      "volume": 7.39
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201440,
+      "volume": 4.61
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201500,
+      "volume": 1.5
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201560,
+      "volume": 8.92
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201620,
+      "volume": 4.15
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201680,
+      "volume": 3.9
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201740,
+      "volume": 6.65
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201800,
+      "volume": 6.07
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201860,
+      "volume": 2.38
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201920,
+      "volume": 6.67
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795201980,
+      "volume": 7.94
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795202040,
+      "volume": 3.96
+     },
+     {
+      "close": 0.01,
+      "high": 0.01,
+      "low": 0.01,
+      "open": 0.01,
+      "t": 1795202100,
+      "volume": 7.83
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202160,
+      "volume": 0.7
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202220,
+      "volume": 5.5
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202280,
+      "volume": 7.76
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202340,
+      "volume": 7.73
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202400,
+      "volume": 5.41
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202460,
+      "volume": 3.62
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202520,
+      "volume": 8.68
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202580,
+      "volume": 6.86
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202640,
+      "volume": 9.37
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202700,
+      "volume": 2.14
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202760,
+      "volume": 2.95
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202820,
+      "volume": 7.08
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202880,
+      "volume": 5.37
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795202940,
+      "volume": 2.74
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203000,
+      "volume": 10.17
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203060,
+      "volume": 5.05
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203120,
+      "volume": 5.13
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203180,
+      "volume": 4.99
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203240,
+      "volume": 4.69
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203300,
+      "volume": 6.62
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203360,
+      "volume": 5.21
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203420,
+      "volume": 8.54
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203480,
+      "volume": 9.37
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203540,
+      "volume": 7.94
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203600,
+      "volume": 5.48
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203660,
+      "volume": 4.38
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203720,
+      "volume": 6.27
+     },
+     {
+      "close": 0.011,
+      "high": 0.011,
+      "low": 0.011,
+      "open": 0.011,
+      "t": 1795203780,
+      "volume": 3.96
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-CPHI/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
+   }
+  },
+  "KXPGATOUR-THRC26-JVAN": {
+   "hours": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1440,
+    "points": [
+     {
+      "close": 0.005,
+      "high": 0.005,
       "low": 0.005,
       "open": 0.005,
-      "t": 1795064400,
-      "volume": 305687.73
+      "t": 1794978000,
+      "volume": 1951.5
      },
      {
       "close": 0.005,
-      "high": 0.006,
+      "high": 0.005,
       "low": 0.005,
-      "open": 0.006,
+      "open": 0.005,
+      "t": 1795064400,
+      "volume": 7253.89
+     },
+     {
+      "close": 0.004,
+      "high": 0.005,
+      "low": 0.003,
+      "open": 0.005,
       "t": 1795150800,
-      "volume": 840653.61
+      "volume": 229320.01
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-JVAN/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
+   },
+   "minutes": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 60,
+    "points": [
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.006,
+      "open": 0.006,
+      "t": 1795183200,
+      "volume": 259.55
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795186800,
+      "volume": 363.08
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795190400,
+      "volume": 289.1
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795194000,
+      "volume": 396.91
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795197600,
+      "volume": 390.68
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201200,
+      "volume": 392.14
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-JVAN/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
+   },
+   "seconds": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1,
+    "points": [
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200240,
+      "volume": 12.34
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200300,
+      "volume": 7.37
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200360,
+      "volume": 8.21
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200420,
+      "volume": 3.2
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200480,
+      "volume": 7.13
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200540,
+      "volume": 7.01
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200600,
+      "volume": 4.5
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200660,
+      "volume": 9.48
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200720,
+      "volume": 6.59
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200780,
+      "volume": 9.16
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200840,
+      "volume": 4.89
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200900,
+      "volume": 9.48
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795200960,
+      "volume": 5.05
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201020,
+      "volume": 10.02
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201080,
+      "volume": 9.2
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201140,
+      "volume": 1.26
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201200,
+      "volume": 4.49
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201260,
+      "volume": 7.41
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201320,
+      "volume": 4.77
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201380,
+      "volume": 5.65
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201440,
+      "volume": 1.34
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201500,
+      "volume": 8.77
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201560,
+      "volume": 6.5
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201620,
+      "volume": 7.85
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201680,
+      "volume": 0.82
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201740,
+      "volume": 2.96
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201800,
+      "volume": 7.77
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201860,
+      "volume": 5.95
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201920,
+      "volume": 7.77
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795201980,
+      "volume": 7.47
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202040,
+      "volume": 5.15
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202100,
+      "volume": 5.68
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202160,
+      "volume": 5.2
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202220,
+      "volume": 1.58
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202280,
+      "volume": 5.89
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202340,
+      "volume": 4.0
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202400,
+      "volume": 2.41
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202460,
+      "volume": 5.73
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202520,
+      "volume": 3.25
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202580,
+      "volume": 5.63
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202640,
+      "volume": 8.81
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202700,
+      "volume": 5.13
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202760,
+      "volume": 3.64
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202820,
+      "volume": 5.04
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795202880,
+      "volume": 5.21
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203000,
+      "volume": 7.99
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203060,
+      "volume": 3.88
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203120,
+      "volume": 5.52
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203180,
+      "volume": 5.13
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203240,
+      "volume": 3.35
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203300,
+      "volume": 9.23
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203360,
+      "volume": 3.49
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203420,
+      "volume": 4.87
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203480,
+      "volume": 7.74
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203540,
+      "volume": 9.59
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203600,
+      "volume": 7.0
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203660,
+      "volume": 7.47
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203720,
+      "volume": 3.56
+     },
+     {
+      "close": 0.008,
+      "high": 0.008,
+      "low": 0.008,
+      "open": 0.008,
+      "t": 1795203780,
+      "volume": 5.33
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-JVAN/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
+   }
+  },
+  "KXPGATOUR-THRC26-MMEI": {
+   "hours": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1440,
+    "points": [
+     {
+      "close": 0.015,
+      "high": 0.015,
+      "low": 0.013,
+      "open": 0.013,
+      "t": 1794978000,
+      "volume": 26621.38
+     },
+     {
+      "close": 0.015,
+      "high": 0.015,
+      "low": 0.015,
+      "open": 0.015,
+      "t": 1795064400,
+      "volume": 7405.36
+     },
+     {
+      "close": 0.005,
+      "high": 0.015,
+      "low": 0.005,
+      "open": 0.015,
+      "t": 1795150800,
+      "volume": 123254.0
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MMEI/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -1907,540 +2052,540 @@
      {
       "close": 0.005,
       "high": 0.005,
-      "low": 0.005,
+      "low": 0.003,
       "open": 0.005,
       "t": 1795183200,
-      "volume": 337.66
+      "volume": 318.68
      },
      {
       "close": 0.005,
       "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795186800,
-      "volume": 366.83
+      "volume": 371.26
      },
      {
       "close": 0.005,
       "high": 0.005,
-      "low": 0.005,
+      "low": 0.003,
       "open": 0.005,
       "t": 1795190400,
-      "volume": 319.58
+      "volume": 311.86
      },
      {
-      "close": 0.005,
+      "close": 0.003,
       "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795194000,
-      "volume": 372.95
+      "volume": 374.2
      },
      {
-      "close": 0.005,
+      "close": 0.003,
       "high": 0.005,
-      "low": 0.005,
+      "low": 0.003,
       "open": 0.005,
       "t": 1795197600,
-      "volume": 328.68
+      "volume": 342.49
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201200,
-      "volume": 402.43
+      "volume": 249.67
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MMEI/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795197840,
-      "volume": 7.85
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795197900,
-      "volume": 5.09
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795197960,
-      "volume": 3.89
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198020,
-      "volume": 10.37
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198080,
-      "volume": 7.55
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198140,
-      "volume": 10.99
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198200,
-      "volume": 7.06
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198260,
-      "volume": 5.68
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198320,
-      "volume": 4.84
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198380,
-      "volume": 4.85
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198440,
-      "volume": 8.14
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198500,
-      "volume": 5.32
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198560,
-      "volume": 7.9
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198620,
-      "volume": 8.33
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198680,
-      "volume": 3.64
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198740,
-      "volume": 5.46
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198800,
-      "volume": 10.52
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198860,
-      "volume": 9.57
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198920,
-      "volume": 8.41
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795198980,
-      "volume": 7.91
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199040,
-      "volume": 2.27
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199100,
-      "volume": 3.42
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199160,
-      "volume": 6.01
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199220,
-      "volume": 7.18
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199280,
-      "volume": 5.94
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199340,
-      "volume": 6.11
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199400,
-      "volume": 10.04
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199460,
-      "volume": 8.34
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199520,
-      "volume": 7.33
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199580,
-      "volume": 5.69
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199640,
-      "volume": 7.32
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199700,
-      "volume": 6.21
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199760,
-      "volume": 8.47
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199820,
-      "volume": 8.54
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199880,
-      "volume": 4.92
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795199940,
-      "volume": 7.46
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200000,
-      "volume": 1.29
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200060,
-      "volume": 3.68
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200120,
-      "volume": 9.31
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200180,
-      "volume": 8.34
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200240,
-      "volume": 8.64
+      "volume": 2.36
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200300,
-      "volume": 5.21
+      "volume": 1.56
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200360,
-      "volume": 6.16
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200420,
-      "volume": 12.43
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200480,
-      "volume": 7.98
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200540,
-      "volume": 3.16
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200600,
-      "volume": 5.58
-     },
-     {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
-      "t": 1795200660,
       "volume": 2.45
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795200420,
+      "volume": 4.65
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795200480,
+      "volume": 4.89
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795200540,
+      "volume": 3.79
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795200600,
+      "volume": 3.1
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795200660,
+      "volume": 1.44
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200720,
-      "volume": 4.74
+      "volume": 8.39
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200780,
-      "volume": 4.28
+      "volume": 5.95
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200840,
-      "volume": 9.77
+      "volume": 4.09
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200900,
-      "volume": 11.0
+      "volume": 5.32
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795200960,
-      "volume": 6.45
+      "volume": 4.97
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201020,
-      "volume": 8.52
+      "volume": 3.46
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201080,
-      "volume": 5.69
+      "volume": 1.12
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201140,
-      "volume": 5.86
+      "volume": 5.2
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201200,
-      "volume": 11.34
+      "volume": 4.37
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201260,
-      "volume": 5.08
+      "volume": 4.92
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201320,
-      "volume": 6.36
+      "volume": 2.09
      },
      {
-      "close": 0.005,
-      "high": 0.005,
-      "low": 0.005,
-      "open": 0.005,
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
       "t": 1795201380,
-      "volume": 4.07
+      "volume": 4.79
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201440,
+      "volume": 4.68
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201500,
+      "volume": 4.19
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201560,
+      "volume": 0.91
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201620,
+      "volume": 4.05
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201680,
+      "volume": 5.16
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201740,
+      "volume": 3.84
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201800,
+      "volume": 3.92
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201860,
+      "volume": 2.79
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201920,
+      "volume": 3.02
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201980,
+      "volume": 6.24
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202040,
+      "volume": 9.09
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202100,
+      "volume": 2.15
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202160,
+      "volume": 2.0
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202220,
+      "volume": 0.95
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202280,
+      "volume": 0.65
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202340,
+      "volume": 0.43
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202400,
+      "volume": 3.86
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202460,
+      "volume": 6.17
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202520,
+      "volume": 5.6
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202580,
+      "volume": 1.59
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202640,
+      "volume": 1.99
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202700,
+      "volume": 5.27
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202760,
+      "volume": 8.87
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202820,
+      "volume": 8.01
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202880,
+      "volume": 3.26
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202940,
+      "volume": 2.09
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203000,
+      "volume": 2.71
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203060,
+      "volume": 5.14
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203120,
+      "volume": 7.39
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203180,
+      "volume": 0.1
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203240,
+      "volume": 3.18
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203300,
+      "volume": 0.7
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203360,
+      "volume": 4.35
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203420,
+      "volume": 5.61
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203480,
+      "volume": 4.71
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203540,
+      "volume": 0.52
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203600,
+      "volume": 8.02
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203660,
+      "volume": 2.46
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203720,
+      "volume": 1.11
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203780,
+      "volume": 4.25
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-TMOO/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MMEI/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   },
   "KXPRESNOMD-28-AKLO": {
@@ -2473,7 +2618,7 @@
       "volume": 61313.84
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -2528,332 +2673,12 @@
       "volume": 350.24
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795197840,
-      "volume": 5.7
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795197900,
-      "volume": 5.79
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795197960,
-      "volume": 5.95
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795198020,
-      "volume": 7.35
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198080,
-      "volume": 4.91
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198140,
-      "volume": 7.28
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198200,
-      "volume": 3.57
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198260,
-      "volume": 13.24
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198320,
-      "volume": 6.82
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198380,
-      "volume": 3.75
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198440,
-      "volume": 1.91
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198500,
-      "volume": 6.07
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198560,
-      "volume": 0.77
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198620,
-      "volume": 4.26
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795198680,
-      "volume": 3.99
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795198740,
-      "volume": 9.2
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198800,
-      "volume": 7.08
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795198860,
-      "volume": 2.24
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795198920,
-      "volume": 8.01
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795198980,
-      "volume": 7.27
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795199040,
-      "volume": 10.58
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795199100,
-      "volume": 3.44
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199160,
-      "volume": 0.46
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199220,
-      "volume": 3.29
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199280,
-      "volume": 6.57
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199340,
-      "volume": 4.56
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199400,
-      "volume": 3.63
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199460,
-      "volume": 8.67
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199520,
-      "volume": 9.14
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795199580,
-      "volume": 8.79
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199640,
-      "volume": 5.36
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795199700,
-      "volume": 5.96
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199760,
-      "volume": 2.33
-     },
-     {
-      "close": 0.003,
-      "high": 0.003,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199820,
-      "volume": 1.63
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199880,
-      "volume": 9.4
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795199940,
-      "volume": 4.98
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.803,
-      "open": 0.803,
-      "t": 1795200000,
-      "volume": 4.1
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795200060,
-      "volume": 6.17
-     },
-     {
-      "close": 0.003,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.003,
-      "t": 1795200120,
-      "volume": 7.58
-     },
-     {
-      "close": 0.803,
-      "high": 0.803,
-      "low": 0.003,
-      "open": 0.803,
-      "t": 1795200180,
-      "volume": 4.06
-     },
      {
       "close": 0.003,
       "high": 0.803,
@@ -3013,9 +2838,904 @@
       "open": 0.003,
       "t": 1795201380,
       "volume": 8.2
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201440,
+      "volume": 3.91
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201500,
+      "volume": 10.62
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201560,
+      "volume": 9.16
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201620,
+      "volume": 5.88
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201680,
+      "volume": 11.68
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795201740,
+      "volume": 4.78
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201800,
+      "volume": 5.7
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201860,
+      "volume": 3.07
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795201920,
+      "volume": 8.62
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795201980,
+      "volume": 9.79
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202040,
+      "volume": 7.51
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202100,
+      "volume": 4.78
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202160,
+      "volume": 10.49
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202220,
+      "volume": 7.15
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202280,
+      "volume": 9.62
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795202340,
+      "volume": 8.98
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202400,
+      "volume": 6.14
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202460,
+      "volume": 1.81
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202520,
+      "volume": 11.18
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202580,
+      "volume": 6.45
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202640,
+      "volume": 0.87
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795202700,
+      "volume": 7.05
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795202760,
+      "volume": 2.79
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202820,
+      "volume": 6.42
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795202880,
+      "volume": 9.76
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795202940,
+      "volume": 12.73
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203000,
+      "volume": 1.4
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203060,
+      "volume": 3.98
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203120,
+      "volume": 7.12
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203180,
+      "volume": 4.36
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203240,
+      "volume": 2.11
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203300,
+      "volume": 2.81
+     },
+     {
+      "close": 0.003,
+      "high": 0.003,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203360,
+      "volume": 3.23
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203420,
+      "volume": 3.69
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203480,
+      "volume": 12.88
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203540,
+      "volume": 7.12
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.003,
+      "t": 1795203600,
+      "volume": 6.9
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203660,
+      "volume": 1.83
+     },
+     {
+      "close": 0.003,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203720,
+      "volume": 3.97
+     },
+     {
+      "close": 0.803,
+      "high": 0.803,
+      "low": 0.003,
+      "open": 0.803,
+      "t": 1795203780,
+      "volume": 3.13
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
+   }
+  },
+  "KXPRESNOMD-28-WM": {
+   "hours": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1440,
+    "points": [
+     {
+      "close": 0.023,
+      "high": 0.023,
+      "low": 0.023,
+      "open": 0.023,
+      "t": 1794978000,
+      "volume": 7855.76
+     },
+     {
+      "close": 0.023,
+      "high": 0.025,
+      "low": 0.023,
+      "open": 0.023,
+      "t": 1795064400,
+      "volume": 7407.03
+     },
+     {
+      "close": 0.018,
+      "high": 0.023,
+      "low": 0.018,
+      "open": 0.023,
+      "t": 1795150800,
+      "volume": 82530.35
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-WM/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
+   },
+   "minutes": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 60,
+    "points": [
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795183200,
+      "volume": 308.74
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795186800,
+      "volume": 344.76
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795190400,
+      "volume": 332.02
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795194000,
+      "volume": 367.56
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795197600,
+      "volume": 383.57
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201200,
+      "volume": 372.35
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-WM/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
+   },
+   "seconds": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1,
+    "points": [
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200240,
+      "volume": 3.87
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200300,
+      "volume": 7.69
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200360,
+      "volume": 2.4
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200420,
+      "volume": 9.61
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200480,
+      "volume": 2.07
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200540,
+      "volume": 9.77
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200600,
+      "volume": 2.64
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200660,
+      "volume": 3.15
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200720,
+      "volume": 5.89
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200780,
+      "volume": 3.26
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200840,
+      "volume": 1.86
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200900,
+      "volume": 8.51
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795200960,
+      "volume": 7.03
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201020,
+      "volume": 3.58
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201080,
+      "volume": 6.59
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201140,
+      "volume": 11.78
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201200,
+      "volume": 5.41
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201260,
+      "volume": 6.94
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201320,
+      "volume": 6.53
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201380,
+      "volume": 5.67
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201440,
+      "volume": 8.99
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201500,
+      "volume": 2.11
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201560,
+      "volume": 3.77
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201620,
+      "volume": 3.4
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201680,
+      "volume": 2.26
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201740,
+      "volume": 7.99
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201800,
+      "volume": 3.83
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201860,
+      "volume": 10.66
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201920,
+      "volume": 5.92
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795201980,
+      "volume": 4.6
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795202040,
+      "volume": 3.83
+     },
+     {
+      "close": 0.018,
+      "high": 0.018,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795202100,
+      "volume": 12.69
+     },
+     {
+      "close": 0.02,
+      "high": 0.02,
+      "low": 0.018,
+      "open": 0.018,
+      "t": 1795202160,
+      "volume": 62573.57
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795202220,
+      "volume": 8903.22
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202280,
+      "volume": 2.0
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202340,
+      "volume": 2.31
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202400,
+      "volume": 8.52
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202460,
+      "volume": 10.06
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202520,
+      "volume": 9.62
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202580,
+      "volume": 9.8
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202640,
+      "volume": 11.93
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202700,
+      "volume": 7.66
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202760,
+      "volume": 1.04
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202820,
+      "volume": 6.85
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202880,
+      "volume": 3.05
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795202940,
+      "volume": 10.04
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203000,
+      "volume": 4.39
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203060,
+      "volume": 3.99
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203120,
+      "volume": 6.15
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203180,
+      "volume": 2.2
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203240,
+      "volume": 3.35
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203300,
+      "volume": 3.31
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203360,
+      "volume": 1.39
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203420,
+      "volume": 4.59
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203480,
+      "volume": 5.69
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203540,
+      "volume": 4.22
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203600,
+      "volume": 3.83
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203660,
+      "volume": 8.95
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203720,
+      "volume": 6.84
+     },
+     {
+      "close": 0.028,
+      "high": 0.028,
+      "low": 0.028,
+      "open": 0.028,
+      "t": 1795203780,
+      "volume": 6.51
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-WM/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   },
   "KXPRESNOMR-28-MR": {
@@ -3048,7 +3768,7 @@
       "volume": 10813.84
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -3103,332 +3823,12 @@
       "volume": 341.29
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795197840,
-      "volume": 6.02
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795197900,
-      "volume": 8.59
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795197960,
-      "volume": 10.4
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198020,
-      "volume": 2.49
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198080,
-      "volume": 2.86
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198140,
-      "volume": 5.57
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198200,
-      "volume": 1.73
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198260,
-      "volume": 5.04
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198320,
-      "volume": 6.69
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198380,
-      "volume": 2.49
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198440,
-      "volume": 3.54
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198500,
-      "volume": 4.48
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198560,
-      "volume": 3.87
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198620,
-      "volume": 4.46
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198680,
-      "volume": 6.82
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198740,
-      "volume": 2.55
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198800,
-      "volume": 2.27
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198860,
-      "volume": 2.15
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198920,
-      "volume": 6.33
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795198980,
-      "volume": 8.14
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199040,
-      "volume": 8.39
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199100,
-      "volume": 7.21
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199160,
-      "volume": 5.74
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199220,
-      "volume": 1.94
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199280,
-      "volume": 10.45
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199340,
-      "volume": 7.79
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199400,
-      "volume": 6.02
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199460,
-      "volume": 7.22
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199520,
-      "volume": 9.59
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199580,
-      "volume": 2.5
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199640,
-      "volume": 4.5
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199700,
-      "volume": 7.77
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199760,
-      "volume": 6.55
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199820,
-      "volume": 1.46
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199880,
-      "volume": 1.32
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795199940,
-      "volume": 4.49
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795200000,
-      "volume": 2.21
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795200060,
-      "volume": 8.87
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795200120,
-      "volume": 2.93
-     },
-     {
-      "close": 0.22,
-      "high": 0.22,
-      "low": 0.22,
-      "open": 0.22,
-      "t": 1795200180,
-      "volume": 5.56
-     },
      {
       "close": 0.22,
       "high": 0.22,
@@ -3588,9 +3988,329 @@
       "open": 0.22,
       "t": 1795201380,
       "volume": 4.35
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201440,
+      "volume": 6.65
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201500,
+      "volume": 4.43
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201560,
+      "volume": 5.33
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201620,
+      "volume": 2.46
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201680,
+      "volume": 5.68
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201740,
+      "volume": 3.27
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201800,
+      "volume": 5.37
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201860,
+      "volume": 7.9
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201920,
+      "volume": 5.25
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795201980,
+      "volume": 10.83
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202040,
+      "volume": 5.31
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202100,
+      "volume": 6.73
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202160,
+      "volume": 5.82
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202220,
+      "volume": 2.72
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202280,
+      "volume": 11.85
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202340,
+      "volume": 8.58
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202400,
+      "volume": 9.36
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202460,
+      "volume": 4.04
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202520,
+      "volume": 5.89
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202580,
+      "volume": 6.24
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202640,
+      "volume": 8.71
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202700,
+      "volume": 7.25
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202760,
+      "volume": 4.46
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202820,
+      "volume": 6.75
+     },
+     {
+      "close": 0.22,
+      "high": 0.22,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202880,
+      "volume": 3.4
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.22,
+      "open": 0.22,
+      "t": 1795202940,
+      "volume": 3.29
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203000,
+      "volume": 7.52
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203060,
+      "volume": 3.68
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203120,
+      "volume": 9.9
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203180,
+      "volume": 3.7
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203240,
+      "volume": 5.27
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203300,
+      "volume": 3.51
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203360,
+      "volume": 6.87
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203420,
+      "volume": 1.99
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203480,
+      "volume": 7.97
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203540,
+      "volume": 4.64
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203600,
+      "volume": 6.92
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203660,
+      "volume": 6.9
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203720,
+      "volume": 2.9
+     },
+     {
+      "close": 0.221,
+      "high": 0.221,
+      "low": 0.221,
+      "open": 0.221,
+      "t": 1795203780,
+      "volume": 1.82
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR/markets/KXPRESNOMR-28-MR/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   },
   "KXRT-FUR-85": {
@@ -3623,7 +4343,7 @@
       "volume": 3612.82
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -3678,260 +4398,12 @@
       "volume": 0.44
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795197900,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795197960,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198020,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198140,
-      "volume": 0.0
-     },
-     {
-      "close": 0.15,
-      "high": 0.15,
-      "low": 0.15,
-      "open": 0.15,
-      "t": 1795198200,
-      "volume": 0.44
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198320,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198380,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198440,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198560,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198620,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198680,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198800,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198860,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198920,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199040,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199100,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199160,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199280,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199340,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199400,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199460,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199520,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199580,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199700,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199760,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199820,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199880,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200000,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200060,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200120,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200180,
-      "volume": 0.0
-     },
      {
       "close": null,
       "high": null,
@@ -4051,62 +4523,286 @@
       "open": null,
       "t": 1795201380,
       "volume": 0.0
-     }
-    ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
-   }
-  },
-  "KXTIME-26-CHR": {
-   "hours": {
-    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-    "interval": 1440,
-    "points": [
+     },
      {
       "close": null,
       "high": null,
       "low": null,
       "open": null,
-      "t": 1794978000,
+      "t": 1795201500,
       "volume": 0.0
      },
      {
-      "close": 0.04,
-      "high": 0.04,
-      "low": 0.04,
-      "open": 0.04,
-      "t": 1795064400,
-      "volume": 330.91
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201560,
+      "volume": 0.0
      },
      {
-      "close": 0.04,
-      "high": 0.04,
-      "low": 0.04,
-      "open": 0.04,
-      "t": 1795150800,
-      "volume": 3897.93
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201620,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201740,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201800,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201860,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201920,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202040,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202100,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202220,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202280,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202400,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202460,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202520,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202580,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202700,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202760,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202820,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202940,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203000,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203120,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203240,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203300,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203360,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203420,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203540,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203600,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203720,
+      "volume": 0.0
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1794942235&end_ts=1795201435&period_interval=1440"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
+   }
+  },
+  "KXTIME-26-PET": {
+   "hours": {
+    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+    "interval": 1440,
+    "points": [
+     {
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1794978000,
+      "volume": 13888.88
+     },
+     {
+      "close": 0.03,
+      "high": 0.04,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795064400,
+      "volume": 14178.99
+     },
+     {
+      "close": 0.02,
+      "high": 0.04,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795150800,
+      "volume": 30761.53
+     }
+    ],
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-PET/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440"
    },
    "minutes": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 60,
     "points": [
      {
-      "close": 0.03,
+      "close": 0.02,
       "high": 0.04,
-      "low": 0.03,
-      "open": 0.04,
+      "low": 0.02,
+      "open": 0.02,
       "t": 1795183200,
-      "volume": 172.14
+      "volume": 137.31
      },
      {
-      "close": 0.03,
+      "close": 0.02,
       "high": 0.04,
-      "low": 0.03,
-      "open": 0.04,
+      "low": 0.02,
+      "open": 0.02,
       "t": 1795186800,
-      "volume": 184.99
+      "volume": 179.66
      },
      {
       "close": null,
@@ -4141,332 +4837,12 @@
       "volume": 0.0
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1795179835&end_ts=1795201435&period_interval=60"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-PET/candlesticks?start_ts=1795182219&end_ts=1795203819&period_interval=60"
    },
    "seconds": {
     "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
     "interval": 1,
     "points": [
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795197840,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795197900,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795197960,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198020,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198080,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198140,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198200,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198260,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198320,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198380,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198440,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198500,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198560,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198620,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198680,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198740,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198800,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198860,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198920,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795198980,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199040,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199100,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199160,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199220,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199280,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199340,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199400,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199460,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199520,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199580,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199640,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199700,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199760,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199820,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199880,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795199940,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200000,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200060,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200120,
-      "volume": 0.0
-     },
-     {
-      "close": null,
-      "high": null,
-      "low": null,
-      "open": null,
-      "t": 1795200180,
-      "volume": 0.0
-     },
      {
       "close": null,
       "high": null,
@@ -4626,9 +5002,329 @@
       "open": null,
       "t": 1795201380,
       "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201440,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201500,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201560,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201620,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201680,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201740,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201800,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201860,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201920,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795201980,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202040,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202100,
+      "volume": 0.0
+     },
+     {
+      "close": 0.03,
+      "high": 0.03,
+      "low": 0.02,
+      "open": 0.02,
+      "t": 1795202160,
+      "volume": 13888.88
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202220,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202280,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202340,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202400,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202460,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202520,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202580,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202640,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202700,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202760,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202820,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202880,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795202940,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203000,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203060,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203120,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203180,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203240,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203300,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203360,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203420,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203480,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203540,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203600,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203660,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203720,
+      "volume": 0.0
+     },
+     {
+      "close": null,
+      "high": null,
+      "low": null,
+      "open": null,
+      "t": 1795203780,
+      "volume": 0.0
      }
     ],
-    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-CHR/candlesticks?start_ts=1795197835&end_ts=1795201435&period_interval=1"
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTIME/markets/KXTIME-26-PET/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1"
    }
   }
  },
