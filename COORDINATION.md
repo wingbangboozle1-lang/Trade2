@@ -401,6 +401,40 @@ Verified: dispatch run `44769581312` on `main` → **success**, data commit
 
 ---
 
+## Session claim — `arena-856e184e` (2026-11-20)
+
+Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlapping with the active audit session `arena-e4e8f4e1` (T13–T15, which own `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` and `docs/summary.html`). This session does not edit those files.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T16 | Fix phantom ≥ $0.10 alerts: alert compared a candle **last-trade** close with a book **mid**, and did not apply the spread gate to alerts | done | `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `tests/test_engine.py` (one test updated), `site_build/flagpage.py`, `site_build/build.py` (count formatting), `tools/rendercheck.mjs` (harness fetch shim) |
+| T17 | `scripts/collect.mjs` (kalshi-dashboard pipeline) defaults to **production** `external-api.kalshi.com`; the requirement is the demo endpoint | done (landed on `main` by `arena-e4e8f4e1` in `28577c4`; this session kept `main`'s version on merge) | `arena-856e184e` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs` |
+| T18 | Line-by-line verification sample against the official demo API + irregularity log for this pass | done (sample; see log) | `arena-856e184e` | `VERIFICATION_856e184e.md` (new file) |
+| T19 | Integration: PR `arena/856e184e-trade2` → `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-856e184e` | `COORDINATION.md` (this section only) |
+
+### Log — `arena-856e184e` (2026-11-20)
+
+**Sources (official):** https://docs.kalshi.com/getting_started/api_environments.md · https://docs.kalshi.com/api-reference/market/get-market.md · https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md · live demo API: `/markets/KXPRESNOMD-28-HBID`, `/markets/KXPRESNOMD-28-HBID/orderbook`, `/series/KXPRESNOMD/markets/KXPRESNOMD-28-HBID/candlesticks`, `/markets/KXPRESNOMD-28-AKLO` and its candlesticks, `/markets/KXPRESNOMD-28-RW`, `/markets/KXPRESNOMD-28-GW`, `/markets/KXBTCY-27JAN0100-B127500` (fetched 2026-11-20).
+
+**Findings and fixes:**
+
+| # | Finding | Handling |
+| - | - | - |
+| F-856-1 | Swing alerts compared a **candle last-trade close** with a **book mid** (`KXPRESNOMD-28-HBID`: last trade 0.8110, bid 0.0020, ask 0.8110, so the mid 0.4065 "swing" was not a trade). The spread gate was not applied to alerts. Trade prints without matching quotes (`KXPRESNOMD-28-AKLO`) produced further alerts. | **Fixed (T16).** Reference is the candle's quote closes. Alerts need a two-sided quote narrower than $0.10. Stored alerts that fail the rule are purged on the next run. 12 regression tests. Published on the Flagged page. |
+| F-856-2 | `scripts/collect.mjs` defaulted to the production host, but the brief asks for demo (`kalshi-dashboard/data/status.json` records production). | **Fixed on `main` (`28577c4`, `arena-e4e8f4e1`).** That fix adds a demo-only guard. Published on the Flagged page. |
+| F-856-3 | Overview counts were formatted as 2-decimal floats (`750.00` markets, `1.00` open positions, `2,000.00` resolved). | **Fixed** in `site_build/build.py` (`cnt()` for integer counts). Verified by `git diff`. |
+| F-856-4 | "OI value" ranking = `open_interest_fp × notional_value_dollars`. The official definitions make this a notional figure, not dollars traded. | Labelled as such; published on the Flagged page. Not changed. |
+| F-856-5 | `collector/runner.py` (docs/ pipeline) and the kalshi-dashboard pipeline alert on trade prints, which the quote rule does not cover. | **Open.** Published on the Flagged page. Not changed. |
+| F-856-6 | `tools/rendercheck.mjs` failed on **main** with `fetch is not defined` (jsdom has no fetch). The check never ran the data path. | **Fixed on `main` (`17235ca`, `arena-e4e8f4e1`)** with a hermetic fetch stub. This branch first wrote a same-origin file-serving shim, then kept `main`'s version on merge. All 10 pages render. |
+
+**Requests for other sessions' files (not edited here):**
+- REQUEST R-856-1 → **resolved on `main`** by `28577c4` (`arena-e4e8f4e1`): the workflow step is now "Collect public Kalshi demo data (demo-only host guard)" and the state key is `kalshi-demo-state-`. No further action.
+- REQUEST R-856-2 → `arena-e4e8f4e1` (active audit): the Flagged page now includes F-856-1 to F-856-5. Include them in `AUDIT_2026-11-20.md` if they agree.
+
+**Tests:** `python3 -m unittest discover -s tests` → 54 OK (1 skipped, pre-existing). `python3 -m collector.test_runner` PASS. `python3 -m trading.test_engine` PASS. `npm test` 19/19. `node tools/rendercheck.mjs` 10/10 pages. `python3 tools/linkcheck.py` 0 errors.
+
+**Not verified:** only 3 of 25 overview rows and 3 of the stored alerts were re-read from the API (see `VERIFICATION_856e184e.md`). No Kalshi demo credentials exist, so the demo account was not read and no orders were placed.
+
 ## Session D — current Arena branch `arena/0b2d2a2a-trade2`
 
 | Session ID | Branch | Role | Started (UTC) | Status |
