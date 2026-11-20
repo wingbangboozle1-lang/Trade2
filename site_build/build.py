@@ -19,6 +19,7 @@ from __future__ import annotations
 import html
 import json
 import os
+import time
 from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
@@ -82,6 +83,136 @@ def pct(value: Any) -> str:
         return f"{float(value) * 100:.1f}%"
     except (TypeError, ValueError):
         return esc(value)
+
+
+# ---------------------------------------------------------------------------
+# Scrolling-chat rows (static pre-render; the JS layer re-renders live)
+# ---------------------------------------------------------------------------
+
+#: Model gate shared with ``assets/desk.js``: a signal must clear 5 % net ROI
+#: after Kalshi's published taker fee before it reaches the shortlist chat.
+MODEL_NET_ROI_GATE = 0.05
+
+
+def dedupe_alerts(alerts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Collapse byte-identical swing rows, mirroring ``assets/alerts-view.js``
+    ``dedupeAlerts`` (coordination R-D-01).
+
+    The collector compares book midpoints between reference bars, so one
+    sustained ≥ $0.10 move can re-fire on several consecutive snapshots and
+    produce many identical rows. Rows are grouped when ticker, direction and
+    the previous→current price pair match exactly; first-appearance order is
+    kept and each row carries ``repeat_count`` plus the most recent ``iso``.
+    No value is invented — every field comes from the snapshot.
+    """
+    out: list[dict[str, Any]] = []
+    index: dict[tuple, dict[str, Any]] = {}
+    for a in alerts or []:
+        if not isinstance(a, dict):
+            continue
+        key = (a.get("ticker"), a.get("direction"),
+               str(a.get("previous")), str(a.get("current")))
+        row = index.get(key)
+        if row is None:
+            row = dict(a)
+            row["repeat_count"] = 1
+            out.append(row)
+            index[key] = row
+        else:
+            row["repeat_count"] += 1
+            iso = a.get("iso") or ""
+            if iso > (row.get("iso") or ""):
+                row["iso"] = iso
+                row["ts"] = a.get("ts", row.get("ts"))
+            for f in ("yes_bid", "yes_ask"):   # newest quotes win
+                if a.get(f) is not None:
+                    row[f] = a.get(f)
+    return out
+
+
+def build_alert_rows(alerts: list[dict[str, Any]], limit: int = 12) -> list[str]:
+    """Static rows for the all-events swing chat (deduplicated)."""
+    rows: list[str] = []
+    for a in dedupe_alerts(alerts)[:limit]:
+        arrow = "▲" if a.get("direction") == "up" else "▼"
+        cls = "up" if a.get("direction") == "up" else "down"
+        repeat = (f" · repeated ×{a['repeat_count']}"
+                  if a.get("repeat_count", 1) > 1 else "")
+        rows.append(
+            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
+            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
+            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
+            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
+            f'{esc(a.get("topic"))}{repeat}</small></span></div>'
+        )
+    if not rows:
+        rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
+                    "in the current window yet. The feed fills as the "
+                    "collector compares successive snapshots.</div>")
+    return rows
+
+
+def build_model_rows(live: dict[str, Any], limit: int = 12) -> list[str]:
+    """Static rows for the model-shortlist chat.
+
+    Two sources, matching ``assets/desk.js`` exactly:
+      1. swing alerts on markets whose current signal clears the net-ROI gate
+         (rendered with the swing and the modelled net ROI together), and
+      2. the model's current high-ROI signals on markets without such an
+         alert — otherwise the shortlist would be structurally empty, because
+         a ≥ $0.10 swing usually leaves little modelled edge behind it.
+
+    A signal is a rule-based score from ``collector.alerts.score_market``,
+    not a prediction; outcomes are scored on the performance table.
+    """
+    signals = [s for s in (live.get("signals") or [])
+               if isinstance(s, dict)
+               and isinstance(s.get("net_roi"), (int, float))
+               and s.get("net_roi", 0) >= MODEL_NET_ROI_GATE]
+    by_ticker = {s.get("ticker"): s for s in signals}
+
+    rows: list[str] = []
+    shown_tickers: set[str] = set()
+    for a in dedupe_alerts(live.get("alerts") or []):
+        sig = by_ticker.get(a.get("ticker"))
+        if not sig:
+            continue
+        arrow = "▲" if a.get("direction") == "up" else "▼"
+        cls = "up" if a.get("direction") == "up" else "down"
+        repeat = (f" · repeated ×{a['repeat_count']}"
+                  if a.get("repeat_count", 1) > 1 else "")
+        rows.append(
+            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
+            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
+            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
+            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
+            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
+            f'{esc(a.get("topic"))} · net ROI {pct(sig.get("net_roi"))}{repeat}</small>'
+            f"</span></div>"
+        )
+        shown_tickers.add(a.get("ticker"))
+
+    for sig in sorted((s for s in signals if s.get("ticker") not in shown_tickers),
+                      key=lambda s: -(s.get("score") or 0)):
+        if len(rows) >= limit:
+            break
+        when = time.strftime("%H:%M:%S", time.gmtime(sig.get("ts") or 0))
+        rows.append(
+            f'<div class="chat-row up"><time>{when}</time>'
+            f'<span class="chat-delta pos">★ {pct(sig.get("net_roi"))}</span>'
+            f'<span class="chat-body">'
+            f'<a href="{html.escape(sig.get("market_url",""))}" '
+            f'target="_blank" rel="noreferrer">{esc(sig.get("title"))}</a> '
+            f"<small>buy {esc((sig.get('side') or '').upper())} @ "
+            f"{cents(sig.get('executable_price'))} · edge "
+            f"{cents(sig.get('edge'))} · {esc(sig.get('topic'))}</small></span></div>"
+        )
+    if not rows:
+        rows.append('<div class="empty-state inline">Nothing clears the '
+                    "model's net-ROI gate right now. This is normal — an empty "
+                    "feed is an honest answer.</div>")
+    return rows[:limit]
 
 
 def result_chip(result: str) -> str:
@@ -191,7 +322,7 @@ def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     events = live.get("events", [])[:25]
     portfolio = live.get("portfolio", {})
-    alerts = live.get("alerts", [])[:12]
+    alerts = live.get("alerts", [])
     exchange = live.get("exchange", {})
 
     rows = []
@@ -215,22 +346,8 @@ def build_overview(live: dict[str, Any]) -> str:
         rows.append('<tr><td colspan="8" class="empty-state">'
                     "No snapshot yet — the collector has not completed a run.</td></tr>")
 
-    alert_rows = []
-    for a in alerts:
-        arrow = "▲" if a.get("direction") == "up" else "▼"
-        cls = "up" if a.get("direction") == "up" else "down"
-        alert_rows.append(
-            f'<div class="chat-row"><time>{html.escape((a.get("iso") or "")[11:19])}</time>'
-            f'<span class="chat-delta {cls}">{arrow} {cents(a.get("abs_delta"))}</span>'
-            f'<span class="chat-body"><a href="{html.escape(a.get("market_url",""))}" '
-            f'target="_blank" rel="noreferrer">{esc(a.get("title"))}</a> '
-            f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-            f'{esc(a.get("topic"))}</small></span></div>'
-        )
-    if not alert_rows:
-        alert_rows.append('<div class="empty-state inline">No ≥ $0.10 swing observed '
-                          "in the current window yet. The feed fills as the "
-                          "collector compares successive snapshots.</div>")
+    alert_rows = build_alert_rows(alerts, limit=12)
+    model_rows = build_model_rows(live, limit=12)
 
     status = "trading" if exchange.get("trading_active") else "not trading"
     return f"""{topbar("Overview", generated)}
@@ -287,14 +404,25 @@ def build_overview(live: dict[str, Any]) -> str:
           <div class="table-foot"><span>Updated {html.escape(generated or 'n/a')}</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed">{''.join(alert_rows)}</div>
+        <section class="desk-grid two-chats">
+          <article class="panel chat-panel alert-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">◉</span><div>
+                <h2>Swing chat — all events</h2>
+                <p>Every observed move of at least $0.10 either way</p></div></div>
+              <a class="source-link" href="live.html">Full live desk →</a>
+            </div>
+            <div class="chat-feed">{''.join(alert_rows)}</div>
+          </article>
+          <article class="panel chat-panel model-chat">
+            <div class="panel-title">
+              <div><span class="section-icon violet">★</span><div>
+                <h2>Model shortlist</h2>
+                <p>Events the model scores as high ROI (after taker fees)</p></div></div>
+              <a class="source-link" href="summary.html#performance">Performance →</a>
+            </div>
+            <div class="chat-feed">{''.join(model_rows)}</div>
+          </article>
         </section>"""
 
 
@@ -442,6 +570,14 @@ def build_live(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
     payload = json.dumps(live, default=str).replace("</", "<\\/")
+    # Static first paint for the two chats: useful with JavaScript disabled
+    # and instant before the first snapshot re-render (JS re-renders both
+    # feeds from the embedded snapshot as soon as it boots).
+    all_feed_rows = build_alert_rows(live.get("alerts") or [], limit=30)
+    model_feed_rows = build_model_rows(live, limit=30)
+    all_feed_count = min(len(dedupe_alerts(live.get("alerts") or [])), 30)
+    model_feed_count = sum(1 for r in model_feed_rows
+                           if "empty-state" not in r)
     return f"""{topbar("Live desk", generated)}
         <section class="page-heading">
           <div>
@@ -499,18 +635,18 @@ def build_live(live: dict[str, Any]) -> str:
             <div class="panel-title">
               <div><span class="section-icon">◉</span><div>
                 <h2>All events</h2><p>Every swing ≥ $0.10, newest first</p></div></div>
-              <span class="count-badge" id="allCount">0</span>
+              <span class="count-badge" id="allCount">{all_feed_count}</span>
             </div>
-            <div class="chat-feed tall" id="feedAll" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedAll" aria-live="polite">{''.join(all_feed_rows)}</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
               <div><span class="section-icon violet">★</span><div>
                 <h2>Model shortlist</h2>
                 <p>Filtered to signals the model scores as high ROI</p></div></div>
-              <span class="count-badge" id="modelCount">0</span>
+              <span class="count-badge" id="modelCount">{model_feed_count}</span>
             </div>
-            <div class="chat-feed tall" id="feedModel" aria-live="polite"></div>
+            <div class="chat-feed tall" id="feedModel" aria-live="polite">{''.join(model_feed_rows)}</div>
             <div class="alert-note">Rule-based edge after Kalshi's published taker
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>

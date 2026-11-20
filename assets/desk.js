@@ -190,6 +190,28 @@
     return row;
   }
 
+  /* A model signal rendered as a chat row. The shortlist shows these when no
+   * >= $0.10 swing matches the signal: a swing usually leaves little modelled
+   * edge behind it, so intersecting the two feeds made the shortlist
+   * structurally empty. Mirrors site_build.build_model_rows. */
+  function signalRow(sig, seriesByTicker) {
+    var row = document.createElement("div");
+    row.className = "chat-row up";
+    row.innerHTML =
+      "<time>" + esc(hhmmss(sig.ts)) + "</time>" +
+      '<span class="chat-delta pos">★ ' + pct(sig.net_roi) + "</span>" +
+      '<span class="chat-body">' +
+      '<a href="' + esc(sig.market_url || "#") + '" target="_blank" rel="noreferrer">' +
+      esc(sig.title || sig.ticker) + "</a>" +
+      "<small>buy " + esc(String(sig.side || "").toUpperCase()) + " @ " +
+      money(sig.executable_price) + " · edge " + money(sig.edge) +
+      " · " + esc(sig.topic) + " · net ROI after taker fee</small></span>" +
+      '<button class="ghost-link" data-chart="' + esc(sig.ticker) + '" ' +
+      'data-series="' + esc((seriesByTicker || {})[sig.ticker] || "") +
+      '">chart</button>';
+    return row;
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
@@ -200,7 +222,10 @@
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
 
-    // Model shortlist: alerts on markets the model scored as high ROI.
+    // Model shortlist, two sources (kept in step with build_model_rows):
+    //  1. swing alerts on markets whose current signal clears the net-ROI
+    //     gate, shown with that ROI attached, and
+    //  2. the model's current high-ROI signals on every other market.
     var scoreByTicker = {};
     (s.signals || []).forEach(function (sig) {
       scoreByTicker[sig.ticker] = sig;
@@ -216,6 +241,18 @@
         return out;
       });
     var model = V ? V.dedupeAlerts(rawModel) : rawModel;
+    var modelTickers = {};
+    model.forEach(function (a) { modelTickers[a.ticker] = true; });
+    var signalRows = (s.signals || [])
+      .filter(function (sig) {
+        return sig && isFinite(Number(sig.net_roi)) && Number(sig.net_roi) >= 0.05 &&
+          !modelTickers[sig.ticker];
+      })
+      .sort(function (x, y) { return (y.score || 0) - (x.score || 0); });
+    var seriesByTicker = {};
+    (s.events || []).forEach(function (e) {
+      if (e && e.ticker && e.series_ticker) seriesByTicker[e.ticker] = e.series_ticker;
+    });
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
@@ -231,17 +268,20 @@
     }
     if (feedModel) {
       feedModel.innerHTML = "";
-      if (!model.length) {
+      if (!model.length && !signalRows.length) {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
           "model's net-ROI gate right now. This is normal — an empty feed is an " +
           "honest answer.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
+      signalRows.slice(0, 200).forEach(function (sig) {
+        feedModel.appendChild(signalRow(sig, seriesByTicker));
+      });
     }
     var ac = document.getElementById("allCount");
     if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
-    if (mc) mc.textContent = model.length;
+    if (mc) mc.textContent = model.length + signalRows.length;
   }
 
   /* One-line explainer shown above the "all events" feed whenever grouping

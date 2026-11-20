@@ -99,14 +99,25 @@
           <div class="table-foot"><span>Updated 2026-11-20T19:09:37Z</span>
           <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel alert-panel">
-          <div class="panel-title">
-            <div><span class="section-icon amber">◉</span><div>
-              <h2>Swing chat — all events</h2>
-              <p>Every observed move of at least $0.10 either way</p></div></div>
-            <a class="source-link" href="live.html">Full live desk →</a>
-          </div>
-          <div class="chat-feed"><div class="chat-row"><time>18:41:08</time><span class="chat-delta down">▼ $0.8005</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a> <small>$0.8030 → $0.0025 · elections</small></span></div><div class="chat-row"><time>17:44:56</time><span class="chat-delta down">▼ $0.8005</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a> <small>$0.8030 → $0.0025 · elections</small></span></div><div class="chat-row"><time>16:51:26</time><span class="chat-delta down">▼ $0.8005</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a> <small>$0.8030 → $0.0025 · elections</small></span></div></div>
+        <section class="desk-grid two-chats">
+          <article class="panel chat-panel alert-panel">
+            <div class="panel-title">
+              <div><span class="section-icon amber">◉</span><div>
+                <h2>Swing chat — all events</h2>
+                <p>Every observed move of at least $0.10 either way</p></div></div>
+              <a class="source-link" href="live.html">Full live desk →</a>
+            </div>
+            <div class="chat-feed"><div class="chat-row"><time>18:41:08</time><span class="chat-delta down">▼ $0.8005</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a> <small>$0.8030 → $0.0025 · elections · repeated ×3</small></span></div></div>
+          </article>
+          <article class="panel chat-panel model-chat">
+            <div class="panel-title">
+              <div><span class="section-icon violet">★</span><div>
+                <h2>Model shortlist</h2>
+                <p>Events the model scores as high ROI (after taker fees)</p></div></div>
+              <a class="source-link" href="summary.html#performance">Performance →</a>
+            </div>
+            <div class="chat-feed"><div class="empty-state inline">Nothing clears the model's net-ROI gate right now. This is normal — an empty feed is an honest answer.</div></div>
+          </article>
         </section>
         <footer class="site-footer">
           <span>Simulated trading and public demo market data. Not investment advice.</span>
@@ -115,6 +126,7 @@
         </footer>
       </main>
     </div>
+    <script src="assets/alerts-view.js" defer></script>
     <script src="assets/nav.js" defer></script>
     <script src="assets/desk.js" defer></script>
   </body>
