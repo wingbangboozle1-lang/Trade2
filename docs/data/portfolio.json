@@ -1,0 +1,58 @@
+{
+ "account": {
+  "blocked_today": false,
+  "cash": 10000.0,
+  "daily_loss_cap": 150.0,
+  "equity": 10000.0,
+  "fees_paid": 0.0,
+  "open_positions": 0,
+  "realized_pnl": 0.0,
+  "starting_cash": 10000.0
+ },
+ "credentials": "none \u2014 no orders are sent (FL-01); all fills are simulated against real demo order books",
+ "equity_curve": [
+  {
+   "cash": 10000.0,
+   "equity": 10000.0,
+   "ts": "2026-11-20T14:38:32.939378+00:00"
+  }
+ ],
+ "generated_at": "2026-11-20T14:38:32.939385+00:00",
+ "mode": "simulated-paper",
+ "parameters": {
+  "exit_stop": 0.05,
+  "exit_target": 0.05,
+  "fee_formula": "round_up(C*P + M*0.07*C*P*(1-P)) - C*P (taker)",
+  "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+  "max_open": 8,
+  "per_position_usd": 200.0,
+  "reversion_share": 0.3,
+  "roi_min": 0.02,
+  "spread_max": 0.06
+ },
+ "positions": [],
+ "source_urls": {
+  "fees": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+  "markets": "https://external-api.demo.kalshi.co/trade-api/v2/markets",
+  "orderbooks": "https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}/orderbook"
+ },
+ "stats": {
+  "all": {
+   "avg_pnl": null,
+   "fees": 0,
+   "losses": 0,
+   "net_pnl": 0,
+   "trades": 0,
+   "win_rate": null,
+   "wins": 0
+  },
+  "by_strategy": {},
+  "by_trade_type": {}
+ },
+ "this_run": {
+  "equity": 10000.0,
+  "marks": {},
+  "opened": []
+ },
+ "trades": []
+}

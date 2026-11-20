@@ -1,0 +1,62 @@
+{
+ "books": {
+  "KXAAAGASM-26NOV30-3.50": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.50/orderbook",
+   "ticker": "KXAAAGASM-26NOV30-3.50"
+  },
+  "KXAAAGASM-26NOV30-3.80": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.80/orderbook",
+   "ticker": "KXAAAGASM-26NOV30-3.80"
+  },
+  "KXAAAGASM-26NOV30-3.90": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-3.90/orderbook",
+   "ticker": "KXAAAGASM-26NOV30-3.90"
+  },
+  "KXTXERCOTPEAK-27JAN01-T91500": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTXERCOTPEAK-27JAN01-T91500/orderbook",
+   "ticker": "KXTXERCOTPEAK-27JAN01-T91500"
+  },
+  "KXTXERCOTPEAK-27JAN01-T92500": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTXERCOTPEAK-27JAN01-T92500/orderbook",
+   "ticker": "KXTXERCOTPEAK-27JAN01-T92500"
+  },
+  "KXTXERCOTPEAK-27JAN01-T93000": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTXERCOTPEAK-27JAN01-T93000/orderbook",
+   "ticker": "KXTXERCOTPEAK-27JAN01-T93000"
+  },
+  "KXTXERCOTPEAK-27JAN01-T94000": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTXERCOTPEAK-27JAN01-T94000/orderbook",
+   "ticker": "KXTXERCOTPEAK-27JAN01-T94000"
+  },
+  "KXTXERCOTPEAK-27JAN01-T96000": {
+   "flags": [
+    "orderbook-unverified:fetch failed"
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXTXERCOTPEAK-27JAN01-T96000/orderbook",
+   "ticker": "KXTXERCOTPEAK-27JAN01-T96000"
+  }
+ },
+ "generated_at": "2026-11-20T14:38:32.839930+00:00",
+ "source_docs": "https://docs.kalshi.com/getting_started/orderbook_responses"
+}

@@ -1,0 +1,6 @@
+{
+ "alerts": [],
+ "generated_at": "2026-11-20T14:38:32.840228+00:00",
+ "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+ "threshold": 0.1
+}
