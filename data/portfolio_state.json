@@ -1,5 +1,5 @@
 {
- "bankroll": 8831.08,
+ "bankroll": 8642.59,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -110,8 +110,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795204857.7884183,
    "entry_fee": 12.4,
-   "current_price": 0.025,
-   "unrealized": -69.1536,
+   "current_price": 0.015,
+   "unrealized": -115.256,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -134,8 +134,8 @@
    "entry_price": 0.04,
    "entry_ts": 1795206521.485993,
    "entry_fee": 12.13,
-   "current_price": 0.04,
-   "unrealized": 0.0,
+   "current_price": 0.015,
+   "unrealized": -112.796,
    "status": "open",
    "exit_price": null,
    "exit_ts": null,
@@ -145,6 +145,30 @@
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXHOUSEPOPVOTEMARGIN/KXHOUSEPOPVOTEMARGIN-27NOV03-B58",
    "bankroll_at_entry": 8831.0764
+  },
+  {
+   "position_id": "pos-8bf4a90b6b",
+   "ticker": "KXBTCD-26NOV2017-T56499.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "topic": "crypto",
+   "title": "$56,500 or above",
+   "strategy": "value",
+   "side": "no",
+   "contracts": 4415.54,
+   "entry_price": 0.04,
+   "entry_ts": 1795206698.5881274,
+   "entry_fee": 11.87,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 26% on a 0.03 spread",
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T56499.99",
+   "bankroll_at_entry": 8642.5884
   }
  ],
  "trades": [
@@ -235,6 +259,19 @@
    "contracts": 4511.84,
    "price": 0.04,
    "fee": 12.13,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 26% on a 0.03 spread"
+  },
+  {
+   "trade_id": "tr-61eb6878d8",
+   "ts": 1795206698.5881274,
+   "ticker": "KXBTCD-26NOV2017-T56499.99",
+   "strategy": "value",
+   "side": "no",
+   "contracts": 4415.54,
+   "price": 0.04,
+   "fee": 11.87,
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.03 spread"
@@ -420,6 +457,12 @@
    "equity": 9496.18,
    "realized": -166.91,
    "open": 939.64
+  },
+  {
+   "ts": 1795206588.2278576,
+   "equity": 9325.42,
+   "realized": -166.91,
+   "open": 1116.27
   }
  ],
  "started_at": 1795182592.2117689
