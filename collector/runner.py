@@ -41,6 +41,11 @@ from collector.kalshi import (  # noqa: E402
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs", "data")
 
+# how many (highest-volume) series to track per topic — keeps runs inside the
+# request budget while still covering the most-traded events per topic
+SERIES_PER_TOPIC = 12
+ERROR_LIST_CAP = 100
+
 SOURCE_SERIES = "https://docs.kalshi.com/api-reference/market/get-series-list"
 SOURCE_MARKETS = "https://docs.kalshi.com/api-reference/market/get-markets"
 SOURCE_ORDERBOOK = "https://docs.kalshi.com/getting_started/orderbook_responses"
@@ -71,14 +76,20 @@ def api_link(path: str) -> str:
 
 
 def collect_series(client: KalshiClient, topic_keys: List[str], meta: Dict) -> Dict[str, Dict]:
-    """Fetch series per topic category and return {series_ticker: {topic, evidence}}."""
+    """Fetch series per topic category and return {series_ticker: {topic, evidence}}.
+
+    Categories can hold thousands of series (Elections alone is in the thousands),
+    so matched series are ranked by official `volume` and capped per topic — the
+    dashboard tracks the most-traded series, which matches the "highest dollar
+    volume" brief. Counts (matched vs tracked) are recorded in run_meta for audit.
+    """
     wanted = [t for t in T.TOPICS if t.key in topic_keys]
-    by_ticker: Dict[str, Dict] = {}
+    matched: Dict[str, List[tuple]] = {}  # topic -> [(volume, ticker, row)]
     for topic in wanted:
         for cat in tuple(topic.categories_strict) + tuple(topic.categories_broad):
             url = CAT_URL.format(base=DEMO_BASE, cat=cat)
             try:
-                data = client.get("/series/", category=cat, include_product_metadata="false")
+                data = client.get("/series/", category=cat, include_product_metadata="false", include_volume="true")
             except Exception as exc:
                 meta["errors"].append({"step": "series", "category": cat, "error": str(exc)})
                 continue
@@ -88,16 +99,27 @@ def collect_series(client: KalshiClient, topic_keys: List[str], meta: Dict) -> D
                 ticker = str(s.get("ticker") or "")
                 if not ticker:
                     continue
-                by_ticker[ticker] = {
+                row = {
                     "ticker": ticker,
                     "title": s.get("title"),
                     "category": s.get("category"),
                     "categories": s.get("categories"),
                     "tags": s.get("tags"),
+                    "volume": fnum(s.get("volume")),
                     "topic": topic.key,
                     "source_url": url,
                     "verified": True,
                 }
+                matched.setdefault(topic.key, []).append((row["volume"] or 0.0, ticker, row))
+    by_ticker: Dict[str, Dict] = {}
+    meta["series_matched"] = {}
+    meta["series_tracked"] = {}
+    for topic_key, items in matched.items():
+        items.sort(key=lambda x: -x[0])  # highest official volume first
+        meta["series_matched"][topic_key] = len(items)
+        meta["series_tracked"][topic_key] = min(len(items), SERIES_PER_TOPIC)
+        for _vol, ticker, row in items[:SERIES_PER_TOPIC]:
+            by_ticker[ticker] = row
     return by_ticker
 
 
@@ -117,8 +139,12 @@ def pick_markets(
 
     for topic_key, tickers in by_topic_series.items():
         for st in tickers:
+            if getattr(client, "budget", None) is not None and client.budget <= 0:
+                # one summary error instead of thousands of per-series failures
+                meta["errors"].append({"step": "markets", "error": "request budget exhausted — stopped series scan (partial run, flagged)"})
+                break
             try:
-                markets = client.markets(status="open", series_ticker=st, limit=500, max_pages=3)
+                markets = client.markets(status="open", series_ticker=st, limit=200, max_pages=2)
             except Exception as exc:
                 meta["errors"].append({"step": "markets", "series": st, "error": str(exc)})
                 continue
@@ -185,9 +211,23 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
     return row
 
 
+def select_top(rows: List[Dict], n: int) -> List[Dict]:
+    """Top-n by dollar volume, round-robining across topics so one liquid topic
+    (e.g. gas) cannot starve the others of depth/candle coverage."""
+    by_topic: Dict[str, List[Dict]] = {}
+    for r in sorted(rows, key=lambda r: (r.get("notional_usd") or 0), reverse=True):
+        by_topic.setdefault(str(r.get("_topic") or r.get("topic") or "?"), []).append(r)
+    out: List[Dict] = []
+    while len(out) < n and any(by_topic.values()):
+        for key in list(by_topic):
+            if by_topic[key] and len(out) < n:
+                out.append(by_topic[key].pop(0))
+    return out
+
+
 def collect_orderbooks(client: KalshiClient, rows: List[Dict], top_n: int, meta: Dict) -> Dict[str, Any]:
     out: Dict[str, Any] = {}
-    for row in sorted(rows, key=lambda r: (r.get("notional_usd") or 0), reverse=True)[:top_n]:
+    for row in select_top(rows, top_n):
         ticker = row.get("ticker")
         if not ticker:
             continue
@@ -228,7 +268,7 @@ def collect_candles(client: KalshiClient, rows: List[Dict], windows: Dict[str, i
     out: Dict[str, Any] = {}
     end = int(time.time())
     interval_of = {"seconds": 1, "minutes": 60, "hours": 1440}
-    for row in sorted(rows, key=lambda r: (r.get("notional_usd") or 0), reverse=True)[:top_n]:
+    for row in select_top(rows, top_n):
         ticker, series = row.get("ticker"), row.get("series_ticker")
         if not ticker or not series:
             continue
@@ -324,6 +364,9 @@ def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict],
     per_cap = max(1, max_series // max(len(per_topic), 1))
     for topic_key in sorted(per_topic):
         for ticker in per_topic[topic_key][:per_cap]:
+            if getattr(client, "budget", None) is not None and client.budget <= 0:
+                meta["errors"].append({"step": "settled", "error": "request budget exhausted — stopped settlement scan (partial run, flagged)"})
+                return out
             s = series_by_ticker[ticker]
             try:
                 settled = client.markets(status="settled", series_ticker=ticker, limit=200, max_pages=2)
@@ -372,7 +415,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "errors": [],
         "environment": "github-actions" if os.environ.get("GITHUB_ACTIONS") else "local",
     }
-    client = KalshiClient(budget=170, logger=lambda m: print(m, file=sys.stderr))
+    client = KalshiClient(budget=220, logger=lambda m: print(m, file=sys.stderr))
 
     def progress(msg: str) -> None:
         print(f"[collector] {msg}", flush=True)
@@ -417,6 +460,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     meta["finished_at"] = utcnow().isoformat()
     meta["duration_s"] = round(time.time() - started, 1)
+    if len(meta["errors"]) > ERROR_LIST_CAP:
+        meta["errors_total"] = len(meta["errors"])
+        meta["errors"] = meta["errors"][:ERROR_LIST_CAP]
     meta["counts"] = {
         "series": len(series_rows),
         "markets": len(row_list),

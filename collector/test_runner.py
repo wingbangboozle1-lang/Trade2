@@ -32,6 +32,9 @@ SERIES = {
          "categories": ["Sports", "Golf"], "tags": ["Golf"], "fee_type": "quadratic", "fee_multiplier": 1},
         {"ticker": "KXNBA", "title": "NBA Championship", "category": "Sports",
          "categories": ["Sports"], "tags": ["Basketball"]},
+        # regression: ticker contains the substring "PGA" but is ATP tennis — must NOT map to golf
+        {"ticker": "KXATPGAME", "title": "ATP Tennis Match", "category": "Sports",
+         "categories": ["Sports"], "tags": ["Tennis"]},
     ],
     "Golf": [],
     "Economics": [
@@ -39,6 +42,7 @@ SERIES = {
          "categories": ["Economics"], "tags": ["Oil and energy"]},
         {"ticker": "KXRATECUTS", "title": "Fed Rate Cuts", "category": "Economics",
          "categories": ["Economics"], "tags": []},
+        # oil (not a gas-price contract): broad "Oil and energy" tag alone must not map to gas
         {"ticker": "KXSPRMAX", "title": "WTI Crude Oil Max Price", "category": "Economics",
          "categories": ["Economics"], "tags": ["Oil and energy"]},
     ],
@@ -111,6 +115,21 @@ OPEN_MARKETS = {
          "status": "open", "yes_bid_dollars": "0.0100", "yes_ask_dollars": "0.0200",
          "last_price_dollars": "0.0100", "volume_fp": "78000.00", "open_interest_fp": "20000.00",
          "expected_expiration_ts": 1830297600, "fee_type": "quadratic", "fee_multiplier": 1},
+    ],
+    # these two series exist ONLY to prove the matchers exclude them (see assertions)
+    "KXATPGAME": [
+        {"ticker": "KXATPGAME-26NOV20", "event_ticker": "KXATPGAME",
+         "title": "ATP Tennis Match", "series_ticker": "KXATPGAME",
+         "status": "open", "yes_bid_dollars": "0.5000", "yes_ask_dollars": "0.5200",
+         "last_price_dollars": "0.5100", "volume_fp": "5000.00", "open_interest_fp": "1000.00",
+         "expected_expiration_ts": 1795267200, "fee_type": "quadratic", "fee_multiplier": 1},
+    ],
+    "KXSPRMAX": [
+        {"ticker": "KXSPRMAX-26DEC31", "event_ticker": "KXSPRMAX",
+         "title": "WTI Crude Oil Max Price", "series_ticker": "KXSPRMAX",
+         "status": "open", "yes_bid_dollars": "0.3000", "yes_ask_dollars": "0.3300",
+         "last_price_dollars": "0.3100", "volume_fp": "9000.00", "open_interest_fp": "2000.00",
+         "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
     ],
 }
 
@@ -226,6 +245,8 @@ def main() -> int:
         assert {"golf", "gas-prices", "crypto", "culture", "elections"} <= topics_seen, topics_seen
         assert all(m["ticker"] != "KXRATECUTS" for m in markets), "Fed Rate Cuts must not map to gas"
         assert all(m["ticker"] != "KXNBA" for m in markets), "NBA must not map to any tracked topic"
+        assert all(m["ticker"] != "KXATPGAME" for m in markets), "ATP tennis must not map to golf (substring PGA)"
+        assert all(m["ticker"] != "KXSPRMAX" for m in markets), "WTI oil must not map to gas prices"
         # verification invariants: every row has a source URL; bad rows flagged not filled
         for m in markets:
             assert m["source_url"].startswith("https://external-api.demo.kalshi.co/"), m

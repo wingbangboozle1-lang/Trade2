@@ -69,7 +69,9 @@ TOPICS: List[Topic] = [
         blurb="Retail gasoline, CPI-gas and energy-price contracts. Settlement sources are AAA and the "
         "U.S. Energy Information Administration. Official rules: assets.kalshi.com/contract_terms/AAAGAS*.pdf",
         categories_broad=("Economics", "Commodities", "Climate and Weather"),
-        tags_any=("Oil and energy", "Oil & Gas"),
+        # only gas-specific tags: the broad "Oil and energy" tag pulls in power/oil
+        # series (e.g. ERCOT peak power) that are not gas prices
+        tags_any=("gas",),
         title_regex=r"\bgas(oline)?\b|pump price|fuel price|petrol",
         ticker_regex=r"GAS",
     ),
@@ -111,7 +113,8 @@ TOPICS: List[Topic] = [
         categories_broad=("Sports",),
         tags_any=("Golf",),
         title_regex=r"\bgolf\b|\bpga\b|\blpga\b|ryder cup|open championship|masters",
-        ticker_regex=r"GOLF|PGA|LPGA",
+        # NB: plain "PGA" would match inside e.g. "KXATPGAME" (ATP tennis) — anchor it
+        ticker_regex=r"GOLF|LPGA|PGATOUR|KXPGA",
     ),
 ]
 
