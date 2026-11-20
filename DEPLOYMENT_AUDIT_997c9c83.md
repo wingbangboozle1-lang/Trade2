@@ -22,18 +22,25 @@ on it. Nothing was inferred beyond what the fetched page rendered.
 | - | - | - | - |
 | A-1 | All three sites are live and self-describing: each labels its snapshot mode, each trading figure as simulated, and each data row carries a link to the official API response or documentation that produced it. | URLs in the table above. | Verified this session. |
 | A-2 | The deployed root snapshot at fetch time was generated `2026-11-20T18:41:08Z` (~35 min old). The root collector's `*/5` schedule is best-effort and was lagging; `/kalshi-dashboard/` showed "1 min old" with a `*/30` schedule. Same freshness caveat already logged by `arena-0b2d2a2a` ("snapshot freshness"). | Footer timestamp rendered on the root page; freshness banner on `/kalshi-dashboard/`. | Logged; already covered by the sites' own snapshot-age labels and standing limitation "Live streaming uses polling, not the WebSocket" (`review.html`). No new action. |
-| A-3 | The deployed root alert chat still shows the **pre-PR-#14** raw rows (29 repeated rows over 3 tickers, e.g. Hunter Biden $0.8110 → $0.4065 appearing at 15:03, 15:07, 15:43, 15:46, 15:51…). This matches `AUDIT_ADDENDUM.md`'s R-D-01 finding. PR #14 (engine) plus this session's T-997-A/T-997-B change regenerate the deployed pages after merge: the engine now refuses wide-spread midpoints, the desk groups residual repeats (×N badge) and marks any remaining wide spread "not executable", and the flagged page states the limitation. | Fetched `live.html` chunk 1 (rows above); `AUDIT_ADDENDUM.md`; PR #14. | Fix merged via this session's PR (the next PR after #18) + scheduled regeneration; re-checked after merge below. |
+| A-3 | The deployed root alert chat still shows the **pre-PR-#14** raw rows (29 repeated rows over 3 tickers, e.g. Hunter Biden $0.8110 → $0.4065 appearing at 15:03, 15:07, 15:43, 15:46, 15:51…). This matches `AUDIT_ADDENDUM.md`'s R-D-01 finding. PR #14 (engine) plus this session's T-997-A/T-997-B change regenerate the deployed pages after merge: the engine now refuses wide-spread midpoints, the desk groups residual repeats (×N badge) and marks any remaining wide spread "not executable", and the flagged page states the limitation. | Fetched `live.html` chunk 1 (rows above); `AUDIT_ADDENDUM.md`; PR #14. | Fixed — merged as **PR #20** (merge commit `a19c467`, 2026-11-20T19:12:25Z) + scheduled regeneration; re-checked after merge below. |
 | A-4 | `/kalshi-dashboard/` reports **Culture & entertainment: 0 events · 0 markets**. Culture content on Kalshi is filed under the Entertainment category (known flag: "Topic category is effectively empty" on `review.html`, first logged by `arena-f5837994`). | Fetched `/kalshi-dashboard/` topic cards. | Known, published flag; no silent fix attempted. |
 | A-5 | The `/docs/` site's alert rows include news headline *candidates* from Google News RSS with the explicit caveat that no official source attributes a headline to a price move; rows without a match say so. The root site's standing limitation "No news article is attributed to a price move" covers the same constraint. | Fetched `/docs/` alert rows. | Verified as honestly labelled; no change needed. |
 
-## Post-merge re-check (filled in after the PR lands)
+## Post-merge re-check (2026-11-20, session `arena-997c9c83`)
 
 | Check | Result |
 | - | - |
-| Pages build status for the merge commit | (pending — filled after merge) |
-| `https://wingbangboozle1-lang.github.io/Trade2/review.html` contains the new standing limitation "Alert rows can repeat, and midpoints may not be executable" | (pending) |
-| Regenerated `live.html` / `index.html` load `assets/alerts-view.js` before `desk.js` | (pending) |
-| `assets/alerts-view.js` published and fetchable | (pending) |
+| PR | **#20** — https://github.com/wingbangboozle1-lang/Trade2/pull/20 — `arena/997c9c83-trade2` → `main`, **merged 2026-11-20T19:12:25Z**, merge commit `a19c467c1f46e37cad810e1f4149bd7ea4034d68`. Merged without approval per the session brief; no checks reported against the PR. |
+| Pages build for the merge | Legacy Pages build ran for `a19c467` (status `building` at 19:12:27Z, then `built`); after the scheduled main-branch collector run regenerated the pages, Pages **built** commit `8dceeefe0b49690cde18c660e8fa93b67b776140` (created 2026-11-20T19:18:09Z, status `built`, verified via `gh api repos/.../pages/builds/latest`). |
+| `https://wingbangboozle1-lang.github.io/Trade2/review.html` contains the new standing limitation "Alert rows can repeat, and midpoints may not be executable" | **Verified live** by fetching `review.html?v=997c9c83` (cache-buster; the first un-busted fetch returned a stale CDN copy without the newer cards — noted as A-6). The card renders with its official source link (https://docs.kalshi.com/getting_started/orderbook_responses ) alongside the other sessions' cards ("Swing alerts compared a trade price with a quote midpoint (fixed…)", "The kalshi-dashboard snapshot was collected from the production host", "'OI value' is a notional figure…", "Trade-price alerts in two other pipelines are not checked against quotes (open)"). |
+| Regenerated `live.html` / `index.html` load `assets/alerts-view.js` before `desk.js` | Verified in commit `8dceeef`'s generated `live.html` and `index.html` (script tag present, correct order), which is exactly the commit Pages built. |
+| `assets/alerts-view.js` published and fetchable | **Verified live**: https://wingbangboozle1-lang.github.io/Trade2/assets/alerts-view.js returns the module verbatim. |
+| Workflow run that regenerated the pages | Run `44800499251` ("Kalshi dashboard — collect, build, deploy", `workflow_dispatch` on `main`) — `success` in 2m21s. Two earlier dispatches (`44800008392`, push run `44799970796`) were cancelled by the `collect` concurrency group when newer runs joined; a third dispatch by session `arena/cbb7cbec` on its own branch succeeded first — all harmless, the cron cadence guarantees a main-branch run every ≤5 min. |
+
+**A-6 (new, minor):** the platform page fetcher / Pages CDN served a stale copy of
+`review.html` immediately after the build; a cache-busted URL returned the current
+page. Anyone re-verifying deployed pages should bust the cache the same way.
+Not fixed (edge/CDN behaviour, not repo content).
 
 ## Sources
 
