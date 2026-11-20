@@ -119,6 +119,24 @@ class TestFeeAssumptionIsFlagged(unittest.TestCase):
         self.assertIn("trade-api/v2/series/KXBTCY", page)
 
 
+class TestNegativeMoney(unittest.TestCase):
+    """A loss must read as a loss: ``-$125.00``, not ``$-125.00``."""
+
+    def test_sign_sits_outside_the_currency_symbol(self):
+        self.assertEqual(fmt.money(-125), "-$125.00")
+        self.assertEqual(fmt.money(-0.5, 4), "-$0.5000")
+        self.assertEqual(fmt.money(125), "$125.00")
+        self.assertEqual(fmt.money(0), "$0.00")
+
+    def test_no_page_shows_the_wrong_form(self):
+        for page in ("index.html", "trades.html", "resolutions.html", "live.html"):
+            path = os.path.join(ROOT, page)
+            if not os.path.exists(path):
+                self.skipTest("generated pages not built yet")
+            with self.subTest(page=page):
+                self.assertNotIn("$-", read(page))
+
+
 class TestFeeClaimIsScoped(unittest.TestCase):
     """The methodology page must not overstate fee coverage.
 

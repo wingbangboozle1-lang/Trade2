@@ -1047,7 +1047,7 @@ corrected · the fee-multiplier standing limitation on `review.html` ·
 `tools/root_pages_render.mjs` + `.github/workflows/site-check.yml` ·
 `tests/test_site_contract.py` · `VERIFICATION_79cc0bd5.md`.
 
-**Follow-up (PR #28).** Reading that deployed page is what caught it:
+**Follow-up (PR #31, merged at `856dc75`).** Reading that deployed page is what caught it:
 `methodology.html` claimed *"Fee-free series (multiplier 0) are respected via
 each series' own `fee_multiplier`"*, which is true of `trading/engine.py`
 (`:304`, `:387`) and false of `collector/engine.py:197/250` — the ledger whose
@@ -1173,6 +1173,57 @@ hand-merge generated markup, rebuild it.
 | Verification after final merge | `python3 -m unittest discover -s tests` 107 pass / 1 skipped · `npm test` 18/18 · `python3 -m collector.test_runner` PASS · `python3 -m trading.test_engine` PASS · `node test/site_smoke.mjs docs/data` ALL PASS · `node tests/test_docs_live.mjs` ALL PASS · `python3 tools/linkcheck.py` 50 pages / 664 links / 0 errors · `python3 tools/rowsource_check.py` every published row links a demo-host URL (`missing=0`). |
 | Standing flagged items (non-blocking, published on the Flagged/limitations pages) | F-5b candle-window label quirk (`minutes`/`hours` keys = hourly/daily `interval`); F-5c docs-sim published `fees`/`net_pnl` exclude the closed trade's entry fee (cross-check table); F-5d live demo-account trading unverified (no credentials — never requested or stored); F-5e second-level charting needs live mode (official candles are 1-minute minimum); R-4f92-1/2 peer task-ID collisions remain open for those sessions. |
 
+---
+
+
+---
+
+### Final integration record — `arena-79cc0bd5`
+
+| PR | Head merged | Merge commit | Checks at merge | Pages |
+| - | --- | --- | --- | --- |
+| **#26** | `daf6b2a` | `dbea89c` | `check` pass · `collect` pass | build `dbea89ca6` **built**, `error: null` |
+| **#31** | `a74d5c0` | `856dc75` | `check` pass · `collect` pass | building at the time of writing, then verified on the live host |
+
+Rebase rounds: **four** (`1bc32b7` → `26fc801`-era main → `be3bcfc`/PR #21 →
+`8b5d701`/PR #25 → `53968df`). Every conflict was either a `COORDINATION.md`
+union or a generated page, and every generated page was resolved by taking
+`main`'s committed data and **regenerating** with the merged code — never by
+hand-picking a side of an HTML diff. Three of my own changes were withdrawn in
+favour of work that merged first (`count()` KPI formatting, the duplicate
+trades/roadmap pages, the client-side alert grouping and per-panel age), and one
+more was cut back when PR #25 pinned the opposite behaviour in a test
+(`count(None)` stays blank). Branch `arena/79cc0bd5-trade2` stays push-only to
+itself; nothing was renamed.
+
+**Open threads handed to other sessions:** R-79CC-1 (thread `fee_multiplier`
+through `collector/engine.py`; when it lands, retire K6's sentence and the
+standing flag together) · R-79CC-2 (`extras.age_label`'s `time.mktime` fallback
+should be `calendar.timegm`) · R-79CC-3 (update `tools/root_pages_render.mjs`
+with any topbar/nav/chat markup change) · R-79CC-4 (session-prefixed task IDs).
+
+### 2026-11-20T19:5xZ — live-site re-read produced one more fix (`money()` sign)
+
+Verifying PR #31 on the deployed host rather than trusting the build status
+turned up a formatting defect on the live trades table: every unrealised loss
+printed as **`$-125.00`** and **`$-146.80`**, because `site_build/format.money()`
+interpolated the minus sign *inside* the currency symbol. `money(-125)` is now
+`-$125.00`, pinned by `TestNegativeMoney`, which also asserts no generated page
+contains the string `$-` anywhere. Only `trades.html` changes; the other twelve
+pages were checked out from `main` and regenerate byte-identically apart from the
+build-time age label, so the PR carries no data churn (their table is otherwise
+identical, verified by `numstat`: 2 insertions, 2 deletions).
+
+Method note for other sessions, from the same pass: the first fetch of
+`methodology.html` came back showing the **pre-#31** fees sentence even though
+Pages reported `built` for a descendant commit — the fetch path caches. It was
+about to be logged as "PR #31 silently reverted by another session". Confirming
+`git show origin/main:methodology.html` proved the file was correct and a
+cache-busting query returned the new text. **Cache-bust before accusing a
+merge.**
+
+---
+
 ### PR record — `arena-dc732aa6` (Board D integration)
 
 | Item | Result |
@@ -1185,3 +1236,25 @@ hand-merge generated markup, rebuild it.
 | Not green | `Kalshi dashboard — collect, build, deploy` push run `44804612803` ended **cancelled** (17–43 s), as did the next scheduled run `44804717748`. Not a build failure — a concurrency-group casualty; raised as **R-DC-3** above and published as a standing item on `review.html`, because the site's own refresh loop is the thing the brief depends on |
 | Rebase count | Four `git pull --rebase origin main` cycles (main moved to `29934da`, `7bdff2f`, `53968df`, `1523670` between them). Generated HTML resolved by rebuilding; `assets/desk.js`, `styles.css`, `site_build/build.py`, `flagpage.py`, `suggestions.html` resolved by hand with nothing discarded; every union conflict in `COORDINATION.md` resolved additively |
 | Evidence log | `VERIFICATION-dc732aa6.md` — sources V1–V8, per-change verification, §3a merge table, and the values deliberately left blank |
+
+### R-79CC-5 — same `$-` defect in the strategy lab (request, not an edit)
+
+`tools/strategy_lab.py:99` defines its own `money()`:
+
+```python
+def money(x: float | None) -> str:
+    return "—" if x is None else f"${x:,.2f}"     # money(-155) -> "$-155.00"
+```
+
+so `docs/strategies.html` currently publishes **`$-155.00`, `$-161.43`,
+`$-80.00`** in its P&L columns. Root-site side is fixed on this branch
+(`site_build/format.money()` now hoists the sign); `tools/strategy_lab.py` and
+`tests/test_strategy_lab.py` are **claimed by `arena-5bec0ea3` (T32)**, so this
+is a request rather than an edit. One-line fix, keeping their `—` empty case:
+
+```python
+    return "—" if x is None else ("-" if x < 0 else "") + f"${abs(x):,.2f}"
+```
+
+If `tests/test_strategy_lab.py` pins the current string, that assertion should be
+updated in the same PR — it is a formatting expectation, not a data rule.
