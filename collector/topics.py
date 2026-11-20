@@ -88,15 +88,20 @@ ELECTIONS = Topic(
 )
 
 # --- Culture ------------------------------------------------------------
+# Verified against the live demo API: GET /events?status=open shows Culture
+# content published mostly under the "Entertainment" category (413 open events)
+# and "Culture" itself (2 series). Both are queried so the topic is complete.
 CULTURE = Topic(
     slug="culture",
     label="Culture",
-    queries=(("Culture", None),),
+    queries=(("Culture", None), ("Entertainment", None)),
     matchers=(_kw("culture", "celebrity", "emmy", "oscar", "grammy", "award",
                   "album", "movie", "film", "box office", "song", "series",
                   "tv", "netflix", "billboard", "time person", "nobel",
                   "ballon d'or", "viral", "tweet", "x post", "banned"),),
-    notes="Entertainment, celebrity and internet-culture markets.",
+    notes="Entertainment, celebrity and internet-culture markets. Kalshi files "
+          "most of these under the Entertainment category; the Culture category "
+          "is queried as well.",
 )
 
 # --- Crypto -------------------------------------------------------------

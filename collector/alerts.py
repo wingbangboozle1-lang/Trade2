@@ -150,6 +150,20 @@ def detect_swing(previous: Observation | None, current: Observation,
     }
 
 
+def _all_levels(rows: list[Any]) -> list[dict[str, float]]:
+    """Every bid level, best price first (used for aggregate depth figures)."""
+    out = []
+    for row in list(rows)[::-1]:
+        if not isinstance(row, (list, tuple)) or len(row) < 2:
+            continue
+        price, size = dollars(row[0]), count(row[1])
+        if price is None or size is None:
+            continue
+        out.append({"price": price, "contracts": size,
+                    "dollars": round(price * size, 2)})
+    return out
+
+
 def analyse_liquidity(orderbook: dict[str, Any], levels: int = 8) -> dict[str, Any]:
     """Depth view: how many contracts rest at each price, and the cost to fill.
 
@@ -162,6 +176,9 @@ def analyse_liquidity(orderbook: dict[str, Any], levels: int = 8) -> dict[str, A
     no_levels = list(ob.get("no_dollars") or [])
 
     def normalise(rows: list[Any]) -> list[dict[str, float]]:
+        # ``levels`` caps how many price levels of *each* side we report, but the
+        # aggregate depth figures below are computed from the complete book so
+        # that "contracts available" is never understated.
         out = []
         for row in rows[-levels:][::-1]:  # best first
             if not isinstance(row, (list, tuple)) or len(row) < 2:
@@ -175,6 +192,8 @@ def analyse_liquidity(orderbook: dict[str, Any], levels: int = 8) -> dict[str, A
 
     yes_bids = normalise(yes_levels)
     no_bids = normalise(no_levels)
+    all_yes = normalise(yes_levels) if len(yes_levels) <= levels else _all_levels(yes_levels)
+    all_no = normalise(no_levels) if len(no_levels) <= levels else _all_levels(no_levels)
     best_yes = yes_bids[0]["price"] if yes_bids else None
     best_no = no_bids[0]["price"] if no_bids else None
     yes_ask = implied_yes_ask(best_no)
@@ -197,10 +216,11 @@ def analyse_liquidity(orderbook: dict[str, Any], levels: int = 8) -> dict[str, A
         "best_no_bid": best_no,
         "best_no_ask": (round(1.0 - best_yes, 4) if best_yes is not None else None),
         "spread": spread,
-        "yes_bid_contracts": round(sum(r["contracts"] for r in yes_bids), 2),
-        "no_bid_contracts": round(sum(r["contracts"] for r in no_bids), 2),
-        "yes_bid_dollars": round(sum(r["dollars"] for r in yes_bids), 2),
-        "no_bid_dollars": round(sum(r["dollars"] for r in no_bids), 2),
+        "yes_bid_contracts": round(sum(r["contracts"] for r in all_yes), 2),
+        "no_bid_contracts": round(sum(r["contracts"] for r in all_no), 2),
+        "yes_bid_dollars": round(sum(r["dollars"] for r in all_yes), 2),
+        "no_bid_dollars": round(sum(r["dollars"] for r in all_no), 2),
+        "levels_reported": levels,
     }
 
 

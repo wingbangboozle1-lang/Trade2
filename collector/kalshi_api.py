@@ -359,22 +359,32 @@ def mid_price(yes_bid: float | None, yes_ask: float | None) -> float | None:
 
 
 def kalshi_fee(price: float, contracts: float, multiplier: float = 1.0) -> float:
-    """Kalshi's published quadratic trading fee for taker orders.
+    """Kalshi's published taker trading fee, computed exactly.
 
-    Source: Kalshi fee schedule PDF (https://kalshi.com/docs/kalshi-fee-schedule.pdf)
-    as referenced by the API docs' ``fee_type`` field:
-    https://docs.kalshi.com/api-reference/market/get-series-list.md
+    Source of the formula and the table used as the oracle:
+    https://kalshi.com/docs/kalshi-fee-schedule.pdf
+    (referenced by ``fee_type`` in
+    https://docs.kalshi.com/api-reference/market/get-series-list.md)
 
-    fees = ceil_to_cent( multiplier * 0.07 * C * P * (1 - P) )
+        fees = round_up( M x 0.07 x C x P x (1 - P) )   to the cent
 
-    ``fee_type == "quadratic"`` uses this table. The API docs also name
-    ``quadratic_with_maker_fees`` and ``flat`` structures which are NOT modelled
-    here; callers should pass multiplier=0.0 to disable fees for those series and
-    the dashboard labels the fee assumption explicitly.
+    Decimal arithmetic is used deliberately. Computing this in binary floats
+    produces 1.7500000000000002 for P=0.50, C=100 and a naive ceiling then
+    yields $1.76 where Kalshi's own table says $1.75. With Decimal every one of
+    the 42 published rows reproduces exactly — see
+    tests/test_engine.py::TestFees::test_all_published_fee_table_rows.
+
+    The schedule also lists per-series multipliers (0 for fee-free series, 2 for
+    uncorrelated combos); callers pass the series' own ``fee_multiplier``. A
+    ``flat`` fee structure is not modelled here; pass multiplier=0.0 for it and
+    label the assumption in the UI.
     """
-    import math
+    from decimal import Decimal, ROUND_CEILING
 
-    raw = multiplier * 0.07 * contracts * price * (1.0 - price)
-    if raw <= 0:
+    p = Decimal(str(price))
+    c = Decimal(str(contracts))
+    m = Decimal(str(multiplier))
+    if p <= 0 or p >= 1 or c <= 0 or m <= 0:
         return 0.0
-    return math.ceil(raw * 100.0) / 100.0
+    raw = m * Decimal("0.07") * c * p * (Decimal(1) - p)
+    return float(raw.quantize(Decimal("0.01"), rounding=ROUND_CEILING))
