@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f5f8f7" />
-    <title>Flagged for review — Market Desk</title>
+    <meta name="description" content="Unverified items and data irregularities found in Kalshi demo records." />
+    <title>Flagged for review — Kalshi Monitor</title>
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
   <body>
@@ -12,28 +13,26 @@
       <aside class="sidebar">
         <a class="brand" href="index.html"
           ><span class="brand-mark">K</span
-          ><span
-            ><b>Market Desk</b><small>Kalshi · Demo monitor</small></span
-          ></a
+          ><span><b>Market Desk</b><small>Kalshi · Demo monitor</small></span></a
         >
-        <div class="side-label">Workspace</div>
-        <nav class="side-nav">
-          <a href="index.html"><span>◫</span> Overview</a
-          ><a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a
-          ><a href="categories/elections.html"><span>◉</span> Elections</a
-          ><a href="categories/culture.html"><span>✳</span> Culture</a
-          ><a href="categories/crypto.html"><span>₿</span> Crypto</a
-          ><a href="categories/golf.html"><span>⛳</span> Golf</a>
+        <div class="side-label">Topics</div>
+        <nav class="side-nav" aria-label="Topics">
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a>
+          <a href="categories/elections.html"><span>◉</span> Elections</a>
+          <a href="categories/culture.html"><span>✳</span> Culture</a>
+          <a href="categories/crypto.html"><span>₿</span> Crypto</a>
+          <a href="categories/golf.html"><span>⛳</span> Golf</a>
         </nav>
         <div class="side-label">Research</div>
-        <nav class="side-nav">
-          <a href="summary.html"><span>▤</span> Executive summary</a
-          ><a class="active" href="review.html"
-            ><span>⚑</span> Flagged for review</a
-          >
+        <nav class="side-nav" aria-label="Research">
+          <a href="live.html"><span>◈</span> Live desk</a>
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="methodology.html"><span>⚙</span> Methodology</a>
         </nav>
         <div class="sidebar-foot">
-          <span class="dot"></span><span>Demo environment only</span
+          <span class="dot"></span><span>Public demo data</span
           ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
             >Open Kalshi demo ↗</a
           >
@@ -41,295 +40,54 @@
       </aside>
       <main class="main-content">
         <header class="topbar">
-          <button class="mobile-menu" aria-label="Open navigation">☰</button>
-          <div class="breadcrumb">
-            <a href="index.html">Workspace</a> <span>/</span> Flagged for review
-          </div>
+          <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
-            <span class="flag-badge">OPEN ITEMS</span>
+            <time>Snapshot 2026-11-20T14:51:49Z</time>
           </div>
         </header>
-        <section class="category-hero">
-          <div class="eyebrow">TRANSPARENCY · KNOWN LIMITATIONS</div>
-          <h1>Flagged for review</h1>
-          <p>
-            Items intentionally left unverified or out of scope. No missing
-            values are inferred.
-          </p>
-        </section>
-        <div class="notice notice-warn">
-          <span>⚑</span>
+        <section class="page-heading">
           <div>
-            <b>Live listings are not a full exchange census</b>
-            <p>
-              At most four event pages (up to 800 open events) are scanned each
-              refresh; additional pages are not currently retrieved.
-            </p>
+            <div class="eyebrow">TRANSPARENCY · NOTHING HIDDEN</div>
+            <h1>Flagged for review</h1>
+            <p>Everything this project could not verify, plus irregularities found
+            inside Kalshi's own demo records.</p>
           </div>
-        </div>
+        </section>
         <section class="panel">
           <div class="panel-title">
-            <div>
-              <span class="section-icon amber">⚑</span>
-              <div>
-                <h2>Unverified and constrained items</h2>
-                <p>Source-linked notes for review</p>
-              </div>
-            </div>
+            <div><span class="section-icon amber">⚑</span><div>
+              <h2>Data irregularities detected in the current snapshot</h2>
+              <p>Found by literal rules — no fuzzy matching, no guessing. Each row
+              links to the API response that shows it.</p></div></div>
+            <span class="count-badge">51</span>
           </div>
           <div class="table-wrap">
-            <table class="source-table">
-              <thead>
-                <tr>
-                  <th>Item</th>
-                  <th>Current treatment</th>
-                  <th>Why flagged</th>
-                  <th>Official reference</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Live event universe</td>
-                  <td>
-                    Up to 800 open events scanned per refresh; more may exist
-                    outside those pages.
-                  </td>
-                  <td>
-                    Pagination beyond the configured four-page cap is not
-                    currently fetched. Do not interpret dashboard counts as
-                    complete exchange-wide totals.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/api-reference/events/get-events"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Events endpoint pagination and cursor ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Category labels</td>
-                  <td>
-                    Locally matched using explicit keywords against Kalshi
-                    event/category/ticker and market title/ticker.
-                  </td>
-                  <td>
-                    Not an official topic taxonomy. A keyword filter may miss
-                    relevant events or include false positives. Manual
-                    validation is not claimed.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/api-reference/events/get-events"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Official event fields ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Missing quote, size, volume, or open-interest inputs</td>
-                  <td>
-                    Left empty and marked UNVERIFIED when absent from the
-                    response.
-                  </td>
-                  <td>
-                    No replacement or inferred number is used. The displayed
-                    open-interest value is calculated only when both official
-                    inputs are present; otherwise it remains UNVERIFIED.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/api-reference/market/get-markets"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Market response schema ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Alert history before page load</td>
-                  <td>
-                    Not available; alerts start after two in-session
-                    observations.
-                  </td>
-                  <td>
-                    Browser polling and local storage do not establish a
-                    historical baseline. Moves between polls may be missed;
-                    chart range labels only bound captured samples.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/getting_started/quick_start_market_data"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Kalshi market-data guidance ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Move attribution / news links</td>
-                  <td>No external articles are attached to price jumps.</td>
-                  <td>
-                    Price correlation does not verify cause. Event- or
-                    website-link attribution needs a source feed and evidence
-                    mapping not provided by the market API alone.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/api-reference/events/get-events"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Official event metadata schema ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Model shortlist / “high ROI”</td>
-                  <td>
-                    Experimental, transparent watch filter: threshold jump plus
-                    positive calculated open-interest value.
-                  </td>
-                  <td>
-                    It does not estimate expected returns and has not been
-                    backtested. It must not be described as a validated ROI
-                    model or trading recommendation.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/getting_started/quick_start_market_data"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Official market data fields ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Demo account balance, fills, and executed orders</td>
-                  <td>
-                    Not connected. Dashboard does not accept credentials or
-                    place orders.
-                  </td>
-                  <td>
-                    Account endpoints require signed authentication. Safe
-                    integration needs a credential-protecting backend and
-                    user-provisioned demo API access; neither is available from
-                    this static site.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/getting_started/quick_start_create_order"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Authenticated order API quick start ↗</a
-                    >
-                    ·
-                    <a
-                      href="https://docs.kalshi.com/getting_started/api_keys"
-                      target="_blank"
-                      rel="noreferrer"
-                      >API Keys ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Simulated P&amp;L accuracy</td>
-                  <td>
-                    Local paper trades only; uses observed YES bid and reported
-                    YES/NO result if available.
-                  </td>
-                  <td>
-                    Sim fills ignore fees, queue position, partial execution,
-                    slippage, and realized exits. This is a software test
-                    ledger, not account performance.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/api-reference/market/get-market-orderbook"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Official orderbook and quantity data ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>WebSocket low-latency updates</td>
-                  <td>Not enabled. Dashboard polls REST every 15 seconds.</td>
-                  <td>
-                    Kalshi’s WebSocket quick start demonstrates authenticated
-                    connection headers. A static page with no user-provided
-                    credentials does not connect to it here.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/getting_started/quick_start_websockets"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Kalshi WebSocket quick start ↗</a
-                    >
-                  </td>
-                </tr>
-                <tr>
-                  <td>Browser cross-origin access / GitHub Pages deployment</td>
-                  <td>
-                    Kalshi's API is called directly from the browser; CORS has
-                    not been verified from the hosted origin. The Pages build
-                    completed successfully after merge; the browser-side market
-                    data request has not been tested in a live browser.
-                  </td>
-                  <td>
-                    API documentation does not confirm browser CORS. The live
-                    page's JavaScript fetch and topic classification were not
-                    executed by the static page fetch used for deployment
-                    verification.
-                  </td>
-                  <td>
-                    <a
-                      href="https://docs.kalshi.com/getting_started/demo_env"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Kalshi demo endpoint ↗</a
-                    >
-                    ·
-                    <a
-                      href="https://docs.github.com/en/rest/pages/pages?apiVersion=2022-11-28#update-information-about-a-github-pages-site"
-                      target="_blank"
-                      rel="noreferrer"
-                      >GitHub Pages API ↗</a
-                    >
-                    ·
-                    <a
-                      href="https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44744259044"
-                      target="_blank"
-                      rel="noreferrer"
-                      >Successful Pages build ↗</a
-                    >
-                  </td>
-                </tr>
-              </tbody>
+            <table>
+              <thead><tr><th>What</th><th>Topic</th><th>Ticker</th>
+                <th>Detail</th><th>Source</th></tr></thead>
+              <tbody><tr><td><span class="tag tag-purple">Template text in an official record</span></td><td>golf</td><td><code>KXGOLFCAT</code></td><td>series title is the placeholder &quot;a&quot;</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/series/KXGOLFCAT" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-SAS</code></td><td>162,254,359 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-EKIR</code></td><td>58,983,136 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-EKIR/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-GR</code></td><td>53,209,336 contracts of open interest against only 5 contracts of resting bid depth — the quoted 0.0100 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GR/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-GPLA</code></td><td>44,108,150 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GPLA/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-TW</code></td><td>38,729,509 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-TW/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-JF</code></td><td>27,282,070 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JF/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCY-27JAN0100-B22500</code></td><td>24,990,932 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B22500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXGOVAK-26-TBEG</code></td><td>24,388,823 contracts of open interest against only 2 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOVAK-26-TBEG/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXGOVAK-26-CBIS</code></td><td>22,367,606 contracts of open interest against only 2 contracts of resting bid depth — the quoted 0.0200 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOVAK-26-CBIS/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMD-28-DJOH</code></td><td>19,751,895 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-DJOH/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXGOVAK-26-TTAY</code></td><td>18,557,903 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOVAK-26-TTAY/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCY-27JAN0100-B137500</code></td><td>16,097,932 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B137500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-ES</code></td><td>15,947,493 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-ES/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXMAYORLA-26-SPRA</code></td><td>12,948,531 contracts of open interest against only 1 contracts of resting bid depth — the quoted 0.2500 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXMAYORLA-26-SPRA/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTC2026200-27JAN01-200000</code></td><td>8,598,889 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC2026200-27JAN01-200000/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>RSENATESEATS-27-E55</code></td><td>8,085,409 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/RSENATESEATS-27-E55/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCY-27JAN0100-B92500</code></td><td>6,479,604 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B92500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCY-27JAN0100-B32500</code></td><td>6,356,456 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B32500/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-KNOE</code></td><td>5,616,464 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-KNOE/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-NMIN</code></td><td>5,249,948 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-NMIN/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-MG</code></td><td>5,154,305 contracts of open interest against only 1 contracts of resting bid depth — the quoted 0.0300 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-MG/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXGOVAK-26-NDAH</code></td><td>5,098,213 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOVAK-26-NDAH/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXGOVAK-26-MPEL</code></td><td>4,766,923 contracts of open interest against only 3 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOVAK-26-MPEL/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXDSENATESEATS-27-45</code></td><td>4,369,155 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDSENATESEATS-27-45/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXPRESNOMR-28-EM</code></td><td>4,362,211 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-EM/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXDSENATESEATS-27-BELOW45</code></td><td>3,440,648 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDSENATESEATS-27-BELOW45/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>RSENATESEATS-27-A57</code></td><td>2,870,504 contracts of open interest against only 1 contracts of resting bid depth — the quoted 0.0100 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/RSENATESEATS-27-A57/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B4625</code></td><td>2,103,890 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B4625/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B4875</code></td><td>2,004,208 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B4875/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXMAYORLA-26-NRAM</code></td><td>1,957,005 contracts of open interest against only 4 contracts of resting bid depth — the quoted 0.0100 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXMAYORLA-26-NRAM/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXMAYORLA-26-AMIL</code></td><td>1,915,063 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXMAYORLA-26-AMIL/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCMAX100-26-MAR</code></td><td>1,826,474 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-MAR/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B3875</code></td><td>1,702,686 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B3875/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B3625</code></td><td>1,685,288 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B3625/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B4125</code></td><td>1,651,306 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B4125/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B4375</code></td><td>1,608,068 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B4375/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXMAYORLA-26-RHUA</code></td><td>1,555,599 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXMAYORLA-26-RHUA/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B3125</code></td><td>1,488,116 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B3125/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B2875</code></td><td>1,410,929 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B2875/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXBTCMAX100-26-OCT</code></td><td>1,392,897 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-OCT/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-T4999.99</code></td><td>1,382,158 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-T4999.99/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B1625</code></td><td>1,376,095 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B1625/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B1375</code></td><td>1,371,363 contracts of open interest against only 8 contracts of resting bid depth — the quoted 0.0100 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B1375/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B2625</code></td><td>1,367,074 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B2625/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B1875</code></td><td>1,342,219 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B1875/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B2375</code></td><td>1,279,238 contracts of open interest against only 4 contracts of resting bid depth — the quoted 0.0100 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B2375/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>elections</td><td><code>KXHOUSEPOPVOTEMARGIN-27NOV03-B5</code></td><td>1,199,465 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXHOUSEPOPVOTEMARGIN-27NOV03-B5/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-B1125</code></td><td>1,176,935 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-B1125/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Large open interest on an empty book</span></td><td>crypto</td><td><code>KXETHY-27JAN0100-T1000.00</code></td><td>1,165,579 contracts of open interest against only 0 contracts of resting bid depth — the quoted 0.0000 is not tradable size</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHY-27JAN0100-T1000.00/orderbook" target="_blank" rel="noreferrer">official API ↗</a></td></tr><tr><td><span class="tag tag-purple">Topic category is effectively empty</span></td><td>culture</td><td><code>category=Culture</code></td><td>Kalshi&#x27;s own &#x27;Culture&#x27; category returns 789 series while 20 open events exist for this topic once &#x27;Entertainment&#x27; is also queried. Culture content is filed under Entertainment.</td><td><a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/series?category=Culture" target="_blank" rel="noreferrer">official API ↗</a></td></tr></tbody>
             </table>
           </div>
+          <div class="table-foot"><span>Blank or absent values are never inferred</span>
+          <span>Recomputed on every collector run</span></div>
         </section>
-        <section class="panel text-panel">
-          <h2>Blank means unknown</h2>
-          <p>
-            Live tables never replace missing API values with estimates. They
-            display an explicit UNVERIFIED marker, and each market row links to
-            its official demo API market resource for manual review. Alert
-            timestamps, shortlist status, and paper trade entries are generated
-            by this dashboard and are labeled as locally observed or simulated.
-          </p>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▤</span><div>
+              <h2>Standing limitations</h2>
+              <p>Stated once, up front, and linked to the official page that
+              explains each constraint</p></div></div>
+          </div>
+          <div class="flag-list"><article class="flag-card"><h3>Demo-account portfolio performance cannot be shown</h3><p>Reading a Kalshi demo balance, fills or positions requires signed requests with an API key pair. No key is configured for this repository, so every trading figure on this site comes from the simulated ledger, not your demo account. The paper ledger is labelled SIMULATED wherever it appears.</p><div><a class="source-link" href="https://docs.kalshi.com/getting_started/quick_start_authenticated_requests.md" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>No real orders are placed</h3><p>Order entry is implemented (POST /portfolio/events/orders) but inert without credentials. Nothing on this site can move real or demo funds.</p><div><a class="source-link" href="https://docs.kalshi.com/getting_started/quick_start_create_order.md" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>No news article is attributed to a price move</h3><p>The brief asked for links to news that may have caused jumps. No official source maps articles to Kalshi price moves, so guessing one would be fabrication. Instead every alert links to the market itself and the series page lists Kalshi&#x27;s own settlement sources (AAA, CF Benchmarks, ESPN, pgatour.com), which are the official pages that explain the underlying.</p><div><a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>Live streaming uses polling, not the WebSocket</h3><p>The documented demo WebSocket requires the same signed handshake as REST, so without credentials the site polls the public REST API. Prices can lag by the poll interval; the page shows the age of every snapshot.</p><div><a class="source-link" href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>The model&#x27;s ROI is a screen, not a validated edge</h3><p>Signals are ranked by modelled edge after Kalshi&#x27;s published taker fee. No claim of profitability is made, and the performance table publishes every loss alongside every win once trades settle.</p><div><a class="source-link" href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>Each run tracks a ranked slice, not every market</h3><p>The collector reads a bounded number of the highest-value markets per topic inside a fixed time budget, and reports the counts it actually read plus anything it had to skip.</p><div><a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">official source ↗</a></div></article><article class="flag-card"><h3>Fee-schedule rounding prose and its own table disagree</h3><p>The fee PDF says to round so that &#x27;fee + positionCost is rounded to a centicent&#x27;, but its published table is reproduced exactly by rounding the fee alone up to the cent. The table is used as the oracle, because it matches every one of the 42 published rows.</p><div><a class="source-link" href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noreferrer">official source ↗</a></div></article></div>
         </section>
         <footer class="site-footer">
-          <span>Open limitations are documented, not hidden.</span
-          ><span
-            ><a href="index.html">Dashboard</a
-            ><a href="summary.html">Methods &amp; sources</a></span
-          >
+          <span>Simulated trading and public demo market data. Not investment advice.</span>
+          <span><a href="methodology.html">Methods &amp; sources</a>
+          <a href="review.html">Flagged for review</a></span>
         </footer>
       </main>
     </div>
-    <script src="assets/app.js" defer></script>
+    <script src="assets/nav.js" defer></script>
+    <script src="assets/desk.js" defer></script>
   </body>
 </html>

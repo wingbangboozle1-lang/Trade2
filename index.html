@@ -4,24 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f5f8f7" />
-    <meta
-      name="description"
-      content="A source-linked Kalshi demo market monitor, alerts, and paper-trading dashboard."
-    />
-    <title>Kalshi Monitor — Demo Dashboard</title>
+    <meta name="description" content="Live Kalshi demo market monitor across gas prices, elections, culture, crypto and golf." />
+    <title>Kalshi Monitor — Overview</title>
     <link rel="stylesheet" href="assets/styles.css" />
   </head>
-  <body data-page="dashboard">
+  <body>
     <div class="shell">
       <aside class="sidebar">
         <a class="brand" href="index.html"
           ><span class="brand-mark">K</span
-          ><span
-            ><b>Market Desk</b><small>Kalshi · Demo monitor</small></span
-          ></a
+          ><span><b>Market Desk</b><small>Kalshi · Demo monitor</small></span></a
         >
-        <div class="side-label">Workspace</div>
-        <nav class="side-nav" aria-label="Main navigation">
+        <div class="side-label">Topics</div>
+        <nav class="side-nav" aria-label="Topics">
           <a class="active" href="index.html"><span>◫</span> Overview</a>
           <a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a>
           <a href="categories/elections.html"><span>◉</span> Elections</a>
@@ -30,12 +25,14 @@
           <a href="categories/golf.html"><span>⛳</span> Golf</a>
         </nav>
         <div class="side-label">Research</div>
-        <nav class="side-nav">
-          <a href="summary.html"><span>▤</span> Executive summary</a
-          ><a href="review.html"><span>⚑</span> Flagged for review</a>
+        <nav class="side-nav" aria-label="Research">
+          <a href="live.html"><span>◈</span> Live desk</a>
+          <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="methodology.html"><span>⚙</span> Methodology</a>
+          <a href="review.html"><span>⚑</span> Flagged for review</a>
         </nav>
         <div class="sidebar-foot">
-          <span class="dot"></span><span>Demo environment only</span
+          <span class="dot"></span><span>Public demo data</span
           ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
             >Open Kalshi demo ↗</a
           >
@@ -43,326 +40,82 @@
       </aside>
       <main class="main-content">
         <header class="topbar">
-          <button class="mobile-menu" aria-label="Open navigation">☰</button>
           <div class="breadcrumb">Workspace <span>/</span> Overview</div>
           <div class="top-actions">
-            <span class="live-pill"><i></i> PUBLIC MARKET DATA</span
-            ><button
-              class="icon-button"
-              id="refreshButton"
-              aria-label="Refresh data"
-              title="Refresh data"
-            >
-              ↻</button
-            ><time id="updatedAt">Connecting…</time>
+            <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
+            <time id="updatedAt">Snapshot 2026-11-20T14:51:49Z</time>
           </div>
         </header>
         <section class="page-heading">
           <div>
-            <div class="eyebrow">KALSHI DEMO · MARKET INTELLIGENCE</div>
+            <div class="eyebrow">KALSHI DEMO · LIVE MONITOR</div>
             <h1>Market overview</h1>
-            <p>
-              Track the biggest open markets, watch sudden price shifts, and
-              test rules with simulated trades.
-            </p>
+            <p>Highest-dollar open events across gas prices, elections, culture,
+            crypto and golf — with ≥ $0.10 swing alerts and a simulated book.</p>
           </div>
-          <button class="button button-primary" id="refreshMain">
-            ↻ <span>Refresh markets</span>
-          </button>
+          <a class="button button-primary" href="live.html">◈ Open live desk</a>
         </section>
-        <div id="apiNotice" class="notice notice-info">
+        <section class="stats-grid" aria-label="Summary">
+          <article class="stat-card"><span>Markets tracked</span>
+            <strong>750.00</strong>
+            <small>This snapshot</small></article>
+          <article class="stat-card"><span>Swings ≥ $0.10</span>
+            <strong>32</strong>
+            <small>Rolling alert buffer</small></article>
+          <article class="stat-card"><span>Open positions</span>
+            <strong>0.00</strong>
+            <small>Simulated</small></article>
+          <article class="stat-card"><span>Equity</span>
+            <strong>$10,000.00</strong>
+            <small>Start $10,000.00</small></article>
+          <article class="stat-card"><span>Resolved tracked</span>
+            <strong>2,000.00</strong>
+            <small>YES/NO from official result</small></article>
+        </section>
+        <div class="notice notice-info">
           <span>ⓘ</span>
-          <div>
-            <b>Connecting to Kalshi demo market data</b>
-            <p>
-              Live market details come directly from Kalshi’s public demo API.
-              No sample prices are substituted.
-            </p>
-          </div>
+          <div><b>Demo exchange status: trading</b>
+          <p>Market data is live from <code>https://external-api.demo.kalshi.co/trade-api/v2</code>. Trades are simulated;
+          no order is ever sent. Every row links to the exact API response it
+          came from.</p></div>
         </div>
-        <section class="stats-grid" aria-label="Market summary">
-          <article class="stat-card">
-            <span>Open markets tracked</span><strong id="statMarkets">—</strong
-            ><small>Across selected topics</small>
-          </article>
-          <article class="stat-card">
-            <span>Alerts ≥ $0.10</span><strong id="statAlerts">0</strong
-            ><small>Observed by this browser</small>
-          </article>
-          <article class="stat-card">
-            <span>Simulated positions</span><strong id="statPositions">0</strong
-            ><small>Paper portfolio only</small>
-          </article>
-          <article class="stat-card">
-            <span>Paper P&amp;L</span><strong id="statPnl">—</strong
-            ><small>Settled simulated trades</small>
-          </article>
-        </section>
-        <section class="panel control-panel">
+        <section class="panel">
           <div class="panel-title">
-            <div>
-              <span class="section-icon">⌕</span>
-              <div>
-                <h2>Market scanner</h2>
-                <p>
-                  Open events ranked by calculated open-interest value where
-                  official fields are available
-                </p>
-              </div>
-            </div>
-            <div class="control-row">
-              <label class="search-box"
-                ><span>⌕</span
-                ><input
-                  id="searchInput"
-                  type="search"
-                  placeholder="Search events or tickers"
-                  aria-label="Search events" /></label
-              ><select id="timeRange" aria-label="Chart time range">
-                <option value="seconds">Seconds</option>
-                <option value="minutes" selected>Minutes</option>
-                <option value="hours">Hours</option>
-              </select>
-            </div>
-          </div>
-          <div class="filter-tabs" id="topicTabs">
-            <button class="selected" data-topic="all">All topics</button
-            ><button data-topic="gas">Gas prices</button
-            ><button data-topic="elections">Elections</button
-            ><button data-topic="culture">Culture</button
-            ><button data-topic="crypto">Crypto</button
-            ><button data-topic="golf">Golf</button>
+            <div><span class="section-icon">⌕</span><div>
+              <h2>Highest-dollar open events</h2>
+              <p>Ranked by open-interest value (official open_interest_fp ×
+              notional_value_dollars)</p></div></div>
+            <a class="source-link" href="https://external-api.demo.kalshi.co/trade-api/v2/events?status=open" target="_blank"
+               rel="noreferrer">Events API ↗</a>
           </div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Event / Market</th>
-                  <th>Topic</th>
-                  <th>YES price</th>
-                  <th>Δ observed</th>
-                  <th>Liquidity</th>
-                  <th>24h volume (contracts)</th>
-                  <th>Open-interest value*</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="marketRows">
-                <tr>
-                  <td colspan="9" class="empty-state">
-                    Loading official demo market data…
-                  </td>
-                </tr>
-              </tbody>
+              <thead><tr><th>Event / market</th><th>Topic</th><th>YES bid</th>
+                <th>YES ask</th><th>Open interest</th><th>OI value</th>
+                <th>Volume</th><th>Source</th></tr></thead>
+              <tbody><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RW" target="_blank" rel="noreferrer">Raphael Warnock</a><small class="ticker">KXPRESNOMD-28-RW</small></td><td>elections</td><td>$0.0310</td><td>$0.0330</td><td>189,529,515.91</td><td>$189,529,515.91</td><td>414,909,162.54</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GW" target="_blank" rel="noreferrer">Gretchen Whitmer</a><small class="ticker">KXPRESNOMD-28-GW</small></td><td>elections</td><td>$0.0050</td><td>$0.0060</td><td>169,497,438.62</td><td>$169,497,438.62</td><td>432,105,595.59</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-SAS" target="_blank" rel="noreferrer">Stephen A. Smith</a><small class="ticker">KXPRESNOMD-28-SAS</small></td><td>elections</td><td>$0.0000</td><td>$1.0000</td><td>162,254,359.41</td><td>$162,254,359.41</td><td>358,761,483.71</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-ESLO" target="_blank" rel="noreferrer">Elissa Slotkin</a><small class="ticker">KXPRESNOMD-28-ESLO</small></td><td>elections</td><td>$0.0080</td><td>$0.0090</td><td>150,319,329.50</td><td>$150,319,329.50</td><td>468,262,787.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-ESLO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID" target="_blank" rel="noreferrer">Hunter Biden</a><small class="ticker">KXPRESNOMD-28-HBID</small></td><td>elections</td><td>$0.0020</td><td>$0.8100</td><td>140,195,139.02</td><td>$140,195,139.02</td><td>537,223,989.76</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-BOBA" target="_blank" rel="noreferrer">Barack Obama</a><small class="ticker">KXPRESNOMD-28-BOBA</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>137,412,639.52</td><td>$137,412,639.52</td><td>418,775,895.27</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-BS" target="_blank" rel="noreferrer">Bernie Sanders</a><small class="ticker">KXPRESNOMD-28-BS</small></td><td>elections</td><td>$0.0040</td><td>$0.0050</td><td>126,693,212.93</td><td>$126,693,212.93</td><td>430,914,380.15</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JSTE" target="_blank" rel="noreferrer">Jon Stewart</a><small class="ticker">KXPRESNOMD-28-JSTE</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>116,959,806.86</td><td>$116,959,806.86</td><td>292,803,496.60</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JSTE">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-CBOO" target="_blank" rel="noreferrer">Cory Booker</a><small class="ticker">KXPRESNOMD-28-CBOO</small></td><td>elections</td><td>$0.0060</td><td>$0.0080</td><td>102,293,176.44</td><td>$102,293,176.44</td><td>248,521,407.02</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-CBOO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a><small class="ticker">KXPRESNOMD-28-AKLO</small></td><td>elections</td><td>$0.0020</td><td>$0.8030</td><td>100,653,461.28</td><td>$100,653,461.28</td><td>203,083,066.72</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JP" target="_blank" rel="noreferrer">Jared Polis</a><small class="ticker">KXPRESNOMD-28-JP</small></td><td>elections</td><td>$0.0100</td><td>$0.9430</td><td>89,344,735.06</td><td>$89,344,735.06</td><td>186,513,962.17</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JP">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JTAL" target="_blank" rel="noreferrer">James Talarico</a><small class="ticker">KXPRESNOMD-28-JTAL</small></td><td>elections</td><td>$0.0170</td><td>$0.0180</td><td>82,392,481.21</td><td>$82,392,481.21</td><td>311,521,204.84</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JTAL">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-KB" target="_blank" rel="noreferrer">Katie Britt</a><small class="ticker">KXPRESNOMR-28-KB</small></td><td>elections</td><td>$0.0030</td><td>$0.0050</td><td>78,984,651.31</td><td>$78,984,651.31</td><td>94,601,399.30</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-KB">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RGAL" target="_blank" rel="noreferrer">Ruben Gallego</a><small class="ticker">KXPRESNOMD-28-RGAL</small></td><td>elections</td><td>$0.0070</td><td>$0.0080</td><td>69,952,922.95</td><td>$69,952,922.95</td><td>143,446,411.77</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RGAL">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HCLI" target="_blank" rel="noreferrer">Hillary Clinton</a><small class="ticker">KXPRESNOMD-28-HCLI</small></td><td>elections</td><td>$0.0010</td><td>$1.0000</td><td>65,512,934.40</td><td>$65,512,934.40</td><td>151,138,724.32</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HCLI">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-EKIR" target="_blank" rel="noreferrer">Erika Kirk</a><small class="ticker">KXPRESNOMR-28-EKIR</small></td><td>elections</td><td>$0.0000</td><td>$1.0000</td><td>58,983,136.46</td><td>$58,983,136.46</td><td>80,383,150.32</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-EKIR">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GR" target="_blank" rel="noreferrer">Gina Raimondo</a><small class="ticker">KXPRESNOMD-28-GR</small></td><td>elections</td><td>$0.0100</td><td>$1.0000</td><td>53,209,336.08</td><td>$53,209,336.08</td><td>123,253,702.79</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GR">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-MC" target="_blank" rel="noreferrer">Mark Cuban</a><small class="ticker">KXPRESNOMD-28-MC</small></td><td>elections</td><td>$0.0070</td><td>$0.0080</td><td>51,700,893.89</td><td>$51,700,893.89</td><td>132,980,639.23</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-MC">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RC" target="_blank" rel="noreferrer">Roy Cooper</a><small class="ticker">KXPRESNOMD-28-RC</small></td><td>elections</td><td>$0.0020</td><td>$0.0040</td><td>50,370,414.42</td><td>$50,370,414.42</td><td>152,825,589.22</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RC">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AYAN" target="_blank" rel="noreferrer">Andrew Yang</a><small class="ticker">KXPRESNOMD-28-AYAN</small></td><td>elections</td><td>$0.0020</td><td>$0.0030</td><td>47,102,457.14</td><td>$47,102,457.14</td><td>141,753,776.13</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AYAN">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-GPLA" target="_blank" rel="noreferrer">Graham Platner</a><small class="ticker">KXPRESNOMD-28-GPLA</small></td><td>elections</td><td>$0.0000</td><td>$1.0000</td><td>44,108,150.17</td><td>$44,108,150.17</td><td>465,856,531.27</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GPLA">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-WM" target="_blank" rel="noreferrer">Wes Moore</a><small class="ticker">KXPRESNOMD-28-WM</small></td><td>elections</td><td>$0.0170</td><td>$0.0180</td><td>43,009,182.51</td><td>$43,009,182.51</td><td>143,894,999.51</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-WM">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-MO" target="_blank" rel="noreferrer">Michelle Obama</a><small class="ticker">KXPRESNOMD-28-MO</small></td><td>elections</td><td>$0.0060</td><td>$0.0080</td><td>42,610,182.86</td><td>$42,610,182.86</td><td>148,695,576.71</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-MO">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-SHS" target="_blank" rel="noreferrer">Sarah Huckabee Sanders</a><small class="ticker">KXPRESNOMR-28-SHS</small></td><td>elections</td><td>$0.0060</td><td>$0.0080</td><td>40,095,706.23</td><td>$40,095,706.23</td><td>96,261,814.14</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMR-28-SHS">API ↗</a></td></tr><tr><td><a href="https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B127500" target="_blank" rel="noreferrer">125,000 to 129,999.99</a><small class="ticker">KXBTCY-27JAN0100-B127500</small></td><td>crypto</td><td>$0.0000</td><td>$0.0100</td><td>39,622,137.23</td><td>$39,622,137.23</td><td>83,444,025.31</td><td><a class="source-link" target="_blank" rel="noreferrer" href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500">API ↗</a></td></tr></tbody>
             </table>
           </div>
-          <div class="table-foot">
-            <span id="tableCount">—</span
-            ><span
-              >* Open-interest value = open_interest_fp × notional_value_dollars
-              (per-contract settlement value), not traded-dollar volume.
-              Official Kalshi demo API · 15s polling.</span
-            >
-          </div>
+          <div class="table-foot"><span>Updated 2026-11-20T14:51:49Z</span>
+          <span>YES ask is implied as 1.00 − best NO bid (bids only, per docs)</span></div>
         </section>
-        <section class="panel resolved-panel">
+        <section class="panel alert-panel">
           <div class="panel-title">
-            <div>
-              <span class="section-icon green">✓</span>
-              <div>
-                <h2>Settled outcomes</h2>
-                <p>
-                  Official settled-event feed · YES/NO outcome when returned
-                </p>
-              </div>
-            </div>
-            <a
-              class="source-link"
-              href="https://docs.kalshi.com/api-reference/events/get-events"
-              target="_blank"
-              rel="noreferrer"
-              >Events API ↗</a
-            >
+            <div><span class="section-icon amber">◉</span><div>
+              <h2>Swing chat — all events</h2>
+              <p>Every observed move of at least $0.10 either way</p></div></div>
+            <a class="source-link" href="live.html">Full live desk →</a>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Event / Market</th>
-                  <th>Topic</th>
-                  <th>Result</th>
-                  <th>Settled / close time</th>
-                  <th>Official source</th>
-                </tr>
-              </thead>
-              <tbody id="resolvedRows">
-                <tr>
-                  <td colspan="5" class="empty-state">
-                    Loading settled outcomes…
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="table-foot">
-            <span
-              >One settled-event page only; not a full historical archive.</span
-            ><span>Refreshes at least once per minute</span>
-          </div>
-        </section>
-        <section class="content-grid">
-          <article class="panel chart-panel">
-            <div class="panel-title">
-              <div>
-                <span class="section-icon green">⌁</span>
-                <div>
-                  <h2>Price movement</h2>
-                  <p id="chartSubtitle">
-                    Select a market to view observed price history
-                  </p>
-                </div>
-              </div>
-              <select id="chartMarket" aria-label="Market for chart">
-                <option value="">Choose a market</option>
-              </select>
-            </div>
-            <div class="chart-metrics">
-              <div>
-                <small>Latest YES</small><strong id="chartPrice">—</strong>
-              </div>
-              <div>
-                <small>Observed change</small
-                ><strong id="chartChange">—</strong>
-              </div>
-              <div class="chart-legend"><i></i> YES price</div>
-            </div>
-            <div class="chart-frame">
-              <canvas
-                id="priceChart"
-                aria-label="Market price history chart"
-                role="img"
-              ></canvas>
-            </div>
-            <div class="chart-foot">
-              <span
-                >Price in dollars · X axis: local time · Y axis: YES bid</span
-              ><span id="chartWindow">Last 15 minutes</span>
-            </div>
-            <div class="depth-box">
-              <div class="depth-heading">
-                Orderbook depth <span id="depthStamp">Select a market</span>
-              </div>
-              <div id="depthLevels" class="depth-levels">
-                <span class="quiet">No market selected</span>
-              </div>
-            </div>
-          </article>
-          <article class="panel alert-panel">
-            <div class="panel-title">
-              <div>
-                <span class="section-icon amber">◉</span>
-                <div>
-                  <h2>Price alerts</h2>
-                  <p>Observed changes of at least $0.10</p>
-                </div>
-              </div>
-              <span class="count-badge" id="alertCount">0</span>
-            </div>
-            <div class="chat-switch">
-              <button class="selected" data-feed="all">All events</button
-              ><button data-feed="model">Model shortlist</button>
-            </div>
-            <div class="chat-feed" id="alertFeed" aria-live="polite">
-              <div class="empty-state inline">
-                Waiting for live price changes…
-              </div>
-            </div>
-            <div class="alert-note">
-              Alerts compare successive observed YES bids. Model watch requires
-              a threshold move plus positive calculated open-interest value; it
-              is not an ROI model or a news attribution.
-            </div>
-          </article>
-        </section>
-        <section class="content-grid lower-grid">
-          <article class="panel paper-panel">
-            <div class="panel-title">
-              <div>
-                <span class="section-icon violet">⇄</span>
-                <div>
-                  <h2>Paper-trading lab</h2>
-                  <p>Automated strategy simulation · never sends orders</p>
-                </div>
-              </div>
-              <span class="tag tag-purple">SIMULATED</span>
-            </div>
-            <div class="strategy-row">
-              <div>
-                <b>Momentum replay</b
-                ><small
-                  >Paper buy one YES contract after a +$0.10 observed jump; one
-                  entry per market per hour.</small
-                >
-              </div>
-              <label class="switch"
-                ><input type="checkbox" id="strategyToggle" /><span></span
-                ><em>Auto</em></label
-              >
-            </div>
-            <div class="paper-controls">
-              <label
-                >Simulated contracts
-                <select id="contractCount">
-                  <option>1</option>
-                  <option>5</option>
-                  <option>10</option>
-                </select></label
-              ><button class="button button-light" id="exportTrades">
-                Export trades</button
-              ><button class="button button-danger-light" id="resetPaper">
-                Reset paper ledger
-              </button>
-            </div>
-            <div class="table-wrap compact">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Market</th>
-                    <th>Side</th>
-                    <th>Entry</th>
-                    <th>Contracts</th>
-                    <th>Result</th>
-                    <th>Paper P&amp;L</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                <tbody id="tradeRows">
-                  <tr>
-                    <td colspan="7" class="empty-state">No paper trades yet</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="fine-print">
-              Simulated fills use the displayed YES bid and ignore fees,
-              slippage, and execution risk. Resolved outcomes are copied from
-              Kalshi’s market result; unsettled P&amp;L remains blank.
-            </p>
-          </article>
+          <div class="chat-feed"><div class="chat-row"><time>14:51:49</time><span class="chat-delta down">▼ $0.4040</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID" target="_blank" rel="noreferrer">Hunter Biden</a> <small>$0.8100 → $0.4060 · elections</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta down">▼ $0.4005</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-AKLO" target="_blank" rel="noreferrer">Amy Klobuchar</a> <small>$0.8030 → $0.4025 · elections</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta down">▼ $0.4665</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-JP" target="_blank" rel="noreferrer">Jared Polis</a> <small>$0.9430 → $0.4765 · elections</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMR/KXPRESNOMR-28-EKIR" target="_blank" rel="noreferrer">Erika Kirk</a> <small>$0.0030 → $0.5000 · elections</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.3450</span><span class="chat-body"><a href="https://kalshi.com/markets/KXBTC50VS100/KXBTC50VS100-BTC-26DEC31" target="_blank" rel="noreferrer">50,000 first</a> <small>$0.2800 → $0.6250 · crypto</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-MPAV" target="_blank" rel="noreferrer">Matthieu Pavon</a> <small>$0.0030 → $0.5000 · golf</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-TCRO" target="_blank" rel="noreferrer">Trace Crowe</a> <small>$0.0030 → $0.5000 · golf</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-RHOE" target="_blank" rel="noreferrer">Rico Hoey</a> <small>$0.0030 → $0.5000 · golf</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-BMAR" target="_blank" rel="noreferrer">Ben Martin</a> <small>$0.0030 → $0.5000 · golf</small></span></div><div class="chat-row"><time>14:51:49</time><span class="chat-delta up">▲ $0.4970</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPGATOUR/KXPGATOUR-THRC26-APUT" target="_blank" rel="noreferrer">Andrew Putnam</a> <small>$0.0030 → $0.5000 · golf</small></span></div><div class="chat-row"><time>14:46:41</time><span class="chat-delta up">▲ $0.1700</span><span class="chat-body"><a href="https://kalshi.com/markets/KXAAAGASD/KXAAAGASD-26NOV21-3.6600" target="_blank" rel="noreferrer">Above 3.6600</a> <small>$0.3100 → $0.4800 · gas-prices</small></span></div><div class="chat-row"><time>14:46:41</time><span class="chat-delta down">▼ $0.4040</span><span class="chat-body"><a href="https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-HBID" target="_blank" rel="noreferrer">Hunter Biden</a> <small>$0.8100 → $0.4060 · elections</small></span></div></div>
         </section>
         <footer class="site-footer">
-          <span
-            >Built for monitoring and strategy testing. Not investment
-            advice.</span
-          ><span
-            ><a href="summary.html">Methods &amp; sources</a
-            ><a href="review.html">Flagged for review</a></span
-          >
+          <span>Simulated trading and public demo market data. Not investment advice.</span>
+          <span><a href="methodology.html">Methods &amp; sources</a>
+          <a href="review.html">Flagged for review</a></span>
         </footer>
       </main>
     </div>
-    <div class="toast" id="toast" role="status"></div>
-    <script src="assets/app.js" defer></script>
+    <script src="assets/nav.js" defer></script>
+    <script src="assets/desk.js" defer></script>
   </body>
 </html>

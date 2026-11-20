@@ -1,0 +1,85 @@
+name: Kalshi dashboard — collect, build, deploy
+
+on:
+  schedule:
+    # Every 5 minutes. GitHub's scheduler is best-effort and can lag on a busy
+    # queue; the dashboard's own refresh loop covers freshness in between.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      market_cap:
+        description: "Markets to track per topic"
+        default: "150"
+  push:
+    # main publishes the site; the working branch is included so the pipeline
+    # can be exercised before merge.
+    branches: ["main", "arena/f5837994-trade2"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Syntax check the front-end
+        run: node --check assets/desk.js
+
+      - name: Collect
+        env:
+          MARKET_CAP: ${{ github.event.inputs.market_cap || '150' }}
+          KALSHI_API_KEY_ID: ${{ secrets.KALSHI_API_KEY_ID }}
+          KALSHI_PRIVATE_KEY_PATH: ${{ secrets.KALSHI_PRIVATE_KEY_PATH }}
+          KALSHI_PRIVATE_KEY: ${{ secrets.KALSHI_PRIVATE_KEY }}
+        run: |
+          if [ -n "$KALSHI_PRIVATE_KEY" ]; then
+            printf '%s\n' "$KALSHI_PRIVATE_KEY" > /tmp/kalshi.pem
+            export KALSHI_PRIVATE_KEY_PATH=/tmp/kalshi.pem
+          fi
+          python3 -m collector.collector --market-cap "$MARKET_CAP" --orderbook-cap 300
+
+      - name: Rebuild static site data
+        run: python3 -m site_build.build
+
+      - name: Link check
+        run: python3 tools/linkcheck.py
+
+      - name: Commit data
+        run: |
+          git config user.name  "kalshi-collector[bot]"
+          git config user.email "kalshi-collector@users.noreply.github.com"
+          git add -f data/ *.html categories/ assets/live.json
+          if git diff --cached --quiet; then
+            echo "no data change"
+            exit 0
+          fi
+          git commit -m "chore(data): collector run $(date -u +%FT%TZ) [skip ci]"
+          # Another session or a concurrent run may have pushed; rebase and retry
+          # instead of failing the whole collection.
+          for attempt in 1 2 3; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && \
+               git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          echo "::error::could not push collected data after 3 attempts"
+          exit 1

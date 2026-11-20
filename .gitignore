@@ -1,10 +1,6 @@
-# build output and collector state (state is restored by GitHub Actions cache, never committed)
-_site/
-state/
-node_modules/
-*.log
-# never commit credentials
-.env
-.env.*
-*.pem
-*.key
+__pycache__/
+*.pyc
+.venv/
+/tmp/
+*.tmp
+data/portfolio_state.json.tmp
