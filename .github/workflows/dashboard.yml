@@ -51,6 +51,7 @@ jobs:
       - name: Collect public Kalshi data (production by default; fails closed)
         id: collect
         continue-on-error: true
+        timeout-minutes: 14
         env:
           KALSHI_BASE: ${{ vars.KALSHI_BASE }}
         run: node scripts/collect.mjs --state state --out kalshi-dashboard/data

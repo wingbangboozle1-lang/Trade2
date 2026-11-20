@@ -30,3 +30,17 @@ test('a successful response resets the consecutive-error count', async () => {
   }
   assert.equal(breakerTripped(), false);
 });
+
+test('a 429 with a long Retry-After trips the breaker instead of sleeping past the run deadline', async () => {
+  configureBreaker({ limit: 6, deadlineMs: Date.now() + 5000 });
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    return { ok: false, status: 429, headers: new Map([['retry-after', '3600']]), text: async () => '' };
+  };
+  const started = Date.now();
+  await assert.rejects(getPublic('https://x.invalid/trade-api/v2', '/markets', {}, { fetchImpl, retries: 3, minGapMs: 0 }), KalshiNetworkBreaker);
+  assert.ok(Date.now() - started < 2000, 'returns without sleeping for an hour');
+  assert.equal(breakerTripped(), true);
+  assert.equal(calls, 1);
+});
