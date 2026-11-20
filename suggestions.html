@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f8f7" />
+    <meta name="description" content="Prioritised ways to make the Kalshi monitor more live and interactive." />
+    <title>Suggestions — Kalshi Monitor</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark">K</span
+          ><span><b>Market Desk</b><small>Kalshi · Demo monitor</small></span></a
+        >
+        <div class="side-label">Topics</div>
+        <nav class="side-nav" aria-label="Topics">
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="categories/gas-prices.html"><span>⌁</span> Gas prices</a>
+          <a href="categories/elections.html"><span>◉</span> Elections</a>
+          <a href="categories/culture.html"><span>✳</span> Culture</a>
+          <a href="categories/crypto.html"><span>₿</span> Crypto</a>
+          <a href="categories/golf.html"><span>⛳</span> Golf</a>
+        </nav>
+        <div class="side-label">Research</div>
+        <nav class="side-nav" aria-label="Research">
+          <a href="live.html"><span>◈</span> Live desk</a>
+          <a href="index.html"><span>◫</span> Overview</a>
+          <a href="summary.html"><span>▤</span> Executive summary</a>
+          <a href="resolutions.html"><span>✓</span> Resolved</a>
+          <a href="trades.html"><span>⇄</span> Trades</a>
+          <a href="methodology.html"><span>⚙</span> Methodology</a>
+          <a href="review.html"><span>⚑</span> Flagged for review</a>
+        </nav>
+        <div class="sidebar-foot">
+          <span class="dot"></span><span>Public demo data</span
+          ><a href="https://demo.kalshi.co/" target="_blank" rel="noreferrer"
+            >Open Kalshi demo ↗</a
+          >
+        </div>
+      </aside>
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb">Workspace <span>/</span> Suggestions</div>
+          <div class="top-actions">
+            <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
+            <time id="updatedAt">Snapshot 2026-11-20T19:25:15Z</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795202715.7196808">26 min old</span>
+          </div>
+        </header>
+        <section class="page-heading">
+          <div><div class="eyebrow">ROADMAP · MAKING THE DESK LIVE</div>
+          <h1>Suggestions</h1>
+          <p>Prioritised, concrete ways to make this site more live and more
+          interactive. Each item states what it is, why it matters, the
+          effort it takes, and where it already stands. Where an official
+          Kalshi page supports the idea, it is linked.</p></div>
+        </section>
+        <div class="notice notice-info">
+          <span>ⓘ</span>
+          <div><b>How to read this page</b>
+          <p><span class="sug-status shipped">Shipped</span> is already on the
+          site. <span class="sug-status next">Next</span> is a planned change.
+          <span class="sug-status review">Flagged for review</span> is an open
+          question that needs a decision. <span class="sug-status credentials">Needs
+          demo credentials</span> cannot be completed from this repository
+          alone.</p></div>
+        </div>
+        
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Liveness — how the data arrives</h2>
+              <p>What would make the desk more live and more usable</p></div></div>
+          </div>
+          <div class="sug-grid">
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Push the collector cadence from 15 minutes down to 5</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> A scheduled GitHub Actions run rebuilds the snapshot every few minutes, and the browser polls <code>assets/live.json</code> every 30 seconds.</p>
+              <p class="sug-why"><b>Why</b> A swing of $0.10 on a 30-cent contract is a 33% move. At a 15-minute collection gap, most of those swings happen between two snapshots and are never observed.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">Candlestick endpoint (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Subscribe to the Kalshi WebSocket feed instead of polling</h3>
+                <span class="sug-status next">Next</span>
+              </div>
+              <p class="sug-what"><b>What</b> Replace the REST poll with the documented WebSocket channel at <code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code> and push every tick straight into the page.</p>
+              <p class="sug-why"><b>Why</b> Ticks arrive immediately instead of up to 30 seconds late, and the chart stops depending on a GitHub Pages rebuild to show a fresh price.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Medium</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noreferrer">WebSocket quick start (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Run the collector on a schedule that is not GitHub&#x27;s</h3>
+                <span class="sug-status next">Next</span>
+              </div>
+              <p class="sug-what"><b>What</b> Move the same collector script to a small always-on host (or a self-hosted runner) and keep GitHub Actions as the fallback.</p>
+              <p class="sug-why"><b>Why</b> GitHub's scheduler is best-effort and can lag behind on a busy queue, which is why a snapshot can look older than the badge suggests.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Medium</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/api_environments" target="_blank" rel="noreferrer">API environments (official) ↗</a></div>
+            </article></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Interactivity — what the trader sees</h2>
+              <p>What would make the desk more live and more usable</p></div></div>
+          </div>
+          <div class="sug-grid">
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Let the two chats filter by topic and by direction</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> Add topic chips (gas, elections, culture, crypto, golf) and up/down toggles above each chat, and keep the filter in the URL so a view can be shared.</p>
+              <p class="sug-why"><b>Why</b> Right now the chats mix all five topics into one column, so the eye has to do the grouping that the page could do.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">Get Markets (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Add a spread-history strip under the price chart</h3>
+                <span class="sug-status next">Next</span>
+              </div>
+              <p class="sug-what"><b>What</b> Plot the implied spread alongside the price line so a wide-spread quote is visible next to the move it produced.</p>
+              <p class="sug-why"><b>Why</b> Several of the largest recorded moves sit on markets whose book is effectively empty, where the midpoint moves a long way without a fillable price.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">Order book responses (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>One-click depth snapshot in every chat row</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> Render the resting size at the top three price levels inside the alert row, not only in the side panel, so a trader can judge whether a jump was executable.</p>
+              <p class="sug-why"><b>Why</b> The brief asks how many contracts are available at a given price; that number belongs next to the alert that raised the question.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">Order book responses (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Keyboard shortcuts and a command palette</h3>
+                <span class="sug-status next">Next</span>
+              </div>
+              <p class="sug-what"><b>What</b> Press <kbd>j</kbd>/<kbd>k</kbd> to move through markets, <kbd>c</kbd> to chart the selected one, and <kbd>/</kbd> to jump to a ticker.</p>
+              <p class="sug-why"><b>Why</b> A desk that is watched continuously is faster when the common actions need no mouse.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              </div>
+            </article></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Alerts — making the ≥ $0.10 signal trustworthy</h2>
+              <p>What would make the desk more live and more usable</p></div></div>
+          </div>
+          <div class="sug-grid">
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Show the reference price and window on every alert</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> Each chat row already prints the two prices it compared. Add the explicit reference (bar open or previous snapshot) and the elapsed time.</p>
+              <p class="sug-why"><b>Why</b> Without the reference, a reader cannot tell a real $0.10 move from a change of measurement basis.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">Candlestick endpoint (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Suppress alerts on markets with no executable size</h3>
+                <span class="sug-status review">Flagged for review</span>
+              </div>
+              <p class="sug-what"><b>What</b> Require a minimum resting size on the side that moved before an alert is published.</p>
+              <p class="sug-why"><b>Why</b> A midpoint on an empty book can jump a long way and still be untradeable, which is noise in a feed meant to be actionable.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Medium</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noreferrer">Order book responses (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Deduplicate repeated alerts for the same market</h3>
+                <span class="sug-status review">Flagged for review</span>
+              </div>
+              <p class="sug-what"><b>What</b> Collapse repeats of one market inside a reference window into a single row that counts its occurrences.</p>
+              <p class="sug-why"><b>Why</b> The current buffer can show the same market many times in a row, which buries the genuinely new moves.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              </div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Name the candidate cause, never assert it</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> Every ≥ $0.10 row links to the Kalshi event page — which carries Kalshi's own live news feed for that event — and to a news search built from the event title.</p>
+              <p class="sug-why"><b>Why</b> The brief asks for the links that may have caused a jump. Linking to the primary event page and a search is honest; claiming an article caused a move is not.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/events/get-events" target="_blank" rel="noreferrer">Get Events (official) ↗</a></div>
+            </article></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Trust — keeping every number checkable</h2>
+              <p>What would make the desk more live and more usable</p></div></div>
+          </div>
+          <div class="sug-grid">
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Read the real demo account when credentials exist</h3>
+                <span class="sug-status credentials">Needs demo credentials</span>
+              </div>
+              <p class="sug-what"><b>What</b> The adapter for signed <code>GET /portfolio</code>, <code>GET /orders</code> and <code>GET /fills</code> already exists and is unit-tested against a local mock; it activates as soon as the demo key id and private key are set.</p>
+              <p class="sug-why"><b>Why</b> Until then the portfolio page shows a simulated book rather than the demo account the brief asks to track.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low (code done)</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/requests_and_responses" target="_blank" rel="noreferrer">Requests and authentication (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Show the snapshot age on every page</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> The top bar prints how long ago the published snapshot was taken, and the counter keeps ticking while the page is open.</p>
+              <p class="sug-why"><b>Why</b> A dashboard that refreshes every 15 minutes can be half an hour old on a quiet schedule. Saying so is cheaper than being wrong.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noreferrer">Demo environment (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Publish the collector run log next to the data</h3>
+                <span class="sug-status shipped">Shipped</span>
+              </div>
+              <p class="sug-what"><b>What</b> Store the last run's request count, error list and coverage numbers as JSON and render them on the methodology page.</p>
+              <p class="sug-why"><b>Why</b> Coverage gaps are the difference between 'no alerts' and 'no alerts were possible'.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">Get Markets (official) ↗</a></div>
+            </article></div>
+        </section>
+        <footer class="site-footer">
+          <span>Simulated trading and public demo market data. Not investment advice.</span>
+          <span><a href="methodology.html">Methods &amp; sources</a>
+          <a href="review.html">Flagged for review</a></span>
+        </footer>
+      </main>
+    </div>
+    <script src="assets/alerts-view.js" defer></script>
+    <script src="assets/nav.js" defer></script>
+    <script src="assets/desk.js" defer></script>
+  </body>
+</html>

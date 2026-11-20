@@ -1,5 +1,5 @@
 {
- "bankroll": 9786.56,
+ "bankroll": 9373.51,
  "starting_bankroll": 10000.0,
  "positions": [
   {
@@ -25,6 +25,54 @@
    "reason": "net ROI 26% on a 0.03 spread",
    "market_url": "https://kalshi.com/markets/KXBTCY/KXBTCY-27JAN0100-B87500",
    "bankroll_at_entry": 9786.56
+  },
+  {
+   "position_id": "pos-b23d8f3ffd",
+   "ticker": "KXBTCD-26NOV2017-T64999.99",
+   "event_ticker": "KXBTCD-26NOV2017",
+   "topic": "crypto",
+   "title": "$65,000 or above",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 3262.19,
+   "entry_price": 0.06,
+   "entry_ts": 1795202282.6330771,
+   "entry_fee": 12.88,
+   "current_price": 0.015,
+   "unrealized": -146.7986,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 38% on a 0.05 spread",
+   "market_url": "https://kalshi.com/markets/KXBTCD/KXBTCD-26NOV2017-T64999.99",
+   "bankroll_at_entry": 9577.9486
+  },
+  {
+   "position_id": "pos-7b12434142",
+   "ticker": "KXBTC15M-26NOV201430-30",
+   "event_ticker": "KXBTC15M-26NOV201430",
+   "topic": "crypto",
+   "title": "Target Price: $58,037.85",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4788.98,
+   "entry_price": 0.04,
+   "entry_ts": 1795202847.6270945,
+   "entry_fee": 12.88,
+   "current_price": 0.04,
+   "unrealized": 0.0,
+   "status": "open",
+   "exit_price": null,
+   "exit_ts": null,
+   "exit_fee": 0.0,
+   "realized": 0.0,
+   "result": "",
+   "reason": "net ROI 40% on a 0.04 spread",
+   "market_url": "https://kalshi.com/markets/KXBTC15M/KXBTC15M-26NOV201430-30",
+   "bankroll_at_entry": 9373.5108
   }
  ],
  "trades": [
@@ -40,6 +88,32 @@
    "action": "open",
    "realized": 0.0,
    "note": "net ROI 26% on a 0.03 spread"
+  },
+  {
+   "trade_id": "tr-7e617b1b34",
+   "ts": 1795202282.6330771,
+   "ticker": "KXBTCD-26NOV2017-T64999.99",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 3262.19,
+   "price": 0.06,
+   "fee": 12.88,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 38% on a 0.05 spread"
+  },
+  {
+   "trade_id": "tr-04120d2b02",
+   "ts": 1795202847.6270945,
+   "ticker": "KXBTC15M-26NOV201430-30",
+   "strategy": "value",
+   "side": "yes",
+   "contracts": 4788.98,
+   "price": 0.04,
+   "fee": 12.88,
+   "action": "open",
+   "realized": 0.0,
+   "note": "net ROI 40% on a 0.04 spread"
   }
  ],
  "equity_curve": [
@@ -180,6 +254,18 @@
    "equity": 9861.56,
    "realized": 0,
    "open": 200.0
+  },
+  {
+   "ts": 1795202171.80938,
+   "equity": 9898.68,
+   "realized": 0,
+   "open": 395.73
+  },
+  {
+   "ts": 1795202715.7196808,
+   "equity": 9689.0,
+   "realized": 0,
+   "open": 587.29
   }
  ],
  "started_at": 1795182592.2117689
