@@ -647,3 +647,65 @@ jsdom boot of `live.html` with fetch stubbed: 32 raw alerts → 9 grouped rows,
 see above); `config/flags.json` F-05 note remains accurate (SDK default base URL
 is production) but the *pipeline* default in `scripts/collect.mjs` is
 `arena-e4e8f4e1`'s claimed fix — this session did not touch it.
+
+---
+
+# Board D (kept verbatim) — session `arena-5bbd15fd`
+
+Repo: `wingbangboozle1-lang/Trade2` · Working branch: `arena/5bbd15fd-trade2`
+(based on `main` @ `1bc32b7`, merged up to `origin/main` @ `58be24d`).
+
+Role: **final integration session** — re-verify the combined tree, fix defects
+still open on `main`, then PR → merge → confirm GitHub Pages → record the
+result here. Status values: `unclaimed` · `in progress` · `done` ·
+`needs review`.
+
+## Session registry
+
+| Session ID | Branch | Role | Status |
+| - | - | - | - |
+| `arena-5bbd15fd` | `arena/5bbd15fd-trade2` | integration + residual defect fixes | in progress |
+
+## Task board — arena-5bbd15fd
+
+| ID | Task | Status | File scope |
+| - | - | - | - |
+| T-D1 | Register claim, merge current `main`, full verification run | done | `COORDINATION.md` |
+| T-D2 | Resolutions visibility: per-topic YES/NO lists are empty on the root site because settled-market records carry `series_ticker: null` and the topic lookup keys on it; out-of-scope markets (soccer etc.) fill the 2 000-record store | in progress | `collector/collector.py`, `tests/` |
+| T-D3 | Model shortlist chat is structurally empty (swing ∩ signal is near-always ∅): render the model's high-ROI signals as chat rows, statically and in JS | in progress | `site_build/build.py`, `assets/desk.js`, `tests/` |
+| T-D4 | Landing page (`index.html`) shows only one of the two required scrolling chats | in progress | `site_build/build.py` |
+| T-D5 | Static swing-chat rows duplicate identical re-fires; group them the way `alerts-view.js` does | in progress | `site_build/build.py` |
+| T-D6 | Integration: full test suite, link check, PR → `main`, merge, confirm Pages deploy, record result | unclaimed | `COORDINATION.md` |
+
+## Log — arena-5bbd15fd
+
+- 2026-11-20 ~19:15 UTC — read this board first (protocol). Found boards A/B/C
+  from earlier sessions; all their PRs (#1–#22) are merged. Claimed T-D1–T-D6
+  because no other session had claimed these defects. Merged `origin/main`
+  (`1bc32b7..58be24d`, 43 commits) into this branch — clean merge, no
+  conflicts. Verification on the merged tree: `python3 -m unittest discover -s tests`
+  → 73 OK (1 pre-existing skip); `npm test` → 29/29; `node --check` on
+  `assets/desk.js` and `assets/alerts-view.js` → OK; `python3 tools/linkcheck.py`
+  → 45 pages / 503 links / 0 errors; `python3 tools/rowsource_check.py` → report
+  only (731 listed issues are blank/unverified cells, by design, plus the
+  known `kd.markets` blanks — not blocking, see T-D6 record).
+- Defects confirmed open on `main` @ `58be24d` (each verified by reading the
+  code and the current `data/live.json`, generated 19:09:37Z):
+  1. `data/live.json` → `resolutions_count: 2000` but **every per-topic list is
+     empty** (`gas-prices: 0, elections: 0, culture: 0, crypto: 0, golf: 0`):
+     all 2 000 stored records have `series_ticker: null` (Kalshi market objects
+     do not carry that field — same finding session c0205283 logged), and the
+     topic lookup at `collector/collector.py` keys on it. The store is also
+     filled with out-of-scope settlements (510 soccer, 110 quicksettle, …) that
+     crowd out the five tracked topics. → T-D2.
+  2. `signals: 0`, `high_roi_alerts: 0` → the model shortlist chat renders its
+     honest empty state on every run because it intersects swing alerts with
+     signals (near-always ∅ by construction). → T-D3.
+  3. `index.html` has one chat panel; the brief requires two. → T-D4.
+  4. The static landing chat shows 3 byte-identical AKLO rows (re-fires of one
+     swing); `assets/alerts-view.js` groups them live but the pre-rendered page
+     does not. (These three records also have `reference_basis: null`, so the
+     next collector run drops them under PR #20's rule; the static grouping fix
+     still stands for future re-fires.) → T-D5.
+- Not touched: `docs/**`, `kalshi-dashboard/**`, `scripts/**`, `config/**`,
+  other sessions' audit files. `README.md` left as-is (R-5788-1).
