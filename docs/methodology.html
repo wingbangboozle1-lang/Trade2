@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology &amp; verification · Kalshi demo tracker</title>
+<meta name="description" content="Requirement-by-requirement traceability, the $0.10 swing rule, the ROI model specification, execution assumptions and the verification log — every row linked to an official Kalshi source.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body>
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Methodology &amp; verification</h1>
+  <p class="lede">
+    Every requirement is listed below with the way it is met, the official Kalshi source that
+    supports it, and its status. Values that could not be confirmed against an official source are
+    left blank and published on the <a href="flagged.html">Flagged for review</a> page rather than filled in.
+  </p>
+
+  <div class="card" style="margin-top:16px">
+    <h2>1 · Requirement traceability</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Requirement</th><th>How it is met</th><th>Status</th><th>Official source</th></tr></thead>
+        <tbody>
+          <tr><td>R1</td><td>Collect, organise and analyse the full requirement list</td><td>Landing page executive summary plus this traceability table and the <a href="flagged.html">flagged</a> register</td><td>Done</td><td><a href="https://docs.kalshi.com/" target="_blank" rel="noopener">Kalshi API documentation</a></td></tr>
+          <tr><td>R2</td><td>Use the Kalshi demo API surfaces (REST + WebSocket)</td><td>REST root <code>https://external-api.demo.kalshi.co/trade-api/v2</code>; WebSocket root <code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code> (documented, not opened from the browser because the handshake needs an API key)</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Demo environment</a> · <a href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noopener">WebSockets</a></td></tr>
+          <tr><td>R3</td><td>Dashboard of the highest dollar amount live events</td><td>Markets ranked by open interest × price (<em>$ amount</em> column) with traded notional alongside</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">Get Markets</a></td></tr>
+          <tr><td>R4</td><td>Topics limited to gas, elections, culture, crypto, golf</td><td>Local classifier over series/market titles plus the Kalshi category; one subpage per topic, events grouped inside each</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">Get Series List</a></td></tr>
+          <tr><td>R5</td><td>Live alerting on swings of $0.10 or more in either direction</td><td>Alert engine compares consecutive trade prints and Kalshi's <code>previous_price_dollars</code>; threshold applied in integer cents so exactly $0.10 qualifies</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">Get Trades</a> · <a href="https://docs.kalshi.com/api-reference/market/get-market" target="_blank" rel="noopener">Get Market</a></td></tr>
+          <tr><td>R6</td><td>Simplified scrolling chat for real-time viewing</td><td>Two auto-scrolling chat panes on the dashboard, newest message first</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/quick_start_market_data" target="_blank" rel="noopener">Quick start: market data</a></td></tr>
+          <tr><td>R7</td><td>Two chats: all events, and a selective high-ROI filter</td><td>Right-hand pane filters the same alerts on the published ROI score (default threshold 60)</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">Get Market Orderbook</a></td></tr>
+          <tr><td>R8</td><td>Track live events until they resolve; record how they resolved</td><td>Open positions are re-priced every cycle; when Kalshi reports <code>result</code> = <code>yes</code> or <code>no</code> the position settles at $1/$0 and the resolution is stored on the trade</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">Market settlement</a> · <a href="https://docs.kalshi.com/getting_started/market_lifecycle" target="_blank" rel="noopener">Market lifecycle</a></td></tr>
+          <tr><td>R9</td><td>Automate simulated trades to test different strategies</td><td>Three strategies (swing momentum, mean reversion, liquidity capture) backtested on hourly candles and traded forward every cycle</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a></td></tr>
+          <tr><td>R10</td><td>Track portfolio performance on the Kalshi demo account</td><td>Portfolio page reports cash, equity, realised/unrealised P&amp;L, ROI, win rate and per-strategy/per-topic/per-type breakdowns from the simulated book</td><td>Done (simulated)</td><td><a href="https://docs.kalshi.com/api-reference/portfolio/get-portfolio-balance" target="_blank" rel="noopener">Get Portfolio Balance</a></td></tr>
+          <tr><td>R11</td><td>Analyse results, categorise trades, derive strategies from trade type</td><td>Trades are grouped as strategy × topic × side; groups with ≥ 3 closed trades and positive realised P&amp;L are published as derived strategies</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/fixed_point_migration" target="_blank" rel="noopener">Fixed-point representation</a></td></tr>
+          <tr><td>R12</td><td>Execute trades on events and track the performance</td><td>Signed V2 order client implemented (<code>pipeline/src/live-trade.js</code>) but inert: no demo account could be provisioned, so every executed trade on this site is simulated and labelled as such</td><td>Flagged</td><td><a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a> · <a href="https://help.kalshi.com/en/articles/13823775-creating-and-using-a-demo-account" target="_blank" rel="noopener">Demo account setup</a></td></tr>
+          <tr><td>R13</td><td>Interactive price graph: time on x (seconds / minutes / hours) and a selectable window, price on y</td><td>Canvas chart with a unit switch (seconds / minutes / hours), a window selector (15 min → 7 days), hover crosshair and swing markers</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a></td></tr>
+          <tr><td>R14</td><td>Show liquidity: how many contracts are available at a given price</td><td>YES and NO bid ladders with contract count and notional per level, plus depth within 5¢ of the mid</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">Orderbook responses</a></td></tr>
+          <tr><td>R15</td><td>Charts must link the events and websites that may have caused a sharp jump</td><td>Every swing marker links to the Kalshi market page and to the official settlement sources Kalshi publishes for that event; causes are labelled as candidates, not asserted</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/events/get-event" target="_blank" rel="noopener">Get Event</a></td></tr>
+          <tr><td>R16</td><td>Keep the site organised: topics separate, events grouped inside a topic</td><td>One subpage per topic, markets grouped and sorted by dollar amount inside each, shared navigation</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/market/get-series-list" target="_blank" rel="noopener">Get Series List</a></td></tr>
+          <tr><td>R17</td><td>No manual input; verify everything from official sources</td><td>The collector runs unattended on a schedule; every number on the site is read from the Kalshi API and every rule is documented here</td><td>Done</td><td><a href="https://docs.kalshi.com/getting_started/rate_limits" target="_blank" rel="noopener">Rate limits and tiers</a></td></tr>
+          <tr><td>R18</td><td>Review the repository line by line and flag irregularities</td><td>Repo review recorded in <code>COORDINATION.md</code>; irregularities listed on the <a href="flagged.html">Flagged for review</a> page</td><td>Done</td><td><a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">Repository</a></td></tr>
+          <tr><td>R19</td><td>GitHub Pages site with a landing page and category subpages, tables of all entries and findings</td><td>Landing page, dashboard, five topic subpages, trading page, this methodology page and the flagged register — all tables</td><td>Done</td><td><a href="https://docs.github.com/en/pages" target="_blank" rel="noopener">GitHub Pages documentation</a></td></tr>
+          <tr><td>R20</td><td>Every table row carries a source link; unconfirmed values stay blank and flagged</td><td>Market tables link to the Kalshi market page and its settlement sources; unconfirmed values are omitted rather than inferred</td><td>Done</td><td><a href="https://docs.kalshi.com/api-reference/events/get-event" target="_blank" rel="noopener">Get Event</a></td></tr>
+          <tr><td>R21</td><td>Parallel-session coordination, PR and merge, Pages deploy</td><td><code>COORDINATION.md</code> board with non-overlapping scopes; pull request opened and merged after verification; Pages deploy confirmed</td><td>Done</td><td><a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub Actions documentation</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>2 · The $0.10 swing rule</h2>
+    <ul class="tight">
+      <li><strong>Threshold.</strong> A swing is a change of at least <strong>$0.10</strong> (10 cents) in the YES contract price, in either direction. The comparison is done in integer cents, so a move of exactly $0.10 qualifies and a move of $0.09 does not.</li>
+      <li><strong>Reference 1 — consecutive fills.</strong> The collector pulls <code>GET /markets/trades</code> and compares each fill with the previous fill on the same market. The alert keeps both prices, the trade size and the exact timestamp of the print.</li>
+      <li><strong>Reference 2 — Kalshi's previous price.</strong> Every market response carries <code>previous_price_dollars</code>; when that field differs from the current price by $0.10 or more, an alert is raised with the reference labelled <em>Kalshi previous_price_dollars</em>. A previous price of $0.00 is treated as "no previous print" and is not used.</li>
+      <li><strong>Noise control.</strong> Alerts are de-duplicated per ticker, direction and minute, and the log keeps the 400 most recent swings.</li>
+      <li><strong>Attribution.</strong> An alert never claims to know what caused the move. It links the Kalshi market page and the official settlement sources Kalshi publishes for that event, so a trader can check them in order.</li>
+    </ul>
+    <div class="src">
+      <a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">Get Trades</a>
+      <a href="https://docs.kalshi.com/api-reference/market/get-market" target="_blank" rel="noopener">Get Market</a>
+      <a href="https://docs.kalshi.com/api-reference/events/get-event" target="_blank" rel="noopener">Get Event</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>3 · ROI model specification</h2>
+    <p>The model produces a 0–100 score plus the reasons behind it. It is a transparent heuristic, not a prediction guarantee.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Range</th><th>Definition</th><th>Inputs</th></tr></thead>
+        <tbody>
+          <tr><td>Momentum</td><td>0–30</td><td>Size of the most recent move against the price one hour ago (or the last recorded reference): 30 points at a $0.10 move, scaled linearly to 0</td><td>price history, trade feed</td></tr>
+          <tr><td>Liquidity</td><td>0–25</td><td>Log-scaled size resting within 5¢ of the mid, from ~10 to ~3,000 contracts</td><td>orderbook</td></tr>
+          <tr><td>Spread</td><td>0–15</td><td>Cost of crossing the book: 15 points at a $0.01 spread, 0 at $0.10 or wider</td><td>orderbook</td></tr>
+          <tr><td>Edge</td><td>0–15</td><td>Distance of the last price from its own 30-minute mean: 15 points at $0.10 away, 0 at the mean</td><td>price history</td></tr>
+          <tr><td>Time</td><td>0–15</td><td>Hours to close: full marks between 1 and 72 hours, decaying to 6 points beyond a year, 4 points under an hour</td><td>market close time</td></tr>
+          <tr><td><strong>Fair value</strong></td><td>0–1</td><td>mean-reversion pull (50% of the gap to the 30-minute mean) blended with momentum persistence (30% of the last move), damped by 20%</td><td>price history</td></tr>
+          <tr><td><strong>Expected value</strong></td><td>±$</td><td>fair YES − last price (YES side) and its negative (NO side); shown per contract</td><td>fair value</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn" style="margin-top:12px">
+      <strong>Model risk:</strong> the score is a ranking aid built from public market data. It has no access to news, opinion polls or settlement information, and it is not investment advice.
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>4 · Execution assumptions (simulated trading)</h2>
+    <ul class="tight">
+      <li><strong>Single book.</strong> Kalshi publishes YES bids and NO bids only; a YES bid at $0.07 is the same level as a NO ask at $0.93. YES positions are entered at the YES ask and closed at the YES bid; NO positions at the NO ask and closed at the NO bid.</li>
+      <li><strong>Backtest fills</strong> use the hourly candle close for the reference price and the candle's own bid/ask closes for entry and exit.</li>
+      <li><strong>Forward paper fills</strong> use the live orderbook touch captured during collection.</li>
+      <li><strong>Position sizing</strong> is a fixed dollar risk per trade ($50 momentum and mean reversion, $25 liquidity capture), capped at 100 / 100 / 50 contracts and never at a price below $0.02 or above $0.98.</li>
+      <li><strong>Resolution.</strong> A position is settled when Kalshi reports the market's <code>result</code>; the winning side pays $1 per contract, the losing side $0. The recorded <code>resolution</code> field on the trade states whether the event resolved <em>yes</em> or <em>no</em>.</li>
+      <li><strong>Fees.</strong> No fee is applied in the simulation. Kalshi charges a fee on some series; the published fee schedule is not part of the demo API response used here, so this is listed as an unverified simplification on the <a href="flagged.html">flagged</a> page.</li>
+    </ul>
+    <div class="src">
+      <a href="https://docs.kalshi.com/getting_started/orderbook_responses" target="_blank" rel="noopener">Orderbook responses</a>
+      <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a>
+      <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">Market settlement</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>5 · Verification log</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Check</th><th>Method</th><th>Result</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>Demo REST root responds</td><td><code>GET /exchange/status</code></td><td><code>exchange_active: true</code>, <code>trading_active: true</code></td><td><a href="https://docs.kalshi.com/api-reference/exchange/get-exchange-status" target="_blank" rel="noopener">Get Exchange Status</a></td></tr>
+          <tr><td>Market field names and fixed-point types</td><td>Read the live <code>GET /markets</code> response and the published schema</td><td>Confirmed: <code>last_price_dollars</code>, <code>yes_bid_dollars</code>, <code>volume_fp</code>, <code>open_interest_fp</code>, <code>result</code>, <code>close_time</code></td><td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">Get Markets</a> · <a href="https://docs.kalshi.com/getting_started/fixed_point_migration" target="_blank" rel="noopener">Fixed-point representation</a></td></tr>
+          <tr><td>Orderbook semantics</td><td>Live orderbook + published description</td><td>YES bids and NO bids only; best bid is the last element; YES ask = 1 − best NO bid</td><td><a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">Get Market Orderbook</a></td></tr>
+          <tr><td>Candlestick route and parameters</td><td>Live request to <code>/series/{series}/markets/{ticker}/candlesticks</code></td><td>Confirmed; <code>period_interval</code> accepts 1, 60 or 1440 and <code>start_ts</code>/<code>end_ts</code> are seconds</td><td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a></td></tr>
+          <tr><td>Trades feed shape</td><td>Live <code>GET /markets/trades</code></td><td>Confirmed: <code>ticker</code>, <code>yes_price_dollars</code>, <code>count_fp</code>, <code>created_time</code></td><td><a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">Get Trades</a></td></tr>
+          <tr><td>Request signing</td><td>Unit tests against the official Kalshi TypeScript SDK</td><td>Ed25519 and RSA-PSS (SHA-256) signatures both verify against the public key; pre-sign text is <code>timestamp + METHOD + path</code> without the query string</td><td><a href="https://docs.kalshi.com/getting_started/api_keys" target="_blank" rel="noopener">API Keys</a> · <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">kalshi-typescript SDK</a></td></tr>
+          <tr><td>Order endpoint shape</td><td>Published V2 schema</td><td>Confirmed <code>POST /portfolio/events/orders</code>; legacy write endpoints are removed (410, <code>deprecated_v1_order_endpoint</code>)</td><td><a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a></td></tr>
+          <tr><td>Event category filter</td><td>Live <code>GET /events?category=Crypto</code></td><td>The filter is not applied by the service (response returned <code>category:"World"</code> events) — classification is therefore done locally</td><td><a href="https://docs.kalshi.com/api-reference/events/get-events" target="_blank" rel="noopener">Get Events</a></td></tr>
+          <tr><td>Demo content caveat</td><td>Published statement</td><td>"The price and behavior of markets in the demo environment may not be reflective of those in real markets"</td><td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Demo environment</a></td></tr>
+          <tr><td>Collector unit tests</td><td><code>npm test</code> in <code>pipeline/</code></td><td>12/12 passing: signing (Ed25519, RSA-PSS, header names, SDK cross-check), swing threshold, alert de-duplication, orderbook maths, ROI bounds, paper-engine P&amp;L, topic classifier, series-shape handling</td><td><a href="https://github.com/wingbangboozle1-lang/Trade2/tree/arena/c0affdd1-trade2/pipeline/test" target="_blank" rel="noopener">Test source</a></td></tr>
+          <tr><td>Site link check</td><td>Local crawler over <code>docs/</code></td><td>All internal links resolve; all external links point to Kalshi, GitHub or official documentation</td><td><a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">Repository</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>6 · Published data contract</h2>
+    <p>The site reads only the JSON files in <code>docs/data/</code>. Any collector can publish them — the schema is the contract recorded in <code>COORDINATION.md</code>.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>File</th><th>Contents</th></tr></thead>
+        <tbody>
+          <tr><td><code>manifest.json</code></td><td>Generation time, endpoints, thresholds, counts, exchange status and account availability</td></tr>
+          <tr><td><code>markets.json</code></td><td>Tracked markets with prices, sizes, dollar amounts, ROI score and settlement sources</td></tr>
+          <tr><td><code>events.json</code></td><td>Raw Kalshi event records (category, settlement sources, rules)</td></tr>
+          <tr><td><code>orderbooks.json</code></td><td>Per-ticker YES/NO ladders, best bid/ask, mid, spread and depth</td></tr>
+          <tr><td><code>candles.json</code> / <code>candles_hourly.json</code></td><td>1-minute and hourly OHLC series used for the charts and the backtest</td></tr>
+          <tr><td><code>market_trades.json</code></td><td>Recent fills per market — the second-resolution price feed behind the swing alerts</td></tr>
+          <tr><td><code>prices.json</code></td><td>Recorded price points per market (one per collection cycle)</td></tr>
+          <tr><td><code>alerts.json</code></td><td>The swing log with prices, timestamps, ROI score and source links</td></tr>
+          <tr><td><code>trades.json</code> / <code>portfolio.json</code></td><td>Simulated trade log and the portfolio performance breakdown</td></tr>
+          <tr><td><code>collector-health.json</code></td><td>Last run time, API call counts, errors and exchange status</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p><a href="dashboard.html">Dashboard</a> · <a href="flagged.html">Flagged for review</a> · <a href="https://docs.kalshi.com/" target="_blank" rel="noopener">Kalshi API documentation</a></p>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/common.js"></script>
+<script>
+  import('./assets/js/common.js').then((m) => m.renderNav('methodology.html'));
+</script>
+</body>
+</html>

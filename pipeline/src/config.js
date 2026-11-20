@@ -54,7 +54,7 @@ export const MAX_ALERTS = 400;
 export const MAX_PRICE_POINTS = 2000;
 
 /** Keep at most this many simulated trades in the published trade log. */
-export const MAX_TRADES = 500;
+export const MAX_TRADES = 800;
 
 /** Request timeout (ms). */
 export const REQUEST_TIMEOUT_MS = 30000;

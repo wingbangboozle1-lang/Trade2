@@ -17,6 +17,11 @@ const STRATEGY_META = {
   liquidity_capture: {
     label: 'Liquidity Capture',
     rule: 'Buys the touch in a tight, deep market and aims for a spread-sized gain.',
+    risk: 25,
+  },
+  conviction: {
+    label: 'Conviction (model edge)',
+    rule: 'Buys YES when the published ROI model puts fair value at least $0.03 above the ask.',
     risk: 50,
   },
 };

@@ -47,6 +47,17 @@ export const STRATEGIES = {
     stop_loss: 0.03,
     max_hold_minutes: 480,
   },
+  conviction: {
+    id: 'conviction',
+    label: 'Conviction (model edge)',
+    description: 'Buys YES when the published ROI model puts fair value at least $0.03 above the ask, and exits when the price reaches fair value.',
+    risk_usd: 50,
+    max_contracts: 100,
+    edge_threshold: 0.03,
+    take_profit: 0.04,
+    stop_loss: 0.04,
+    max_hold_minutes: 1440,
+  },
   liquidity_capture: {
     id: 'liquidity_capture',
     label: 'Liquidity Capture',
@@ -126,7 +137,35 @@ function sizePosition(price, strategy) {
  * Strategy signal generation. Each returns null (no trade) or a signal object.
  * `bar` is { ts, price, bid, ask, spread }.
  */
+/**
+ * Fair-value estimate used by the conviction strategy. It mirrors the published
+ * ROI model: mean-reversion pull blended with momentum persistence, damped by 20%.
+ */
+export function fairValue(series, i) {
+  const price = series[i].price;
+  const mean = rollingMean(series, i, 30);
+  const ref = priceBefore(series, i, 5);
+  const move = ref !== null ? price - ref : 0;
+  const pull = mean !== null ? (mean - price) * 0.5 : 0;
+  const persistence = move * 0.3;
+  return Math.min(0.99, Math.max(0.01, price + (pull + persistence) * 0.2));
+}
+
 const SIGNALS = {
+  conviction(series, i) {
+    const strategy = STRATEGIES.conviction;
+    const price = series[i].price;
+    const ask = Number.isFinite(series[i].ask) && series[i].ask > 0 ? series[i].ask : price;
+    const fair = fairValue(series, i);
+    const edge = fair - ask;
+    if (edge < strategy.edge_threshold) return null;
+    if (ask < 0.05 || ask > 0.95) return null;
+    return {
+      side: 'YES',
+      reason: `Model fair value $${fair.toFixed(3)} is $${edge.toFixed(3)} above the ask $${ask.toFixed(3)}`,
+      ref_price: fair,
+    };
+  },
   swing_momentum(series, i, ctx) {
     const strategy = STRATEGIES.swing_momentum;
     const price = series[i].price;
@@ -459,7 +498,7 @@ function groupPerformance(trades, keyFn) {
  */
 function deriveStrategies(byType) {
   return byType
-    .filter((t) => t.closed >= 3 && t.pnl > 0)
+    .filter((t) => t.closed >= 3)
     .map((t) => {
       const [strategy, topic, side] = t.key.split('|');
       const def = STRATEGIES[strategy];
@@ -474,8 +513,10 @@ function deriveStrategies(byType) {
         realized_pnl: t.realized_pnl,
         deployed: t.deployed,
         roi_pct: t.roi_pct,
+        qualified: t.pnl > 0,
         description: `${def ? def.description : ''} Applied to ${topic} markets on the ${side} side: ${t.closed} closed trades, ${t.win_rate}% win rate, $${t.realized_pnl} realized on $${t.deployed} deployed (${t.roi_pct}% ROI).`,
       };
     })
+    .sort((a, b) => (Number(b.qualified) - Number(a.qualified)) || (b.roi_pct - a.roi_pct))
     .slice(0, 8);
 }

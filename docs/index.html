@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalshi demo tracker — live dashboard for gas, elections, culture, crypto and golf</title>
+<meta name="description" content="A live dashboard for Kalshi demo markets in gas prices, elections, culture, crypto and golf: $0.10 swing alerts, liquidity, ROI scoring and simulated trading.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body>
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Live Kalshi demo tracker</h1>
+  <p class="lede">
+    A continuously refreshed view of the highest-dollar live events on the Kalshi
+    <strong>demo</strong> exchange, limited to five topics — <strong>gas prices</strong>,
+    <strong>elections</strong>, <strong>culture</strong>, <strong>crypto</strong> and
+    <strong>golf</strong> — with a real-time alerting system for contract price swings of
+    $0.10 or more, liquidity depth, an explainable ROI model and a fully automated
+    simulated-trading engine.
+  </p>
+
+  <div class="toolbar" style="margin-top:16px">
+    <a class="badge live" href="dashboard.html">Open the live dashboard →</a>
+    <span data-role="status"></span>
+  </div>
+
+  <div class="stats" id="stats" style="margin-top:16px"></div>
+
+  <div class="grid cols-2" style="margin-top:16px">
+    <div class="card">
+      <h2>Executive summary</h2>
+      <ul class="tight">
+        <li><strong>Scope.</strong> Only Kalshi demo markets whose series matches the five tracked topics are collected. The Kalshi API's own <code>category</code> filter on <code>GET /events</code> is ignored by the service, so topics are derived locally from series and market titles, and Kalshi's category strings are stored unedited.</li>
+        <li><strong>Refresh cycle.</strong> A GitHub Actions workflow runs the collector every 10 minutes against <a href="https://external-api.demo.kalshi.co/trade-api/v2" target="_blank" rel="noopener">external-api.demo.kalshi.co/trade-api/v2</a> and commits the snapshot. No manual step, no credentials, no server.</li>
+        <li><strong>Alerts.</strong> A swing is a move of at least <strong>$0.10</strong> in either direction, measured two ways: between consecutive trade prints from the Kalshi trade feed, and against the <code>previous_price_dollars</code> Kalshi reports for the market. Both feeds land in the two scrolling chats on the dashboard.</li>
+        <li><strong>ROI model.</strong> Every market is scored 0–100 from five published components — momentum, liquidity, spread, edge and time-to-close. The right-hand chat filters on that score, and the model prints the reasons behind every score so it can be audited.</li>
+        <li><strong>Liquidity.</strong> The dashboard shows the YES and NO bid ladders with the number of contracts resting at each price, because Kalshi publishes bids only: a YES bid at $0.07 is the same level as a NO ask at $0.93.</li>
+        <li><strong>Trading.</strong> Three strategies (swing momentum, mean reversion, liquidity capture) are backtested on hourly candles and then traded forward on every cycle. Positions are marked to the live bid and settle at $1/$0 when Kalshi reports a resolution of <em>yes</em> or <em>no</em>. Every trade on the site is <strong>simulated</strong>.</li>
+        <li><strong>Honesty guard-rails.</strong> The site never presents a simulated trade as a real fill, and any value that could not be confirmed against an official Kalshi source is left blank and published on the <a href="flagged.html">Flagged for review</a> page.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>What the demo data shows right now</h2>
+      <div id="findings" class="loading">Reading the latest snapshot…</div>
+      <h3 style="margin-top:16px">Sources</h3>
+      <div class="src">
+        <a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Demo environment</a>
+        <a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">Get Markets</a>
+        <a href="https://docs.kalshi.com/api-reference/market/get-trades" target="_blank" rel="noopener">Get Trades</a>
+        <a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">Get Market Orderbook</a>
+        <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a>
+        <a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:28px">Topics</h2>
+  <div class="grid cols-3" id="topicCards"></div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>How the data flows</h2>
+    <div class="grid cols-4">
+      <div>
+        <h3>1 · Collect</h3>
+        <p style="font-size:13px">Node collector in <code>pipeline/src/collect.js</code> reads the public Kalshi demo REST API: series discovery, market snapshots, orderbooks, candles and the trade feed.</p>
+      </div>
+      <div>
+        <h3>2 · Detect</h3>
+        <p style="font-size:13px">Swings of $0.10 or more are extracted from consecutive fills and from Kalshi's previous price; each alert keeps its ticker, prices, timestamp and source links.</p>
+      </div>
+      <div>
+        <h3>3 · Simulate</h3>
+        <p style="font-size:13px">The paper engine backtests three strategies on hourly candles, then trades forward on the live book, tracking positions until the market resolves.</p>
+      </div>
+      <div>
+        <h3>4 · Publish</h3>
+        <p style="font-size:13px">JSON snapshots are committed to <code>docs/data/</code> by a scheduled GitHub Actions run; GitHub Pages serves this site straight from the repository.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Suggestions to make this more live and interactive</h2>
+    <ul class="tight">
+      <li><strong>Server-Sent Events instead of polling.</strong> A small always-on collector with an SSE endpoint would push every fill to the browser the moment it prints, turning the 10-minute snapshot into a true tick feed. The WebSocket API already supports this (<code>ticker</code> and <code>trade</code> channels) but requires an API key.</li>
+      <li><strong>WebSocket upgrade.</strong> Connect the browser to <code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code> for <code>ticker</code>, <code>trade</code> and <code>market_lifecycle</code> channels, so price changes render without waiting for the next snapshot. It needs a signed handshake, so it has to run behind a thin proxy that holds the key.</li>
+      <li><strong>Push the swing alerts out of the browser.</strong> Add Kalshi price alerts (<code>POST /price_alerts</code> via the MCP connector) or a Telegram/Discord/Slack webhook so a $0.10 move reaches the trader even when the tab is closed.</li>
+      <li><strong>One-click order tickets.</strong> Render a signed order ticket per market from the V2 shape (<code>POST /portfolio/events/orders</code>) so a trader can review and submit on Kalshi without leaving the page.</li>
+      <li><strong>Depth-of-book heat map.</strong> The liquidity panel currently shows a ladder; a two-sided heat map over time would reveal liquidity being pulled ahead of a move.</li>
+      <li><strong>News-correlation overlay.</strong> Annotate swing markers with the settlement sources Kalshi publishes for the market and fetch those pages' timestamps, so a jump can be lined up with the article that caused it.</li>
+      <li><strong>Alert persistence and filters.</strong> Store alert thresholds per topic, mute tickers, and add a "repeat only if it breaks a new high/low" rule to keep the chat readable on busy books.</li>
+      <li><strong>Paper → real promotion.</strong> Once a demo API key exists, let the same strategy engine run against live fills with a hard cap on contracts per market, and diff the simulated and real books.</li>
+    </ul>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p>
+      Built on the official Kalshi API documentation — demo REST root
+      <a href="https://external-api.demo.kalshi.co/trade-api/v2" target="_blank" rel="noopener">external-api.demo.kalshi.co/trade-api/v2</a>,
+      WebSocket root <a href="https://docs.kalshi.com/getting_started/quick_start_websockets" target="_blank" rel="noopener">external-api-ws.demo.kalshi.co</a>.
+      Simulated trading only. <a href="methodology.html">Methodology</a> · <a href="flagged.html">Flagged for review</a>
+    </p>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flagged for review · Kalshi demo tracker</title>
+<meta name="description" content="Irregularities, unverified values and open items on the Kalshi demo tracker, with the official sources needed to review each one.">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='12' fill='%2300b67a'/></svg>">
+</head>
+<body>
+<header class="site">
+  <div class="inner">
+    <div class="brand"><span class="dot"></span> Kalshi demo tracker <span class="sub">gas · elections · culture · crypto · golf</span></div>
+    <nav class="main"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Flagged for review</h1>
+  <p class="lede">
+    Everything on this page is either <strong>unverified</strong> (no official source could be
+    confirmed, so the value is left blank rather than guessed) or an <strong>irregularity</strong>
+    found while building the tracker. Each row carries the link needed to review it.
+  </p>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Open items</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Item</th><th>What is unverified or irregular</th><th>Effect on the site</th><th>Source to review</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>F1</td>
+            <td><strong>No Kalshi demo account could be provisioned</strong></td>
+            <td>Demo signup requires an email inbox that can receive a verification message; no mailbox is available in this environment. The signed order client (<code>POST /portfolio/events/orders</code>) and the account portfolio reads (balance, positions, fills, settlements) are implemented and unit-tested against the documented request format, but have never been executed against a real Kalshi account.</td>
+            <td>Every trade, position and P&amp;L figure on the site comes from the <strong>simulated</strong> engine and is labelled as such. No page claims a real filled order. The “Kalshi demo account” portfolio view is therefore <em>blank</em> rather than filled with simulated numbers pretending to be account data.</td>
+            <td><a href="https://help.kalshi.com/en/articles/13823775-creating-and-using-a-demo-account" target="_blank" rel="noopener">Kalshi: creating and using a demo account</a> · <a href="https://docs.kalshi.com/api-reference/orders/create-order-v2" target="_blank" rel="noopener">Create Order (V2)</a> · <a href="https://docs.kalshi.com/api-reference/portfolio/get-portfolio-balance" target="_blank" rel="noopener">Get Portfolio Balance</a></td>
+          </tr>
+          <tr>
+            <td>F2</td>
+            <td><strong><code>GET /events</code> ignores the <code>category</code> filter</strong></td>
+            <td>A live request with <code>?category=Crypto</code> returned events whose own <code>category</code> field was <code>"World"</code>. The documented filter is not applied by the service.</td>
+            <td>Topic classification is done locally from series and market titles. Kalshi's own <code>category</code> strings are stored exactly as returned and are never edited.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/events/get-events" target="_blank" rel="noopener">Get Events</a></td>
+          </tr>
+          <tr>
+            <td>F3</td>
+            <td><strong>Demo content is not identical to production</strong></td>
+            <td>Kalshi states that demo prices and behaviour “may not be reflective of those in real markets”. Observed demo tickers include demo-only strike names (for example <code>KXNEWPOPE-70</code>, <code>KXNEXTNATOSECGEN-99</code>), and many demo books are quoted with little or no resting size.</td>
+            <td>Every result on the site is a demo-environment result. Nothing here should be read as a claim about production behaviour.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/demo_env" target="_blank" rel="noopener">Demo environment</a></td>
+          </tr>
+          <tr>
+            <td>F4</td>
+            <td><strong>Browser → Kalshi direct calls are not confirmed to be permitted</strong></td>
+            <td>No official Kalshi statement about CORS on the public REST endpoints was found. The dashboard therefore reads the committed snapshot by default; the “Try live browser API” button tests the browser's own policy and reports the result rather than assuming it works.</td>
+            <td>The live view is a graceful upgrade, not a dependency. Every feature works from the published snapshot.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/quick_start_market_data" target="_blank" rel="noopener">Quick start: market data</a></td>
+          </tr>
+          <tr>
+            <td>F5</td>
+            <td><strong>“Dollar amount” is our construction, not a Kalshi-published metric</strong></td>
+            <td>Kalshi publishes open interest in contracts and prices in dollars. The site multiplies them to show notional; the traded-notional column uses volume × price.</td>
+            <td>Both columns are labelled with the formula in the methodology page. No Kalshi field is presented as a dollar amount.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">Get Markets</a> · <a href="https://docs.kalshi.com/getting_started/fixed_point_migration" target="_blank" rel="noopener">Fixed-point representation</a></td>
+          </tr>
+          <tr>
+            <td>F6</td>
+            <td><strong>Attribution of a swing is not verifiable automatically</strong></td>
+            <td>The API reports what a market settled on and which sources Kalshi lists for it; it does not report what moved the price. The site links the official settlement sources as <em>candidates</em> for the catalyst and never asserts a cause.</td>
+            <td>Chart markers and chat messages link the Kalshi market page and the published settlement sources instead of naming a headline.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/events/get-event" target="_blank" rel="noopener">Get Event</a></td>
+          </tr>
+          <tr>
+            <td>F7</td>
+            <td><strong>Fees are not modelled in the simulation</strong></td>
+            <td>The published fee schedule is not part of the market response used here, so the simulated P&amp;L is gross of fees.</td>
+            <td>Simulated returns are an upper bound. No fee figure is displayed because none could be confirmed for each market from the data collected.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/fee_rounding" target="_blank" rel="noopener">Fee rounding</a></td>
+          </tr>
+          <tr>
+            <td>F8</td>
+            <td><strong>Resolution tracking depends on Kalshi reporting a result</strong></td>
+            <td>Demo markets rarely settle during the life of this project. Positions settle only when the market's <code>result</code> field becomes <code>yes</code> or <code>no</code>.</td>
+            <td>Most simulated positions remain open and are marked to the live bid; the resolution column stays blank until Kalshi reports one.</td>
+            <td><a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">Market settlement</a> · <a href="https://docs.kalshi.com/getting_started/market_lifecycle" target="_blank" rel="noopener">Market lifecycle</a></td>
+          </tr>
+          <tr>
+            <td>F9</td>
+            <td><strong>Candle history in the demo environment is short</strong></td>
+            <td>The 1-minute candle route returns roughly six hours of data for demo markets, and the batch candle route answers with a <code>markets</code> array rather than a <code>candlesticks</code> array.</td>
+            <td>The intraday chart uses the 1-minute series and the trade feed; the backtest uses hourly candles, which return a longer window.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">Get Market Candlesticks</a> · <a href="https://docs.kalshi.com/api-reference/market/batch-get-market-candlesticks" target="_blank" rel="noopener">Batch Get Market Candlesticks</a></td>
+          </tr>
+          <tr>
+            <td>F10</td>
+            <td><strong>Batch orderbook parameter handling differs from the SDK</strong></td>
+            <td>Requesting <code>/markets/orderbooks?tickers=A,B</code> treats the comma-joined string as a single ticker and returns one empty book. The collector therefore requests each book individually.</td>
+            <td>Slower collection, correct data. No user-visible difference.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks" target="_blank" rel="noopener">Get Multiple Market Orderbooks</a> · <a href="https://www.npmjs.com/package/kalshi-typescript" target="_blank" rel="noopener">kalshi-typescript SDK</a></td>
+          </tr>
+          <tr>
+            <td>F11</td>
+            <td><strong>The ROI model is an unvalidated heuristic</strong></td>
+            <td>The score is a documented weighted sum of five public inputs. It has not been validated against outcomes, and the fair-value estimate is a mechanical blend rather than a forecast.</td>
+            <td>The score is presented as a ranking aid with its reasons shown; the site states in several places that it is not a prediction or advice.</td>
+            <td><a href="methodology.html">Methodology page (model specification)</a> · <a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook" target="_blank" rel="noopener">Get Market Orderbook</a></td>
+          </tr>
+          <tr>
+            <td>F12</td>
+            <td><strong>Parallel agent sessions were active on this repository</strong></td>
+            <td>Other sessions were working in the same repo at the same time. Scopes were kept non-overlapping and recorded in <code>COORDINATION.md</code>; this site lives under <code>docs/</code> and the collector under <code>pipeline/</code>, both owned by this session.</td>
+            <td>If another session's site is merged later, the integration step must decide which tree Pages publishes (this site expects the Pages source path <code>/docs</code>).</td>
+            <td><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/arena/c0affdd1-trade2/COORDINATION.md" target="_blank" rel="noopener">COORDINATION.md on GitHub</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Values left blank on purpose</h2>
+    <ul class="tight">
+      <li><strong>Kalshi demo account balance, positions, fills and settlements</strong> — no account exists, so the account panel stays empty instead of showing simulated numbers.</li>
+      <li><strong>Realised fill prices for simulated trades</strong> — the simulation uses the orderbook touch, not an actual fill, and is labelled as simulated everywhere it appears.</li>
+      <li><strong>Fee amounts per market</strong> — not present in the collected data (see F7).</li>
+      <li><strong>Catalyst attribution for a swing</strong> — only candidate links are published (see F6).</li>
+    </ul>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Request a change</h2>
+    <p>
+      Open an issue on the repository describing what should change; the request can be linked from the
+      relevant row above. Every row above carries the official Kalshi source needed to check it.
+    </p>
+    <div class="src">
+      <a href="https://github.com/wingbangboozle1-lang/Trade2/issues" target="_blank" rel="noopener">Open an issue</a>
+      <a href="https://docs.kalshi.com/" target="_blank" rel="noopener">Kalshi API documentation</a>
+      <a href="methodology.html">Methodology</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="inner">
+    <p><a href="dashboard.html">Dashboard</a> · <a href="methodology.html">Methodology</a> · <a href="https://github.com/wingbangboozle1-lang/Trade2" target="_blank" rel="noopener">Repository</a></p>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/common.js"></script>
+<script>
+  import('./assets/js/common.js').then((m) => m.renderNav('flagged.html'));
+</script>
+</body>
+</html>
