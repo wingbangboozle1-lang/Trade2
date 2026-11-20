@@ -60,6 +60,8 @@ This audit does not modify other sessions' implementation or published data. It 
 
 **Audit follow-up claim T14:** `EXECUTIVE_SUMMARY.md` currently abbreviates settlement payout in a way that can be read as NO contracts never paying. The official Market Settlement page states that YES holders receive $1 for a YES outcome and NO holders receive $1 for a NO outcome. T14 is claimed by this session, limited to the settlement sentence in `EXECUTIVE_SUMMARY.md` and this board; source: https://docs.kalshi.com/getting_started/market_settlement. No existing active owner is listed for the completed summary task.
 
+**Audit follow-up claim T15:** `docs/summary.html` describes `period_interval=1` as an “s-series.” The official candlestick endpoint explicitly defines the allowed periods as minutes (1, 60, or 1440 minutes). T15 is claimed by this session, limited to that table row and this board; source: https://docs.kalshi.com/api-reference/market/get-market-candlesticks. The seconds/minutes/hours buttons are time-range windows, not seconds-based candle intervals.
+
 ## Work log
 
 ### 2026-11-20 — `arena-f5837994`
