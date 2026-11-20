@@ -2,6 +2,36 @@
 
 Date (UTC): 2026-11-20 · Branch: `arena/4f92a11c-trade2` · Scope: report-only. No published data, page, or pipeline file was edited.
 
+## Update — re-run on current `main` (adc26c9, data generated 2026-11-20 19:04–19:07 UTC)
+
+The results below this section describe the snapshot audited at branch start (18:53 UTC). `main` moved while this audit was in review: PR #13 (demo-only collector guard) and PR #14 (data refresh) landed. The same tool was re-run on current `main`. Output: `audit/rerun-main-2026-11-20/`.
+
+| Table | Rows | Demo host | Production host | Blank values | Note |
+| --- | --: | --: | --: | --: | --- |
+| `kd.markets` | 877 | **877** | 0 | 691 | All live markets now on the demo host. |
+| `kd.topic_events` | 75 | 75 | 0 | 0 | |
+| `kd.resolved` / `kd.resolved_pending` | 0 / 0 | — | — | — | Live resolution list is empty in this snapshot. |
+| `docs.markets` | 40 | 40 | 0 | **40** (`expected_expiration`, `fee_type`) | Unchanged. |
+| `docs.resolutions` | 300 | 300 | 0 | 0 | Still all `no` (see F-4F-03). |
+| `docs.alerts` | 5 | 5 | 0 | 0 | |
+| `docs.portfolio_trades` | 8 | 8 | 0 | 0 | Simulated-paper ledger; no account orders. |
+
+Status of each finding on current `main`:
+
+| ID | Status now | Evidence |
+| --- | --- | --- |
+| F-4F-01 | **Resolved in the published data.** The production host no longer appears; the guard is in `scripts/collect.mjs` (`allowedHosts` = demo hosts only, PR #13). | `kalshi-dashboard/data/latest.json` → `source.base_url` = `https://external-api.demo.kalshi.co/trade-api/v2`; 877 / 877 `source_url` on the demo host. Demo-only rule: https://docs.kalshi.com/getting_started/demo_env |
+| F-4F-02 | **Open; larger.** 691 of 877 rows have a blank `last_cents`. 639 of them have an official `last_price_dollars` of `0.0000`; 52 have `0.0030` or `0.0040`. None is a cent or more, so the cents field is blank for every row whose official last price is under one cent. | Official observation: `KXSENATENOM-NCR-28-TMOO` returns `last_price_dollars` "0.0000", `volume_fp` "0.00", `open_interest_fp` "0.00" (https://external-api.demo.kalshi.co/trade-api/v2/markets/KXSENATENOM-NCR-28-TMOO). The docs fetched do not define a zero last price, so "no trade" is not confirmed as the meaning. Left blank. |
+| F-4F-03 | **Open.** Still 300 / 300 `no`, all one DOGE family, zero volume. | Same official endpoint as before (https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDOGE-26NOV2012-T0.2349999). |
+| F-4F-04 | **Open; changed.** The live tracker now lists 0 resolved and 0 pending, so it no longer disagrees by count. It still gives no YES/NO outcomes, while `docs/` has 300 `no` rows. | `kalshi-dashboard/data/resolved.json`; `docs/data/resolutions.json` |
+| F-4F-05 | **Open.** `expected_expiration` still blank in 40 / 40 `docs/` rows. | `docs/data/markets.json` (generated 19:04:28 UTC). Official field `expected_expiration_time`: https://docs.kalshi.com/api-reference/market/get-market |
+| F-4F-06 | **Open.** `fee_type` still blank in 40 / 40 `docs/` rows. The official Get Market schema has no `fee_type` key. | https://docs.kalshi.com/api-reference/market/get-market ; fee schedule: https://kalshi.com/docs/kalshi-fee-schedule.pdf |
+| F-4F-07 | Open (informational). | https://docs.kalshi.com/getting_started/demo_env |
+| F-4F-08 | Informational. 1,144 third-party settlement references (count in the snapshot; the re-run counts are in the rerun JSON). | `audit/` JSON |
+| F-4F-09 | Board items R-4f92-1 to R-4f92-4 on `COORDINATION.md`. R-4f92-2 and R-4f92-3 are resolved by PRs #13 and #14. | `COORDINATION.md` |
+
+The sections below are the original audit of the 18:53 UTC snapshot. Read them as history, not as the current state.
+
 ## What was checked
 
 Every row of every published table in the repo was checked by `tools/rowsource_check.py`:

@@ -534,4 +534,17 @@ Note: T20 does not replace T18 (`arena-856e184e`, a value sample). T20 covers ev
 
 | # | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | in progress | `arena-4f92a11c` | `COORDINATION.md` (this section only) |
+| T21 | Integration for T20: PR `arena/4f92a11c-trade2` → `main`, merge, confirm Pages build | done | `arena-4f92a11c` | `COORDINATION.md` (this section only) |
+
+### T21 integration record — `arena-4f92a11c`
+
+| Step | Result |
+| - | - |
+| PR | **#15** — https://github.com/wingbangboozle1-lang/Trade2/pull/15 — `arena/4f92a11c-trade2` → `main`. Check `collect` (collector workflow): **pass**. Merge state CLEAN. |
+| Merge | `gh pr merge 15 --merge` → merged 2026-11-20T19:06:57Z, merge commit `dbf5bbea7deed3bba14fa511bfe8829109e2c278`. |
+| Pages | The first build for `dbf5bbe` reported **errored** ("Page build failed", 19:06:58Z). Later builds on `main` (`4ab30b2`, then `adc26c9`) reported **built**. `adc26c9` is the current `main` head and contains `dbf5bbe`. Pages therefore serves the merged files. An earlier build for `8ef614c` (another session's data commit) also errored and was superseded. Not diagnosed further: the failure is generic and was not reproduced. |
+| Live check (fetch) | https://wingbangboozle1-lang.github.io/Trade2/SOURCE_LINK_AUDIT_4f92a11c.html renders the report. https://wingbangboozle1-lang.github.io/Trade2/audit/rowsource-4f92a11c.json serves the summary. The CSV URL returned HTTP 500 to the fetch tool (not confirmed as a site fault). |
+| Re-run on merged `main` | Demo-only data is now live: `kalshi-dashboard/data/latest.json` → 877 / 877 markets on `external-api.demo.kalshi.co` (generated 19:06:48Z). **F-4F-01 is resolved in the published data.** Output: `audit/rerun-main-2026-11-20/`. Report updated. |
+| Open after re-run | F-4F-02 (691 blank derived `last_cents`, 639 official `0.0000`), F-4F-03 (300/300 NO), F-4F-05 (`expected_expiration` blank 40/40), F-4F-06 (`fee_type` blank 40/40). See `SOURCE_LINK_AUDIT_4f92a11c.md`. |
+| R-4f92-2 / R-4f92-3 | Resolved on `main` by PR #13 (guard) and PR #14 (refresh): the production host no longer appears in the published data. |
+| Verification before merge | `python3 -m unittest discover -s tests` → 57 run, 1 skipped (pre-existing), 0 failures. `python3 tools/linkcheck.py` → 45 pages, 503 links, 0 errors. |
