@@ -308,23 +308,31 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
     no = sum(1 for rows in by_topic.values() for r in rows
              if (r.get("result") or "").lower() == "no")
 
+    def resolution_row(rec: dict[str, Any]) -> str:
+        """One settled market, with the official YES/NO and its own API link.
+
+        Shared by the first-40 per-topic table and the full list below it, so
+        the two renderers cannot disagree about a row.
+        """
+        ticker = rec.get("ticker") or ""
+        return (
+            "<tr>"
+            f'<td><a href="{safe_url(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker"))) or "#"}" '
+            f'target="_blank" rel="noreferrer">{esc(rec.get("title"))}</a>'
+            f'<small class="ticker">{esc(ticker)}</small></td>'
+            f"<td>{result_chip(rec.get('result'))}</td>"
+            f"<td>{cents(rec.get('settlement_value_dollars'))}</td>"
+            f"<td>{esc((rec.get('settlement_ts') or '')[:19].replace('T', ' '))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{safe_url(rec.get("source_url") or API + "/markets/" + ticker) or "#"}">API ↗</a></td>'
+            "</tr>")
+
     panels = []
     for slug in TOPIC_ORDER:
         rows = by_topic[slug]
         body = []
         for rec in rows[:40]:
-            ticker = rec.get("ticker") or ""
-            body.append(
-                "<tr>"
-                f'<td><a href="{safe_url(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker"))) or "#"}" '
-                f'target="_blank" rel="noreferrer">{esc(rec.get("title"))}</a>'
-                f'<small class="ticker">{esc(ticker)}</small></td>'
-                f"<td>{result_chip(rec.get('result'))}</td>"
-                f"<td>{cents(rec.get('settlement_value_dollars'))}</td>"
-                f"<td>{esc((rec.get('settlement_ts') or '')[:19].replace('T', ' '))}</td>"
-                f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-                f'href="{safe_url(rec.get("source_url") or API + "/markets/" + ticker) or "#"}">API ↗</a></td>'
-                "</tr>")
+            body.append(resolution_row(rec))
         if not body:
             body.append('<tr><td colspan="5" class="empty-state">'
                         "No market from this topic has settled in the "
@@ -353,6 +361,28 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
     # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
     # switch to LIVE when a poll or stream lands.
     from .build import topbar  # local import: build.py imports this module
+
+    # The per-topic tables above are capped at 40 rows so the page stays
+    # readable, which on 2026-11-21 meant 328 stored resolutions rendered as
+    # "40 of 268" for gas prices and "0" for three topics that genuinely have
+    # none yet. The cap is honest but it under-describes coverage, so the full
+    # list is published underneath, collapsed, with the same per-row API link.
+    full_rows = "".join(
+        resolution_row(rec)
+        for slug in TOPIC_ORDER
+        for rec in by_topic[slug])
+    empty_full = ('<tr><td colspan="5" class="empty-state">Nothing settled yet.'
+                  '</td></tr>')
+    full_list = (
+        '<details class="panel panel-compact" id="all-resolutions">'
+        f'<summary><b>Every tracked resolution</b> '
+        f'<span class="muted">— all {total} settled markets in the store, '
+        f'{yes} YES and {no} NO</span></summary>'
+        '<div class="table-wrap"><table><thead><tr>'
+        '<th>Market</th><th>Result</th><th>Settlement value</th>'
+        '<th>Settled (UTC)</th><th>Source</th></tr></thead>'
+        '<tbody>' + (full_rows or empty_full) + '</tbody>'
+        '</table></div></details>')
 
     return f"""{topbar("Resolved", live.get("generated_at", ""),
                        generated_at_ts=live.get("generated_at_ts"))}
@@ -389,7 +419,8 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
           has published a settlement, so a still-open market never appears
           here.</p></div>
         </div>
-        {''.join(panels)}"""
+        {''.join(panels)}
+        {full_list}"""
 
 
 # ---------------------------------------------------------------------------
