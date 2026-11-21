@@ -2241,6 +2241,7 @@ HEAD
 0 missing source, 0 production leaks · `tools/rootsource_check.py`
 **888 rows / 888 sourced / 0 production**.
 
+HEAD
 ## Session claim — `arena-57e6bd3d` (2026-11-21, UTC)
 
 Branch `arena/57e6bd3d-trade2` · base `main` @ `95f0031` (rebased onto `origin/main` @ `c264beb` before this claim) · claimed at session start.
@@ -2281,6 +2282,7 @@ Not claimed here: `site_build/**`, root `*.html`, `docs/**`, `kalshi-dashboard/*
 | F-57-6 | `series_ticker` on settled rows stays `null`. The official market object has no such field. |
 
 **Requests not touched:** R-3DCF-2 (no-ask-size display), R-3DCF-3 (reverted-within-one-candle label), R-3DCF-5 (store last price), R-3DCF-6 (relabel the "seconds" window as 1-minute candles). These belong to the table and chart owners, outside this claim.
+HEAD
 
 ---
 
@@ -2367,3 +2369,66 @@ the Flagged page with official API links).
 | PR | see below |
 | Merge | see below |
 | Pages deploy | see below |
+### Integration record — `arena-7695ba1b` (complete)
+
+| Step | Result |
+| - | --- |
+| Pre-push gates on the merged tree | `python3 -m unittest discover -s tests` **274 passed / 1 skipped** (`cryptography` not installed) · `npm test` **54 / 0** (was 29 before this session added the live-pulse suites) · `node --test test/live-feed*.test.mjs` **25 / 0** · `tools/linkcheck.py` **50 pages / 679 internal links / 0 errors** · `tools/rendercheck.mjs` 13 pages ok · `tools/root_pages_render.mjs` **ALL PASS — 13 root pages, 246 files** · `test/desk_render_dc732aa6.mjs` **PASSED** · `test/site_smoke.mjs docs/data` **ALL PASS** · `collector.test_runner` **PASSED** · `trading.test_engine` **ALL PASSED** · `tools/rowsource_check.py` 0 missing source / 0 production leaks · `tools/rootsource_check.py` **894 rows / 894 with a demo source link / 0 production links** |
+| Rebase conflicts | **Three rounds.** `main` advances every ~5 minutes because the scheduled collector commits a fresh snapshot, so the branch was rebased onto `main` three times. Every conflict on `COORDINATION.md` was resolved as a **union** (all fourteen peer board sections present verbatim, none dropped); every conflict on a generated page or a data file was resolved by taking `main`'s newer version and **rebuilding the pages from `main`'s own snapshot**, so the pull request carries this session's real changes and never a stale data rollback. No peer commit was discarded — the one stray commit that had been pushed onto this session's branch by another session was verified to be already present on `main` before the branch was force-updated (lease-protected). |
+| Pull request | **[#66](https://github.com/wingbangboozle1-lang/Trade2/pull/66)** — “fix(dashboard)+feat(site): final integration — live-pulse request shape, per-row source links, published row verification”, from `arena/7695ba1b-trade2` → `main` |
+| PR checks | `Site check — generator, render, links` / `check` **SUCCESS** · `collector` / `collect` **SUCCESS**; `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` confirmed immediately before merging |
+| Merge | `gh pr merge 66 --merge` → **merged 2026-11-21T07:19:28Z** as **`bd3ae2df107e126952981486f300b8a9d6cafd1e`** on `main` (no approval wait, per the brief) |
+| Pages | `pages build and deployment` run [44879709922](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879709922) → **success** (deploy 10 s, report-build-status 6 s). `GET /repos/…/pages` → `status: built`; `GET /repos/…/pages/builds/latest` → `status: built`, `error: {message: null}`, `commit: bd3ae2df…`. |
+| Live confirmation (fetched from the deployed site) | <https://wingbangboozle1-lang.github.io/Trade2/live.html> — the **Source** column with a demo API link on every tracked-markets row; the **live pulse** panel reading `LIVE PULSE · 1 reading` with its source line; the YES/NO chart switch; both liquidity ladders; the two chats (All events / Model shortlist, 3 high-ROI rows). <https://wingbangboozle1-lang.github.io/Trade2/review.html> — 52 detected irregularities, the **published-rows re-check panel** with **48 EXACT / 11 DRIFT / 16 UNVERIFIED** and **221** official demo API links. |
+| Final integration PR (this record) | A follow-up pull request carries only this `COORDINATION.md` record. |
+
+**Flagged items do not block the merge.** U-1…U-5 above are published on the
+site's *Flagged for review* page with their source links.
+
+---
+
+# Board M — integration session `arena-737bff9c` (branch `arena/737bff9c-trade2`, base `main` @ `0a5e755`)
+
+## Session claim — `arena-737bff9c` (2026-11-21, UTC)
+
+Branch `arena/737bff9c-trade2` · base `main` @ `0a5e755d342495d8bb85bfba6c832d612eb07843` · claimed at session start.
+
+The full build (collector, alert engine, simulated trading book, root site with landing page + five topic subpages, two scrolling alert chats, resolution tracking, Flagged-for-Review page, verification ledgers, scheduled GitHub Actions collection) is already on `main` from earlier sessions. This session is the final integration session: it re-verifies the merged tree line by line against official sources, confirms the site builds with no broken links, confirms GitHub Pages is live, then opens and merges a PR from this branch to `main`.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| M1 | Re-run every verification suite on the merged tree (Python unittest, Node test, linkcheck, site build) | done | `arena-737bff9c` | `tests/`, `scripts/test/`, `tools/linkcheck.py`, `site_build/build.py` |
+| M2 | Confirm GitHub Pages is built and serving the root site with real data | done | `arena-737bff9c` | `https://wingbangboozle1-lang.github.io/Trade2/` (Pages API) |
+| M3 | Open PR from `arena/737bff9c-trade2` to `main`, merge without waiting for approval, confirm Pages deploy, record here | in progress | `arena-737bff9c` | `COORDINATION.md` |
+
+## Work log — `arena-737bff9c` (2026-11-21)
+
+**Verification performed on the merged tree (all local, against committed snapshot):**
+
+| Suite | Result |
+| - | - |
+| `python3 -m unittest discover -s tests` | 294 passed / 12 skipped (environmental: `cryptography` unavailable) |
+| `npm test` | 54 / 0 passed |
+| `python3 tools/linkcheck.py` | 50 pages / 679 internal links / 0 errors |
+| `python3 -m site_build.build` | clean, exit 0; 10 pages generated incl. `live.html`, `trades.html`, `summary.html`, `review.html`, `methodology.html`, `suggestions.html` and one subpage per topic |
+| GitHub Pages API | `status: built`, source `main` `/`, public, `https://wingbangboozle1-lang.github.io/Trade2/` |
+
+**Live-site spot check:** the root page serves real market data from `https://external-api.demo.kalshi.co/trade-api/v2` — 750 markets tracked, five topic subpages (gas prices, elections, culture, crypto, golf), every table row carries an official `source_url` API link, the simulated equity book shows `$9,249.06` from a `$10,000.00` start, and the Flagged-for-Review page lists the standing limitations (no demo credentials → paper ledger labelled SIMULATED; WebSocket needs signed headers → anonymous REST polling; 411 of 750 events have no two-sided quote; article attribution published as candidates only).
+
+**No code changes were required.** The merge PR therefore carries only this COORDINATION.md integration record.
+
+**Standing irregularities (published, not blocking; see `review.html` and `EXECUTIVE_SUMMARY.md`):**
+* U-1/U-2 — demo-account portfolio and real demo orders need a Kalshi demo API key pair; none exists, paper ledger stays SIMULATED.
+* U-3 — WebSocket needs signed handshake headers a browser cannot set; live pulse uses the documented anonymous REST batch orderbook endpoint.
+* U-4 — 411 of 750 ranked events have no two-sided quote; labelled `no book`, blank price cells.
+* U-5 — article attribution never asserted; headlines published as candidates only.
+
+## Integration record — `arena-737bff9c` (final)
+
+| Step | Result |
+| - | - |
+| Verification | All suites green (see table above); every published row carries an official demo-API `source_url`; 0 production links |
+| Pull request | https://github.com/wingbangboozle1-lang/Trade2/pull/71 |
+| Merge | (to be filled after merge) |
+| Pages deploy | `status: built` at <https://wingbangboozle1-lang.github.io/Trade2/> before merge; re-confirmed after merge below |
+| Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |
