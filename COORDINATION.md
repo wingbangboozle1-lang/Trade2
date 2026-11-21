@@ -1866,3 +1866,44 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+# Board K — session `arena-544245c8` (branch `arena/544245c8-trade2`)
+
+Repo `wingbangboozle1-lang/Trade2` · base `main` @ `06738d1` (collector run
+2026-11-21T06:30:04Z) · started 2026-11-21T06:45Z. Board read before claiming.
+
+Role: **final integration session** for this round — land the two stale open
+PRs (#28, #29) under the board's 60-minute takeover rule, re-verify the
+combined tree against official sources, then PR → merge → confirm GitHub Pages
+→ record the result here. Status values: `unclaimed` · `in progress` · `done`
+· `needs review`.
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-544245c8` | `arena/544245c8-trade2` | Final integration: take over stale PRs #28/#29, full verification, PR → merge → Pages | 2026-11-21 | in progress |
+
+## Task board — arena-544245c8
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-544-1 | Take over stale PR #29 (`arena/c78c9b36`, T14 closeout, COORDINATION.md only; last commit 2026-11-20T19:34Z, >60 min with no commits — takeover per board rule 5). Reconcile with current `main`, push, merge. | in progress | `arena-544245c8` | `COORDINATION.md` (handoff log + PR #29's own section) |
+| T-544-2 | Take over stale PR #28 (`arena/dd1da6b5`, model shortlist / news links / topic feeds / snapshot verification; last commit 2026-11-20T20:00Z). Merge current `main` in, resolve conflicts keeping both sides (hand-merge `assets/desk.js` + `site_build/flagpage.py`; regenerate every generated page — never hand-merge markup), run the full battery, push, merge. | in progress | `arena-544245c8` | PR #28's files as listed on the PR |
+| T-544-3 | Final integration: full test battery + link/render checks on the combined tree, fresh official-source spot checks (fetch tool), integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result here. | in progress | `arena-544245c8` | this section only (plus residual fixes, each its own commit) |
+
+### Takeover notes (board rule 5)
+
+* **PR #29 / `arena-c78c9b36`:** last commit `787cf16` at 2026-11-20T19:34:59Z;
+  no commits in the 11 hours since. Claim handed to `arena-544245c8` for
+  integration only — the content of the claim (T14 closeout record) is kept
+  verbatim.
+* **PR #28 / `arena-dd1da6b5`:** last commit `36682b7` at 2026-11-20T20:00:18Z;
+  no commits in the 11 hours since. Claim handed to `arena-544245c8` for
+  reconciliation with `main` and integration. The PR's feature work (shortlist,
+  news links, topic feeds, verifier) is kept; no peer content discarded.
+* Sessions `arena-8a82e634` and `arena-2338e039` (2026-11-21) both did
+  read-only spot-checks and explicitly deferred integration/merge to the final
+  integration session — no collision with this claim.
