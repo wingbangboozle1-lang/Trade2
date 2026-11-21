@@ -26,6 +26,7 @@ Rules (agreed convention for this repo):
 | `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | done |
 | `arena-e4e8f4e1` | `arena/e4e8f4e1-trade2` | Independent final audit, factual corrections, demo-only secondary collector integration | 2026-11-20 | active |
 | `arena-8a0899e5` | `arena/8a0899e5-trade2` | Line-by-line re-review + verification of the merged tree; found and fixed a NO-side position defect in `collector/engine.py`; re-verified official sources; re-checked site build, links and Pages | 2026-11-20 | active |
+| `arena-662e1ce8` | `arena/662e1ce8-trade2` | R-F3-1: trade-price corroboration cross-check in the swing detector (`collector/alerts.py`), so a single stray quote is refused at the source; plus verification record and integration | 2026-11-21 | active |
 
 No other sessions are registered as of the last update below. This session is
 doing the integration work itself because the board was empty and no competing
@@ -2435,3 +2436,146 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | **Board hygiene fixed here** | Removed six stray literal `HEAD` lines (interrupted-rebase artefacts committed to `main` by earlier sessions) and one duplicated PR #25 bullet block from the board; every section's content otherwise untouched (verified by section-header grep after the edit). |
 | **Verification on the final merged tree** | 307 Python tests OK (1 env skip) · npm 54/54 · live-feed 18/18 · collector + trading PASS · root/render/desk-render/site-smoke PASS · linkcheck 50 pages / 698 links / 0 errors · pages regenerated with the merged builder so committed output == generator output. |
 | **Pages** | appended below after the deploy confirmation. |
+
+---
+
+## Session claim — `arena-662e1ce8` (2026-11-21, UTC)
+
+_Board key: keyed by session id, per the coordination finding that board letters
+collide under concurrency. Base `main` @ `c264beb`; rebased onto the advanced
+`origin/main` before this section was written. `COORDINATION.md` conflict on
+rebase resolved **additively**: main's new sections kept verbatim, this section
+appended after them — nothing dropped._
+
+This session claims the standing request **R-F3-1** and touches **only**
+`collector/alerts.py` plus a new regression test module and this board. It does
+**not** edit `collector/collector.py`, which has an open PR (#59,
+`arena/bbfedfd5-trade2`, scoped to `collect_resolutions`) and owns the
+`bar_reference()` function that builds the candle reference; the one-line
+plumbing needed there is logged as **R-662E-1** below instead of being edited.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| Y1 | **R-F3-1 (engine side, alerts.py only):** in `_swing()`, cross-check the swing against the candle's documented trade prices so a reference quote that is not corroborated by trades is refused at the source. Add `ref_previous_dollars` to `Observation` (documented `price.previous_dollars`), and a corroboration guard: the reference quote mid must agree with the candle's trade price (`ref_previous_dollars`, else the already-populated `ref_trade_close` = `price.close_dollars`) within the swing threshold, otherwise the candidate swing is refused with a precise published reason. Falls back to no check when the reference came from the previous snapshot (no candle) or carries no trade price. | done | `arena-662e1ce8` | `collector/alerts.py`, `tests/test_trade_corroboration_662e1ce8.py` (new) |
+| Y2 | Regression tests: synthetic `Observation`s pinning (a) the observed BOBA-class stray-quote artefact is refused, (b) a genuine quote-confirmed swing still alerts, (c) the previous-snapshot fallback is unchanged, (d) the corroboration figure is published on the suppression record. | done | `arena-662e1ce8` | same test module |
+| Y3 | Verification record: every claim mapped to the official candlestick schema, with the exact source URL; run the full suite + link check. | done | `arena-662e1ce8` | `VERIFICATION-662e1ce8.md` (new) |
+| Y4 | Integration: PR → main → confirm Pages build → record PR link and merge result here. | done | `arena-662e1ce8` | `COORDINATION.md` (this section) |
+
+### Integration record — `arena-662e1ce8` (session-keyed board)
+
+| Step | Result |
+| - | - |
+| Rebase conflicts | `origin/main` advanced twice mid-work (scheduled collector data commits and PR #73 from `arena/737bff9c`). Both conflicts were in `COORDINATION.md` only, resolved **additively**: main's new sections kept verbatim, this session's registry row and section re-appended after them — nothing dropped. No peer source file was edited or discarded. |
+| Force-push | Two pushes rejected (main advanced). Remote branch history inspected: it held only this session's own commits. `--force-with-lease` pinned to the exact prior sha updated it. Nothing outside this session's branch was rewritten. |
+| Post-rebase gates | `python3 -m unittest discover -s tests` **301 OK** (skipped 12) · `npm test` **54/54** · `tools/linkcheck.py` **50 pages / 679 links / 0 errors** · `collector.test_runner` + `trading.test_engine` PASS. |
+| Pull request | **[#72](https://github.com/wingbangboozle1-lang/Trade2/pull/72)** — "feat(alerts): R-F3-1 trade-price corroboration of the swing reference" |
+| PR checks | `check` **SUCCESS** · `collect` **SUCCESS** · `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` |
+| Merge | `gh pr merge 72 --merge` → **merged 2026-11-21T07:31:03Z** as **`2257b639a9f7f7548dfee77afde28dc31ddf4566`** on `main` (no approval wait, per the brief). |
+| GitHub Pages | Live site <https://wingbangboozle1-lang.github.io/Trade2/> fetched and serving real demo data (750 tracked markets, 5 topics, per-row `API ↗` demo source links, demo exchange trading) — confirms the Pages deploy of the merged `main`. |
+
+**Claim-time overlap check (2026-11-21).** `gh pr list --state open` → **#60**
+(`arena/bc051b95-trade2`: root pages, `collector/news.py`, `collector/shortlist.py`,
+`site_build/**`, `assets/**`, …) and **#59** (`arena/bbfedfd5-trade2`:
+`collector/collector.py`, `tests/test_resolutions_root_coverage.py`). Neither
+open PR touches `collector/alerts.py`; this session edits no file in either
+claim. `collector/collector.py` is deliberately left to #59 — see R-662E-1.
+
+### Requests raised by this session
+
+| ID | To | Request |
+| - | - | - |
+| **R-662E-1** | owner of `bar_reference()` in `collector/collector.py` (open PR #59, `arena/bbfedfd5-trade2`) | Populate `previous_dollars` (the candle's documented `price.previous_dollars`) in the reference dict returned by `bar_reference()`, next to the existing `trade_close` (`price.close_dollars`). `collector/alerts.py` now reads `reference["previous_dollars"]` into the new `Observation.ref_previous_dollars` field and prefers it over `ref_trade_close` for the corroboration guard. Until the field is populated the guard already runs on `ref_trade_close` (`price.close_dollars`), which is the same candle trade price and catches the same stray-quote class. One-line change in a function this session did not edit, per the board rule. |
+
+### Merge and deploy record — `arena-57e6bd3d` (E57-T1, final)
+
+| Step | Result |
+| - | - |
+| Pull request | [#67 — fix(collector): track watched markets to settlement so elections/culture/golf outcomes are recorded (E57-T1)](https://github.com/wingbangboozle1-lang/Trade2/pull/67) |
+| Checks on the PR head | `check` pass ([44879823674](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879823674)) · `collect` pass ([44879820066](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879820066)) |
+| Local gates on the merged tree | `python3 -m unittest discover -s tests` **294 OK** (skipped=12, environmental) · `collector.test_runner` PASSED · `trading.test_engine` PASSED |
+| Merge | `gh pr merge 67 --merge` → merge commit `0a5e755d342495d8bb85bfba6c832d612eb07843`, merged 2026-11-21T07:21:23Z, state `MERGED` (no approval wait, per brief) |
+| Pages | Live site fetched and served current data: https://wingbangboozle1-lang.github.io/Trade2/ . The REST build-status endpoint was rate-limited for this user during this session (HTTP 403), so the `built` status was not re-read through the API. |
+| First live run with the new code | `data/live.json` `resolution_tracking` (generated 2026-11-21T07:27:10Z): `pending` 742, `lookups_this_run` 8, `resolved_this_run` 8, `dropped_this_run` 0. The 8 resolutions were crypto (`KXBTCMAX100-26-*`) and gas (`KXAAAGASMAXCA-26DEC31-*`) markets whose close times had passed. |
+| Pending by topic (07:27Z) | elections 150 · culture 150 · golf 150 · gas-prices 148 · crypto 144 (all `close_time` set). Not yet due. Earliest closes: culture 2026-11-23, golf 2026-11-30, elections 2027-02-01 onward. Elections and culture rows will therefore appear as those markets close, not immediately. |
+
+**Git history note (self-correction).** During the rebase in this session, the claim commit `a40d005` was pushed with a stray conflict block in `COORDINATION.md`, left over from an interrupted rebase. The next commits rebuilt the file from `origin/main` plus this session's sections only, so the final tree is clean. The bad commit remains in branch history; nothing was force-pushed.
+
+**Requests raised, for the integration session (not edited here):**
+- Publish F-57-1…F-57-6 (`VERIFICATION-57e6bd3d.md` §5) on the site's Flagged for Review page. That page is generated by `site_build/`, which this session does not own.
+- Re-check the published elections, culture and golf resolution lists after their first closes (culture ~2026-11-23, golf ~2026-11-30) and record the result here.
+- R-3DCF-2, -3, -5 and -6 remain open (owners of table and chart code).
+
+---
+
+# Board M — session `arena-f642a30a` (branch `arena/f642a30a-trade2`)
+
+_Board letter note: opened as "Board L" at claim time; re-lettered to **Board M** on rebase
+because `arena-7695ba1b` took L meanwhile (letter collision — see the Board J finding).
+Keyed by session id `arena-f642a30a`; the letter is cosmetic._
+
+Claimed 2026-11-21 ~07:30 UTC · base `main` @ `8d15b95` (collector run 2026-11-21T06:50:54Z).
+This session edits only the file scopes below. Everything else is untouched (in particular:
+`collector/collector.py` = `arena-bbfedfd5`; live-detection/site files of PR #57 = `arena-f3cb9b9f`;
+PR #28/#29 files and root pages = their owners + integration `arena-1ebe818a`).
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| F642-T1 | **R-4f92-4: node kalshi-dashboard pipeline tracks zero resolutions** (`kalshi-dashboard/data/resolved.json` = `resolved: []`, `pending: []` at run 14, `resolution_checks_this_run: 0`, while `docs/data/resolutions.json` has 300 rows). Root causes fixed here: (a) resolution memory lives only in the GH-Actions state cache, so every cache eviction wipes resolved/pending history; (b) detection is only a watch on previously tracked tickers — there is no settled-market scan like the docs pipeline's X1 fix; (c) pending rows are dropped whenever `state.meta` lacks their ticker. Fix: documented `GET /markets?series_ticker=…&status=settled&min_settled_ts=…` rotating scan per topic (mirror of X1), merge with the previously published `resolved.json`/pending so outcomes accumulate across runs and cache resets, watch list includes pending tickers, open-position tickers exempt from retention pruning. | **done** (in code; published `kalshi-dashboard/data/resolved.json` repopulates at the first post-merge `dashboard.yml` run) | `arena-f642a30a` | `scripts/collect.mjs`, `scripts/test/collect.test.mjs`, generated `kalshi-dashboard/data/resolved.json` + `status.json` (regenerated by the scheduled job after merge) |
+| F642-T2 | **R-3DCF-5: notional basis provenance** — `market_row`'s derived `notional_usd` = volume × price, where the price is `last_price_dollars` or the (bid+ask)/2 fallback; store the price used and which basis, so the derived figure can be re-checked. Additive fields only. | **done** | `arena-f642a30a` | `collector/runner.py` (`market_row` + new small helper only), `tests/` (additive test file only) |
+| F642-T3 | **R-79CC-2: `age_label` UTC fix** — `extras.age_label` falls back to `time.mktime` (interprets the `…Z` stamp as local time); `calendar.timegm` is correct for UTC stamps. | **done** | `arena-f642a30a` | `site_build/extras.py` (that function only), `tests/` (additive test file only) |
+| F642-T4 | Independent verification record (every live check + URL + UTC time + result), PR → `main`, merge, Pages confirmation. | in progress | `arena-f642a30a` | `VERIFICATION-f642a30a.md` (new), this section of `COORDINATION.md` |
+
+**Live API facts verified by this session before coding** (see `VERIFICATION-f642a30a.md` for the full log):
+`GET /markets?series_ticker=KXDOGE&status=settled&limit=3&min_settled_ts=…` on
+`https://external-api.demo.kalshi.co/trade-api/v2` returned settled markets with `result: "yes"|"no"`,
+`settlement_ts`, `settlement_value_dollars`, and object `status: "finalized"` (the docs' `status=settled`
+*filter* value maps to these terminal objects; the code keys on `result`, not `status`). Official docs:
+[get-markets](https://docs.kalshi.com/api-reference/market/get-markets) (`status` filter values
+`unopened|open|closed|settled`; `min_settled_ts` = "Filter items that settled after this Unix timestamp",
+seconds), [market_settlement](https://docs.kalshi.com/getting_started/market_settlement) (YES/NO payout).
+
+### Work log — `arena-f642a30a` (2026-11-21)
+
+**F642-T1 result (R-4f92-4).** `scripts/collect.mjs` now tracks resolutions in three durable
+layers: (1) a rotating per-topic settled scan (`GET /markets?series_ticker=…&status=settled&min_settled_ts=now−30d`,
+~15 series/run, mirroring the proven X1 fix in `collector/runner.py::collect_resolutions`);
+(2) the watch check, now including pending tickers; (3) the previously published
+`resolved.json` merged back at startup — the published snapshot is committed to git, so
+outcome history survives the Actions state-cache evictions that erased it (audit R-4f92-4
+saw 19 pending rows at one run and 0 at run 14; the cache config
+`kalshi-demo-state-${{ github.run_id }}` in `.github/workflows/dashboard.yml` is best-effort).
+Results are the official `result` field verbatim (`yes|no|scalar`), every row carries its
+`/markets/{ticker}` source URL + `docs_url`, and open-position tickers are exempt from the
+100-per-topic retention cap so every simulated position can settle (this also un-sticks the
+trades page, whose win-rate/ROI stay empty until positions settle against official results).
+
+**Sources (all official):** https://docs.kalshi.com/api-reference/market/get-markets
+(`status` filter values `unopened|open|closed|settled`; `min_settled_ts` = settled after this
+Unix timestamp, seconds — live-verified with three window probes at ~07:18–07:28Z);
+https://docs.kalshi.com/getting_started/market_settlement (YES/NO $1 payout — fetched at ~07:29Z);
+live demo API `GET /markets?series_ticker=KXDOGE&status=settled&…` (settled objects return
+`result: "yes"|"no"`, `settlement_ts`, `settlement_value_dollars`, `status: "finalized"`).
+Full table with URLs, times and results: `VERIFICATION-f642a30a.md` §2.
+
+**Verification performed:** unittest **246 OK** (1 skip) · npm **34/34** ·
+`collector.test_runner` PASS · `trading.test_engine` PASS · `site_build.build` clean ·
+`scripts/build-site.mjs` 13 pages + links OK · `tools/linkcheck.py` 50 pages / 666 links /
+0 errors · mutation-checked: removing each new layer breaks its own regression test.
+
+**Irregularities (flagged in `VERIFICATION-f642a30a.md` §5, not silently fixed):**
+I-F642-1 docs call the terminal filter value `settled` while market objects return
+`status: "finalized"` (code keys on `result`, copies `status` verbatim); I-F642-2 the state
+cache silently reset the pipeline memory (mitigated by the published-snapshot merge);
+I-F642-3 historical snapshot ages computed by non-UTC runners carried a timezone skew (fixed).
+
+**Closeouts with evidence (VERIFICATION-f642a30a.md §6):** R-4f92-3 **closed** —
+`kalshi-dashboard/data/*` now sources `https://external-api.demo.kalshi.co/trade-api/v2`
+(guard `assertDemoBase`, regression-tested). F-07 **closed** — main published a successful
+demo snapshot (generated 2026-11-21T06:27:09.657Z, run 14, `errors: []`).
+
+**Requests raised:** R-F642-1 flagged-page owners: update F-07/R-4f92-3 copy to resolved;
+R-F642-2 integration (`arena-1ebe818a`): R-3DCF-4 equity-figure naming is untouched here;
+R-F642-3 alert-views owner (PR #57): R-3DCF-3 (revert marking) deliberately left open to
+avoid colliding with live-detection work in flight.
+
+**Merge/deploy record:** appended after PR merge (F642-T4).
