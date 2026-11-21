@@ -11,19 +11,24 @@ on:
         description: "Markets to track per topic"
         default: "150"
   push:
-    # main publishes the site; the working branches are included so the
-    # pipeline can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2",
+    # main publishes the site. Two working branches stay included so their
+    # pipelines can be exercised before merge; arena/dd1da6b5-trade2 was
+    # removed by the integration session after its runs succeeded — every
+    # push to it produced a data commit that then conflicted with main's
+    # own scheduled data commit, leaving the PR permanently CONFLICTING.
+    branches: ["main", "arena/f5837994-trade2",
                "arena/fb6cb424-trade2"]
 
 permissions:
   contents: write
 
 concurrency:
-  # Distinct group per event (R-1E3-1): GitHub cancels a *pending* run in a
-  # shared group when a newer one queues, so the */5 schedule used to be
-  # replaced by queued push runs and the snapshot age drifted.
-  group: collect-${{ github.event_name }}
+  # Distinct group per event AND per ref (R-1E3-1, matching the sibling
+  # workflows): GitHub cancels a *pending* run in a shared group when a newer
+  # one queues, so the */5 schedule used to be replaced by queued push runs
+  # and the snapshot age drifted; without the ref a branch push would also
+  # queue against main's own runs.
+  group: collect-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
