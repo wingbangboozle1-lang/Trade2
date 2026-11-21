@@ -265,6 +265,111 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     )
 
 
+PRICE_BANDS = [
+    ("coin", "35 \u2013 65\u00a2", "a live two-sided market near even odds"),
+    ("shoulder", "5 \u2013 35\u00a2 or 65 \u2013 95\u00a2", "one side clearly favoured"),
+    ("tail", "under 5\u00a2 or over 95\u00a2", "effectively decided, or nearly worthless"),
+    ("none", "no quote", "Kalshi returned no two-sided price for the book"),
+]
+
+
+def price_band(mid: Any) -> str:
+    """Which band a published YES mid falls in.
+
+    Derived only from the mid the collector already published from Kalshi's own
+    book. ``none`` is the honest answer for a market with no two-sided quote —
+    it is never folded into 0 or 0.50 (see ``collector.alerts.observe``).
+    """
+    if mid is None:
+        return "none"
+    try:
+        m = float(mid)
+    except (TypeError, ValueError):
+        return "none"
+    if m < 0.05 or m > 0.95:
+        return "tail"
+    if m < 0.35 or m > 0.65:
+        return "shoulder"
+    return "coin"
+
+
+def price_chip(e: dict[str, Any]) -> str:
+    """A one-word state chip next to the quote cell.
+
+    Three states, each traceable to a published field:
+      * ``no book``  — no two-sided quote in Kalshi's book right now
+      * ``wide``     — a quote exists but the spread is at least $0.10
+      * ``decided``  — the mid sits outside 5c/95c
+    Nothing here is a recommendation; it describes the quote.
+    """
+    band = price_band(e.get("mid"))
+    bid, ask = e.get("yes_bid"), e.get("yes_ask")
+    spread = None
+    if isinstance(bid, (int, float)) and isinstance(ask, (int, float)):
+        spread = ask - bid
+    if band == "none":
+        return ('<span class="qchip q-none" title="Kalshi order book has no '
+                'two-sided quote for this market in the current snapshot, so no '
+                'price is published here.">no book</span>')
+    if spread is not None and spread >= 0.10:
+        return ('<span class="qchip q-wide" title="The quoted YES spread is at '
+                'least $0.10, so the midpoint is not an executable price.">wide</span>')
+    if band == "tail":
+        return ('<span class="qchip q-tail" title="The YES mid is outside 5c/95c: '
+                'the market is effectively decided or nearly worthless.">'
+                'decided</span>')
+    return ""
+
+
+def price_composition(events: list[dict[str, Any]]) -> dict[str, int]:
+    out = {key: 0 for key, _, _ in PRICE_BANDS}
+    for e in events:
+        out[price_band(e.get("mid"))] += 1
+    return out
+
+
+def build_price_strip(live: dict[str, Any]) -> str:
+    """How many of the ranked events a trader can actually act on right now.
+
+    The brief ranks by "highest dollar amount", which is open-interest value.
+    That is not the same question as "does this market have a price I could
+    trade", and in the demo a market can carry millions of dollars of open
+    interest with an empty order book. Saying so at the top of the table stops
+    a reader from assuming a blank cell is a rendering bug.
+    """
+    events = live.get("events") or []
+    total = len(events)
+    if not total:
+        return ""
+    counts = price_composition(events)
+    cards = []
+    for key, label, blurb in PRICE_BANDS:
+        n = counts[key]
+        share = (n / total * 100) if total else 0
+        cards.append(
+            f'<div class="band-card band-{key}">'
+            f'<div class="band-n">{count(n)}</div>'
+            f'<div class="band-label">{label}</div>'
+            f'<div class="band-share">{share:.0f}% of {count(total)}</div>'
+            f'<div class="band-blurb">{html.escape(blurb)}</div></div>')
+    actionable = total - counts["none"]
+    return f"""        <section class="panel band-panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">\u25a6</span><div>
+              <h2>Can I trade it? Price mix of the tracked events</h2>
+              <p>{count(actionable)} of {count(total)} tracked markets carry a
+              two-sided YES quote in this snapshot; {count(counts["none"])} do
+              not, and those publish a blank price rather than a guessed one.</p></div></div>
+          </div>
+          <div class="band-row">{"".join(cards)}</div>
+          <div class="table-foot"><span>Band is decided from the YES mid the
+          collector published (Kalshi's own book; best bid = last level).</span>
+          <span>A blank price is never inferred — see
+          <a href="review.html">Flagged for review</a>.</span></div>
+        </section>
+"""
+
+
 def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     events = live.get("events", [])
@@ -295,7 +400,7 @@ def build_overview(live: dict[str, Any]) -> str:
                 f'<td><a href="{safe_url(e.get("market_url","")) or "#"}" target="_blank" '
                 f'rel="noreferrer">{esc(e.get("title"))}</a>'
                 f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
-                f"<td>{cents(e.get('yes_bid'))}</td>"
+                f"<td>{cents(e.get('yes_bid'))} {price_chip(e)}</td>"
                 f"<td>{cents(e.get('yes_ask'))}</td>"
                 f"<td>{num(e.get('open_interest_contracts'))}</td>"
                 f"<td>{money(e.get('open_interest_notional'))}</td>"
@@ -322,6 +427,8 @@ def build_overview(live: dict[str, Any]) -> str:
         topic_blocks.append('<tbody><tr><td colspan="7" class="empty-state">'
                             "No snapshot yet — the collector has not completed "
                             "a run.</td></tr></tbody>")
+
+    price_strip = build_price_strip(live)
 
     topic_jump = " · ".join(
         f'<a href="categories/{slug}.html">{html.escape(extras.TOPIC_LABEL.get(slug, slug))}</a>'
@@ -410,6 +517,7 @@ def build_overview(live: dict[str, Any]) -> str:
           no order is ever sent. Every row links to the exact API response it
           came from.</p></div>
         </div>
+        {price_strip}
         <section class="panel">
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
