@@ -1,0 +1,722 @@
+{
+ "tool": "tools/verify_rows_479.py",
+ "session": "arena-479bbd2f",
+ "task": "F-479-2",
+ "rest_base": "https://external-api.demo.kalshi.co/trade-api/v2",
+ "snapshot_path": "./data/live.json",
+ "snapshot_generated_at": "2026-11-20T20:29:48Z",
+ "verified_at": "2026-11-20T20:38:13Z",
+ "subjects": [
+  {
+   "topic": "gas-prices",
+   "event_ticker": "KXAAAGASM-26NOV30",
+   "market_ticker": "KXAAAGASM-26NOV30-4.70",
+   "title": "Above 4.70",
+   "published_open_interest_notional": 58062.52,
+   "checks": [
+    {
+     "field": "title (yes_sub_title fallback, stripped)",
+     "published": "Above 4.70",
+     "fresh": "Above 4.70",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "yes_bid ($) [book best bid, else yes_bid_dollars]",
+     "published": null,
+     "fresh": 0.0,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": "published value blank"
+    },
+    {
+     "field": "yes_ask ($) [1 - best no bid, else yes_ask_dollars]",
+     "published": null,
+     "fresh": 1.0,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": "published value blank"
+    },
+    {
+     "field": "open_interest (open_interest_fp)",
+     "published": 58062.52,
+     "fresh": 58062.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "volume (volume_fp)",
+     "published": 58071.52,
+     "fresh": 58071.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "notional_value_dollars",
+     "published": 1.0,
+     "fresh": 1.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "open_interest_notional = oi x notional",
+     "published": 58062.52,
+     "fresh": 58062.52,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
+    },
+    {
+     "field": "status (raw API value)",
+     "published": "active",
+     "fresh": "active",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "close_time",
+     "published": "2026-11-30T04:59:00Z",
+     "fresh": "2026-11-30T04:59:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "result",
+     "published": "",
+     "fresh": "",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "note": ""
+    },
+    {
+     "field": "book best_yes_bid ($)",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "note": "published value blank"
+    },
+    {
+     "field": "book best_no_bid ($)",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "note": "published value blank"
+    },
+    {
+     "field": "book implied_yes_ask ($) = 1 - best_no_bid",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "note": "derivation per https://docs.kalshi.com/getting_started/orderbook_responses.md"
+    },
+    {
+     "field": "book YES bid-side depth (contracts)",
+     "published": 0,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "note": "fresh value absent"
+    },
+    {
+     "field": "book NO bid-side depth (contracts)",
+     "published": 0,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "note": "fresh value absent"
+    }
+   ],
+   "raw": {
+    "market": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+     "status": 200,
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2026-11-30T04:59:00Z\", \"created_time\": \"2026-10-27T20:06:21.261994Z\", \"event_ticker\": \"KXAAAGASM-26NOV30\", \"exchange_index\": 0, \"expected_expiration_time\": \"2026-11-30T15:00:00Z\", \"expiration_value\": \"\", \"floor_strike\": 4.7, \"last_price_dollars\": \"0.0200\", \"latest_expiration_time\": \"2026-12-30T15:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.0000\", \"no_sub_title\": \"Above 4.70\", \"notional_value_dollars\": \"1.0000\", \"open_interest_fp\": \"58062.52\", \"open_time\": \"2026-10-27T20:34:13Z\", \"previous_price_dollars\":"
+    },
+    "orderbook": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook?depth=25",
+     "status": 200,
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [], \"yes_dollars\": []}}"
+    }
+   }
+  },
+  {
+   "topic": "elections",
+   "event_ticker": "KXPRESNOMD-28",
+   "market_ticker": "KXPRESNOMD-28-RW",
+   "title": "Raphael Warnock",
+   "published_open_interest_notional": 189529515.91,
+   "checks": [
+    {
+     "field": "title (yes_sub_title fallback, stripped)",
+     "published": "Raphael Warnock",
+     "fresh": "Raphael Warnock",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "yes_bid ($) [book best bid, else yes_bid_dollars]",
+     "published": 0.035,
+     "fresh": 0.035,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "yes_ask ($) [1 - best no bid, else yes_ask_dollars]",
+     "published": 0.038,
+     "fresh": 0.038,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "open_interest (open_interest_fp)",
+     "published": 189529515.91,
+     "fresh": 189529515.91,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "volume (volume_fp)",
+     "published": 414925368.16,
+     "fresh": 414925410.9,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "notional_value_dollars",
+     "published": 1.0,
+     "fresh": 1.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "open_interest_notional = oi x notional",
+     "published": 189529515.91,
+     "fresh": 189529515.91,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
+    },
+    {
+     "field": "status (raw API value)",
+     "published": "active",
+     "fresh": "active",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "close_time",
+     "published": "2028-11-07T15:00:00Z",
+     "fresh": "2028-11-07T15:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "result",
+     "published": "",
+     "fresh": "",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "note": ""
+    },
+    {
+     "field": "book best_yes_bid ($)",
+     "published": 0.035,
+     "fresh": 0.035,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book best_no_bid ($)",
+     "published": 0.962,
+     "fresh": 0.962,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book implied_yes_ask ($) = 1 - best_no_bid",
+     "published": 0.038,
+     "fresh": 0.038,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "note": "derivation per https://docs.kalshi.com/getting_started/orderbook_responses.md"
+    },
+    {
+     "field": "book YES bid-side depth (contracts)",
+     "published": 10117.19,
+     "fresh": 10097.19,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book NO bid-side depth (contracts)",
+     "published": 427152.29,
+     "fresh": 57774.72,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "note": ""
+    }
+   ],
+   "raw": {
+    "market": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+     "status": 200,
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2028-11-07T15:00:00Z\", \"created_time\": \"2024-12-10T03:33:23.198124Z\", \"custom_strike\": {\"Candidate\": \"Raphael Warnock\", \"politician\": \"552fca58-daa2-4282-9b37-b30c957505b8\"}, \"early_close_condition\": \"This market will close after the Democratic party nominates an individual for the Presidency and they accept that nomination.\", \"event_ticker\": \"KXPRESNOMD-28\", \"exchange_index\": 0, \"expected_expiration_time\": \"2028-11-07T15:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.0380\", \"latest_expiration_time\": \"2028-11-07T15:00:00Z\", \"market"
+    },
+    "orderbook": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=25",
+     "status": 200,
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.1750\", \"2025.00\"], [\"0.1760\", \"2198.00\"], [\"0.1770\", \"1856.00\"], [\"0.1780\", \"2375.00\"], [\"0.1790\", \"1959.00\"], [\"0.1800\", \"2370.00\"], [\"0.1810\", \"2223.00\"], [\"0.1820\", \"2298.00\"], [\"0.1830\", \"2066.00\"], [\"0.1840\", \"2373.00\"], [\"0.1850\", \"2126.00\"], [\"0.1860\", \"2635.00\"], [\"0.1870\", \"2158.00\"], [\"0.1880\", \"1984.00\"], [\"0.1890\", \"2151.00\"], [\"0.1900\", \"2176.00\"], [\"0.1910\", \"1921.00\"], [\"0.1920\", \"1937.00\"], [\"0.1930\", \"2298.00\"], [\"0.1940\", \"1976.00\"], [\"0.1950\", \"1998.00\"], [\"0.1960\", \"321.57\"], [\"0.9600\", \"4166.66\"], [\"0.9610\", \"4273.50\"], [\"0.9620\", \"3909"
+    }
+   }
+  },
+  {
+   "topic": "culture",
+   "event_ticker": "KXCRITICSFOREIGN-27",
+   "market_ticker": "KXCRITICSFOREIGN-27-LAB",
+   "title": "La Bola Negra",
+   "published_open_interest_notional": 473339.45,
+   "checks": [
+    {
+     "field": "title (yes_sub_title fallback, stripped)",
+     "published": "La Bola Negra",
+     "fresh": "La Bola Negra",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "yes_bid ($) [book best bid, else yes_bid_dollars]",
+     "published": null,
+     "fresh": 0.0,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": "published value blank"
+    },
+    {
+     "field": "yes_ask ($) [1 - best no bid, else yes_ask_dollars]",
+     "published": null,
+     "fresh": 1.0,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": "published value blank"
+    },
+    {
+     "field": "open_interest (open_interest_fp)",
+     "published": 473339.45,
+     "fresh": 473339.45,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "volume (volume_fp)",
+     "published": 671773.31,
+     "fresh": 671773.31,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "notional_value_dollars",
+     "published": 1.0,
+     "fresh": 1.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "open_interest_notional = oi x notional",
+     "published": 473339.45,
+     "fresh": 473339.45,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
+    },
+    {
+     "field": "status (raw API value)",
+     "published": "active",
+     "fresh": "active",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "close_time",
+     "published": "2028-01-04T15:00:00Z",
+     "fresh": "2028-01-04T15:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "result",
+     "published": "",
+     "fresh": "",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "note": ""
+    },
+    {
+     "field": "book best_yes_bid ($)",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "note": "published value blank"
+    },
+    {
+     "field": "book best_no_bid ($)",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "note": "published value blank"
+    },
+    {
+     "field": "book implied_yes_ask ($) = 1 - best_no_bid",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "note": "derivation per https://docs.kalshi.com/getting_started/orderbook_responses.md"
+    },
+    {
+     "field": "book YES bid-side depth (contracts)",
+     "published": 0,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "note": "fresh value absent"
+    },
+    {
+     "field": "book NO bid-side depth (contracts)",
+     "published": 0,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "note": "fresh value absent"
+    }
+   ],
+   "raw": {
+    "market": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+     "status": 200,
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2028-01-04T15:00:00Z\", \"created_time\": \"2026-10-06T23:09:45.472046Z\", \"early_close_condition\": \"The market will close and expire early following nominations being released (if La Bola Negra is not nominated) or the awards show.\", \"event_ticker\": \"KXCRITICSFOREIGN-27\", \"exchange_index\": 0, \"expected_expiration_time\": \"2027-01-04T15:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.1900\", \"latest_expiration_time\": \"2028-01-04T15:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.0000\", \"no_sub_title\": \"La"
+    },
+    "orderbook": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook?depth=25",
+     "status": 200,
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [], \"yes_dollars\": []}}"
+    }
+   }
+  },
+  {
+   "topic": "crypto",
+   "event_ticker": "KXBTCY-27JAN0100",
+   "market_ticker": "KXBTCY-27JAN0100-B127500",
+   "title": "125,000 to 129,999.99",
+   "published_open_interest_notional": 39622488.51,
+   "checks": [
+    {
+     "field": "title (yes_sub_title fallback, stripped)",
+     "published": "125,000 to 129,999.99",
+     "fresh": "125,000 to 129,999.99",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "yes_bid ($) [book best bid, else yes_bid_dollars]",
+     "published": 0.0,
+     "fresh": 0.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "yes_ask ($) [1 - best no bid, else yes_ask_dollars]",
+     "published": 0.01,
+     "fresh": 0.01,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "open_interest (open_interest_fp)",
+     "published": 39622488.51,
+     "fresh": 39622541.83,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "volume (volume_fp)",
+     "published": 83444376.59,
+     "fresh": 83444429.91,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "notional_value_dollars",
+     "published": 1.0,
+     "fresh": 1.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "open_interest_notional = oi x notional",
+     "published": 39622488.51,
+     "fresh": 39622541.83,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
+    },
+    {
+     "field": "status (raw API value)",
+     "published": "active",
+     "fresh": "active",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "close_time",
+     "published": "2027-01-01T05:00:00Z",
+     "fresh": "2027-01-01T05:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "result",
+     "published": "",
+     "fresh": "",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "note": ""
+    },
+    {
+     "field": "book best_yes_bid ($)",
+     "published": null,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "note": "published value blank"
+    },
+    {
+     "field": "book best_no_bid ($)",
+     "published": 0.99,
+     "fresh": 0.99,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book implied_yes_ask ($) = 1 - best_no_bid",
+     "published": 0.01,
+     "fresh": 0.01,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "note": "derivation per https://docs.kalshi.com/getting_started/orderbook_responses.md"
+    },
+    {
+     "field": "book YES bid-side depth (contracts)",
+     "published": 0,
+     "fresh": null,
+     "verdict": "UNVERIFIED",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "note": "fresh value absent"
+    },
+    {
+     "field": "book NO bid-side depth (contracts)",
+     "published": 30204.26,
+     "fresh": 30150.94,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "note": ""
+    }
+   ],
+   "raw": {
+    "market": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+     "status": 200,
+     "body_head": "{\"market\": {\"can_close_early\": true, \"cap_strike\": 129999.99, \"close_time\": \"2027-01-01T05:00:00Z\", \"created_time\": \"2026-02-26T00:18:49.149249Z\", \"event_ticker\": \"KXBTCY-27JAN0100\", \"exchange_index\": 0, \"expected_expiration_time\": \"2027-01-01T05:05:00Z\", \"expiration_value\": \"\", \"floor_strike\": 125000, \"last_price_dollars\": \"0.0100\", \"latest_expiration_time\": \"2027-01-08T05:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"1.0000\", \"no_bid_dollars\": \"0.9900\", \"no_sub_title\": \"125,000 to 129,999.99\", \"notional_value_dollars\": \"1.0000\", \"open_interest_fp\": \"39622541.83\", \"open_time\": \"2026-02"
+    },
+    "orderbook": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook?depth=25",
+     "status": 200,
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9700\", \"5555.55\"], [\"0.9800\", \"8333.33\"], [\"0.9900\", \"16262.06\"]], \"yes_dollars\": []}}"
+    }
+   }
+  },
+  {
+   "topic": "golf",
+   "event_ticker": "KXPGATOUR-THRC26",
+   "market_ticker": "KXPGATOUR-THRC26-TMOO",
+   "title": "Taylor Moore",
+   "published_open_interest_notional": 1152298.19,
+   "checks": [
+    {
+     "field": "title (yes_sub_title fallback, stripped)",
+     "published": "Taylor Moore",
+     "fresh": "Taylor Moore",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "yes_bid ($) [book best bid, else yes_bid_dollars]",
+     "published": 0.003,
+     "fresh": 0.003,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "yes_ask ($) [1 - best no bid, else yes_ask_dollars]",
+     "published": 0.005,
+     "fresh": 0.005,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "open_interest (open_interest_fp)",
+     "published": 1152298.19,
+     "fresh": 1152328.7,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "volume (volume_fp)",
+     "published": 1157787.08,
+     "fresh": 1157817.59,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "notional_value_dollars",
+     "published": 1.0,
+     "fresh": 1.0,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "open_interest_notional = oi x notional",
+     "published": 1152298.19,
+     "fresh": 1152328.7,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": "collector/alerts.py rank_events; https://docs.kalshi.com/api-reference/market/get-markets"
+    },
+    {
+     "field": "status (raw API value)",
+     "published": "active",
+     "fresh": "active",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "close_time",
+     "published": "2026-12-06T00:00:00Z",
+     "fresh": "2026-12-06T00:00:00Z",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "result",
+     "published": "",
+     "fresh": "",
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "note": ""
+    },
+    {
+     "field": "book best_yes_bid ($)",
+     "published": 0.003,
+     "fresh": 0.003,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book best_no_bid ($)",
+     "published": 0.995,
+     "fresh": 0.995,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book implied_yes_ask ($) = 1 - best_no_bid",
+     "published": 0.005,
+     "fresh": 0.005,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "note": "derivation per https://docs.kalshi.com/getting_started/orderbook_responses.md"
+    },
+    {
+     "field": "book YES bid-side depth (contracts)",
+     "published": 305615.54,
+     "fresh": 305615.54,
+     "verdict": "EXACT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "note": ""
+    },
+    {
+     "field": "book NO bid-side depth (contracts)",
+     "published": 84637.5,
+     "fresh": 84606.56,
+     "verdict": "DRIFT",
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "note": ""
+    }
+   ],
+   "raw": {
+    "market": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+     "status": 200,
+     "body_head": "{\"market\": {\"can_close_early\": true, \"close_time\": \"2026-12-06T00:00:00Z\", \"created_time\": \"2026-11-16T01:06:32.067865Z\", \"custom_strike\": {\"golf_competitor\": \"4e93ec3d-3ca8-4755-a874-4d1e5c18ccbf\"}, \"early_close_condition\": \"This market will close and expire after a winner is declared.\", \"event_ticker\": \"KXPGATOUR-THRC26\", \"exchange_index\": 0, \"expected_expiration_time\": \"2026-11-22T00:00:00Z\", \"expiration_value\": \"\", \"last_price_dollars\": \"0.0050\", \"latest_expiration_time\": \"2026-12-06T00:00:00Z\", \"market_type\": \"binary\", \"no_ask_dollars\": \"0.9970\", \"no_bid_dollars\": \"0.9950\", \"no_sub_title\""
+    },
+    "orderbook": {
+     "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook?depth=25",
+     "status": 200,
+     "body_head": "{\"orderbook_fp\": {\"no_dollars\": [[\"0.9930\", \"23809.52\"], [\"0.9940\", \"27777.77\"], [\"0.9950\", \"33019.27\"]], \"yes_dollars\": [[\"0.0010\", \"166726.66\"], [\"0.0020\", \"83333.33\"], [\"0.0030\", \"55555.55\"]]}}"
+    }
+   }
+  }
+ ],
+ "notes": [],
+ "summary": {
+  "EXACT": 48,
+  "UNVERIFIED": 16,
+  "DRIFT": 11
+ }
+}

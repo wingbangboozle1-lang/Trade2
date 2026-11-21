@@ -83,6 +83,15 @@ OUT_PATH = os.path.join(DATA_DIR, "shortlist.json")
 
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
 
+
+def usd(value: float, places: int = 4) -> str:
+    """Format dollars with the sign outside the symbol: -$0.0388, not $-0.0388.
+
+    Negative modelled edge is normal in the rejection reasons; the site pins
+    the wrong form (`$-`) as a rendering defect (tests/test_site_contract.py).
+    """
+    return ("-" if value < 0 else "") + f"${abs(value):.{places}f}"
+
 SWING_THRESHOLD = 0.10     # USD, the brief's alert size
 MIN_EDGE = 0.02            # USD of edge after fees before a row qualifies
 MAX_SPREAD = 0.20          # wider books are not meaningful
@@ -184,7 +193,7 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
         edge = round(fair_side - price, 4)
         if edge < MIN_EDGE:
             reasons.append(f"{side.upper()} at {price:.4f} leaves only "
-                           f"${edge:.4f} of edge before fees")
+                           f"{usd(edge)} of edge before fees")
             continue
         if depth < MIN_DEPTH_CONTRACTS:
             reasons.append(f"{side.upper()} has only {depth:.0f} contracts resting")
@@ -192,8 +201,8 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
         fee = kalshi_fee(price, 1.0)
         net = round(edge - fee, 4)
         if net < MIN_EDGE:
-            reasons.append(f"{side.upper()} leaves ${net:.4f} after the "
-                           f"${fee:.4f} taker fee")
+            reasons.append(f"{side.upper()} leaves {usd(net)} after the "
+                           f"{usd(fee)} taker fee")
             continue
         if price <= 0:
             continue
@@ -227,8 +236,8 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
             "book_source_url": f"{API}/markets/{event.get('ticker')}/orderbook",
             "reason": (f"book mid moved {p_ref:.4f} -> {p_now:.4f}; fair value "
                        f"{fair:.4f} is the midpoint of the two, so {side.upper()} "
-                       f"at {price:.4f} leaves ${edge:.4f} of edge and "
-                       f"${net:.4f} after the ${fee:.4f} taker fee"),
+                       f"at {price:.4f} leaves {usd(edge)} of edge and "
+                       f"{usd(net)} after the {usd(fee)} taker fee"),
             "ts": time.time(),
         }
         if alert:

@@ -1,0 +1,68 @@
+# Fresh row-level verification against the official Kalshi demo API
+# (task F-479-2, session arena-479bbd2f).
+#
+# This workflow exists because the agent sandbox has no egress to Kalshi hosts:
+# GitHub runners do. It runs tools/verify_rows_479.py, which re-fetches the
+# exact rows the published root site shows (top event per topic by open-interest
+# value, its market row, and its order book) from the official demo endpoints
+# and compares field by field, writing evidence to audit/verify-479.json and
+# audit/verify-479.md. Trigger manually (workflow_dispatch) so no push loops
+# are created. Commit pattern copied from the proven live-probe workflow:
+# commit BEFORE pulling (git pull --rebase refuses staged changes), then a
+# bounded rebase/push retry loop.
+
+name: verify rows vs official demo API (479)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify published rows against the official demo API
+        run: |
+          # No heredocs inside a YAML block scalar: a zero-indent line would
+          # terminate the `run: |` scalar (this broke the first dispatch run).
+          # The tool already prints a JSON verdict line and writes the full
+          # human-readable report, so the summary just concatenates that.
+          python3 tools/verify_rows_479.py --root .
+          {
+            echo "## Row verification vs official demo API (F-479-2)"
+            echo
+            cat audit/verify-479.md
+            echo
+            echo "Full evidence: audit/verify-479.json and audit/verify-479.md (also in the workflow artifact)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verification evidence (survives a failed commit)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-479-evidence
+          path: audit/verify-479.*
+
+      - name: Commit verification evidence
+        run: |
+          git config user.name "verify-479[bot]"
+          git config user.email "verify-479[bot]@users.noreply.github.com"
+          git config rebase.autoStash true
+          git add audit/verify-479.json audit/verify-479.md
+          if git diff --cached --quiet; then
+            echo "verification evidence unchanged"
+            exit 0
+          fi
+          git commit -m "chore(verify): fresh API row verification (F-479-2) $(date -u +%FT%TZ)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && \
+            git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep $((i * 5))
+          done
+          echo "::error::verification-evidence commit failed after 5 attempts"
+          exit 1

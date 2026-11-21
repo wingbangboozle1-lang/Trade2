@@ -1,28 +1,164 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795200219&end_ts=1795203819&period_interval=1",
-   "delta": 0.8,
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795238665&end_ts=1795242265&period_interval=1",
+   "delta": 0.22,
    "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.17,
+   "headlines": [
+    {
+     "published": "2026-11-21T02:42:58+00:00",
+     "source": "PGA Tour",
+     "status": "verified-fetch",
+     "title": "Highlights | Round 2 | The RSM Classic | 2026 - PGA Tour",
+     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNamY1MXVMaW1HcVJ3dTROUmdJVmw0WTZRTklUTW51VDIxR09UNV9pekhtVmI4WnNHemQ0Q21icThXWTNYZDlCYUxtb3JvcWxsVnh3V2tJTXRSbnItdEwwT3BfdEJJYTZFYkxRaFlnbUtFYllYLTdGRUthOFlnWXd3Nk5ueWI0bXk5VVBpd2JZdlk4b0xFLUVIbw?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
+   "t": 1795241520,
+   "t_iso": "2026-11-21T06:12:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "title": "The RSM Classic: Michael Thorbjornsen wins",
+   "to": 0.39,
+   "topic": "golf",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795220665&end_ts=1795242265&period_interval=60",
+   "delta": -0.17,
+   "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
    "flags": [
     "news-unverified:no headline within window (link left blank)"
    ],
-   "from": 0.003,
+   "from": 0.9,
    "headlines": [],
    "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO",
-   "t": 1795200300,
-   "t_iso": "2026-11-20T18:45:00+00:00",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2117-T1459.99",
+   "t": 1795237200,
+   "t_iso": "2026-11-21T05:00:00+00:00",
    "threshold": 0.1,
-   "ticker": "KXPRESNOMD-28-AKLO",
-   "title": "Will Amy Klobuchar be the nominee for the Presidency for the Democratic party?",
-   "to": 0.803,
-   "topic": "elections",
-   "window": "seconds"
+   "ticker": "KXETHD-26NOV2117-T1459.99",
+   "title": "Ethereum price at Nov 21, 2026 at 5pm EST?",
+   "to": 0.73,
+   "topic": "crypto",
+   "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "delta": 0.11,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.86,
+   "headlines": [
+    {
+     "published": "2026-11-21T01:39:00+00:00",
+     "source": "FOX 8 Local First",
+     "status": "verified-fetch",
+     "title": "Louisiana gas prices fall ahead of Thanksgiving, AAA says - FOX 8 Local First",
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaHVWTjQ4MldTQVZJVnJBNnl4eGtReWlfWXlmVUowS29TYWx0WnNwVkJPaW9uUF9mQWRDRzN0MjdDaE9mejJXc2hoRHA1azI1S3o4eU0td0R3Zjh6TzNZRDNLX1lDYnFLZlN6bGVOdF93aWNia1AxaDBxQVNDaV9UcTlyWE95YkRXdWljUllBaGFOcjBk0gGoAUFVX3lxTE9TLUF5eGZqWEcyQWF1MHNHSnRMaEs4SUlqME4xQTFvZzZVbnJ6OE1fVTQxM2V1QkZVeGg0S1U1ejV4N2pQSjdKSGpYZlVjU1NxdFdJVHNYd2tlSmR3OGhZV00yeXBsSWg1a0RKenE2bUtGUTdYOWwycUJOblhfWFZMY2JXVTlIVHVoWDNQdFhFS1hwUGxCcVlOMEJ2SXYtN1pyREhpOFN5Uw?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6200",
+   "t": 1795237200,
+   "t_iso": "2026-11-21T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXAAAGASW-26NOV23-3.6200",
+   "title": "Will average **gas prices** be above $3.6200?",
+   "to": 0.97,
+   "topic": "gas-prices",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "delta": 0.877,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.005,
+   "headlines": [
+    {
+     "published": "2026-11-20T23:33:20+00:00",
+     "source": "Creators Syndicate",
+     "status": "verified-fetch",
+     "title": "2028 Is Looking Like 2016 but Upside Down, by Michael Barone - Creators Syndicate",
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQSDdLOU9Ub1FWNklibXo4Wmt1cUFrYk1uSnBHVGJRZzluVkk3Rl8xWGtZeUFodUZ3Q0dVVDM3OEs2Y2wxRHROQVEzZm85eTNvMDhuajBHekwtV2VSY0xzbkQ4VEVpSnNxTGpyX3Rva0l6czRpSkZLSUVrUTJDQVRfQzR2d3h2Z2dIMjdRaU9HbE1QS1N0TG5r?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
+   "t": 1795237200,
+   "t_iso": "2026-11-21T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPRESNOMD-28-BOBA",
+   "title": "Will Barack Obama be the Democratic Presidential nominee in 2028?",
+   "to": 0.882,
+   "topic": "elections",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "delta": -0.38,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.43,
+   "headlines": [
+    {
+     "published": "2026-11-20T05:59:40+00:00",
+     "source": "https://www.nerdalert.world/",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Returns With a Darker Edge in Fincher and Tarantino\u2019s Righteous 1970s Noir - https://www.nerdalert.world/",
+     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQZ2JFMWNxbnJpRmlOMDF2MDhDcjZCYXZnSkRmZi1nQnJJS1JEeGJJamo4emZnMmVaRUlieWxPTWx2dXo2d3hFTUJaYm8zaFN0QThIZEhrUjdtb1FwYk9lZkp3Q3BMSXp3VG04RHZ4MDFwQVhacVJKRExpZ2RVTGhwczBKaFgzbl9f?oc=5"
+    },
+    {
+     "published": "2026-11-19T23:00:11+00:00",
+     "source": "Comic Book Resources",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Sequel Is Both Shaggy And Intoxicating - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
+    },
+    {
+     "published": "2026-11-20T06:16:07+00:00",
+     "source": "Film Stories",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
+    },
+    {
+     "published": "2026-11-20T02:16:43+00:00",
+     "source": "Comic Book Resources",
+     "status": "verified-fetch",
+     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T05:44:18+00:00",
+     "source": "Geeks of Color",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXRT-FUR-85",
+   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
+   "to": 0.05,
+   "topic": "culture",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -41,98 +177,9 @@
    "to": 0.07,
    "topic": "gas-prices",
    "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
-   "delta": -0.38,
-   "direction": "down",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.43,
-   "headlines": [
-    {
-     "published": "2026-11-20T05:59:40+00:00",
-     "source": "https://www.nerdalert.world/",
-     "status": "verified-fetch",
-     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Returns With a Darker Edge in Fincher and Tarantino\u2019s Righteous 1970s Noir - https://www.nerdalert.world/",
-     "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQZ2JFMWNxbnJpRmlOMDF2MDhDcjZCYXZnSkRmZi1nQnJJS1JEeGJJamo4emZnMmVaRUlieWxPTWx2dXo2d3hFTUJaYm8zaFN0QThIZEhrUjdtb1FwYk9lZkp3Q3BMSXp3VG04RHZ4MDFwQVhacVJKRExpZ2RVTGhwczBKaFgzbl9f?oc=5"
-    },
-    {
-     "published": "2026-11-20T06:16:07+00:00",
-     "source": "Film Stories",
-     "status": "verified-fetch",
-     "title": "The Further Mis-Adventures Of Cliff Booth review | Fincher and Tarantino\u2019s Bogus Journey - Film Stories",
-     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
-    },
-    {
-     "published": "2026-11-19T23:00:11+00:00",
-     "source": "Comic Book Resources",
-     "status": "verified-fetch",
-     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Sequel Is Both Shaggy And Intoxicating - Comic Book Resources",
-     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
-    },
-    {
-     "published": "2026-11-20T05:44:18+00:00",
-     "source": "Geeks of Color",
-     "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
-     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
-    },
-    {
-     "published": "2026-11-20T02:16:43+00:00",
-     "source": "Comic Book Resources",
-     "status": "verified-fetch",
-     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
-     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
-   "t": 1795150800,
-   "t_iso": "2026-11-20T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXRT-FUR-85",
-   "title": "The Further Mis-Adventures of Cliff Booth Rotten Tomatoes score?",
-   "to": 0.05,
-   "topic": "culture",
-   "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794944619&end_ts=1795203819&period_interval=1440",
-   "delta": 0.18,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.63,
-   "headlines": [
-    {
-     "published": "2026-11-19T05:00:00+00:00",
-     "source": "Bloomberg.com",
-     "status": "verified-fetch",
-     "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
-     "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
-    },
-    {
-     "published": "2026-11-19T03:29:34+00:00",
-     "source": "Power Line",
-     "status": "verified-fetch",
-     "title": "Gas prices are falling, along with the sky - Power Line",
-     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOUG8zOG1LVHY1VjFYT0xCckMtWS1JdEl0eUoyenJGWkJ2NjRYZUN2ZHo2MWliMzZONmdmVnhRQ08za0N2OFBRWHRBNEZqdG40WHZ1UXN2MWFMbTRzejZsT2JUdG4xYW1yaWxpVUdaV08tM1hWM1JJLUpvaGV5OVFkN0lyTlh5MVZRcDYzRTNQRmR0Zzd3YW1J?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6200",
-   "t": 1795064400,
-   "t_iso": "2026-11-19T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXAAAGASW-26NOV23-3.6200",
-   "title": "Will average **gas prices** be above $3.6200?",
-   "to": 0.81,
-   "topic": "gas-prices",
-   "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T19:44:12.930483+00:00",
+ "generated_at": "2026-11-21T06:24:58.987284+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

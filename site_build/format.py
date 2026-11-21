@@ -37,12 +37,20 @@ def esc(value: Any) -> str:
 
 
 def money(value: Any, places: int = 2) -> str:
+    """An amount of dollars. A loss reads ``-$125.00``, never ``$-125.00``.
+
+    The sign belongs outside the currency symbol: the old f-string put it
+    between ``$`` and the digits, which is what the live trades table showed for
+    every unrealised loss on 2026-11-20.
+    """
     if value is None or value == "":
         return '<span class="flag-badge">UNVERIFIED</span>'
     try:
-        return f"${float(value):,.{places}f}"
+        number = float(value)
     except (TypeError, ValueError):
         return esc(value)
+    sign = "-" if number < 0 else ""
+    return f"{sign}${abs(number):,.{places}f}"
 
 
 def cents(value: Any) -> str:

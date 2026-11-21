@@ -100,18 +100,72 @@ class Observation:
     result: str = ""
     series_ticker: str = ""
     close_time: str = ""
+    # This series' own fee multiplier from ``GET /series`` (``fee_multiplier``,
+    # documented at https://docs.kalshi.com/api-reference/series/get-series and
+    # the multiplier M in the published schedule
+    # https://kalshi.com/docs/kalshi-fee-schedule.pdf). ``None`` means the
+    # series row was not available for this market — the schedule's own default
+    # for a listed general market is M = 1, so callers fall back to 1.0 and the
+    # fee is labelled "series default" rather than "series fee multiplier".
+    fee_multiplier: float | None = None
+    fee_type: str | None = None
+    fee_basis: str = ""
 
     @property
     def market_url(self) -> str:
         return f"https://kalshi.com/markets/{self.series_ticker or self.event_ticker}/{self.ticker}"
 
 
+def fee_params(series: dict[str, Any] | None) -> tuple[float, str]:
+    """Return ``(multiplier, basis)`` for one series' official fee parameters.
+
+    Source of truth is the series object itself: ``fee_multiplier`` ("a floating
+    point multiplier applied to the fee calculations") and ``fee_type`` are both
+    *required* fields of ``Series`` in the official schema
+    (https://docs.kalshi.com/api-reference/market/get-series-list.md), and
+    ``fee_type`` names which table of https://kalshi.com/docs/kalshi-fee-schedule.pdf
+    applies ('quadratic' = the General Trading Fees Table, 'flat' = the Specific
+    Trading Fees Table, which this model does not implement).
+
+    Rules, in order:
+      * no series row at all            -> M = 1.0, basis says it is the schedule
+        default, not an observation.
+      * fee_type is not quadratic-family -> M = 0.0 with a labelled basis, because
+        charging the quadratic formula for a flat schedule would invent a number;
+        the schedule's own note for a non-modelled structure is the same
+        (see kalshi_api.kalshi_fee).
+      * otherwise                        -> M = the series' own fee_multiplier
+        (0.0 means the series is fee-free), basis quotes the field.
+    """
+    if not series:
+        return 1.0, "series default M=1 (no GET /series row for this market)"
+    fee_type = series.get("fee_type")
+    mult = series.get("fee_multiplier")
+    if fee_type and not str(fee_type).startswith("quadratic"):
+        return 0.0, f"fee_type '{fee_type}' is not the quadratic schedule — no fee modelled (labelled)"
+    if mult is None:
+        return 1.0, "series default M=1 (fee_multiplier absent from GET /series)"
+    try:
+        m = float(mult)
+    except (TypeError, ValueError):
+        return 1.0, f"series default M=1 (unreadable fee_multiplier {mult!r})"
+    return m, f"GET /series fee_multiplier={m:g}, fee_type={fee_type or 'unknown'}"
+
+
 def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
             topic: str, ts: float | None = None,
-            reference: dict[str, Any] | None = None) -> Observation:
+            reference: dict[str, Any] | None = None,
+            series: dict[str, Any] | None = None) -> Observation:
     """``reference`` is the optional bar-open record from the candlestick
     endpoint; attaching it lets the swing test and the UI state exactly which
-    Kalshi-published numbers the comparison used."""
+    Kalshi-published numbers the comparison used.
+
+    ``series`` is the market's own row from ``GET /series`` (the collector has
+    it from the topic registry; it is not on the market object). It carries
+    ``fee_multiplier`` / ``fee_type``, the only per-series fee facts Kalshi
+    publishes machine-readably, so the alert and model ROI can charge the fee
+    this series actually pays instead of assuming the general one.
+    """
     """Build an Observation from GET /markets plus GET /markets/{t}/orderbook."""
     ob = (orderbook or {}).get("orderbook_fp") or {}
     yes_levels = ob.get("yes_dollars") or []
@@ -169,6 +223,9 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
         close_time=market.get("close_time", "") or "",
+        fee_multiplier=fee_params(series)[0] if series is not None else None,
+        fee_type=(series or {}).get("fee_type"),
+        fee_basis=fee_params(series)[1],
     )
 
 
@@ -677,6 +734,10 @@ class Signal:
     reason: str
     market_url: str
     ts: float = field(default_factory=time.time)
+    # Which official fee parameters the fee above used, so a reader can audit
+    # the number instead of trusting it (see fee_params).
+    fee_multiplier: float = 1.0
+    fee_basis: str = "series default M=1 (no GET /series row for this market)"
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -730,11 +791,17 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
             candidates.append(("no", no_price, round(1.0 - fair, 4)))
 
     best: Signal | None = None
+    # Charge this series' own fee, not an assumed one: the schedule's multiplier
+    # M is a required per-series field (GET /series), and a fee-free series must
+    # not be screened out by a fee it never pays. ``obs`` already carries the
+    # resolved pair (see fee_params); 1.0 only when no series row was available.
+    fee_mult = 1.0 if obs.fee_multiplier is None else obs.fee_multiplier
+    fee_basis = obs.fee_basis or fee_params(None)[1]
     for side, price, fair_side in candidates:
         edge = round(fair_side - price, 4)
         if edge < min_edge:
             continue
-        fee = kalshi_fee(price, 1.0)
+        fee = kalshi_fee(price, 1.0, fee_mult)
         gross = edge / price if price > 0 else 0.0
         net = (edge - fee) / price if price > 0 else 0.0
         if net <= 0:
@@ -749,11 +816,11 @@ def score_market(obs: Observation, liquidity: dict[str, Any],
             title=obs.title, side=side, executable_price=price,
             model_fair=fair_side, edge=edge, gross_roi=round(gross, 4), fee=fee,
             net_roi=round(net, 4), spread=spread, liquidity=depth,
-            score=score,
+            score=score, fee_multiplier=fee_mult, fee_basis=fee_basis,
             reason=(f"mid {mid:.2f} shrunk to fair {fair:.2f} on a {width:.2f} "
                     f"spread; buying {side.upper()} at {price:.2f} leaves "
                     f"{edge:.2f} of modelled edge after the "
-                    f"${fee:.4f} taker fee"),
+                    f"${fee:.4f} taker fee ({fee_basis})"),
             market_url=obs.market_url,
         )
         if best is None or signal.score > best.score:

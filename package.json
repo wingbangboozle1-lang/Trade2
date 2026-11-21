@@ -2,8 +2,10 @@
   "name": "trade2-kalshi-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "Read-only Kalshi topic dashboard (gas prices, elections, culture, crypto, golf) with price-move alerts, resolution tracking, simulated trades and a Flagged for Review page. No runtime dependencies (jsdom is a dev dependency for the docs/ site smoke test).",
-  "engines": { "node": ">=20" },
+  "description": "Read-only Kalshi topic dashboard (gas prices, elections, culture, crypto, golf) with price-move alerts, resolution tracking, simulated trades and a Flagged for Review page. No runtime dependencies (jsdom is only used by DOM-based UI smoke and render checks).",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node --test scripts/test/fees.test.mjs scripts/test/auth.test.mjs scripts/test/collect.test.mjs scripts/test/breaker.test.mjs test/alerts-view.test.mjs",
     "test:site": "node test/site_smoke.mjs docs/data",
@@ -11,7 +13,7 @@
     "build": "node scripts/build-site.mjs --out _site"
   },
   "license": "UNLICENSED",
-  "dependencies": {
+  "devDependencies": {
     "jsdom": "^31.0.1"
   }
 }

@@ -174,6 +174,30 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
                        "unconfirmed print."),
             "source": f"{API}/markets/{ticker}/orderbook",
         })
+    # 6. Alerts whose price basis is thin: the row is kept and labelled, never
+    #    silently dropped, but a human should know the move was not executable
+    #    at the midpoint (COORDINATION.md R-D-01).
+    for a in live.get("alerts") or []:
+        spread = a.get("spread")
+        if spread is None:
+            yb, ya = a.get("yes_bid"), a.get("yes_ask")
+            if yb is not None and ya is not None:
+                spread = round(ya - yb, 4)
+        if a.get("thin_book") or (spread is not None and spread > 0.20):
+            issues.append({
+                "kind": "Swing alert on a wide-spread book (labelled, not executable)",
+                "topic": a.get("topic"),
+                "ticker": a.get("ticker"),
+                "detail": (f"the {a.get('direction')} move "
+                           f"{a.get('previous')} → {a.get('current')} was "
+                           f"measured while the book quoted a spread of "
+                           f"{spread if spread is not None else 'unknown'} "
+                           f"(basis: {a.get('basis') or 'legacy midpoint'}); "
+                           f"the midpoint of a wide spread is not an "
+                           f"executable price — read the order book before "
+                           f"acting"),
+                "source": f"{API}/markets/{a.get('ticker')}/orderbook",
+            })
 
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
@@ -353,6 +377,27 @@ STANDING = [
                    "KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks",),
     },
     {
+        "title": "Historical swing-chat rows were duplicated and midpoint-based (fixed 2026-11-20)",
+        "body": ("Before this revision the swing chat could show the same sustained "
+                 "move once per collector run (observed: 29 rows over only 3 "
+                 "tickers) and could alert on the midpoint of a $0.80-wide spread. "
+                 "Alerts are now deduplicated to one row per market per reference "
+                 "window per direction and measured on a depth-aware price basis "
+                 "(tight-book mid, else last trade). Rows that still carry a wide "
+                 "spread are labelled 'thin book' rather than dropped. See "
+                 "COORDINATION.md request R-D-01 for the evidence."),
+        "source": ("https://docs.kalshi.com/getting_started/orderbook_responses",),
+    },
+    {
+        "title": "Snapshot freshness is best-effort",
+        "body": ("The collector runs on a 5-minute GitHub Actions schedule, which "
+                 "GitHub itself documents as best-effort and subject to lag. A "
+                 "snapshot can therefore be older than its nominal cadence; the "
+                 "topbar computes and shows the snapshot's age in your browser so "
+                 "staleness is always visible."),
+        "source": ("https://docs.kalshi.com/getting_started/demo_env",),
+    },
+    {
         "title": "Live streaming uses polling, not the WebSocket",
         "body": ("The documented demo WebSocket requires the same signed handshake as "
                  "REST, so without credentials the site polls the public REST API. "
@@ -393,6 +438,28 @@ STANDING = [
                  "per topic inside a fixed time budget, and reports the counts it "
                  "actually read plus anything it had to skip."),
         "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
+    },
+    {
+        "title": "Three scheduled workflows collect the same data, and the most "
+                 "frequent one rarely runs",
+        "body": ("Verified from the repository and the Actions API, not inferred. "
+                 "Three workflows collect from the demo API and commit to `main`: "
+                 "`kalshi-dashboard.yml` (cron `*/5`), `collector.yml` (`*/15`) and "
+                 "`dashboard.yml` (`*/30`). The `*/5` one groups its runs under "
+                 "`concurrency: collect` with `cancel-in-progress: false`, and on a "
+                 "repository this busy a run in that group spends longer than five "
+                 "minutes than not — so new runs replace queued ones instead of "
+                 "waiting. Two runs of it on 2026-11-20 ended `cancelled` after 17 s "
+                 "and 43 s (runs 44804717748 and 44804612803), while the `collector` "
+                 "workflow triggered by the same merge completed in 19 s. Consequence "
+                 "for a trader: the published snapshot's age is what the top bar shows, "
+                 "not five minutes. Reading of the queueing behaviour above is this "
+                 "project's interpretation of the workflow configuration and the two "
+                 "cancelled runs, not a confirmed GitHub guarantee — see the "
+                 "concurrency documentation for the rule."),
+        "source": ("https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804717748",
+                   "https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804612803",
+                   "https://github.com/wingbangboozle1-lang/Trade2/blob/main/.github/workflows/kalshi-dashboard.yml"),
     },
     {
         "title": "Fee-schedule rounding prose and its own table disagree",

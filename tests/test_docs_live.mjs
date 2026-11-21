@@ -50,7 +50,8 @@ function marketRaw(bid, ask, ticker) {
       yes_bid_dollars: bid.toFixed(4), yes_ask_dollars: ask.toFixed(4),
       last_price_dollars: ((bid + ask) / 2).toFixed(4),
       volume_fp: "1234", open_interest_fp: "5678",
-      expected_expiration_ts: 1796000000,
+      // real response key/value (GET /markets/{ticker} returns this ISO field)
+      expected_expiration_time: "2026-11-29T21:33:20Z",
     },
   };
 }
@@ -171,6 +172,13 @@ async function testLiveMode() {
   check(row.includes("external-api.demo.kalshi.co/trade-api/v2/markets/"),
     "alert row links the official market URL");
   check(row.includes("no verified headline"), "no invented news link — blank is flagged");
+  // The market object's own expiration field must survive into the live row.
+  // The collector's Python mapping is pinned in collector/test_runner.py; this
+  // pins the browser path, which reads the same API response directly. A wrong
+  // key here blanks the column in LIVE mode while looking perfectly healthy.
+  const liveRow = (window.__desk.S.markets || []).find(m => m && m.ticker === TICKER);
+  check(liveRow && liveRow.expected_expiration === "2026-11-29T21:33:20Z",
+    "live row keeps the API's expected_expiration_time verbatim");
 
   window.__deskLivePoll();       // poll 3: sustained move -> dedup
   await settle(4);

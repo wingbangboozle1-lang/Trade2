@@ -45,6 +45,7 @@ ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
 # 2026-11-20T18:41Z snapshot). Stored rows are also re-checked against the
 # quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
+MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -56,6 +57,109 @@ DISCOVERY_SHARE = 0.55
 def iso(ts: float | None = None) -> str:
     ts = ts if ts is not None else time.time()
     return dt.datetime.fromtimestamp(ts, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def resolution_topic(event_ticker: str | None, registry: dict[str, dict[str, Any]],
+                     memo: dict[str, str | None] | None = None) -> str | None:
+    """Map a settled market's event ticker onto one of the five tracked topics.
+
+    Kalshi market objects returned by ``GET /markets`` carry **no**
+    ``series_ticker`` field — every record written by the old code has
+    ``series_ticker: null`` (same live finding session c0205283 logged for
+    market objects), so keying the topic lookup on it matched nothing and every
+    per-topic resolution list on the site stayed empty. The event ticker
+    embeds the series ticker as its head:
+
+        ``KXAAAGASD-26NOV20``   -> series ``AAAGASD``   (events sometimes add a
+                                                              ``KX`` prefix)
+        ``KXPRESNOMD-28-RW``    -> series ``KXPRESNOMD``
+        ``KXBTCY-27JAN0100``    -> series ``KXBTCY``
+
+    Each head is tried as-is first, then with a leading ``KX`` removed, and
+    only whole ``-``-delimited heads are considered, so one series can never
+    swallow a longer sibling (``AAAGAS`` does not match ``KXAAAGASD-…``).
+    Returns the topic slug, or None when the event belongs to none of the
+    tracked series (e.g. the soccer markets the settled scan also sees).
+    """
+    if memo is not None and event_ticker in memo:
+        return memo[event_ticker]
+    if not event_ticker or not registry:
+        return None
+    found: str | None = None
+    # Candidate heads: every "-"-delimited prefix of the ticker (longest last).
+    parts = event_ticker.split("-")
+    for i in range(1, len(parts) + 1):
+        head = "-".join(parts[:i])
+        row = registry.get(head)
+        if row is None and head.startswith("KX"):
+            row = registry.get(head[2:])
+        if row is not None and row.get("topic"):
+            found = row["topic"]
+            break
+    if memo is not None:
+        memo[event_ticker] = found
+    return found
+
+
+def series_row_for_event(event_ticker: str | None,
+                         registry: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """The ``GET /series`` row that owns an event ticker, or None.
+
+    Same head scan as :func:`resolution_topic` and for the same reason: a market
+    object from ``GET /markets`` has no ``series_ticker`` field
+    (https://docs.kalshi.com/api-reference/market/get-markets), so the only way
+    back to the series — and therefore to the series' own ``fee_multiplier`` /
+    ``fee_type`` (https://docs.kalshi.com/api-reference/series/get-series) — is
+    the ticker prefix. Returns the whole registry row so callers can read any
+    documented series field, not just the topic.
+    """
+    if not event_ticker or not registry:
+        return None
+    parts = event_ticker.split("-")
+    for i in range(1, len(parts) + 1):
+        head = "-".join(parts[:i])
+        row = registry.get(head)
+        if row is None and head.startswith("KX"):
+            row = registry.get(head[2:])
+        if row is not None:
+            return row
+    return None
+
+
+def migrate_resolutions(store: dict[str, Any],
+                        registry: dict[str, dict[str, Any]]) -> int:
+    """Re-tag every stored resolution with its topic and drop out-of-scope ones.
+
+    The settled scan sees the whole exchange (soccer, quicksettle, …); those
+    records are outside the brief's five topics and — because the store is
+    bounded to the newest ``MAX_RESOLUTIONS`` — they crowd out the tracked
+    topics' own YES/NO history. Called once per run after discovery, with the
+    full series registry, so records written by the old series_ticker-keyed
+    code are re-classified instead of silently kept unviewable. Returns the
+    number of records kept.
+    """
+    res_map = store.get("resolutions") or {}
+    if not registry:
+        # Discovery failed this run: an empty registry would classify nothing
+        # and wipe the store. Keep everything and retry next run.
+        return len(res_map)
+    memo: dict[str, str | None] = {}
+    kept: dict[str, dict[str, Any]] = {}
+    for ticker, rec in res_map.items():
+        if not isinstance(rec, dict):
+            continue
+        topic = rec.get("topic") or resolution_topic(
+            rec.get("event_ticker") or rec.get("ticker"), registry, memo)
+        if topic:
+            rec["topic"] = topic
+            kept[ticker] = rec
+    if len(kept) > MAX_RESOLUTIONS:
+        ordered = sorted(kept.items(),
+                         key=lambda kv: kv[1].get("settlement_ts") or "",
+                         reverse=True)
+        kept = dict(ordered[:MAX_RESOLUTIONS])
+    store["resolutions"] = kept
+    return len(kept)
 
 
 def load_json(path: str, default: Any):
@@ -366,7 +470,12 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 continue
             book = books.get(ticker)
             book_payload = {"orderbook_fp": book} if book is not None else None
-            obs = alerts.observe(market, book_payload, topic.slug, ts=now)
+            # The series row carries this series' own official fee parameters,
+            # which the market object does not (see series_row_for_event).
+            obs = alerts.observe(market, book_payload, topic.slug, ts=now,
+                                 series=series_row_for_event(
+                                     market.get("event_ticker") or ticker,
+                                     series_registry))
             if book:
                 liquidity[ticker] = alerts.analyse_liquidity(book_payload)
                 gap = alerts.book_record_divergence(market, book_payload)
@@ -494,15 +603,32 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             errors.append(f"settled scan failed ({exc})")
 
     lap("settled_scan", t_settle)
+    resolution_memo: dict[str, str | None] = {}
     for market in settled_markets:
         ticker = market.get("ticker")
         result = (market.get("result") or "").lower()
         if not ticker or result not in ("yes", "no"):
             continue
+        # Settle the simulated book first: a held position must be graded even
+        # if its record would fall outside the stored (displayed) scope.
+        closed = portfolio.settle(ticker, result)
+        if closed:
+            settled_updates.append(closed.as_dict())
+            history.setdefault("series", {}).setdefault(ticker, []).append(
+                {"ts": now, "result": result, "price": closed.exit_price})
+        # Store only resolutions inside the five tracked topics. Market objects
+        # carry no series_ticker, so the topic comes from the event ticker
+        # (see resolution_topic()); everything else is out of scope and would
+        # only crowd the bounded store.
+        topic = resolution_topic(
+            market.get("event_ticker") or ticker, series_registry, resolution_memo)
+        if not topic:
+            continue
         resolutions["resolutions"][ticker] = {
             "ticker": ticker,
             "event_ticker": market.get("event_ticker"),
             "series_ticker": market.get("series_ticker"),
+            "topic": topic,
             "title": market.get("yes_sub_title") or market.get("title"),
             "result": result,
             "settlement_value_dollars": market.get("settlement_value_dollars"),
@@ -512,11 +638,6 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "human_url": f"https://kalshi.com/markets/{market.get('event_ticker','')}",
             "verified_at": iso(now),
         }
-        closed = portfolio.settle(ticker, result)
-        if closed:
-            settled_updates.append(closed.as_dict())
-            history.setdefault("series", {}).setdefault(ticker, []).append(
-                {"ts": now, "result": result, "price": closed.exit_price})
 
     # Manage open simulated positions: bank favourable swings, cut adverse ones.
     obs_by_ticker = {o.ticker: o for o in observations}
@@ -548,25 +669,24 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             (o.__dict__ for o in observations if o.ticker == row["ticker"]), None)
 
     # Highest-dollar events per topic, plus resolved feed per topic.
+    # First migrate the store: re-tag every record from its event ticker
+    # (market objects carry no series_ticker — see resolution_topic()) and
+    # drop out-of-scope settlements so the bounded store tracks the five
+    # topics the brief asks for.
+    migrate_resolutions(resolutions, series_registry)
     resolved_by_topic: dict[str, list[dict[str, Any]]] = {t.slug: [] for t in topic_mod.TOPICS}
     series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
     for ticker, rec in resolutions["resolutions"].items():
-        topic_slug = series_to_topic.get(rec.get("series_ticker") or "")
+        topic_slug = (rec.get("topic")
+                      or series_to_topic.get(rec.get("series_ticker") or "")
+                      or resolution_topic(rec.get("event_ticker") or ticker,
+                                          series_registry))
         if topic_slug:
             resolved_by_topic.setdefault(topic_slug, []).append(rec)
     for slug in resolved_by_topic:
         resolved_by_topic[slug] = sorted(
             resolved_by_topic[slug],
             key=lambda r: r.get("settlement_ts") or "", reverse=True)[:40]
-
-    # Keep the resolutions store bounded. Open-interest-free sports markets
-    # settle constantly, and an unbounded map grew the file past 8 MB in the
-    # first hour. Newest 2,000 are kept; older entries drop out.
-    res_map = resolutions.get("resolutions", {})
-    if len(res_map) > 2000:
-        ordered = sorted(res_map.items(),
-                         key=lambda kv: kv[1].get("settlement_ts") or "", reverse=True)
-        resolutions["resolutions"] = dict(ordered[:2000])
 
     # Keep the published snapshot lean: full series metadata (settlement source
     # URLs, contract terms) is valuable on the topic pages up to a point, but

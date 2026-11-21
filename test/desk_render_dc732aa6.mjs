@@ -8,6 +8,29 @@
  * fetch that returns the real published snapshot, and assertions on the DOM
  * that a trader would see.
  *
+ * 2026-11-20, session arena-479bbd2f (F-479-1): the model-chat assertion was
+ * aligned with the merged PR #40 contract (gated shortlist, published-signals
+ * fallback) and a fixture case pins the fallback; desk.js itself was not
+ * touched.
+ *
+ * 2026-11-21, session arena-544245c8 (PR #28 takeover): the model chat now
+ * renders three layers in order — the order-book shortlist's picks/verdicts
+ * (collector/shortlist.py), then gated `high_roi_alerts` rows the book model
+ * did not price, then the published signals when neither exists. The expected
+ * count below computes that union; the signal-only check only applies when no
+ * book row is rendered. A fixture pins the layering itself.
+ *
+ * 2026-11-20, session arena-1e3b2594: that alignment is kept; this session
+ * added the teeth the shortlist case still lacked. Before the change below,
+ * `fixture.high_roi_alerts[0]` was `KXBTC-1`, which is also `fixture.signals[0]`
+ * and `fixture.alerts[0]` — so the single expected row could be produced by the
+ * *fallback* path just as well as by the shortlist, and forcing `model = []` in
+ * assets/desk.js (ignoring the published shortlist entirely) still passed. The
+ * shortlist now contains a second member the fallback cannot synthesise, and the
+ * assertion identifies rows by content rather than by count. Both mutations
+ * (ignore the shortlist; re-gate it client-side) turn this file red; the clean
+ * tree is green.
+ *
  * Run: node test/desk_render_dc732aa6.mjs
  */
 import fs from "node:fs";
@@ -90,15 +113,61 @@ const rows = doc.querySelectorAll("#feedAll .chat-row");
 const modelRows = doc.querySelectorAll("#feedModel .chat-row");
 const deskRows = doc.querySelectorAll("#deskRows tr");
 
+/* Model-chat contract since merged PR #40 (arena-5bbd15fd, T-D3; pinned in
+ * Python by tests/test_chat_rows.py): the chat shows the collector's gated
+ * shortlist (`high_roi_alerts`), and when that is empty it shows the
+ * collector's published `signals` (top ≤ 8) — a healthy signal with no
+ * matching ≥ $0.10 swing must still reach the chat. Either way every row is
+ * published by the collector; desk.js never re-gates client-side. The original
+ * assertion predates the fallback and failed on main (run 44808226182) the
+ * moment the snapshot legitimately held signals with no gated swing rows
+ * ("expected 0, got 5"). Aligned 2026-11-20 by session arena-479bbd2f (F-479-1). */
+const gatedShortlist = snapshot.high_roi_alerts || [];
+const publishedSignals = snapshot.signals || [];
+/* Merged contract (PR #28 + main): book-model rows first (picks + verdicts,
+ * uncapped in desk.js), then gated swing rows on markets the book did not
+ * price (capped at 200), then — only when neither exists — the published
+ * signals (top <= 8). desk.js never re-gates client-side. */
+const book = snapshot.shortlist || {};
+const bookTickers = {};
+[...(book.picks || []), ...(book.verdicts || [])].forEach((x) => {
+  if (x && x.ticker) bookTickers[x.ticker] = 1;
+});
+const bookRowCount = (book.picks || []).length + (book.verdicts || []).length;
+const uncoveredGated = gatedShortlist.filter((a) => !bookTickers[a.ticker]);
+const expectedModelRows = (bookRowCount || uncoveredGated.length)
+  ? bookRowCount + Math.min(200, uncoveredGated.length)
+  : Math.min(8, publishedSignals.length);
+
+
 check("desk.js ran without a thrown error", consoleErrors.length === 0,
       consoleErrors.slice(0, 2).join(" | "));
 check("all-events chat renders every buffered alert",
       rows.length === Math.min(200, alerts.length),
       `expected ${Math.min(200, alerts.length)}, got ${rows.length}`);
 check("model chat uses the published shortlist, not a client-side re-gate",
-      modelRows.length === Math.min(200, (snapshot.high_roi_alerts || []).length),
-      `expected ${Math.min(200, (snapshot.high_roi_alerts || []).length)}, ` +
-      `got ${modelRows.length}`);
+      modelRows.length === expectedModelRows,
+      `expected ${expectedModelRows}, got ${modelRows.length}`);
+if (!gatedShortlist.length && publishedSignals.length && bookRowCount === 0) {
+  const published = new Set(publishedSignals.map((s) => s.ticker));
+  const rendered = Array.from(modelRows)
+    .map((r) => r.querySelector("[data-chart]")?.getAttribute("data-chart"));
+  check("signal-only model rows are the published signals (top ≤ 8), not a re-gate",
+        rendered.length > 0 && rendered.every((t) => t && published.has(t)),
+        `${rendered.length} rendered, ${published.size} published`);
+}
+if (bookRowCount) {
+  const renderedTickers = Array.from(modelRows).map((r) => {
+    const a = r.querySelector("a[href]");
+    return a ? a.textContent : "";
+  });
+  check("book-model rows lead the model chat with no duplicate ticker",
+        modelRows[0]?.classList.contains("model-pick") === true &&
+        new Set(renderedTickers).size === renderedTickers.length &&
+        modelRows.length === expectedModelRows,
+        `${modelRows.length} rows, ${bookRowCount} book rows, ` +
+        `${new Set(renderedTickers).size} unique tickers`);
+}
 check("market table renders from the snapshot", deskRows.length > 0,
       `${deskRows.length} rows`);
 check("each chat row states a price basis or is labelled pre-rule",
@@ -191,6 +260,14 @@ const fixture = {
     ticker: "KXBTC-1", direction: "up", abs_delta: 0.12, previous: 0.44,
     current: 0.56, topic: "crypto", title: "Bitcoin",
     iso: "2026-11-20T19:02:11Z", model_net_roi: 0.09,
+  }, {
+    /* Published-shortlist member the client must NOT be able to reject or
+     * reproduce: its net ROI is below `model_gate.min_net_roi` and no signal in
+     * `fixture.signals` carries this ticker, so the only way it reaches the chat
+     * is by rendering `high_roi_alerts` exactly as published. */
+    ticker: "KXETH-1", direction: "down", abs_delta: 0.11, previous: 0.62,
+    current: 0.51, topic: "crypto", title: "Ether below 3k",
+    iso: "2026-11-20T19:02:41Z", model_net_roi: 0.02,
   }],
   alerts: [
     { ticker: "KXBTC-1", event_ticker: "KXBTC-1", series_ticker: "KXBTC",
@@ -267,9 +344,61 @@ check("fixture: a non-http href from the payload never reaches the markup",
 const legacy = frows[2] || { textContent: "" };
 check("fixture: a row without a verdict is labelled pre-rule, not guessed",
       /pre-rule row/.test(legacy.textContent) && !/executable/.test(legacy.textContent));
-check("fixture: the model chat reads the published shortlist",
-      fdoc.querySelectorAll("#feedModel .chat-row").length === 1 &&
-      /net ROI/.test(fdoc.querySelector("#feedModel .chat-row").textContent));
+/* Counting rows alone could not tell "rendered the published shortlist" from
+ * "ignored it and rendered the signal fallback" — see the header note. The two
+ * shortlist rows are now identified by content, and the fallback label must be
+ * absent because there is a swing for each of these. */
+const fxModelRows = Array.from(fdoc.querySelectorAll("#feedModel .chat-row"))
+  .map((r) => r.textContent.replace(/\s+/g, " "));
+const fxModelText = fxModelRows.join(" | ");
+check("fixture: the model chat shows the published shortlist exactly — no re-gate, no fallback",
+      fxModelRows.length === 2 &&
+      /Bitcoin/.test(fxModelText) && /Ether below 3k/.test(fxModelText) &&
+      /net ROI/.test(fxModelText) && !/no ≥ \$0\.10 swing yet/.test(fxModelText),
+      `${fxModelRows.length} rows — ` + fxModelText.slice(0, 120));
+
+/* The fallback that failed CI on main (run 44808226182): a gated shortlist
+ * that is empty while published signals exist and no buffered swing matches
+ * them (a swing usually leaves little modelled edge behind it). The chat must
+ * show the collector's signals — each with its net-ROI badge — and nothing
+ * else. Tickers deliberately differ from the buffered alerts above: the desk's
+ * first fallback re-links swing alerts to signals, and only a signal with no
+ * matching swing reaches the signal-only rows. None of these signal tickers
+ * appears in the buffered alerts above, and fixture.signals[0] (`KXBTC-1`,
+ * which matches alerts[0]) is deliberately excluded for the same reason. */
+const sigOnly = { ...fixture, high_roi_alerts: [],
+  signals: [
+    { ticker: "KXSIG-1", net_roi: 0.07, side: "no",
+      market_url: "https://demo.kalshi.co/events/KXSIG-1" },
+    { ticker: "KXSIG-2", net_roi: 0.06, side: "yes",
+      market_url: "https://demo.kalshi.co/events/KXSIG-2" },
+  ] };
+const fxSig = new JSDOM(html, {
+  runScripts: "dangerously", pretendToBeVisual: true,
+  virtualConsole: new VirtualConsole(), url: "http://localhost/Trade2/live.html",
+});
+fxSig.window.HTMLCanvasElement.prototype.getContext =
+  win.HTMLCanvasElement.prototype.getContext;
+fxSig.window.fetch = (url) => Promise.resolve({
+  ok: true,
+  json: () => Promise.resolve(String(url).includes("orderbook")
+    ? { orderbook_fp: { yes_dollars: [["0.4000", "500.00"]],
+                        no_dollars: [["0.5500", "100.00"]] } }
+    : sigOnly),
+});
+fxSig.window.eval(script);
+await new Promise((r) => setTimeout(r, 350));
+const sigRows = fxSig.window.document.querySelectorAll("#feedModel .chat-row");
+check("fixture: an empty gated shortlist falls back to the published signals",
+      sigRows.length === sigOnly.signals.length &&
+      Array.from(sigRows).every((r) => sigOnly.signals.some(
+        (s) => r.querySelector("[data-chart]")?.getAttribute("data-chart") === s.ticker)),
+      `${sigRows.length} rows, expected ${sigOnly.signals.length}`);
+check("fixture: signal-only rows carry the net-ROI badge and side",
+      sigRows.length && /★/.test(sigRows[0].textContent) &&
+      /net ROI|no ≥ \$0\.10 swing yet/.test(sigRows[0].textContent),
+      sigRows[0]?.textContent.replace(/\s+/g, " ").slice(0, 120));
+
 check("fixture: the age label keeps ticking from the snapshot timestamp",
       /old/.test(fdoc.querySelector("#snapshotAge")?.textContent || ""),
       JSON.stringify(fdoc.querySelector("#snapshotAge")?.textContent));

@@ -19,9 +19,18 @@ on:
 permissions:
   contents: write
 
-# never let two collectors run at once (they would fight over rate limits)
+# Never let two collectors run at once (they would fight over rate limits), but keep
+# the scheduled collection in its own group so a merge-triggered push run cannot
+# starve it. Per GitHub's own concurrency rules, a *pending* run in a group is
+# cancelled when a newer run enters that same group, even with
+# cancel-in-progress: false — that setting only protects the run that is already
+# executing. Keying the group by event name therefore means: a queued
+# schedule/dispatch run is only ever replaced by another queued
+# schedule/dispatch run (a newer snapshot superseding an older one, which is
+# what we want), while the fast verification push runs cancel each other freely.
+# Source: https://github.com/github/docs/blob/main/data/reusables/actions/actions-group-concurrency.md
 concurrency:
-  group: collector-${{ github.ref }}
+  group: collector-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -87,8 +96,15 @@ jobs:
             # git pull --rebase refuses with "you have unstaged changes".
             git checkout -- . || true
             git status --porcelain | head -20 || true
-            # Several sessions' collectors push to main; retry the rebase+push
-            # on race instead of failing the whole collection run.
+            # Several sessions' collectors push to main; retry the rebase+push on
+            # race instead of failing the whole collection run. A rebase *conflict*
+            # is handled separately, and honestly: everything this step commits is
+            # regenerated from the live demo API by every run, so a conflict means a
+            # concurrent collector published its own snapshot of the same files
+            # first — equally current data, not a broken pipeline. Same treatment
+            # `kalshi-dashboard.yml` already gives (request R-DC-4). A rejected
+            # *push* after a clean rebase, or a conflict touching anything outside
+            # docs/data, still fails loudly, so a real problem is never swallowed.
             for attempt in 1 2 3; do
               if git -c rebase.autoStash=true pull --rebase origin "${GITHUB_REF_NAME}" 2>/tmp/pull.err; then
                 if git push origin "HEAD:${GITHUB_REF_NAME}"; then
@@ -97,10 +113,18 @@ jobs:
                 fi
                 echo "::warning::push rejected on attempt $attempt (race with another collector); retrying"
               else
-                echo "::warning::pull --rebase failed on attempt $attempt"
                 cat /tmp/pull.err || true
-                git rebase --abort || true
-                git checkout -- . || true
+                git rebase --abort 2>/dev/null || true
+                outside=$(git diff --name-only "HEAD" "origin/${GITHUB_REF_NAME}" 2>/dev/null | grep -v '^docs/data/' | head -10 || true)
+                if [ -z "$outside" ]; then
+                  echo "::notice::snapshot superseded by a concurrent collector run (attempt $attempt); conflicting paths are all regenerated data:"
+                  git diff --name-only "HEAD" "origin/${GITHUB_REF_NAME}" 2>/dev/null | head -20 || true
+                  git reset --hard "origin/${GITHUB_REF_NAME}" >/dev/null 2>&1 || true
+                  exit 0
+                fi
+                echo "::error::rebase conflict touches files outside docs/data — not auto-resolving:"
+                echo "$outside"
+                exit 1
               fi
               if [ "$attempt" = 3 ]; then
                 echo "::error::commit+push failed after 3 attempts"

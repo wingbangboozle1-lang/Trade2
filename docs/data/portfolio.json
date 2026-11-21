@@ -1,12 +1,12 @@
 {
  "account": {
   "blocked_today": false,
-  "cash": 9944.94,
+  "cash": 10000.0,
   "daily_loss_cap": 150.0,
-  "equity": 11120.75,
-  "fees_paid": 15.66,
-  "open_positions": 6,
-  "realized_pnl": -41.22,
+  "equity": 11549.01,
+  "fees_paid": 0.0,
+  "open_positions": 8,
+  "realized_pnl": 0.0,
   "starting_cash": 10000.0
  },
  "credentials": "none \u2014 no orders are sent (FL-01); all fills are simulated against real demo order books",
@@ -75,9 +75,64 @@
    "cash": 9944.94,
    "equity": 11120.75,
    "ts": "2026-11-20T19:44:12.980928+00:00"
+  },
+  {
+   "cash": 9793.05,
+   "equity": 11168.54,
+   "ts": "2026-11-20T20:31:13.409123+00:00"
+  },
+  {
+   "cash": 9786.86,
+   "equity": 11362.33,
+   "ts": "2026-11-20T21:24:01.649458+00:00"
+  },
+  {
+   "cash": 10020.89,
+   "equity": 11716.81,
+   "ts": "2026-11-20T22:17:20.434431+00:00"
+  },
+  {
+   "cash": 9853.03,
+   "equity": 11402.04,
+   "ts": "2026-11-20T23:16:19.967862+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T00:03:47.278513+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T01:24:42.923678+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T02:27:27.711974+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T03:17:37.078842+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T04:25:23.694517+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T05:26:26.087344+00:00"
+  },
+  {
+   "cash": 10000.0,
+   "equity": 11549.01,
+   "ts": "2026-11-21T06:24:59.041731+00:00"
   }
  ],
- "generated_at": "2026-11-20T19:44:12.980931+00:00",
+ "generated_at": "2026-11-21T06:24:59.041739+00:00",
  "mode": "simulated-paper",
  "parameters": {
   "exit_stop": 0.05,
@@ -96,7 +151,7 @@
    "contracts": 400,
    "entry_cost": 200.0,
    "entry_fee": 7.0,
-   "open_periods": 9,
+   "open_periods": 20,
    "opened_at": "2026-11-20T14:58:49.282600+00:00",
    "reason": "book edge fair=0.377 vs price=0.500 spread=0.010 net=+0.093",
    "side": "no",
@@ -107,26 +162,11 @@
    "topic": "gas-prices"
   },
   {
-   "avg_price": 0.17,
-   "contracts": 1176,
-   "entry_cost": 199.92,
-   "entry_fee": 11.62,
-   "open_periods": 6,
-   "opened_at": "2026-11-20T15:18:44.327370+00:00",
-   "reason": "book edge fair=0.467 vs price=0.170 spread=0.030 net=+0.257",
-   "side": "yes",
-   "signal": "book-undervalued-yes",
-   "status": "open",
-   "strategy": "roi_edge",
-   "ticker": "KXRT-FUR-85",
-   "topic": "culture"
-  },
-  {
    "avg_price": 0.02,
    "contracts": 10000,
    "entry_cost": 200.0,
    "entry_fee": 13.72,
-   "open_periods": 2,
+   "open_periods": 13,
    "opened_at": "2026-11-20T18:39:58.470501+00:00",
    "reason": "high-ROI: net edge +0.043 >= 0.02 (revert 30%x0.21 - fee 0.010 - spread 0.010)",
    "side": "yes",
@@ -141,7 +181,7 @@
    "contracts": 909,
    "entry_cost": 199.98,
    "entry_fee": 10.92,
-   "open_periods": 2,
+   "open_periods": 13,
    "opened_at": "2026-11-20T18:39:58.470523+00:00",
    "reason": "book edge fair=0.276 vs price=0.220 spread=0.010 net=+0.026",
    "side": "yes",
@@ -152,26 +192,11 @@
    "topic": "elections"
   },
   {
-   "avg_price": 0.77,
-   "contracts": 259,
-   "entry_cost": 199.43,
-   "entry_fee": 3.22,
-   "open_periods": 1,
-   "opened_at": "2026-11-20T19:04:28.360641+00:00",
-   "reason": "high-ROI: net edge +0.081 >= 0.02 (revert 30%x0.37 - fee 0.020 - spread 0.010)",
-   "side": "no",
-   "signal": "high-roi-fade",
-   "status": "open",
-   "strategy": "roi_edge",
-   "ticker": "KXBTCMINY-27JAN01-50000.00",
-   "topic": "crypto"
-  },
-  {
    "avg_price": 0.04,
    "contracts": 5000,
    "entry_cost": 200.0,
    "entry_fee": 13.44,
-   "open_periods": 0,
+   "open_periods": 11,
    "opened_at": "2026-11-20T19:44:12.980917+00:00",
    "reason": "high-ROI: net edge +0.034 >= 0.02 (revert 30%x0.18 - fee 0.010 - spread 0.010)",
    "side": "no",
@@ -180,6 +205,66 @@
    "strategy": "roi_edge",
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "topic": "gas-prices"
+  },
+  {
+   "avg_price": 0.06,
+   "contracts": 3333,
+   "entry_cost": 199.98,
+   "entry_fee": 13.16,
+   "open_periods": 9,
+   "opened_at": "2026-11-20T21:24:01.649437+00:00",
+   "reason": "high-ROI: net edge +0.211 >= 0.02 (revert 30%x0.77 - fee 0.010 - spread 0.010)",
+   "side": "no",
+   "signal": "high-roi-fade",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXETHD-26NOV2017-T1659.99",
+   "topic": "crypto"
+  },
+  {
+   "avg_price": 0.38,
+   "contracts": 526,
+   "entry_cost": 199.88,
+   "entry_fee": 8.68,
+   "open_periods": 8,
+   "opened_at": "2026-11-20T22:17:20.434408+00:00",
+   "reason": "book edge fair=0.624 vs price=0.380 spread=0.010 net=+0.214",
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto"
+  },
+  {
+   "avg_price": 0.26,
+   "contracts": 769,
+   "entry_cost": 199.94,
+   "entry_fee": 10.36,
+   "open_periods": 8,
+   "opened_at": "2026-11-20T22:17:20.434421+00:00",
+   "reason": "high-ROI: net edge +0.198 >= 0.02 (revert 30%x0.73 - fee 0.020 - spread 0.001)",
+   "side": "yes",
+   "signal": "high-roi-fade",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXPRESNOMD-28-JOSS",
+   "topic": "elections"
+  },
+  {
+   "avg_price": 0.08,
+   "contracts": 2500,
+   "entry_cost": 200.0,
+   "entry_fee": 12.88,
+   "open_periods": 7,
+   "opened_at": "2026-11-20T23:16:19.967851+00:00",
+   "reason": "book edge fair=0.227 vs price=0.080 spread=0.020 net=+0.117",
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "status": "open",
+   "strategy": "roi_edge",
+   "ticker": "KXRT-FUR-85",
+   "topic": "culture"
   }
  ],
  "source_urls": {
@@ -189,32 +274,41 @@
  },
  "stats": {
   "all": {
-   "avg_pnl": 253.63,
-   "fees": 53.74,
-   "losses": 1,
-   "net_pnl": 507.26,
-   "trades": 2,
-   "win_rate": 0.5,
-   "wins": 1
+   "avg_pnl": 82.78,
+   "fees": 68.85,
+   "losses": 3,
+   "net_pnl": 413.89,
+   "trades": 5,
+   "win_rate": 0.4,
+   "wins": 2
   },
   "by_strategy": {
    "roi_edge": {
-    "avg_pnl": 253.63,
-    "fees": 53.74,
-    "losses": 1,
-    "net_pnl": 507.26,
-    "trades": 2,
-    "win_rate": 0.5,
-    "wins": 1
+    "avg_pnl": 82.78,
+    "fees": 68.85,
+    "losses": 3,
+    "net_pnl": 413.89,
+    "trades": 5,
+    "win_rate": 0.4,
+    "wins": 2
    }
   },
   "by_trade_type": {
-   "roi_edge|high-roi-fade|no": {
-    "avg_pnl": -41.22,
-    "fees": 2.22,
+   "roi_edge|book-undervalued-yes|yes": {
+    "avg_pnl": -26.44,
+    "fees": 10.88,
     "losses": 1,
-    "net_pnl": -41.22,
-    "trades": 1,
+    "net_pnl": -52.88,
+    "trades": 2,
+    "win_rate": 0.5,
+    "wins": 1
+   },
+   "roi_edge|high-roi-fade|no": {
+    "avg_pnl": -40.86,
+    "fees": 6.45,
+    "losses": 2,
+    "net_pnl": -81.71,
+    "trades": 2,
     "win_rate": 0.0,
     "wins": 0
    },
@@ -230,22 +324,18 @@
   }
  },
  "this_run": {
-  "equity": 11120.75,
+  "equity": 11549.01,
   "marks": {
    "KXAAAGASM-26NOV30-3.50": 0.5,
+   "KXAAAGASW-26NOV23-3.6200": 0.04,
    "KXAAAGASW-26NOV23-3.6400": 0.02,
-   "KXBTCMINY-27JAN01-50000.00": 0.77,
-   "KXPRESNOMD-28-AKLO": 0.803,
+   "KXBTCMINY-27JAN01-50000.00": 0.38,
+   "KXETHD-26NOV2017-T1659.99": 0.06,
+   "KXPRESNOMD-28-JOSS": 0.259,
    "KXPRESNOMR-28-MR": 0.22,
-   "KXRT-FUR-85": 0.15
+   "KXRT-FUR-85": 0.06
   },
-  "opened": [
-   {
-    "signal": "high-roi-fade",
-    "strategy": "roi_edge",
-    "ticker": "KXAAAGASW-26NOV23-3.6200"
-   }
-  ]
+  "opened": []
  },
  "trades": [
   {
@@ -437,6 +527,158 @@
    "topic": "gas-prices",
    "trade_type": "roi_edge|high-roi-fade|no",
    "ts": "2026-11-20T19:44:12.980919+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 416,
+   "exit_reason": null,
+   "fee": 7.27,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.48,
+   "reason": "book edge fair=0.555 vs price=0.480 spread=0.010 net=+0.045",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T20:31:13.409113+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 3333,
+   "exit_reason": null,
+   "fee": 13.16,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.06,
+   "reason": "high-ROI: net edge +0.211 >= 0.02 (revert 30%x0.77 - fee 0.010 - spread 0.010)",
+   "settlement": null,
+   "side": "no",
+   "signal": "high-roi-fade",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2017-T1659.99",
+   "strategy": "roi_edge",
+   "ticker": "KXETHD-26NOV2017-T1659.99",
+   "topic": "crypto",
+   "trade_type": "roi_edge|high-roi-fade|no",
+   "ts": "2026-11-20T21:24:01.649446+00:00"
+  },
+  {
+   "action": "close",
+   "contracts": 259,
+   "exit_reason": "target",
+   "fee": 4.23,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": -40.49,
+   "price": 0.63,
+   "reason": "high-ROI: net edge +0.081 >= 0.02 (revert 30%x0.37 - fee 0.020 - spread 0.010)",
+   "settlement": null,
+   "side": "no",
+   "signal": "high-roi-fade",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto",
+   "trade_type": "roi_edge|high-roi-fade|no",
+   "ts": "2026-11-20T22:17:20.434238+00:00"
+  },
+  {
+   "action": "close",
+   "contracts": 416,
+   "exit_reason": "target",
+   "fee": 6.23,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 81.13,
+   "price": 0.69,
+   "reason": "book edge fair=0.555 vs price=0.480 spread=0.010 net=+0.045",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T22:17:20.434257+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 526,
+   "exit_reason": null,
+   "fee": 8.68,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.38,
+   "reason": "book edge fair=0.624 vs price=0.380 spread=0.010 net=+0.214",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+   "strategy": "roi_edge",
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T22:17:20.434411+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 769,
+   "exit_reason": null,
+   "fee": 10.36,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.26,
+   "reason": "high-ROI: net edge +0.198 >= 0.02 (revert 30%x0.73 - fee 0.020 - spread 0.001)",
+   "settlement": null,
+   "side": "yes",
+   "signal": "high-roi-fade",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JOSS",
+   "strategy": "roi_edge",
+   "ticker": "KXPRESNOMD-28-JOSS",
+   "topic": "elections",
+   "trade_type": "roi_edge|high-roi-fade|yes",
+   "ts": "2026-11-20T22:17:20.434423+00:00"
+  },
+  {
+   "action": "close",
+   "contracts": 1176,
+   "exit_reason": "stop",
+   "fee": 4.65,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": -134.01,
+   "price": 0.06,
+   "reason": "book edge fair=0.467 vs price=0.170 spread=0.030 net=+0.257",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
+   "strategy": "roi_edge",
+   "ticker": "KXRT-FUR-85",
+   "topic": "culture",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T23:16:19.967730+00:00"
+  },
+  {
+   "action": "open",
+   "contracts": 2500,
+   "exit_reason": null,
+   "fee": 12.88,
+   "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+   "pnl": 0.0,
+   "price": 0.08,
+   "reason": "book edge fair=0.227 vs price=0.080 spread=0.020 net=+0.117",
+   "settlement": null,
+   "side": "yes",
+   "signal": "book-undervalued-yes",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85",
+   "strategy": "roi_edge",
+   "ticker": "KXRT-FUR-85",
+   "topic": "culture",
+   "trade_type": "roi_edge|book-undervalued-yes|yes",
+   "ts": "2026-11-20T23:16:19.967854+00:00"
   }
  ]
 }
