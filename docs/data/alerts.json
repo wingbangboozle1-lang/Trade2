@@ -1,34 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795238665&end_ts=1795242265&period_interval=1",
-   "delta": 0.22,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.17,
-   "headlines": [
-    {
-     "published": "2026-11-21T02:42:58+00:00",
-     "source": "PGA Tour",
-     "status": "verified-fetch",
-     "title": "Highlights | Round 2 | The RSM Classic | 2026 - PGA Tour",
-     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNamY1MXVMaW1HcVJ3dTROUmdJVmw0WTZRTklUTW51VDIxR09UNV9pekhtVmI4WnNHemQ0Q21icThXWTNYZDlCYUxtb3JvcWxsVnh3V2tJTXRSbnItdEwwT3BfdEJJYTZFYkxRaFlnbUtFYllYLTdGRUthOFlnWXd3Nk5ueWI0bXk5VVBpd2JZdlk4b0xFLUVIbw?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
-   "t": 1795241520,
-   "t_iso": "2026-11-21T06:12:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXPGATOUR-THRC26-MTHO",
-   "title": "The RSM Classic: Michael Thorbjornsen wins",
-   "to": 0.39,
-   "topic": "golf",
-   "window": "seconds"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795220665&end_ts=1795242265&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795225256&end_ts=1795246856&period_interval=60",
    "delta": -0.17,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -49,13 +22,20 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
    "delta": 0.11,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
    "flags": [],
    "from": 0.86,
    "headlines": [
+    {
+     "published": "2026-11-21T07:11:53+00:00",
+     "source": "cwibc.co.id",
+     "status": "verified-fetch",
+     "title": "US Gas Prices Record Biggest Three Week Drop Since 2008 - cwibc.co.id",
+     "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE84U255RXFtX2NnRmVpajJoVTI4djZGVDdRUW85YkJNcHlwMGJCd1FjVkJiekpmbE53dXdwVHJFY2RvbF9JbHd0eG5KTWxvTWpad0FKaW8zZEpOZ2JoaUthS1hn?oc=5"
+    },
     {
      "published": "2026-11-21T01:39:00+00:00",
      "source": "FOX 8 Local First",
@@ -76,7 +56,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
    "delta": 0.877,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -103,7 +83,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -158,7 +138,34 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
+   "delta": 0.108,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.032,
+   "headlines": [
+    {
+     "published": "2026-11-20T01:51:36+00:00",
+     "source": "PGA Tour",
+     "status": "verified-fetch",
+     "title": "Michael Thorbjornsen gets up-and-down from 116 yards for birdie on No. 13 at The RSM - PGA Tour",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPWV95Nkd4eUt2a1Bzam5Rd2I1WTM4c3dnZl85SUt1SlR6V1JmZ0ItdlJ1eVkwTmlGa3NMQkRKRlFzX2JCcnNINjVSR1lZaDktZmxPeWpqLTlEQnZvbTBFbE1fZG1ta2lTcXJ2TGs0RWFQMk5HV0lPQi1fR2JQX0E3ZHA3eF9tMXR3RDVoUFJEYVlIdjFzZVZlcm9aQmoyU1c1Mm9ZVE1NRUptSDVmVWgyZ2FNN09yM2dMQ1hpbDd1anVYMFQ1NUVfUkZCTnY?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
+   "t": 1795150800,
+   "t_iso": "2026-11-20T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "title": "The RSM Classic: Michael Thorbjornsen wins",
+   "to": 0.14,
+   "topic": "golf",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -179,7 +186,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T06:24:58.987284+00:00",
+ "generated_at": "2026-11-21T07:41:28.540924+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

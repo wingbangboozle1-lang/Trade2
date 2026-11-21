@@ -14,12 +14,21 @@ Two kinds of items appear here, and they are generated, not hand-written:
 from __future__ import annotations
 
 import html
+import json
+import os
 from collections import Counter
 from typing import Any
 
 from collector.alerts import QUOTE_BASES
 
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Evidence written by tools/verify_rows_479.py, which re-opens the exact rows
+# this site publishes and compares them with the official demo API. The file is
+# committed by the `verify-479` workflow, so what the site shows is the last
+# run's own record, not a hand-written claim.
+VERIFY_PATH = os.path.join(ROOT, "audit", "verify-479.json")
 
 # Phrases that appear in Kalshi's own records where a value should be but the
 # record still holds an unfilled template. Matching is literal — no fuzzy
@@ -163,6 +172,43 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
                 "source": f"{API}/markets/{a.get('ticker')}/orderbook",
             })
 
+    # 5. A published value that the automated re-check could not confirm.
+    for row in ((live.get("verification") or {}).get("mismatches") or []):
+        issues.append({
+            "kind": "Published value disagrees with the official API",
+            "topic": None,
+            "ticker": row.get("field"),
+            "detail": (f"the re-check read {row.get('official')!r} from the official "
+                       f"response while the site publishes {row.get('published')!r}"
+                       + (f" — {row.get('detail')}" if row.get("detail") else "")),
+            "source": row.get("url"),
+        })
+
+    # 6. A published swing that the order book does not confirm.
+    # The Kalshi demo feed prints alternating trades on some markets while the
+    # quoted book stays flat. A price move the book did not make is a trade
+    # print, not a change in the market, so it is flagged here rather than
+    # presented as a swing. The model's verdict for each alert says the same
+    # thing on the live desk.
+    for verdict in ((live.get("shortlist") or {}).get("verdicts") or []):
+        if verdict.get("verdict") == "picked":
+            continue
+        reason = verdict.get("reason") or ""
+        if "book has not moved" not in reason:
+            continue
+        ticker = verdict.get("ticker")
+        issues.append({
+            "kind": "Swing not confirmed by the order book",
+            "topic": verdict.get("topic"),
+            "ticker": ticker,
+            "detail": ("the alert stream reports a >= $0.10 move for this market, "
+                       "but the quoted book did not move between the last two "
+                       "snapshots — the demo feed printed an alternating trade. "
+                       "The model passes on it and the row is labelled as an "
+                       "unconfirmed print."),
+            "source": f"{API}/markets/{ticker}/orderbook",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -246,6 +292,54 @@ STANDING = [
         "source": (
             "https://docs.kalshi.com/api-reference/market/get-market-candlesticks.md",
             "https://wingbangboozle1-lang.github.io/Trade2/docs/data/alerts.json",
+        ),
+    },
+    {
+        "title": "A flat $0.10 threshold is not the same distance on every market",
+        "body": ("A contract on a one-cent grid needs ten ticks to move $0.10; a contract quoted "
+                 "0.01 / 1.00 needs one tick. The largest open-interest market in this snapshot, "
+                 "KXPRESNOMD-28-RW, trades on a 0.0010 step, so its midpoint needs a hundred ticks "
+                 "to clear the threshold, while an empty demo book clears it on a single tick. "
+                 "The alert rule is correct but the number is not comparable across markets. "
+                 "Recommendation (not yet implemented, needs a per-row price_ranges source link "
+                 "and a payload change owned by other sessions): show 'approx N ticks' on each "
+                 "alert row. Worked examples are in LIVE_DETECTION_EVALUATION-f3cb9b9f.md section 3."),
+        "source": (
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-COL",
+            "https://docs.kalshi.com/api-reference/market/get-market",
+        ),
+    },
+    {
+        "title": "A one-minute candle close can be a single stray quote",
+        "body": ("The collector measures each swing against the previous completed 1-minute "
+                 "candle's yes_bid / yes_ask closes. One minute is the finest official bar "
+                 "(period_interval must be 1, 60 or 1440), so it cannot be shortened. But a "
+                 "candle close is an instantaneous quote: the KXPRESNOMD-28-BOBA daily bar "
+                 "ending 2026-11-21T05:00Z closed with yes_bid 0.0010 against yes_ask 0.8820, "
+                 "one stray NO bid at 0.118 on a two-cent market. The quote rule refuses the "
+                 "resulting $0.877 'move' (see 'Refused midpoint moves'), which is the right "
+                 "outcome, but the check fires only after the number exists. Recommendation: "
+                 "cross-check with the documented price.previous_dollars field already present "
+                 "in every candle. Logged as R-F3-1; not implemented because it changes the "
+                 "shared alert payload."),
+        "source": (
+            "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983000&end_ts=1795243400&period_interval=1440",
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+        ),
+    },
+    {
+        "title": "The live pulse measures a different reference than the collector",
+        "body": ("The panel called 'Live pulse' on the live desk re-reads the order books from the "
+                 "visitor's browser every 45 s and compares each reading with the previous one, so "
+                 "a row there means 'the book moved $0.10 between two readings of this tab', not "
+                 "'the collector measured a move against Kalshi's candle'. Both use the same quote "
+                 "integrity rule and both label their basis, but they are not the same series and "
+                 "the site does not merge them. If the browser cannot reach the demo API, the panel "
+                 "reports that instead of showing stale rows."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks",
+            "https://docs.kalshi.com/getting_started/orderbook_responses",
         ),
     },
     {
@@ -350,6 +444,18 @@ STANDING = [
         "source": ("https://docs.kalshi.com/getting_started/demo_env",),
     },
     {
+        "title": "The demo feed prints alternating trades on some markets",
+        "body": ("On several demo markets the traded price oscillates between two "
+                 "levels every minute while the quoted order book never changes. "
+                 "For example the one-minute candles for KXPRESNOMD-28-AKLO "
+                 "alternate between $0.8030 and $0.0030 while the book stays at "
+                 "$0.0020 x $0.0030 for the whole window. A move the book did not "
+                 "make is a trade print rather than a market move, so the model "
+                 "rejects it and it is listed on this page."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/series/"
+                   "KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks",),
+    },
+    {
         "title": "Live streaming uses polling, not the WebSocket",
         "body": ("The documented demo WebSocket requires the same signed handshake as "
                  "REST, so without credentials the site polls the public REST API. "
@@ -365,22 +471,20 @@ STANDING = [
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
     {
-        "title": "Taker fees use a multiplier of 1 for every series",
+        "title": "The fee PDF and the demo API disagree about some series' multiplier",
         "body": ("Kalshi's quadratic taker fee is round-up(M x 0.07 x C x P x (1-P)), "
                  "and the published schedule sets M per series — 0 for fee-free "
                  "series such as the yearly Bitcoin and Ether ranges, 2 for "
-                 "uncorrelated combos. The simulated ledger applies M = 1 everywhere "
-                 "instead of reading each series' own value "
-                 "(collector/engine.py calls kalshi_fee(price, contracts) with the "
-                 "default multiplier at both the entry and the exit site, although "
-                 "collector/topics.py already caches fee_multiplier per series). This "
-                 "was checked against the live demo record for KXBTCY on 2026-11-20, "
-                 "which returns fee_multiplier 1, so the fee shown for the open "
-                 "position on that series is correct for the demo environment — the "
-                 "exposure is to series whose demo multiplier is not 1, and to "
-                 "production, where the same series is listed at 0. Fees on those "
-                 "rows would be mis-stated until the engine threads the value "
-                 "through."),
+                 "uncorrelated combos. The simulated ledger and the engine read "
+                 "each series' own fee_multiplier and fee_type from the official "
+                 "GET /series response (alerts.fee_params) and print that basis on "
+                 "every trade row, falling back to the schedule's default M = 1 "
+                 "only when a series lookup is unavailable. What remains "
+                 "unresolved is a source disagreement, not a code path: the PDF "
+                 "table lists KXBTCY at 0/0 while the demo GET /series/KXBTCY "
+                 "returned fee_multiplier 1 on 2026-11-20, and this project "
+                 "follows the API field. In production the same series is listed "
+                 "at 0, so fees there would differ from the demo ledger."),
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",
                    "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY"),
     },
@@ -422,6 +526,53 @@ STANDING = [
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
 ]
+
+
+def verification_rows() -> tuple[list[str], str]:
+    """The last automated re-check of the published rows against the demo API.
+
+    Returns (table rows, one-line summary). Both are empty when no verification
+    run has been recorded yet — the panel then says so rather than inventing a
+    result.
+    """
+    try:
+        with open(VERIFY_PATH, encoding="utf-8") as fh:
+            doc = json.load(fh)
+    except (OSError, ValueError):
+        return [], ""
+    if not isinstance(doc, dict):
+        return [], ""
+    summary = doc.get("summary") or {}
+    if not summary:
+        return [], ""
+    rows: list[str] = []
+    for subject in (doc.get("subjects") or []):
+        for check in (subject.get("checks") or []):
+            verdict = str(check.get("verdict") or "").upper()
+            badge = {"EXACT": "tag-yes", "DRIFT": "tag-purple",
+                     "UNVERIFIED": "tag-grey"}.get(verdict, "tag-grey")
+            url = str(check.get("source_url") or "")
+            link = (f'<a class="source-link" target="_blank" rel="noreferrer" '
+                    f'href="{esc(url)}">official API ↗</a>') if url else "—"
+            rows.append(
+                "<tr>"
+                f'<td><span class="tag {badge}">{esc(verdict or "—")}</span></td>'
+                f"<td>{esc(subject.get('topic'))}</td>"
+                f"<td><code>{esc(subject.get('market_ticker'))}</code></td>"
+                f"<td>{esc(check.get('field'))}</td>"
+                f"<td>{esc(check.get('published'))}</td>"
+                f"<td>{esc(check.get('fresh'))}</td>"
+                f"<td>{link}</td>"
+                "</tr>")
+    note = (f"Last run {esc(doc.get('verified_at') or 'n/a')} against the snapshot "
+            f"from {esc(doc.get('snapshot_generated_at') or 'n/a')}: "
+            f"{esc(summary.get('EXACT', 0))} exact, "
+            f"{esc(summary.get('DRIFT', 0))} drift (the live market moved after "
+            f"the snapshot), "
+            f"{esc(summary.get('UNVERIFIED', 0))} unverified (the response could "
+            f"not be read on that run). Drift is a fact about the market, not an "
+            f"error in this site.")
+    return rows, note
 
 
 def render(live: dict[str, Any]) -> str:
@@ -510,6 +661,14 @@ def render(live: dict[str, Any]) -> str:
         f"{alert_stats.get('distinct_moves', '—')} distinct moves"
         if alert_stats else "no alert statistics in this snapshot yet")
 
+    verify_rows, verify_note = verification_rows()
+    if not verify_rows:
+        verify_rows = ['<tr><td colspan="7" class="empty-state">No automated '
+                       "re-check has been recorded yet. The verification workflow "
+                       "re-opens every published row against the official demo "
+                       "API and publishes the result here.</td></tr>"]
+        verify_note = "No verification run has been recorded yet."
+
     return f"""        <header class="topbar">
           <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
@@ -543,6 +702,29 @@ def render(live: dict[str, Any]) -> str:
           </div>
           <div class="table-foot"><span>Blank or absent values are never inferred</span>
           <span>Recomputed on every collector run</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">✓</span><div>
+              <h2 id="verified">Published rows re-checked against the official API</h2>
+              <p>The top event of every topic, its market row and its order book,
+              re-opened from the official demo endpoints and compared field by
+              field with what this site publishes. {verify_note}</p></div></div>
+            <a class="source-link" target="_blank" rel="noreferrer"
+               href="https://docs.kalshi.com/api-reference/market/get-markets">Get
+               Markets ↗</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Result</th><th>Topic</th><th>Market</th>
+                <th>Field</th><th>Published here</th><th>Official response</th>
+                <th>Source</th></tr></thead>
+              <tbody>{''.join(verify_rows)}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Produced by tools/verify_rows_479.py</span>
+          <span>Drift means the market moved after the snapshot — both values are
+          shown, never equalised</span></div>
         </section>
         <section class="panel">
           <div class="panel-title">

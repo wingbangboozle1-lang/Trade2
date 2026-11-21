@@ -12,7 +12,10 @@
 //   GET /search/tags_by_categories             official category/tag taxonomy (recorded for review)
 //   GET /series                                series list (titles, categories, fee_type, fee_multiplier, contract URLs)
 //   GET /events?series_ticker&status=open&with_nested_markets=true   events + their markets
-//   GET /markets/{ticker}                      single market (used for resolution checks)
+//   GET /markets?series_ticker&status=settled&min_settled_ts=…       settled-market scan (rotating, documented filters:
+//     status values unopened|open|closed|settled and min_settled_ts "settled after this Unix timestamp" (seconds) —
+//     https://docs.kalshi.com/api-reference/market/get-markets, verified against the demo API 2026-11-21)
+//   GET /markets/{ticker}                      single market (used for resolution watch checks)
 //   GET /markets/{ticker}/orderbook?depth=10   resting bids for YES and NO (liquidity ladder)
 
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -42,13 +45,18 @@ export function assertDemoBase(base) {
   return base;
 }
 
-export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now(), deadlineMs = 12 * 60 * 1000 } = {}) {
+export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR, configPath = CONFIG_PATH, getFn = getPublic, nowMs = Date.now(), deadlineMs = 12 * 60 * 1000, maxScanSeries = RESOLUTION_SCAN_MAX_SERIES } = {}) {
   assertDemoBase(base);
   const started = Date.now();
   configureBreaker({ limit: 6, deadlineMs: started + deadlineMs });
   const cfg = JSON.parse(await readFile(configPath, 'utf8'));
   const state = await loadState(stateDir);
   state.run = (state.run || 0) + 1;
+  // Durable memory (F642-T1 / R-4f92-4): the published snapshot IS committed to git, so
+  // merging it back makes resolution history survive eviction of the Actions state cache.
+  const prior = await loadPriorPublished(outDir);
+  for (const [t, r] of Object.entries(prior.resolved)) if (!state.resolved[t]) state.resolved[t] = r;
+  for (const [t, p] of Object.entries(prior.pending)) if (!state.pending[t]) state.pending[t] = p;
   const errors = [];
   const get = (p, params, o) => getFn(base, p, params, o);
 
@@ -165,40 +173,85 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   }
 
   log(`[collect] phase: resolution (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
-  // 9) resolution tracking: markets that were tracked but are no longer active are checked by ticker
+  // 9) resolution tracking — durable, three layers (session arena-f642a30a / F642-T1, request R-4f92-4):
+  //    a) rotating settled-market scan per topic via the documented GET /markets filters
+  //       (status=settled, min_settled_ts = now − 30 days). Same pattern as the docs pipeline
+  //       fix in collector/runner.py::collect_resolutions (session arena-3dcf3f13 / X1).
+  //    b) watch check for tracked/pending markets that left the active set (fast path).
+  //    c) the previously published resolved.json is merged back at startup (loadPriorPublished),
+  //       so outcomes accumulate across runs even when the Actions state cache is evicted.
+  //    A row records the first observed official `result` verbatim (yes|no|scalar — never
+  //    inferred); open-position tickers are exempt from retention pruning so a position can
+  //    always settle against its row.
   const activeTickers = new Set(rows.map((r) => r.ticker));
-  const watch = Object.keys(state.meta).filter((t) => !activeTickers.has(t) && !state.resolved[t]);
+
+  // a) rotating settled scan (bounded requests; full series pass in ceil(series/perCap) runs)
+  const scanTargets = rotateScanSeries(seriesMap, nowMs, maxScanSeries);
+  let scannedSeries = 0;
+  let scannedMarkets = 0;
+  let resolvedAdded = 0;
+  for (const { ticker: st, topic } of scanTargets) {
+    if (breakerTripped()) break;
+    const params = { series_ticker: st, status: 'settled', min_settled_ts: Math.floor(nowMs / 1000) - RESOLUTION_LOOKBACK_S, limit: 200 };
+    try {
+      let res = (await get('/markets', params)).data;
+      scannedSeries++;
+      const page1 = res.markets || [];
+      scannedMarkets += page1.length;
+      for (const m of page1) if (noteResolved(state, m, { topic, seriesTicker: st, via: 'settled-scan', base, nowMs })) resolvedAdded++;
+      if (res.cursor && page1.length) {
+        res = (await get('/markets', { ...params, cursor: res.cursor })).data;
+        scannedMarkets += (res.markets || []).length;
+        for (const m of res.markets || []) if (noteResolved(state, m, { topic, seriesTicker: st, via: 'settled-scan', base, nowMs })) resolvedAdded++;
+      }
+    } catch (e) {
+      errors.push(describeErr(`markets?series_ticker=${st}&status=settled`, e));
+      if (breakerTripped()) break;
+    }
+  }
+
+  // b) watch check: anything once tracked (or previously pending) that is no longer active
+  const watch = [...new Set([...Object.keys(state.meta), ...Object.keys(state.pending)])]
+    .filter((t) => !activeTickers.has(t) && !state.resolved[t]);
   let checked = 0;
   for (const t of watch.slice(0, 60)) {
     try {
       const m = (await get(`/markets/${t}`)).data.market;
       checked++;
-      if (m.result === 'yes' || m.result === 'no' || m.result === 'scalar') {
-        const meta = state.meta[t];
-        state.resolved[t] = {
+      const meta = state.meta[t];
+      const prevPending = state.pending[t];
+      if (m && RESULT_VALUES.has(m.result)) {
+        if (noteResolved(state, m, {
+          topic: meta_topic(state, t) ?? prevPending?.topic ?? null,
+          seriesTicker: meta?.series_ticker ?? prevPending?.series_ticker ?? null,
+          eventTitle: meta?.event_title ?? prevPending?.event_title ?? null,
+          outcomeLabel: meta?.outcome_label ?? null,
+          via: 'watch', base, nowMs,
+        })) resolvedAdded++;
+      } else if (m) {
+        state.pending[t] = {
           ticker: t,
-          topic: meta.topic,
-          event_title: meta.event_title,
-          outcome_label: meta.outcome_label,
-          event_ticker: meta.event_ticker,
-          series_ticker: meta.series_ticker,
-          result: m.result,
+          topic: meta_topic(state, t) ?? prevPending?.topic ?? null,
+          event_title: meta?.event_title ?? prevPending?.event_title ?? null,
+          series_ticker: meta?.series_ticker ?? prevPending?.series_ticker ?? null,
           status: m.status,
-          close_time: m.close_time,
+          close_time: m.close_time ?? null,
           settlement_ts: m.settlement_ts ?? null,
-          settlement_value_dollars: m.settlement_value_dollars ?? null,
-          detected_at: new Date(nowMs).toISOString(),
           source_url: `${base}/markets/${t}`,
         };
-      } else {
-        state.pending[t] = { ticker: t, topic: meta_topic(state, t), event_title: state.meta[t]?.event_title, status: m.status, close_time: m.close_time, source_url: `${base}/markets/${t}` };
       }
     } catch (e) {
       errors.push(describeErr(`markets/${t}`, e));
     }
   }
+
+  // c) cleanups + retention (open positions protected so every position can settle)
   for (const t of Object.keys(state.resolved)) delete state.meta[t];
-  for (const t of Object.keys(state.pending)) if (!state.meta[t]) delete state.pending[t];
+  for (const t of Object.keys(state.pending)) {
+    if (state.resolved[t] || activeTickers.has(t)) delete state.pending[t];
+  }
+  const protectTickers = new Set(state.positions.filter((p) => p.status === 'open').map((p) => p.ticker));
+  pruneResolved(state, RESOLUTION_KEEP_PER_TOPIC, protectTickers);
   // Markets resolved in this run stop being watched; still-active ones refresh their meta above.
 
   log(`[collect] phase: paper trades (elapsed ${Math.round((Date.now() - started) / 1000)}s)`);
@@ -272,7 +325,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   const resolvedOut = {
     generated_at: runInfo.generated_at,
     resolved: Object.values(state.resolved).sort((a, b) => (b.detected_at > a.detected_at ? 1 : -1)),
-    pending: Object.values(state.pending),
+    pending: Object.values(state.pending).sort((a, b) => String(b.close_time || '').localeCompare(String(a.close_time || ''))),
   };
   const tradesOut = {
     generated_at: runInfo.generated_at,
@@ -286,7 +339,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   for (const [t, pts] of Object.entries(state.history)) {
     historyOut[t] = { meta: state.meta[t] || null, points: pts, fields: ['t_ms', 'last_cents', 'yes_bid_cents', 'yes_ask_cents', 'volume_24h_contracts', 'open_interest_contracts'] };
   }
-  const statusOut = { generated_at: runInfo.generated_at, run: state.run, base_url: base, counts: { series_mapped: seriesMap.size, markets_active: rows.length, alerts_this_run: alerts.length, alerts_total: state.alerts.length, orderbooks: Object.keys(orderbooks).length, resolved_total: Object.keys(state.resolved).length, pending_total: Object.keys(state.pending).length, resolution_checks_this_run: checked, positions: state.positions.length, positions_opened_this_run: opened.length, history_markets: Object.keys(historyOut).length }, errors };
+  const statusOut = { generated_at: runInfo.generated_at, run: state.run, base_url: base, counts: { series_mapped: seriesMap.size, markets_active: rows.length, alerts_this_run: alerts.length, alerts_total: state.alerts.length, orderbooks: Object.keys(orderbooks).length, resolved_total: Object.keys(state.resolved).length, resolved_added_this_run: resolvedAdded, settled_scan_series: scannedSeries, settled_scan_markets: scannedMarkets, pending_total: Object.keys(state.pending).length, resolution_checks_this_run: checked, positions: state.positions.length, positions_opened_this_run: opened.length, history_markets: Object.keys(historyOut).length }, errors };
 
   // Fail closed: if the API was unreachable for the whole run, do not publish a partial snapshot.
   if (breakerTripped()) {
@@ -305,6 +358,111 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
 }
 
 // ---------- helpers ----------
+
+// Resolution tracking (F642-T1 / R-4f92-4). Official facts used here, all verified against
+// the live demo API and the official docs on 2026-11-21 (see VERIFICATION-f642a30a.md):
+//   * GET /markets accepts `status=settled` and `min_settled_ts` (Unix seconds —
+//     "Filter items that settled after this Unix timestamp",
+//     https://docs.kalshi.com/api-reference/market/get-markets).
+//   * A settled market object carries `result` "yes"|"no" (binary), `settlement_ts`,
+//     `settlement_value_dollars`, and object `status` "finalized" (the docs' filter value
+//     is `settled`; the code keys on `result` and copies `status` verbatim).
+//   * YES/NO payouts: https://docs.kalshi.com/getting_started/market_settlement.
+export const RESULT_VALUES = new Set(['yes', 'no', 'scalar']);
+export const RESOLUTION_LOOKBACK_S = 30 * 86400;
+export const RESOLUTION_WINDOW_S = 900; // rotate the scan slice every 15 minutes (matches the docs pipeline, X1)
+export const RESOLUTION_KEEP_PER_TOPIC = 100;
+export const RESOLUTION_SCAN_MAX_SERIES = 15; // bound the request count; full series pass in ceil(series/perCap) runs
+
+/** Build one resolved row from a raw market object. `result` is copied verbatim (never inferred). */
+export function resolutionRow(m, { topic = null, seriesTicker = null, eventTitle = null, outcomeLabel = null, via, base, nowMs }) {
+  return {
+    ticker: m.ticker,
+    topic,
+    event_title: eventTitle ?? m.title ?? null,
+    outcome_label: outcomeLabel ?? m.yes_sub_title ?? m.subtitle ?? '',
+    event_ticker: m.event_ticker ?? null,
+    series_ticker: seriesTicker ?? (m.ticker ? String(m.ticker).split('-')[0] : null),
+    result: m.result,
+    status: m.status ?? null,
+    close_time: m.close_time ?? null,
+    settlement_ts: m.settlement_ts ?? null,
+    settlement_value_dollars: m.settlement_value_dollars ?? null,
+    detected_at: new Date(nowMs).toISOString(),
+    via,
+    source_url: `${base}/markets/${m.ticker}`,
+    docs_url: 'https://docs.kalshi.com/getting_started/market_settlement',
+  };
+}
+
+/** Record a market's official result once (first observation wins); returns true when stored. */
+export function noteResolved(state, m, opts) {
+  if (!m || !m.ticker || !RESULT_VALUES.has(m.result)) return false;
+  if (state.resolved[m.ticker]) return false;
+  state.resolved[m.ticker] = resolutionRow(m, opts);
+  return true;
+}
+
+/**
+ * Rotating per-topic slice of series for the settled scan: run N (window = now/15min) scans
+ * `perCap = floor(maxSeries/topics)` series per topic starting at (window * perCap) mod n,
+ * so every mapped series is visited within ceil(series/perCap) windows. Mirrors the docs
+ * pipeline's fix (collector/runner.py::collect_resolutions, session arena-3dcf3f13).
+ */
+export function rotateScanSeries(seriesMap, nowMs, maxSeries = RESOLUTION_SCAN_MAX_SERIES, windowS = RESOLUTION_WINDOW_S) {
+  const perTopic = new Map();
+  for (const [ticker, meta] of seriesMap) {
+    const list = perTopic.get(meta.topic) || [];
+    list.push(ticker);
+    perTopic.set(meta.topic, list);
+  }
+  const topics = [...perTopic.keys()].sort();
+  if (!topics.length) return [];
+  const perCap = Math.max(1, Math.floor(maxSeries / topics.length));
+  const window = Math.floor(nowMs / 1000 / windowS);
+  const out = [];
+  for (const topic of topics) {
+    const list = [...perTopic.get(topic)].sort();
+    const n = list.length;
+    const start = (window * perCap) % n;
+    for (let i = 0; i < Math.min(perCap, n); i++) out.push({ ticker: list[(start + i) % n], topic });
+  }
+  return out;
+}
+
+/** Retention: newest keepPerTopic rows per topic; tickers in `protect` are never pruned. */
+export function pruneResolved(state, keepPerTopic = RESOLUTION_KEEP_PER_TOPIC, protect = new Set()) {
+  const byTopic = new Map();
+  for (const [t, r] of Object.entries(state.resolved)) {
+    const key = r.topic ?? '';
+    const list = byTopic.get(key) || [];
+    list.push([t, r]);
+    byTopic.set(key, list);
+  }
+  for (const list of byTopic.values()) {
+    list.sort((a, b) => String(b[1].settlement_ts || b[1].detected_at || '').localeCompare(String(a[1].settlement_ts || a[1].detected_at || '')));
+    for (const [t] of list.slice(keepPerTopic)) {
+      if (!protect.has(t)) delete state.resolved[t];
+    }
+  }
+}
+
+/** Read the previously published snapshot so history survives state-cache eviction. */
+export async function loadPriorPublished(outDir) {
+  const out = { resolved: {}, pending: {} };
+  try {
+    const raw = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+    for (const r of raw.resolved || []) {
+      if (r && r.ticker && RESULT_VALUES.has(r.result)) out.resolved[r.ticker] = r;
+    }
+    for (const p of raw.pending || []) {
+      if (p && p.ticker) out.pending[p.ticker] = p;
+    }
+  } catch {
+    // no prior published snapshot (first run, clean checkout, or unreadable file) — start empty
+  }
+  return out;
+}
 
 // Keep curated series first, then the highest-volume keyword matches, up to `max`.
 // Without a cap, keyword discovery over the full live series list made the run exceed its deadline.

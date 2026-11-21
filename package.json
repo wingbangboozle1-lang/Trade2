@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test scripts/test/fees.test.mjs scripts/test/auth.test.mjs scripts/test/collect.test.mjs scripts/test/breaker.test.mjs test/alerts-view.test.mjs",
+    "test": "node --test scripts/test/fees.test.mjs scripts/test/auth.test.mjs scripts/test/collect.test.mjs scripts/test/breaker.test.mjs test/alerts-view.test.mjs test/live-feed.test.mjs test/live-feed-url.test.mjs",
     "test:site": "node test/site_smoke.mjs docs/data",
     "collect": "node scripts/collect.mjs --state state --out _site/data",
     "build": "node scripts/build-site.mjs --out _site"
