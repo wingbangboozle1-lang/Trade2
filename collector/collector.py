@@ -317,6 +317,45 @@ def apply_pending_resolutions(store: dict[str, Any],
                 {"ts": now, "result": rec["result"], "price": closed.exit_price})
 
 
+def observation_store(observations: list[Any]) -> list[dict[str, Any]]:
+    """The rows the *next* run reads back as its previous snapshot.
+
+    ``collect()`` builds ``previous_obs`` from ``live.json["observations"]`` so a
+    market without a candlestick reference bar can still be measured quote-to-quote
+    (``collector.alerts._swing`` basis ``previous_snapshot_mid``). Until session
+    arena-27de8294 the payload never wrote that key, so the reader always saw an
+    empty list and the documented fallback could never fire.
+
+    Rows are copied, not aliased: the live run keeps using its own Observation
+    objects, and a malformed row without a ticker is dropped rather than being
+    published under an empty key.
+    """
+    rows: list[dict[str, Any]] = []
+    for obs in observations:
+        if isinstance(obs, dict):
+            row = dict(obs)
+        else:  # an alerts.Observation dataclass
+            row = dict(getattr(obs, "__dict__", {}) or {})
+        if row.get("ticker"):
+            rows.append(row)
+    return rows
+
+
+def previous_observations(payload: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    """Index a published snapshot's observations by ticker.
+
+    A snapshot written before this key existed contains no ``observations`` and
+    yields ``{}`` — the first run after a deploy simply has no earlier measurement
+    to compare against, and says so (``snapshot_fallback.previous_rows == 0``)
+    instead of inventing a baseline.
+    """
+    out: dict[str, dict[str, Any]] = {}
+    for row in (payload or {}).get("observations") or []:
+        if isinstance(row, dict) and row.get("ticker"):
+            out[row["ticker"]] = row
+    return out
+
+
 def load_json(path: str, default: Any):
     try:
         with open(path, "r", encoding="utf-8") as fh:
@@ -419,12 +458,30 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     # ``trade_close`` is published next to the quote mid for transparency only
     # (the chart legend and the methodology page); it is never the basis of a
     # swing alert, which is the point of 856e184e's quote rule.
+    # ``price.previous_dollars`` of the reference candle (documented at
+    # https://docs.kalshi.com/api-reference/market/get-market-candlesticks).
+    # The merged R-F3-1 corroboration reads ``previous_dollars`` from this
+    # record (Observation.ref_previous_dollars); without it the guard can only
+    # fall back to ``price.close_dollars``, so the plumbing ends here by design.
+    price_block = chosen.get("price") or {}
+    try:
+        price_previous = float(price_block.get("previous_dollars"))
+    except (TypeError, ValueError):
+        price_previous = None
     return {"mid": round((bid + ask) / 2.0, 4),
             "ts": float(chosen["end_period_ts"]),
             "spread": round(ask - bid, 4),
             "yes_bid": bid, "yes_ask": ask,
             "trade_close": _candle_close(chosen, "price"),
-            "period_interval_minutes": 1}
+            "previous_dollars": price_previous,
+            "period_interval_minutes": 1,
+            # Completed candles in the window, for the revert check (R-3DCF-3).
+            # The still-forming current bar is excluded — its close is not final.
+            "candles": [{"ts": float(c["end_period_ts"]),
+                         "trade_close": _candle_close(c, "price"),
+                         "yes_bid_close": _candle_close(c, "yes_bid"),
+                         "yes_ask_close": _candle_close(c, "yes_ask")}
+                        for c in completed]}
 
 
 def _candle_close(candle: dict[str, Any], side: str) -> float | None:
@@ -522,10 +579,10 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         exchange = {"error": str(exc)}
 
     previous_live = load_json(LIVE_PATH, {})
-    previous_obs: dict[str, dict[str, Any]] = {}
-    for row in previous_live.get("observations", []):
-        if row.get("ticker"):
-            previous_obs[row["ticker"]] = row
+    # Previously read from ``previous_live["observations"]``, a key the payload never
+    # wrote — so this mapping was always empty and ``alerts._swing`` could never use
+    # its documented ``previous_snapshot_mid`` fallback (session arena-27de8294).
+    previous_obs: dict[str, dict[str, Any]] = previous_observations(previous_live)
     alerts_store = load_json(os.path.join(DATA_DIR, "alerts.json"),
                              {"alerts": [], "version": 0})
     if alerts_store.get("version") != ALERTS_VERSION:
@@ -680,6 +737,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             obs.ref_yes_bid = ref.get("yes_bid")
             obs.ref_yes_ask = ref.get("yes_ask")
             obs.ref_trade_close = ref.get("trade_close")
+            obs.ref_previous_dollars = ref.get("previous_dollars")
 
     new_alerts: list[dict[str, Any]] = []
     suppressed: list[dict[str, Any]] = []
@@ -725,6 +783,11 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 if alerts.alert_record_valid(a)]
     fold = alerts.fold_alerts(new_alerts, existing, max_alerts=MAX_ALERTS)
     merged = fold["alerts"]
+
+    # Revert check (R-3DCF-3): annotate rows whose move unwound within one
+    # candle, using the completed candles fetched with the reference bars.
+    reverted_count = alerts.mark_reverted(merged, references,
+                                          threshold=alerts.SWING_THRESHOLD)
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
@@ -894,6 +957,23 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "settled_this_run": settled_updates,
         "closed_this_run": closed_now,
         "observation_count": len(observations),
+        # The rows the next run uses as its previous snapshot. Published so the
+        # quote-to-quote fallback is measurable rather than assumed, and so the
+        # desk can state how many markets had a candle reference this run.
+        "observations": observation_store(observations),
+        "snapshot_fallback": {
+            "previous_rows": len(previous_obs),
+            "compared_against_previous_snapshot": sum(
+                1 for a in merged if a.get("reference_basis") == "previous_snapshot_mid"),
+            "candle_reference_rows": len(references),
+            "measured_rows": len(observations),
+            "carried_forward_rows": len(previous_obs),
+            "basis_documented_at": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+            "note": ("A market is compared against its official 1-minute candle quote "
+                     "when one exists, otherwise against the previous snapshot's quoted "
+                     "mid. Both bases are quote-to-quote; a last-trade price is never the "
+                     "basis of an alert."),
+        },
         "reference_bar_seconds": BAR_SECONDS,
         "reference_bars_used": len(references),
         "alert_stats": {
@@ -906,6 +986,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "executable": sum(1 for a in merged if a.get("quality") == "executable"),
             "indicative": sum(1 for a in merged if a.get("quality") == "indicative"),
             "suppressed_this_run": len(suppressed),
+            "reverted_annotated_this_run": reverted_count,
         },
         "suppressed_alerts": suppressed[:40],
         "book_record_gaps": sorted(gaps, key=lambda g: g["abs_gap"],

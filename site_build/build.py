@@ -223,6 +223,13 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         badges += ('<span class="tag tag-grey" title="Written before the collector '
                    'stated a price basis per row; no executability claim is made '
                    'either way.">pre-rule row</span> ')
+    reverted = a.get("reverted_within_candle")
+    if reverted:
+        badges += ('<span class="tag tag-grey" title="The first completed candle '
+                   'after this move closed back within $0.10 of the alert\'s '
+                   'previous level (official 1-minute candlestick trade close '
+                   f'at {esc(str(reverted.get("candle_end_ts") or ""))}).">'
+                   'reverted within one candle</span> ')
     badge_html = (f'<span class="chat-badges">{badges}</span>' if badges else "")
     # What the two numbers being subtracted actually are. Stated on the row so a
     # mid-vs-mid step is never mistaken for two prints.
@@ -231,9 +238,21 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     depth_html = ""
     if a.get("spread") is not None:
         size = a.get("size_at_top")
-        depth = (f"{count(size)} contracts at the level" if size is not None
-                 else "no resting size at the level")
+        if size is None:
+            depth = "no resting size at the level"
+        elif size == 0:
+            # An explicit 0.00 from the exchange is not book depth; saying
+            # "0 contracts" alone reads like a depth figure (R-3DCF-2).
+            depth = "no ask size: 0 contracts resting at the level"
+        else:
+            depth = f"{count(size)} contracts at the level"
         depth_html = f' · YES spread {cents(a.get("spread"))} · {depth}'
+    ticks_html = ""
+    ticks = a.get("threshold_ticks")
+    if ticks:
+        tick_size = a.get("tick_size")
+        ticks_html = (f' · ${a.get("threshold"):.2f} ≈ {count(ticks)} ticks'
+                      f' of {cents(tick_size)}')
     # Headlines the collector found inside ± six hours of the move. Labelled
     # candidates: no row on this site claims that an article caused a price.
     causes = []
@@ -256,7 +275,7 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         f'<span class="chat-body"><a href="{safe_url(market_url) or "#"}" '
         f'target="_blank" rel="noreferrer">{esc(title)}</a> '
         f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-        f'{esc(topic)}{roi}{basis_html}{depth_html}</small>'
+        f'{esc(topic)}{roi}{basis_html}{depth_html}{ticks_html}</small>'
         f'{badge_html}'
         f'{news_html}'
         f'<span class="cause-links">'
@@ -911,6 +930,57 @@ def build_topic(slug: str, live: dict[str, Any],
 # Live desk
 # ---------------------------------------------------------------------------
 
+def empty_all_feed(live: dict[str, Any]) -> str:
+    """The pre-rendered "All events" chat when this snapshot has no alert row.
+
+    An empty chat is only honest if it says what was measured. Before session
+    arena-27de8294 this said "No ≥ $0.10 move observed yet", which reads as
+    "nothing happened" — while 652 of 750 tracked markets had no candle
+    reference in the 2026-11-21T07:19Z snapshot and the previous-snapshot
+    fallback was silently dead (`live.get("observations")` was never written).
+
+    Every number here comes from the snapshot's own counters; nothing is
+    inferred. `assets/desk.js::emptyAllFeedHtml` renders the same facts after
+    the polled view replaces this block, and the two are kept in step by
+    `tests/test_snapshot_fallback_27de.py`.
+    """
+    refused = live.get("suppressed_alerts") or []
+    fb = live.get("snapshot_fallback") or {}
+    measured = fb.get("measured_rows", live.get("observation_count"))
+    bits = []
+    if measured is not None:
+        bits.append(f"{count(measured)} markets measured this snapshot")
+    if fb.get("candle_reference_rows") is not None:
+        bits.append(f"{count(fb['candle_reference_rows'])} had an official "
+                    "1-minute candle reference")
+    if fb.get("previous_rows") is not None:
+        prior = int(fb["previous_rows"] or 0)
+        bits.append(f"{count(prior)} earlier rows available for the "
+                    "previous-snapshot fallback" if prior else
+                    "no earlier rows yet, so the previous-snapshot fallback "
+                    "had nothing to compare")
+    if refused:
+        plural = len(refused) != 1
+        tail = (f"{count(len(refused))} midpoint move"
+                + ("s" if plural else "")
+                + " cleared $0.10 but the quote rule refused "
+                + ("them" if plural else "it")
+                + ' — each with its reason on <a href="review.html#refused">'
+                "Flagged for review</a>.")
+    else:
+        tail = "No row cleared $0.10 on a two-sided book in this snapshot."
+    basis = ""
+    if bits:
+        basis = (' <span class="empty-basis">Measured: ' + esc(" · ".join(bits))
+                 + ". Every row is quote mid to quote mid against one of two bases "
+                 "— <code>candle_quote_mid</code> when Kalshi published a candle, "
+                 "<code>previous_snapshot_mid</code> otherwise.</span>")
+    # ``tail`` is either a literal sentence or the sentence plus a fixed anchor
+    # built above; neither interpolates untrusted text.
+    return ('<div class="empty-state inline"><b>No alert row in this snapshot.</b> '
+            + tail + basis + "</div>")
+
+
 def build_live(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
@@ -922,9 +992,7 @@ def build_live(live: dict[str, Any]) -> str:
     signals = {s.get("ticker"): s for s in (live.get("signals") or [])
                if s.get("ticker")}
     alerts = extras.group_alerts(live.get("alerts") or [])
-    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
-        '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
-        "feed fills as successive snapshots are compared.</div>")
+    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or empty_all_feed(live)
     model_rows = []
     shortlist = {a.get("ticker"): a for a in model_shortlist(live)}
     for a in alerts:
@@ -1002,10 +1070,14 @@ def build_live(live: dict[str, Any]) -> str:
               <div class="control-row">
                 <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option></select>
                 <div class="filter-tabs" id="windowTabs">
-                  <button data-window="seconds">Seconds</button>
-                  <button data-window="minutes" class="selected">Minutes</button>
-                  <button data-window="hours">Hours</button>
+                  <button data-window="seconds" title="Rolling 90-second window: live book quotes polled every few seconds. Kalshi publishes no second-based candles.">Seconds</button>
+                  <button data-window="minutes" class="selected" title="Rolling 60-minute window: official 1-minute candlesticks plus live quotes">Minutes</button>
+                  <button data-window="hours" title="Rolling 12-hour window: official 1-minute candlesticks plus live quotes">Hours</button>
                 </div>
+                <p class="chart-note">Window lengths, not candle sizes. The seconds
+                window plots live book quotes polled every few seconds; the minute
+                and hour windows include official candlesticks, whose smallest
+                period is 1 minute (<a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">docs ↗</a>).</p>
                 <div class="filter-tabs" id="sideTabs" aria-label="Contract side">
                   <button data-side="yes" class="selected">YES</button>
                   <button data-side="no">NO</button>

@@ -22,9 +22,13 @@
 
   var REST = "https://external-api.demo.kalshi.co/trade-api/v2";
   var WINDOWS = {
-    seconds: { label: "Last 90 seconds", ms: 90 * 1000, tick: 2000 },
-    minutes: { label: "Last 60 minutes", ms: 60 * 60 * 1000, tick: 15000 },
-    hours: { label: "Last 12 hours", ms: 12 * 60 * 60 * 1000, tick: 60000 },
+    // Labels state what the data in each window IS, not just its length:
+    // Kalshi's smallest candle period is 1 minute (docs /api-reference/market/
+    // get-market-candlesticks), so the seconds window can only ever show live
+    // polled book quotes, never second-based candles.
+    seconds: { label: "Last 90 seconds · live book quotes", ms: 90 * 1000, tick: 2000 },
+    minutes: { label: "Last 60 minutes · 1-minute candles + live quotes", ms: 60 * 60 * 1000, tick: 15000 },
+    hours: { label: "Last 12 hours · 1-minute candles + live quotes", ms: 12 * 60 * 60 * 1000, tick: 60000 },
   };
   var SWING = 0.1;
 
@@ -255,14 +259,30 @@
         "stated a price basis per row; no executability claim is made either " +
         'way.">pre-rule row</span> ';
     }
+    if (a.reverted_within_candle) {
+      badges += '<span class="tag tag-grey" title="The first completed candle ' +
+        "after this move closed back within $0.10 of the alert's previous " +
+        "level (official 1-minute candlestick trade close at " +
+        esc(String(a.reverted_within_candle.candle_end_ts || "")) + ').">' +
+        "reverted within one candle</span> ";
+    }
     /* What the two subtracted numbers are, and whether anything was resting at
      * the level when the move printed. */
     var extra = a.reference_basis ? " · " + esc(a.reference_basis) : "";
     if (a.spread !== null && a.spread !== undefined) {
       extra += " · YES spread " + money(a.spread, 4) +
-        (a.size_at_top !== null && a.size_at_top !== undefined
-          ? " · " + num(a.size_at_top) + " contracts at the level"
-          : " · no resting size at the level");
+        (a.size_at_top === null || a.size_at_top === undefined
+          ? " · no resting size at the level"
+          : (a.size_at_top === 0
+            ? " · no ask size: 0 contracts resting at the level"
+            : " · " + num(a.size_at_top) + " contracts at the level"));
+    }
+    /* Tick size (price_ranges[0].step, official market schema): state how many
+     * ticks the $0.10 threshold represents. Omitted when the market published
+     * no step — never inferred. */
+    if (a.threshold_ticks) {
+      extra += " · $" + (Number(a.threshold) || 0.1).toFixed(2) + " ≈ " +
+        num(a.threshold_ticks) + " ticks of " + money(a.tick_size, 4);
     }
     /* Headlines the collector found within six hours either side of the move:
      * candidates, never a claimed cause. */
@@ -380,6 +400,43 @@
     return rows;
   }
 
+  /* What an empty "All events" chat actually means.
+   *
+   * An empty chat is the honest answer only when it also says what was measured.
+   * Before session arena-27de8294 it said nothing had been observed yet, which
+   * a trader reads as "nothing happened" — even though 652 of the 750 tracked
+   * markets had no candle reference in that snapshot and the previous-snapshot
+   * fallback was silently dead (see tests/test_snapshot_fallback_27de.py).
+   * The panel now states the measured row count, the candle-reference count and
+   * how many earlier rows the comparison could use. Every number comes from the
+   * snapshot; nothing is inferred.
+   */
+  function emptyAllFeedHtml(s) {
+    var refusedN = (s.suppressed_alerts || []).length;
+    var fb = s.snapshot_fallback || {};
+    var measured = fb.measured_rows != null ? fb.measured_rows : s.observation_count;
+    var candle = fb.candle_reference_rows;
+    var prior = fb.previous_rows;
+    var bits = [];
+    if (measured != null) bits.push(num(measured) + " markets measured this snapshot");
+    if (candle != null) bits.push(num(candle) + " had an official 1-minute candle reference");
+    if (prior != null) {
+      bits.push(prior
+        ? num(prior) + " earlier rows available for the previous-snapshot fallback"
+        : "no earlier rows yet, so the previous-snapshot fallback had nothing to compare");
+    }
+    var tail = refusedN
+      ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
+        " cleared $0.10 but the quote rule refused " + (refusedN === 1 ? "it" : "them") +
+        ' — each with its reason on <a href="review.html#refused">Flagged for review</a>.'
+      : "No row cleared $0.10 on a two-sided book in this snapshot.";
+    return '<div class="empty-state inline"><b>No alert row in this snapshot.</b> ' +
+      tail + (bits.length ? " <span class=\"empty-basis\">Measured: " +
+        bits.join(" · ") + ". Every row is quote mid to quote mid against one of two " +
+        "bases — <code>candle_quote_mid</code> when Kalshi published a candle, " +
+        "<code>previous_snapshot_mid</code> otherwise.</span>" : "") + "</div>";
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
@@ -433,15 +490,7 @@
     if (feedAll) {
       feedAll.innerHTML = "";
       if (!all.length) {
-        var refusedN = (s.suppressed_alerts || []).length;
-        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
-          "two-sided book in the current buffer. " +
-          (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
-            " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
-            ' listed with the reason on <a href="review.html#refused">Flagged for ' +
-            "review</a>. " :
-            "The feed fills as the collector compares successive snapshots. ") +
-          "</div>";
+        feedAll.innerHTML = emptyAllFeedHtml(s);
       } else if (raw.length > all.length) {
         feedAll.appendChild(feedNote(all, raw));
       }
@@ -1111,7 +1160,9 @@
       " · YES spread " + money(a.spread, 4) +
       (a.size_at_top === null || a.size_at_top === undefined
         ? " · no resting size at the level"
-        : " · " + num(a.size_at_top) + " contracts at the level") +
+        : (a.size_at_top === 0
+          ? " · no ask size: 0 contracts resting at the level"
+          : " · " + num(a.size_at_top) + " contracts at the level")) +
       "</small>" +
       '<span class="chat-badges">' + badges + "</span>" +
       '<span class="cause-links"><span class="cause-none">no news link: a live ' +
