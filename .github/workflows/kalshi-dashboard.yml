@@ -71,6 +71,25 @@ jobs:
       - name: Link check
         run: python3 tools/linkcheck.py
 
+      # N-01: every generated page must carry the same sidebar, with no
+      # destination repeated and the active row kept in its slot. The
+      # generator is the only writer of these pages, so a failure here means a
+      # template change would publish an inconsistent menu.
+      - name: Sidebar is canonical
+        run: python3 tools/navcheck.py
+
+      # N-02: the browser swing detector is what makes the desk live between
+      # scheduled runs. Its logic and the shipped page are checked here, before
+      # anything is committed, on the same data this run just collected.
+      - name: Browser swing detector
+        run: |
+          node test/live-probe.test.mjs
+          if node -e 'require.resolve("jsdom")' >/dev/null 2>&1; then
+            node test/desk_live_probe_dc.mjs
+          else
+            echo "::notice::jsdom unavailable — probe render test skipped"
+          fi
+
       # Added by session arena-dc732aa6 (R-D-01): the two scrolling chats, the
       # price-basis badges and the snapshot-age label are rendered by
       # assets/desk.js, which tools/rendercheck.mjs cannot execute (jsdom does
