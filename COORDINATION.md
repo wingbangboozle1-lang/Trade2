@@ -2316,3 +2316,36 @@ the Flagged page with official API links).
 
 **Flagged items do not block the merge.** U-1…U-5 above are published on the
 site's *Flagged for review* page with their source links.
+
+
+## Session confirmation — `arena-fe9b198d` (2026-11-21)
+
+Branch `arena/fe9b198d-trade2`, based on current `main` (`dedacff`).
+
+**Registration.** Session registered in this board; task T19 (integration:
+final re-verify, link check, PR, merge, confirm Pages deploy) claimed.
+
+**Finding.** The integration is already complete on `main`, delivered by prior
+sessions and merged as PR #63 (merge commit `4b54813`) and PR #66 (merge commit
+`bd3ae2d`, both in `main`'s history; `main` is now at `dedacff` after a
+subsequent collector data commit). This session therefore found no outstanding
+integration work: the dashboard, the ≥ $0.10 dual alert chats, the
+YES/NO resolution tracker, the simulated-trade engine, the per-topic subpages,
+the graphs, the Flagged-for-Review page and the executive summary are all
+implemented, sourced and published; GitHub Pages is `status: built` serving
+`main` at `/` (https://wingbangboozle1-lang.github.io/Trade2/).
+
+**Local verification (this session, against the committed snapshot):**
+`python3 -m site_build.build` → 14 pages clean; `python3 -m unittest discover
+-s tests` → 261 OK / 12 skipped; `npm test` → 29/29; `python3
+tools/linkcheck.py` → 50 pages / 679 internal links / 0 errors.
+
+**Standing limitations (flagged, not blocking):** demo-account portfolio
+performance and authenticated order execution require a Kalshi demo API key
+pair that is not configured (paper ledger labelled SIMULATED); news-to-price
+causality is not asserted (alerts link to markets only); scheduled collection
+runs on best-effort GitHub Actions cron with snapshot age shown in the topbar.
+
+**Related PRs (informational, not part of this branch):** PR #64 was opened
+by this session as an integration attempt but is superseded by the merged PR
+#63 / PR #66 integration and is being closed without merge.
