@@ -1866,3 +1866,39 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+## Session claim — `arena-108b0dfb` (2026-11-21)
+
+Branch: `arena/108b0dfb-trade2`, branched from `main` @ `06738d1`.
+
+Claimed scope (files this session may edit; nothing owned by an open PR is
+included):
+
+| File scope | Purpose |
+| - | - |
+| `assets/desk.js`, `assets/live-probe.js` (new), `assets/nav.js`, `assets/alerts-view.js` | browser-side live swing detector + single canonical navigation |
+| `site_build/build.py`, `site_build/extras.py`, `site_build/flagpage.py` | canonical nav renderer, live-alerts panel, flagged items |
+| `index.html`, `live.html`, `categories/*.html`, `summary.html`, `review.html`, `suggestions.html`, `methodology.html`, `resolutions.html`, `trades.html` | regenerated output |
+| `tests/test_live_probe.py` (new), `tests/test_nav_canonical.py` (new), `tests/*.py` (additive assertions only) | regression tests for the two fixes |
+| `tools/linkcheck.py`, `tools/navcheck.py` (new) | link + nav consistency gate |
+| `.github/workflows/site-check.yml` | run the new gates |
+| `README.md`, `REQUIREMENTS.md`, `EXECUTIVE_SUMMARY.md`, `COORDINATION.md` | docs + this board |
+| `AUDIT_108b0dfb.md` (new) | this session's line-by-line findings |
+
+Explicitly **not** touched (other owners / open PRs): `.github/workflows/kalshi-dashboard.yml`,
+`collector/*`, `docs/**`, `kalshi-dashboard/**`, `scripts/**`, `site/**`, `trading/**`.
+
+### Findings opened by this session (all reproduced before claiming a fix)
+
+| ID | Finding | Evidence |
+| - | - | - |
+| N-01 | **Site navigation is duplicated and order-inconsistent.** `site_build/build.py:60-77` lists `Overview` in the *Research* nav although the *Topics* nav already has it, and `research_nav()` drops the active link, so the visible menu order changes page to page (`index.html` vs `summary.html` vs `live.html`). `assets/nav.js` then appends a further "Session dashboard" link at runtime into the first `.side-nav` it finds, which is the **Topics** nav. | parsed every root page's `<nav>`; diff printed below |
+| N-02 | **The live alert chat is empty on the public site, so the ≥ $0.10 requirement is not observably satisfied.** `data/alerts.json` holds `[]`, `assets/live.json` holds `alerts: []`, and `/Trade2/` renders `Swings ≥ $0.10 **0**`. Alerts can only be produced by a CI job diffing successive snapshots, and `alert_record_valid()` purged the pre-quote-rule rows; nothing has replaced them. | deployed page fetch 2026-11-21; `data/alerts.json` |
+| N-03 | **The secondary `docs/` pipeline publishes a phantom $0.877 swing.** `docs/data/alerts.json` row `KXPRESNOMD-28-BOBA` reports `from 0.005 → to 0.882`. The official record at that moment is `yes_bid_dollars 0.0010`, `yes_ask_dollars 0.8860` — an 88.5-cent one-sided quote with no two-sided market, not a price move. | `GET /markets/KXPRESNOMD-28-BOBA` fetched 2026-11-21 |
+| N-04 | **Demo API CORS is fully permissive, yet the site does not use it.** Preflight `OPTIONS /markets?limit=1` returns `access-control-allow-origin` echoed for every Origin, including `https://evil.example.com` and `null` (`data/_cors.txt`). A browser can therefore poll the demo REST API directly, which is what N-02's fix will do — no proxy, no credentials. | `data/_cors.txt` |
+| N-05 | **PR #28 and #29 have been `DIRTY`/`CONFLICTING` since 2026-11-20** and nothing merged from them. Their headline features (`high_roi_alerts`, news links on swings, per-topic feeds) are already present on `main`. | `gh pr view 28/29 --json mergeStateStatus` |
+
+This session is the integration session for the above; it will re-verify the
+combined data, confirm the site builds with no broken links, open a PR and merge it.
