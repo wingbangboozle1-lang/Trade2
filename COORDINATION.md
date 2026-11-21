@@ -1906,3 +1906,35 @@ Explicitly **not** claimed here (owned by other sessions or by the user): `site_
 **Other irregularities found and published (FL-10…FL-20):** see `VERIFICATION-3dcf3f13.md` §2 (I-1…I-10) and `docs/flagged.html`.
 
 **Merge/deploy record:** to be appended after PR merge.
+
+# Board K — session `arena-f3cb9b9f` (branch `arena/f3cb9b9f-trade2`, base `main` @ `06738d1`)
+
+Status at open: `main` is green (Pages `built`, all six workflows succeeding) and no
+other branch has an open, mergeable PR. PRs **#28** and **#29** are still OPEN and
+`CONFLICTING`; both have been rebased/rewritten since (their branches share **no merge
+base** with current `main`), so this session treats their scopes as *unowned* only
+where the audit below proves the work is missing from `main`.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| K1 | Continuous live swing feed: a rolling ≥ $0.10 detector for the published snapshot, so the two chats keep firing between 5-minute collector runs | in progress | `arena-f3cb9b9f` | `.github/workflows/live-feed.yml` (new), `assets/desk.js`, `assets/styles.css`, `tests/test_live_feed_*.py` (new), `test/*.mjs` |
+| K2 | Second live chart: the user asked for *two* graphs — YES and NO sides of the same contract. Add a NO-price series derived from the same official book (`NO mid = 1 − YES mid`) with its own axis label | in progress | `arena-f3cb9b9f` | `assets/desk.js`, `site_build/build.py` (chart panel markup), `assets/styles.css` |
+| K3 | Fix: the pre-rendered desk `#feedAll` lists *suppressed* moves as if they were alerts (the JS path does not). Confirmed on the deployed `/live.html` | in progress | `arena-f3cb9b9f` | `site_build/build.py`, `tests/test_site_render_*.py` |
+| K4 | Sub-minute live augmentation of the published candle reference, reusing the **existing** quote integrity rule (no new rule, no relaxation): a 1-minute candle's quote mid may be a single instantaneous print, so a swing measured against it can be a quote artefact — publish the detail and let the desk use it | in progress | `arena-f3cb9b9f` | `collector/collector.py`, `collector/alerts.py`, `tests/` |
+| K5 | Line-by-line verification of newly published rows against the live demo API; findings recorded here and on `review.html` (the site's Flagged for Review page) | in progress | `arena-f3cb9b9f` | `VERIFICATION-f3cb9b9f.md` (new) |
+| K6 | PR → merge → confirm Pages → record | in progress | `arena-f3cb9b9f` | `COORDINATION.md` |
+
+Files **not** touched by this session: `docs/**`, `kalshi-dashboard/**`, `live/**`,
+`trading/**`, `scripts/**` (the second and third parallel implementations — their
+owners' scopes), and `EXECUTIVE_SUMMARY.md`/`VERIFICATION.md` (PR #28's scope).
+
+## Findings already confirmed against the live demo API before claiming (2026-11-21 06:4xZ)
+
+| # | Finding | Evidence |
+| - | - | - |
+| K-01 | **The pre-rendered `#feedAll` on `/live.html` shows refused moves as alerts.** The static HTML lists `KXPRESNOMD-28-EWAR`, `KXBTCY-27JAN0100-B117500`, `-B22500`, `-B92500` as "$0.4950 down" chat rows. Those same four rows are *suppressed* in `data/live.json` (`suppressed_alerts[].reason = "reference quote is missing or wider than the $0.10 threshold"`) and are listed under **Refused midpoint moves** on `review.html`. The browser path (`assets/desk.js`) correctly excludes them; only the no-JS/server-rendered path is wrong. | `live.html` vs `data/live.json.suppressed_alerts` vs `review.html#refused` |
+| K-02 | **Why they are refused is a genuine quote artefact, not a data error.** `KXPRESNOMD-28-BOBA` 1-day candle ending `1795237200` reports `yes_bid.close 0.0010` **and** `yes_ask.close 0.8820`. Both are real Kalshi-published numbers; the 0.88 on the ask side is a single un-arbitraged NO bid on an otherwise 0.2¢ market. Measuring a mid against that reference produces the phantom $0.877 "swing" the site correctly refuses. The rule is right; the static render is what leaks it. | [candlesticks](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983000&end_ts=1795243400&period_interval=1440) |
+| K-03 | **Published market rows are exact.** `KXPRESNOMD-28-RW` on `/` (bid 0.0380 / ask 0.0390 / OI 189,529,515.91 / volume 414,933,042.49) matches `GET /markets/KXPRESNOMD-28-RW` field for field; the published book ladder matches `GET …/orderbook` (best YES bid = last `yes_dollars` element = 0.0380, best NO bid = last `no_dollars` = 0.9610 ⇒ implied YES ask 0.0390). | [market](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW) · [book](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook?depth=10) |
+| K-04 | **Published resolution rows are exact.** `KXAAAGASCDAK-26NOV20-LD` shows `result: yes`, `settlement_value_dollars: 1.0000`, `settlement_ts: 2026-11-20T10:35:14.609488Z` — identical to the row on `/resolutions.html`. | [market](https://external-api.demo.kalshi.co/api-reference/../trade-api/v2/markets/KXAAAGASCDAK-26NOV20-LD) |
+| K-05 | **A "no quote" market is shown as `UNVERIFIED`, correctly.** `KXAAAGASM-26NOV30-4.70` has an empty book and a 0.0000/1.0000 record quote. The published row leaves bid/ask blank/UNVERIFIED instead of publishing the phantom 0.50 mid. | [market](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70) · [book](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook) |
+| K-06 | Repo/tooling notes: this checkout is a **shallow clone (depth 1)**, so local `git log` shows one commit; the GitHub API shows the real history. `data/alerts.json` was rewritten to `{"version": 3, "alerts": []}` by the rule-version reset, while `docs/data/alerts.json` still holds 6 verified swings — the two pipelines are independent by design, and the root site's chats read `data/live.json.alerts` (also 0), so the root chats are empty *by rule*, and `review.html#refused` explains the 4 refusals. | `git rev-parse --is-shallow-repository`; `data/alerts.json` |
