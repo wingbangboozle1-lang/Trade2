@@ -194,6 +194,12 @@ test("fee reproduces the published table rows", () => {
   assert.equal(L.fee(0.99, 100, 1), 0.07);
 });
 
+test("tickersQuery repeats the parameter, never comma-joins", () => {
+  assert.equal(L.tickersQuery(["A", "B"]), "tickers=A&tickers=B");
+  assert.equal(L.tickersQuery(["KX-ONE"]), "tickers=KX-ONE");
+  assert.equal(L.tickersQuery(["A B"]), "tickers=A%20B");
+});
+
 test("fee is zero for a zero multiplier and for off-grid prices", () => {
   assert.equal(L.fee(0.5, 1, 0), 0);
   assert.equal(L.fee(0, 1, 1), 0);
@@ -354,7 +360,11 @@ await testAsync("the poller sends only unauthenticated GET URLs", async () => {
     assert.match(u, /^https:\/\/external-api\.demo\.kalshi\.co\/trade-api\/v2\/markets/);
     assert.ok(!u.includes("/portfolio/"), "must never touch a portfolio endpoint");
   }
-  assert.match(urls[0], /tickers=A%2CB|tickers=A,B/);
+  /* `tickers` is a repeated parameter (form/explode), so the URL must carry it
+   * once per ticker. A comma-joined value would be read as a single unknown
+   * ticker and come back as an empty book. */
+  assert.match(urls[0], /tickers=A&tickers=B/);
+  assert.ok(!/tickers=[^&]*,/.test(urls[0]), "must not comma-join tickers");
 });
 
 await testAsync("the poller accepts nothing from a snapshot other than tight quotes", async () => {

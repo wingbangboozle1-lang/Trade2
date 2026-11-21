@@ -379,6 +379,20 @@
     return out;
   }
 
+  /* `tickers` is declared as a repeated query parameter
+   * (`style: form, explode: true`), so it must be serialised as
+   * `?tickers=A&tickers=B`, not `?tickers=A,B`. The Python client in
+   * collector/kalshi_api.py already does this via urlencode(doseq=True); this is
+   * the browser equivalent. Comma-joining is *not* equivalent: the API reads the
+   * whole string as one unknown ticker and returns an empty book for it, which
+   * would look exactly like "no swings" instead of a bug.
+   * https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks */
+  function tickersQuery(tickers) {
+    return (tickers || []).map(function (t) {
+      return "tickers=" + encodeURIComponent(t);
+    }).join("&");
+  }
+
   /* ------------------------------------------------------------------ */
   /* the poller                                                          */
   /* ------------------------------------------------------------------ */
@@ -437,7 +451,7 @@
       var groups = chunk(tickers, MAX_BOOKS);
       var errors = [];
       return Promise.all(groups.map(function (group) {
-        var url = baseUrl + "?tickers=" + group.map(encodeURIComponent).join(",");
+        var url = baseUrl + "?" + tickersQuery(group);
         return withTimeout(fetchJson(url)).then(function (body) {
           if (!body || !Array.isArray(body[key])) {
             errors.push("no " + key + " in response");
@@ -575,6 +589,7 @@
       isRunning: function () { return !stopped; },
       fee: fee,
       bookTop: bookTop,
+      tickersQuery: tickersQuery,
       observationsFromSnapshot: observationsFromSnapshot,
       joinBooks: joinBooks,
       createTracker: createTracker,
@@ -596,6 +611,7 @@
     bestBid: bestBid,
     joinBooks: joinBooks,
     observationsFromSnapshot: observationsFromSnapshot,
+    tickersQuery: tickersQuery,
     fee: fee,
     round4: round4,
     ENDPOINTS: ENDPOINTS,
