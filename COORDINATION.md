@@ -2757,3 +2757,81 @@ because every market with a ≥ $0.10 midpoint move in these runs failed the quo
 rule first — 8 for a missing/wide candle reference and 1 for a one-sided previous
 snapshot. That is the rule working as documented, and the reason is published rather
 than the row being dropped.
+
+---
+
+> **Board-letter collision, recorded rather than silently overwritten.** This section was first
+> appended under the letter **M**; `git merge` then showed `arena-737bff9c` had already published
+> "Board M" on `main` (PR #71, merge commit `4c5bfe6`). Both its section and this one's are kept
+> verbatim in the merged file; this section is re-keyed by session id so the two never refer to
+> the same letter.
+
+# Board `arena-560b4c88` — session `arena-560b4c88` (branch `arena/560b4c88-trade2`)
+
+Base `main` @ `d84c94d449d407e21aba6a656ef41b5241a794ce` (2026-11-21T07:22Z, collector run).
+Started 2026-11-21T07:23Z. Scope chosen by reading every open PR's file list first: no file
+below appears in open PRs #70, #68, #64, #60, #59, #28.
+
+**Why this task.** The published simulated books disagree about what "fees" and "Net P&L" mean,
+and the repo's own cross-check has been reporting it unresolved since 2026-11-20:
+`docs/data/strategy_lab.json` → `crosscheck_issues` =
+`{"book": "docs-sim book", "metric": "fees (entry+exit)", "published": 51.52, "recomputed": 65.24}`.
+Re-derived against the book as it stands on `main` (18 trade rows, 5 closed round trips):
+`docs/data/portfolio.json` `stats.all.fees` = **68.85**, which equals the sum of the **close-row
+fees only** (13 open-row fees of 126.02 are excluded), while the true entry+entry total for the
+same 5 closed round trips is **104.71**. `trading/engine.py::close_position` computes
+`gross = proceeds − contracts×avg − exit_fee` and never subtracts the position's `entry_fee`,
+although `open_position` did deduct it from `cash`. The root book does it correctly
+(`collector/engine.py` subtracts `pos.entry_fee` on close and on settle, and aggregates
+`entry_fee + exit_fee`), so one site publishes "Net P&L" and "Fees" on two different bases.
+The root book's convention matches the official fee schedule: a fee is charged for **each**
+order that is immediately matched against the book, and there is **no settlement fee**
+(https://kalshi.com/docs/kalshi-fee-schedule.pdf, "Trading Fees" and "Settlement Fees";
+fetched 2026-11-21T07:26Z, also https://docs.kalshi.com/getting_started/market_settlement).
+So the docs-sim per-trade net overstates by exactly the entry-leg fee and its fee column
+understates by the same amount.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| M1 | Make the docs-sim ledger charge each leg: subtract the position's entry fee from realised P&L on both exit paths (book exit and settlement), record `entry_fee` on the close row, and aggregate `fees` as entry+exit in `stats()` (pairing the open row when a legacy close row has no `entry_fee`). Publish the definition used, in the payload, so the number cannot be read without it. | in progress | `arena-560b4c88` | `trading/engine.py` |
+| M2 | `tools/strategy_lab.py`: (a) apply open request **R-79CC-5** — `money()` at line 99 prints `$-155.00`; hoist the sign like `site_build/format.money()`; (b) label each cross-check with the definition it compares, so a definitional gap is never printed as an arithmetic error; (c) state how far behind the book being analysed the report was generated. | in progress | `arena-560b4c88` | `tools/strategy_lab.py` |
+| M3 | Tests for M1/M2 as new files only (no peer test file edited). | in progress | `arena-560b4c88` | `tests/test_trading_fee_attribution_560b4c88.py` (new), `tests/test_strategy_lab_fees_560b4c88.py` (new) |
+| M4 | Stop the strategy page drifting: a dedicated scheduled workflow regenerates `STRATEGY_ANALYSIS.md`, `docs/strategies.html`, `docs/data/strategy_lab.json` from whatever book `main` currently holds. New workflow file only; no shared workflow edited. | in progress | `arena-560b4c88` | `.github/workflows/strategy-lab.yml` (new) |
+| M5 | Verification record: official sources opened, the arithmetic re-derived from the published files, and the limits stated. Then PR → merge → confirm Pages. | in progress | `arena-560b4c88` | `VERIFICATION-560b4c88.md` (new), `COORDINATION.md` (append only) |
+
+**Not touched by this session:** `site_build/**`, root `*.html`, `assets/**`, `collector/**`,
+`docs/**` (except the three generated strategy artefacts M4 writes back), `scripts/**`,
+`kalshi-dashboard/**`, `live/**`, `config/**`, `.github/workflows/*` other than the new file,
+`EXECUTIVE_SUMMARY.md`, `REQUIREMENTS.md`, `data/**`, `docs/data/portfolio.json` (written by the
+collector workflow only — this session does not hand-produce published data).
+
+**Requests raised here (logged, not implemented — files owned elsewhere):**
+`R-560-1` for the owner of `docs/assets/app.js`: the "Fees" column of the portfolio stats table
+should read "Fees (entry + exit)" once M1 lands, because that is what the field will contain.
+`R-560-2` for the owner of `site_build/extras.py` / `docs/flagged.html`: publish the convention
+change with its effective date, so a reader comparing a 2026-11-20 figure with a 2026-11-21
+figure knows the two are not on the same basis.
+
+### Result — `arena-560b4c88` (2026-11-21, UTC)
+
+| ID | Status | What landed |
+| - | - | - |
+| M1 | **done** | `trading/engine.py`: a round trip is now charged on **both** legs. `close_position` nets the position's `entry_fee` on the book-exit path *and* the settlement path (settlement itself stays fee-free), records `entry_fee`/`total_fees` on the close row, and `stats()` aggregates `fees` as entry+exit — recovering the entry leg by pairing for legacy rows and publishing `fees_rows_without_recorded_entry_fee` so a reconstructed number is visible. The payload carries the basis (`parameters.fee_legs`, `net_pnl_basis`, `stats.fee_convention.both_legs_since`). |
+| M1b | **done (found while verifying M1)** | Two more defects in the same file, both found by reading the published book line by line rather than looking for them: **(a) the paper account did not survive a run.** `main()` writes `cash`/`fees_paid`/`realized_pnl` inside `account`, and `Engine.__init__` read them only at top level, so every scheduled run restarted the bankroll at $10,000 while carrying the positions and the ledger forward. Measured on the book published at `2026-11-21T06:24:59Z`: published cash 10000.00 vs 8688.09 implied by its own 18 rows, `fees_paid` 0.00 vs 194.87 charged, `realized_pnl` 0.00 next to `stats.all.net_pnl` 413.89 **in the same file**, and `equity` 11549.01 overstated by exactly **$1,311.91 (12.8 %)** — the portfolio headline the brief asks for. Now read from top level, then `account`, then the documented default; plus `reconcile()` publishes `cash_delta`/`fees_delta`/`realized_delta` beside the account fields so it cannot drift silently again. **(b) the exit leg ignored the series multiplier** (`fee_taker(contracts, price)` with `M` defaulted to 1, while the entry leg used the series' own `fee_multiplier`), so a fee-free series could be entered free and exited charged; the position now records `fee_multiplier` and the exit uses it, with `M = 1` only for legacy state (an explicit `None` test, because `0.0` is falsy). |
+| M2 | **done** | `tools/strategy_lab.py`: open request **R-79CC-5** applied (the lab's `money()` printed `-$` inside the symbol; now identical to `site_build/format.money()`, asserted by a test that compares the two formatters). The cross-check now matches the published fee figure against **both** definitions and labels the outcome — `definitional gap` vs `arithmetic` — so the row that has sat in `crosscheck_issues` since 2026-11-20 is explained instead of merely repeated. `load_root_book()` also gained a real fix: the root engine labels an exited position `stopped`/`settled`, not `closed`, and keeps the round trip in `portfolio.settled_positions`; reading `status == "closed"` alone found **0** closed trades in a book publishing `overall.trades = 1`, and the cross-check blamed the book with three bogus "arithmetic" rows. It now reconciles exactly. Freshness is published: the provenance table shows when each book was written and how many hours before the analysis that was, with no guess when a timestamp is missing. |
+| M3 | **done** | 21 + 13 tests in two **new** files; no peer test file edited. Ten mutations (each fix reverted) — every one caught by at least one test; the `day fields not persisted` mutation initially survived and is now pinned by an end-to-end assertion that the payload `main()` writes is the state `Engine.__init__` reads. |
+| M4 | **done** | `.github/workflows/strategy-lab.yml` (new file, no shared workflow edited): hourly + manual re-render of `STRATEGY_ANALYSIS.md`, `docs/strategies.html`, `docs/data/strategy_lab.json`, gated on the lab's and the ledger's tests, and it refuses to spend a commit on a timestamp-only diff. The artefacts in this PR were produced by running the tool, not by hand. |
+| M5 | **done** | `VERIFICATION-560b4c88.md`: six official-source rows with what each says verbatim, the re-derivation commands with their observed output, the gate table, and seven flagged items (F-560-1…7) including the four fetches that **failed** this session and are therefore marked not re-verified. |
+
+**Gates run on this branch:** `unittest discover -s tests` **328 OK (skipped 1)** · `trading.test_engine` **PASSED** · `collector.test_runner` **PASSED** · `npm test` **54/54** · `test/site_smoke.mjs docs/data` **ALL PASS** · `tools/rendercheck.mjs` + `tools/root_pages_render.mjs` (13 pages, 258 files) + `test/desk_render_dc732aa6.mjs` **PASSED** · `tools/linkcheck.py` **50 pages / 679 links / 0 errors** · `tools/rootsource_check.py` **938 rows / 938 sourced / 0 production** · `tools/rowsource_check.py` **0 missing source URLs**.
+
+**Requests for files this session does not own**
+
+| ID | To | Request |
+| - | - | - |
+| **R-560-1** | owner of `docs/assets/app.js` (the `docs/` pipeline; also in open PR #70) | Relabel the portfolio stats table's "Fees" column to **"Fees (entry + exit)"** and the account line "fees …" to "fees paid (all legs)". From the next collector run the field means both legs; before it, it meant the exit leg only. Nothing else in the row changes. |
+| **R-560-2** | owner of `site_build/**` and `docs/flagged.html` | Publish the fee-convention change with its effective date (2026-11-21) wherever realised P&L is compared across days. The data itself carries `stats.fee_convention.both_legs_since` and `parameters.fee_legs`, so it needs wording only, not a new source. |
+| **R-560-3** | owner of `docs/assets/app.js` | Surface the new top-level `ledger_reconciliation` block on `docs/portfolio.html`: three `*_delta` fields plus `log_may_be_truncated`. It is the difference between a portfolio page that can be checked and one that can only be believed — an account reset like the one fixed here would have been visible at a glance. |
+| **R-560-4** | owner of `scripts/collect.mjs` / `kalshi-dashboard/**` | `tools/rowsource_check.py` reports **1 333 `blank_rows`** in `kd.markets` (0 missing source URLs, 0 production links). Pre-existing, not caused or touched here; the same "blank is blank, never inferred" rule the root site follows would settle it. |
+
+**Coordination notes.** This session's claim merged with `origin/main` (through PR #73) as a **union** — `arena-737bff9c`'s Board M and this section coexist, and this board is keyed by session id after the letter collision was noticed. The one shared file this session appended to is `COORDINATION.md`. `audit/rootsource-*` and `audit/rowsource-*` were rewritten as a side effect of running those tools and were **reverted uncommitted**, so another session's audit snapshots stay intact. No file in any open PR (#70, #68, #64, #60, #59, #28) was edited.
