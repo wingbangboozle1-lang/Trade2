@@ -4605,7 +4605,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-FEB",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTCMAX100-26-MAR": {
    "ticker": "KXBTCMAX100-26-MAR",
@@ -4619,7 +4619,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-MAR",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTCMAX100-26-APR": {
    "ticker": "KXBTCMAX100-26-APR",
@@ -4633,7 +4633,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-APR",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTCMAX100-26-AUG": {
    "ticker": "KXBTCMAX100-26-AUG",
@@ -4647,7 +4647,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-AUG",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXAAAGASMAXCA-26DEC31-6.20": {
    "ticker": "KXAAAGASMAXCA-26DEC31-6.20",
@@ -4661,7 +4661,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.20",
    "human_url": "https://kalshi.com/markets/KXAAAGASMAXCA-26DEC31",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTCMAX100-26-SEP": {
    "ticker": "KXBTCMAX100-26-SEP",
@@ -4675,7 +4675,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-SEP",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXAAAGASMAXCA-26DEC31-6.40": {
    "ticker": "KXAAAGASMAXCA-26DEC31-6.40",
@@ -4689,7 +4689,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.40",
    "human_url": "https://kalshi.com/markets/KXAAAGASMAXCA-26DEC31",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTCMAX100-26-OCT": {
    "ticker": "KXBTCMAX100-26-OCT",
@@ -4703,7 +4703,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-OCT",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T08:02:40Z"
+   "verified_at": "2026-11-21T08:07:54Z"
   },
   "KXBTC15M-26NOV210230-30": {
    "ticker": "KXBTC15M-26NOV210230-30",
@@ -10906,8 +10906,8 @@
    "title": "$58,500 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T58799.99": {
    "ticker": "KXBTCD-26NOV2103-T58799.99",
@@ -10917,8 +10917,8 @@
    "title": "$58,800 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T58899.99": {
    "ticker": "KXBTCD-26NOV2103-T58899.99",
@@ -10928,8 +10928,8 @@
    "title": "$58,900 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2117-T52999.99": {
    "ticker": "KXBTCD-26NOV2117-T52999.99",
@@ -11093,8 +11093,8 @@
    "title": "$1,615 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1619.99": {
    "ticker": "KXETHD-26NOV2103-T1619.99",
@@ -11104,8 +11104,8 @@
    "title": "$1,620 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1624.99": {
    "ticker": "KXETHD-26NOV2103-T1624.99",
@@ -11115,8 +11115,8 @@
    "title": "$1,625 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1629.99": {
    "ticker": "KXETHD-26NOV2103-T1629.99",
@@ -11126,8 +11126,8 @@
    "title": "$1,630 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1634.99": {
    "ticker": "KXETHD-26NOV2103-T1634.99",
@@ -11137,8 +11137,8 @@
    "title": "$1,635 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1639.99": {
    "ticker": "KXETHD-26NOV2103-T1639.99",
@@ -11148,8 +11148,8 @@
    "title": "$1,640 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1644.99": {
    "ticker": "KXETHD-26NOV2103-T1644.99",
@@ -11159,8 +11159,8 @@
    "title": "$1,645 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1649.99": {
    "ticker": "KXETHD-26NOV2103-T1649.99",
@@ -11170,8 +11170,8 @@
    "title": "$1,650 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1654.99": {
    "ticker": "KXETHD-26NOV2103-T1654.99",
@@ -11181,8 +11181,8 @@
    "title": "$1,655 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2103-T1659.99": {
    "ticker": "KXETHD-26NOV2103-T1659.99",
@@ -11192,8 +11192,8 @@
    "title": "$1,660 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:27:10Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXETHD-26NOV2117-T1539.99": {
    "ticker": "KXETHD-26NOV2117-T1539.99",
@@ -12908,8 +12908,8 @@
    "title": "$58,300 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:43:19Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T58599.99": {
    "ticker": "KXBTCD-26NOV2103-T58599.99",
@@ -12919,8 +12919,8 @@
    "title": "$58,600 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:43:19Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T58199.99": {
    "ticker": "KXBTCD-26NOV2103-T58199.99",
@@ -12930,8 +12930,8 @@
    "title": "$58,200 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:43:19Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T58399.99": {
    "ticker": "KXBTCD-26NOV2103-T58399.99",
@@ -12941,8 +12941,8 @@
    "title": "$58,400 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:43:19Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T57999.99": {
    "ticker": "KXBTCD-26NOV2103-T57999.99",
@@ -12952,8 +12952,8 @@
    "title": "$58,000 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:43:19Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTCD-26NOV2103-T57699.99": {
    "ticker": "KXBTCD-26NOV2103-T57699.99",
@@ -12963,8 +12963,8 @@
    "title": "$57,700 or above",
    "close_time": "2026-11-21T08:00:00Z",
    "first_seen": "2026-11-21T07:48:31Z",
-   "last_checked": "2026-11-21T08:02:40Z",
-   "lookups": 1
+   "last_checked": "2026-11-21T08:07:54Z",
+   "lookups": 2
   },
   "KXBTC15M-26NOV210315-15": {
    "ticker": "KXBTC15M-26NOV210315-15",
