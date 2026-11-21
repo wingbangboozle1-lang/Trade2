@@ -186,7 +186,18 @@ TOPICS: List[Topic] = [
                       "time person of the year", "nobel", "ballon d'or",
                       "netflix", "album", "movie", "film", "song", "banned from x",
                       "tweet", "viral", "best actor", "best actress",
-                      "song of the year", "record of the year"),),
+                      "song of the year", "record of the year",
+                      # R-67-1 (arena-89ffef51): official
+                      # GET /series/KXBIGBROTHER (checked 2026-11-21) returns
+                      # category "Entertainment", tags "Reality TV"/"Television",
+                      # title "Big Brother" — reality TV is the blurb's
+                      # "entertainment ... contracts", and docs/data/series.json
+                      # already labels the series topic=culture. The root store
+                      # never tracked it, so the two pipelines disagreed (I-B).
+                      "big brother"),
+                      # Title form survives a ticker roll; ticker form covers a
+                      # title change on the same series (golf/gas pattern).
+                      _ticker_prefix("KXBIGBROTHER")),
         notes="Entertainment, celebrity and internet-culture markets. Kalshi files "
         "most of these under the Entertainment category; the Culture category "
         "is queried as well.",
