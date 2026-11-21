@@ -41,6 +41,11 @@ jobs:
           seeds = {
             "KXDPWORLDTOUR-DPWTC26-THAT": "golf",
             "KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC": "elections",
+            # run 5: the 8 watch-resolved outcomes from run R-C (bound-eviction regression check)
+            "KXBTCMAX100-26-FEB": "crypto", "KXBTCMAX100-26-MAR": "crypto",
+            "KXBTCMAX100-26-APR": "crypto", "KXBTCMAX100-26-AUG": "crypto",
+            "KXBTCMAX100-26-SEP": "crypto", "KXBTCMAX100-26-OCT": "crypto",
+            "KXAAAGASMAXCA-26DEC31-6.20": "gas-prices", "KXAAAGASMAXCA-26DEC31-6.40": "gas-prices",
           }
           d["watch"] = {t: {"topic": tp, "last_seen": now, "last_checked": 0} for t, tp in seeds.items()}
           json.dump(d, open("data/resolutions.json", "w"), indent=1)
