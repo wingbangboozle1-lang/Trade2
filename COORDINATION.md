@@ -2786,7 +2786,7 @@ combined tree against official sources, then PR → merge → confirm GitHub Pag
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | - | - | - | - | - |
-| `arena-544245c8` | `arena/544245c8-trade2` | Final integration: take over stale PRs #28/#29, full verification, PR → merge → Pages | 2026-11-21 | in progress |
+| `arena-544245c8` | `arena/544245c8-trade2` | Final integration: take over stale PRs #28/#29, full verification, PR → merge → Pages | 2026-11-21 | **done** — #29 merged `9e84c7e`, #28 closed superseded (content via PR #60 `87ea26f`), integration PR #84 merged `f03b2e8`, Pages confirmed |
 
 ## Task board — arena-544245c8
 
@@ -2794,7 +2794,7 @@ combined tree against official sources, then PR → merge → confirm GitHub Pag
 | - | - | - | - | - |
 | T-544-1 | Take over stale PR #29 (`arena/c78c9b36`, T14 closeout, COORDINATION.md only; last commit 2026-11-20T19:34Z, >60 min with no commits — takeover per board rule 5). Reconcile with current `main`, push, merge. | **done** — reconciled (union COORDINATION, `73effc3`), merged 2026-11-21T07:16Z as `9e84c7e` | `arena-544245c8` | `COORDINATION.md` (handoff log + PR #29's own section) |
 | T-544-2 | Take over stale PR #28 (`arena/dd1da6b5`, model shortlist / news links / topic feeds / snapshot verification; last commit 2026-11-20T20:00Z). Merge current `main` in, resolve conflicts keeping both sides, run the full battery, push, merge. | **done — PIVOT: PR #28 closed as superseded, not merged.** Double-takeover: session `arena-bc051b95` (Board L) took the same PRs at the same minute (06:45Z) and landed its content on `main` via PR #60 (`b218b05` → `87ea26f`, merged 07:33Z); its `VERIFICATION-7695ba1b.md` §5 shows the PR #28 head would revert newer main work (PRs #56–#77). My branch's reconciled head (`67b93d6`, battery 307 py / 54 npm / desk 0 / linkcheck 698-0) was validated but not merged; PR #28 closed with a full comment. Residual unique delta (workflow trigger + group fix) carried into PR #84 | `arena-544245c8` | PR #28's files as listed on the PR |
-| T-544-3 | Final integration: full test battery + link/render checks on the combined tree, fresh official-source spot checks (fetch tool), integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result here. | in progress — PR **#84** open; spot checks done (below); battery green on `9ac725a` (323 py OK, 59 npm, desk/render/smoke PASS, linkcheck 698/0) | `arena-544245c8` | this section only (plus residual fixes, each its own commit) |
+| T-544-3 | Final integration: full test battery + link/render checks on the combined tree, fresh official-source spot checks (fetch tool), integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result here. | **done** — PR **#84** merged 2026-11-21T08:0xZ as **`f03b2e8`** (MERGEABLE/CLEAN, checks `check` + `collect` SUCCESS). Post-merge on main: `pages build and deployment` **success**, `Site check` **success**, `collector` **success**; live site `https://wingbangboozle1-lang.github.io/Trade2/` fetched and healthy (topics, blank-not-inferred price cells, official API row links). Spot checks EXACT (below); battery green (`9ac725a`: 323 py OK / 59 npm; post-#80/#83 merge `6cee3d4`: 356 py OK / 59 npm / desk PASS) | `arena-544245c8` | this section only (plus residual fixes, each its own commit) |
 
 ### Official-source verification (2026-11-21, T-544-3)
 
