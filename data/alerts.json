@@ -1,4 +1,57 @@
 {
  "version": 3,
- "alerts": []
+ "alerts": [
+  {
+   "id": "KXBTC15M-26NOV210300-00:1795247858",
+   "key": "KXBTC15M-26NOV210300-00:down:1795247700",
+   "bar_start": 1795247700,
+   "ts": 1795247858.0643609,
+   "iso": "2026-11-21T07:57:38Z",
+   "ticker": "KXBTC15M-26NOV210300-00",
+   "event_ticker": "KXBTC15M-26NOV210300",
+   "series_ticker": "KXBTC15M",
+   "topic": "crypto",
+   "title": "Target Price: $58,035.91",
+   "previous": 0.155,
+   "previous_ts": 1795247311.0997443,
+   "current": 0.0205,
+   "delta": -0.1345,
+   "abs_delta": 0.1345,
+   "direction": "down",
+   "pct_of_dollar": 13.45,
+   "yes_bid": 0.02,
+   "yes_ask": 0.021,
+   "volume": 1592.08,
+   "open_interest": 826.07,
+   "market_url": "https://kalshi.com/markets/KXBTC15M/KXBTC15M-26NOV210300-00",
+   "threshold": 0.1,
+   "observed_gap_seconds": 547.0,
+   "reference_basis": "previous_snapshot_mid",
+   "basis": "previous_snapshot_mid",
+   "price_pair": "quote mid to quote mid",
+   "spread": 0.001,
+   "trade_price": null,
+   "trade_price_basis": null,
+   "trade_price_gap": null,
+   "corroboration": null,
+   "size_at_top": 8.0,
+   "size_name": "contracts bid at the top YES bid",
+   "executable": {
+    "side": "sell YES into the YES bid",
+    "reference_price": null,
+    "current_price": 0.02,
+    "delta": null,
+    "clears_threshold": false
+   },
+   "quality": "executable",
+   "quality_reason": "two-sided book tighter than the threshold, move present on the executable side",
+   "first_seen_ts": 1795247858.0643609,
+   "last_seen_ts": 1795247858.0643609,
+   "repeat_count": 0,
+   "tick_size": 0.001,
+   "threshold_ticks": 100.0,
+   "news": [],
+   "news_status": "no headline in window"
+  }
+ ]
 }
