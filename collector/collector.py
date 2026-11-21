@@ -45,7 +45,21 @@ ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
 # 2026-11-20T18:41Z snapshot). Stored rows are also re-checked against the
 # quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
-MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
+MAX_RESOLUTIONS = 2000    # hard ceiling on the in-scope YES/NO store (all topics)
+# Per-topic floor (session arena-67bd954a / R1). The old single global newest-2000
+# cut let crypto and gas-prices (which settle many times a day) push out elections,
+# culture and golf. Each topic now keeps its newest RESOLUTION_TOPIC_FLOOR rows first;
+# the rest of the MAX_RESOLUTIONS budget is filled with the newest rows overall, so
+# the total stays bounded exactly as before.
+RESOLUTION_TOPIC_FLOOR = 100
+# Settled scan (session arena-67bd954a / R1). Replaces the exchange-wide
+# ``status=settled`` read of the newest 400 markets, which had no time filter and
+# returned only gas-prices and crypto. The documented ``min_settled_ts`` filter
+# (https://docs.kalshi.com/api-reference/market/get-markets) bounds the window; the
+# store keeps accumulating, so a run only has to overlap the previous run's window.
+SETTLED_LOOKBACK_S = 2 * 3600   # settled after now - 2h; runs every 5 min, so gaps are covered
+SETTLED_PAGE_SIZE = 1000        # documented maximum for GET /markets ``limit``
+SETTLED_DEFAULT_CAP = 10000     # default ``settle_scan``: at most 10 pages per run
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -126,6 +140,76 @@ def series_row_for_event(event_ticker: str | None,
     return None
 
 
+def scan_settled(client: KalshiClient, now: float,
+                 cap: int = SETTLED_DEFAULT_CAP) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Every market settled in the last ``SETTLED_LOOKBACK_S`` seconds (multivariate
+    combos excluded), read page by page with the documented cursor.
+
+    Request: ``GET /markets?status=settled&min_settled_ts=<since>&mve_filter=exclude
+    &limit=1000`` — parameters per https://docs.kalshi.com/api-reference/market/get-markets
+    (``min_settled_ts``: "Filter items that settled after this Unix timestamp";
+    ``mve_filter=exclude``: "excludes multivariate events"; ``limit`` maximum 1000).
+
+    Returns ``(markets, info)``. ``info`` says whether the cap cut the window short
+    (``truncated``) so a partial read is published as partial, never as complete.
+    Multivariate combos are not in the tracked series, so excluding them loses no
+    in-scope market.
+    """
+    since = int(now - SETTLED_LOOKBACK_S)
+    max_pages = max(1, -(-int(cap) // SETTLED_PAGE_SIZE))   # ceil(cap / page size)
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    cursor: str | None = None
+    pages = 0
+    truncated = False
+    while True:
+        page = client._request("GET", "/markets", {
+            "status": "settled", "min_settled_ts": since, "mve_filter": "exclude",
+            "limit": SETTLED_PAGE_SIZE, "cursor": cursor})
+        pages += 1
+        for market in page.get("markets") or []:
+            ticker = market.get("ticker")
+            if ticker and ticker not in seen:
+                seen.add(ticker)
+                out.append(market)
+        cursor = page.get("cursor") or ""
+        if not cursor:
+            break
+        if pages >= max_pages:
+            truncated = True
+            break
+    info = {"min_settled_ts": since, "lookback_s": SETTLED_LOOKBACK_S,
+            "pages": pages, "markets": len(out), "truncated": truncated,
+            "cap": max_pages * SETTLED_PAGE_SIZE}
+    return out, info
+
+
+def lookup_held_settled(client: KalshiClient, tickers: list[str],
+                        batch: int = 50) -> tuple[list[dict[str, Any]], list[str]]:
+    """Settled rows (result yes/no) for open simulated positions outside the window.
+
+    Uses the documented ``tickers`` filter on GET /markets ("Comma-separated list of
+    market tickers to retrieve",
+    https://docs.kalshi.com/api-reference/market/get-markets), ``batch`` tickers per
+    request. Only a market that reports a yes/no result is returned, so an open
+    market is never graded. Returns ``(rows, errors)``.
+    """
+    rows: list[dict[str, Any]] = []
+    errors: list[str] = []
+    for i in range(0, len(tickers), batch):
+        chunk = tickers[i:i + batch]
+        try:
+            page = client._request("GET", "/markets", {
+                "tickers": ",".join(chunk), "limit": SETTLED_PAGE_SIZE})
+        except KalshiHTTPError as exc:
+            errors.append(f"held-position lookup failed ({exc})")
+            continue
+        for market in page.get("markets") or []:
+            if market.get("ticker") and market.get("result") in ("yes", "no"):
+                rows.append(market)
+    return rows, errors
+
+
 def migrate_resolutions(store: dict[str, Any],
                         registry: dict[str, dict[str, Any]]) -> int:
     """Re-tag every stored resolution with its topic and drop out-of-scope ones.
@@ -153,11 +237,23 @@ def migrate_resolutions(store: dict[str, Any],
         if topic:
             rec["topic"] = topic
             kept[ticker] = rec
-    if len(kept) > MAX_RESOLUTIONS:
-        ordered = sorted(kept.items(),
-                         key=lambda kv: kv[1].get("settlement_ts") or "",
-                         reverse=True)
-        kept = dict(ordered[:MAX_RESOLUTIONS])
+    # Bounded store with a per-topic floor: each topic's newest RESOLUTION_TOPIC_FLOOR
+    # rows are kept first, then the newest rows overall fill up to MAX_RESOLUTIONS.
+    # A single global cut would let the busiest topic evict the others.
+    ordered = sorted(kept.items(), key=lambda kv: kv[1].get("settlement_ts") or "",
+                     reverse=True)
+    bounded: dict[str, dict[str, Any]] = {}
+    per_topic: dict[str, int] = {}
+    for ticker, rec in ordered:
+        topic = rec.get("topic") or ""
+        if per_topic.get(topic, 0) < RESOLUTION_TOPIC_FLOOR:
+            bounded[ticker] = rec
+            per_topic[topic] = per_topic.get(topic, 0) + 1
+    for ticker, rec in ordered:
+        if len(bounded) >= MAX_RESOLUTIONS:
+            break
+        bounded.setdefault(ticker, rec)
+    kept = bounded
     store["resolutions"] = kept
     return len(kept)
 
@@ -340,7 +436,7 @@ def attach_news(new_alerts: list[dict[str, Any]],
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 300,
-            settle_scan: int = 400, budget_seconds: float = 330.0) -> dict[str, Any]:
+            settle_scan: int = SETTLED_DEFAULT_CAP, budget_seconds: float = 330.0) -> dict[str, Any]:
     """One collection pass.
 
     ``budget_seconds`` is a hard wall-clock ceiling. Unauthenticated Kalshi has
@@ -592,15 +688,23 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
 
     # Settle anything the exchange has already resolved.
     settled_updates: list[dict[str, Any]] = []
-    settled_markets = []
+    settled_markets: list[dict[str, Any]] = []
+    settled_info: dict[str, Any] = {}
     t_settle = time.time()
     if time.time() < deadline:
         try:
-            settled_markets = client.markets(status="settled",
-                                             limit=min(1000, settle_scan),
-                                             max_pages=3)
+            settled_markets, settled_info = scan_settled(client, now, settle_scan)
         except KalshiHTTPError as exc:
             errors.append(f"settled scan failed ({exc})")
+        # An open simulated position must be graded even when its market settled
+        # before the window. Look those tickers up directly (documented ``tickers``
+        # filter, comma-separated) instead of hoping the window still covers them.
+        held_missing = sorted(holdings - {m.get("ticker") for m in settled_markets})
+        held_rows, lookup_errors = lookup_held_settled(client, held_missing)
+        settled_markets.extend(held_rows)
+        errors.extend(lookup_errors)
+        settled_info["held_lookups"] = len(held_missing)
+        settled_info["held_settled_found"] = len(held_rows)
 
     lap("settled_scan", t_settle)
     resolution_memo: dict[str, str | None] = {}
@@ -674,6 +778,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     # drop out-of-scope settlements so the bounded store tracks the five
     # topics the brief asks for.
     migrate_resolutions(resolutions, series_registry)
+    resolutions.setdefault("meta", {})["settled_scan"] = {
+        **settled_info, "errors": [e for e in errors if "settled" in e or "held-position" in e],
+        "generated_at": iso(now)}
     resolved_by_topic: dict[str, list[dict[str, Any]]] = {t.slug: [] for t in topic_mod.TOPICS}
     series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
     for ticker, rec in resolutions["resolutions"].items():
@@ -768,7 +875,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--market-cap", type=int, default=150)
     ap.add_argument("--orderbook-cap", type=int, default=300)
-    ap.add_argument("--settle-scan", type=int, default=300)
+    ap.add_argument("--settle-scan", type=int, default=SETTLED_DEFAULT_CAP,
+                    help="max settled markets read per run (1000 per page)")
     ap.add_argument("--budget", type=float, default=330.0)
     args = ap.parse_args()
     started = time.time()
