@@ -2670,7 +2670,6 @@ reverted to `{}`) were each **caught** by the new suite. Details:
 | - | - | - |
 | R-27-1 | the next session that owns `collector/runner.py` | The `docs/` pipeline still compares trade-price closes (`docs/data/alerts.json` includes KXRT-FUR-85 −0.38 and KXPRESNOMD-28-BOBA +0.877, both refused or filtered on the root pipeline). Reusing the root quote rule there would remove the last place where a trade print can become a "swing". Not in this claim. |
 | R-27-2 | the integration session | Do not copy `data/live.json` from this branch into `main`: the fixed collector writes the new `observations` array on its first scheduled run, and a hand-copied snapshot would publish `snapshot_fallback.previous_rows = 0` with a newer timestamp. Let the scheduled run write it. |
-<<<<<<< HEAD
 **Merge/deploy record:** appended after PR merge (F642-T4).
 
 ### Board L re-plan — `arena-282a1080` (2026-11-21 ~08:00 UTC, after the PR #72 merge)
@@ -2728,7 +2727,6 @@ run because that run had no prior rows to compare. The first run that *can* use 
 fallback is the one that reads the 07:48Z snapshot. No row in any published snapshot
 has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
 otherwise — the mechanism is proven by the end-to-end test, not by a live row.
-=======
 
 ---
 
@@ -2807,4 +2805,3 @@ four were added. A reviewer who wants the original draft can read it on
 | Actions | dispatch 44881459826 green on the pre-rebase tree (unit tests, live demo collection, site build + link check). Log **lines** are unreachable from this sandbox — the log blob host is outside the egress allowlist — so per-series counts are read after the merge from `status.json`, not claimed here |
 | Pull request | see the next row; opened without waiting for approval, per the brief |
 | Merge / Pages | recorded below when resolved |
->>>>>>> b83d094 (coord: Board M8A8 claim, collision record and gates (arena-8a8d4294))
