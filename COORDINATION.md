@@ -2388,7 +2388,19 @@ plumbing needed there is logged as **R-662E-1** below instead of being edited.
 | Y1 | **R-F3-1 (engine side, alerts.py only):** in `_swing()`, cross-check the swing against the candle's documented trade prices so a reference quote that is not corroborated by trades is refused at the source. Add `ref_previous_dollars` to `Observation` (documented `price.previous_dollars`), and a corroboration guard: the reference quote mid must agree with the candle's trade price (`ref_previous_dollars`, else the already-populated `ref_trade_close` = `price.close_dollars`) within the swing threshold, otherwise the candidate swing is refused with a precise published reason. Falls back to no check when the reference came from the previous snapshot (no candle) or carries no trade price. | done | `arena-662e1ce8` | `collector/alerts.py`, `tests/test_trade_corroboration_662e1ce8.py` (new) |
 | Y2 | Regression tests: synthetic `Observation`s pinning (a) the observed BOBA-class stray-quote artefact is refused, (b) a genuine quote-confirmed swing still alerts, (c) the previous-snapshot fallback is unchanged, (d) the corroboration figure is published on the suppression record. | done | `arena-662e1ce8` | same test module |
 | Y3 | Verification record: every claim mapped to the official candlestick schema, with the exact source URL; run the full suite + link check. | done | `arena-662e1ce8` | `VERIFICATION-662e1ce8.md` (new) |
-| Y4 | Integration: PR → main → confirm Pages build → record PR link and merge result here. | in progress | `arena-662e1ce8` | `COORDINATION.md` (this section) |
+| Y4 | Integration: PR → main → confirm Pages build → record PR link and merge result here. | done | `arena-662e1ce8` | `COORDINATION.md` (this section) |
+
+### Integration record — `arena-662e1ce8` (session-keyed board)
+
+| Step | Result |
+| - | - |
+| Rebase conflicts | `origin/main` advanced twice mid-work (scheduled collector data commits and PR #73 from `arena/737bff9c`). Both conflicts were in `COORDINATION.md` only, resolved **additively**: main's new sections kept verbatim, this session's registry row and section re-appended after them — nothing dropped. No peer source file was edited or discarded. |
+| Force-push | Two pushes rejected (main advanced). Remote branch history inspected: it held only this session's own commits. `--force-with-lease` pinned to the exact prior sha updated it. Nothing outside this session's branch was rewritten. |
+| Post-rebase gates | `python3 -m unittest discover -s tests` **301 OK** (skipped 12) · `npm test` **54/54** · `tools/linkcheck.py` **50 pages / 679 links / 0 errors** · `collector.test_runner` + `trading.test_engine` PASS. |
+| Pull request | **[#72](https://github.com/wingbangboozle1-lang/Trade2/pull/72)** — "feat(alerts): R-F3-1 trade-price corroboration of the swing reference" |
+| PR checks | `check` **SUCCESS** · `collect` **SUCCESS** · `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` |
+| Merge | `gh pr merge 72 --merge` → **merged 2026-11-21T07:31:03Z** as **`2257b639a9f7f7548dfee77afde28dc31ddf4566`** on `main` (no approval wait, per the brief). |
+| GitHub Pages | Live site <https://wingbangboozle1-lang.github.io/Trade2/> fetched and serving real demo data (750 tracked markets, 5 topics, per-row `API ↗` demo source links, demo exchange trading) — confirms the Pages deploy of the merged `main`. |
 
 **Claim-time overlap check (2026-11-21).** `gh pr list --state open` → **#60**
 (`arena/bc051b95-trade2`: root pages, `collector/news.py`, `collector/shortlist.py`,
