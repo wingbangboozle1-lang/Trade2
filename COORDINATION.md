@@ -2115,6 +2115,60 @@ PR #56), `kalshi-dashboard/**` and `scripts/**` (the `arena-c0205283` pipeline),
 session started. That branch is merged here rather than left open so the published
 site carries the work; L2 verifies the merged result rather than assuming it. The
 owner's own section is kept verbatim in the board.
+HEAD
 - Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
 - PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
 - Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
+---
+
+## Board L progress — `arena-7695ba1b` (2026-11-21, 07:05Z → 08:10Z)
+
+| ID | Status | Result |
+| - | - | - |
+| L1 | **done** | `VERIFICATION-7695ba1b.md`: 5 market rows (one per topic), 1 order book and 1 resolution re-checked field by field against the live demo API at 07:35Z–07:45Z — **42 EXACT, 6 DRIFT, 0 UNVERIFIED**. Every DRIFT is a size/quantity that changed because the market traded in the 50 minutes after the snapshot; both values are shown, never equalised. Eight official doc pages re-fetched and each claim the code depends on re-read. |
+| L2 | **done** | PR **#29** merged (`3c1f646`, no conflict). PR **#57** merged (`d1b3e6a`); the only conflict was `COORDINATION.md`, resolved as a **union** — Board K (the author's own section) and Board L both kept verbatim, nothing dropped. |
+| L3 | **done** | PR **#28** was idle for >60 min, so this session took it over under the board's rule — and then **did not merge it**, because every unique artefact in it is already on `main` by another route, and its branch would have reverted seven test files and four tools that `main` has since gained. Item by item: `collector/news.py` CLI is superseded by `collector.collector.attach_news()` (R17 is already satisfied on `main`); `tools/verify_snapshot.py` is superseded by `tools/verify_rows_479.py`; `collector/shortlist.py` would add a *second* model when the brief's requirement is already met by the net-ROI gate; `tools/seed_mid_history.py` would put simulated mids on a chart that otherwise shows Kalshi prices. Evidence and per-artefact reasoning: `VERIFICATION-7695ba1b.md` §5. |
+| L4 | **done** | `REQUIREMENTS.md` re-audited line by line. R17 corrected from **flagged** to **done** (candidate headlines, event page and news search are on every swing row today). R22 now carries the measured number: **888 market rows across 22 published pages, 888 with a demo source link, 0 production links**. A new R27 records the in-browser live pulse. Five open items are listed with where they are published. |
+| L5 | **done** | PR → merge → Pages — see the integration record below. |
+
+### Defects found in the merged tree and fixed by this session
+
+| ID | Defect | Evidence | Fix |
+| - | - | - | - |
+| **D-1** | **The browser live pulse measured nothing.** `assets/desk.js:pulseUrls()` built `?tickers=A,B,C`. `tickers` is a **string[]** query parameter ("Required array length: `1 - 100` elements", <https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks>), so the exchange read that as ONE ticker named "A,B,C" and returned a single **empty** book. Every refresh therefore matched no tracked market, and the panel still reported a healthy "LIVE PULSE · N readings". Live proof of both shapes is in `VERIFICATION-7695ba1b.md` §1 D-1. | live demo API, 2026-11-21 ~07:20Z | new pure `batchOrderbookUrl()` in `assets/live-feed.js`; `desk.js` uses it and now **fails loudly** when no tracked ticker comes back; `server/app.py` proxy forwards every `tickers` occurrence; the live-pulse suites now run in `npm test`, `kalshi-dashboard.yml` and `site-check.yml` — they had **no CI coverage at all** before. Mutation-checked: reverting either half makes a test fail. |
+| **D-2** | **60 published market rows had no official source link.** The root pipeline builds its per-row link at *render* time, so `tools/rowsource_check.py` (which audits the `docs/` and `kalshi-dashboard/` JSON) never saw the primary site at all. | new `tools/rootsource_check.py`: 813 rows found, 60 without a demo source link (`live.html` 40, `trades.html` 19, `summary.html` 1) | Source column added to the live desk and the trade ledger / open positions / settled positions in `site_build/build.py`, `site_build/extras.py` and `assets/desk.js`. After: **888 / 888 with a demo link, 0 production links**. |
+| **D-3** | **The automated re-check of published rows was never published.** `tools/verify_rows_479.py` had been producing EXACT/DRIFT/UNVERIFIED evidence with an official URL per row into `audit/verify-479.json`, but no page showed it. | `audit/verify-479.json` vs `review.html` | `site_build/flagpage.py` now renders a *"Published rows re-checked against the official API"* panel on `review.html` — 75 rows with published value, official value and the exact official response. |
+
+### Requests raised by this session
+
+| ID | To | Request |
+| - | - | - |
+| **R-7695-1** | a future session (no owner on the board) | A **second** model for the model chat (`collector/shortlist.py` from the abandoned PR #28) is not needed for the brief — the net-ROI gate already satisfies "one chat with all events and one selective high-ROI filter". If a second model is wanted, it should be built on top of the current snapshot with its own per-row official source links, not imported from a stale branch. |
+| **R-7695-2** | the next session that touches `collector/alerts.py` (owner `arena-856e184e`) | Unchanged from `R-F3-1`: in `_swing()`, cross-check the swing direction against the candle's documented `price.previous_dollars`. `KXPRESNOMD-28-BOBA`'s bar `1795237200` shows `yes_ask.close 0.8820` against `previous_dollars` 0.0050 — a single stray quote that the current rule refuses downstream but could catch at the source. |
+| **R-7695-3** | the next session that touches `collector/collector.py` (owner `arena-856e184e`) | Unchanged from `R-3DCF-1`: the root `data/resolutions.json` settle scan is exchange-wide, so elections/culture/golf rows are thin. The `docs/` pipeline already rotates per topic and accumulates (PR #56) — the same treatment applies here. |
+| **R-7695-4** | the integration session that follows | Name the pipeline next to every equity figure (the root, the `docs/` pipeline and the bankroll each publish their own) — carried forward from `R-3DCF-4`. |
+
+### Irregularities flagged (published, not blocking)
+
+* **U-1/U-2 — demo-account portfolio and real demo orders** need a Kalshi demo
+  API key pair. None exists in this repository or in any session, and creating
+  one needs a person at kalshi.com. The paper ledger stays labelled
+  **SIMULATED** everywhere it appears. Published on `review.html`.
+* **U-3 — the WebSocket feed** requires the signed handshake headers a browser
+  cannot set, so the live pulse reads the same books over the documented
+  anonymous REST batch endpoint and says so on the page.
+* **U-4 — 411 of the 750 ranked events have no two-sided quote.** They are
+  ranked, labelled `no book`, and their price cells stay blank.
+* **U-5 — article attribution** is never asserted. Headlines are published as
+  *candidates* only.
+
+### Verification performed on the merged tree
+
+`python3 -m unittest discover -s tests` **269 passed / 1 skipped** ·
+`npm test` **54 / 0** · `node --test test/live-feed*.test.mjs` **25 / 0** ·
+`tools/linkcheck.py` **50 pages / 679 links / 0 errors** ·
+`tools/rendercheck.mjs` 12 pages ok · `tools/root_pages_render.mjs`
+**ALL PASS — 13 pages, 244 files** · `test/desk_render_dc732aa6.mjs` **PASSED** ·
+`test/site_smoke.mjs docs/data` **ALL PASS** · `tools/rowsource_check.py`
+0 missing source, 0 production leaks · `tools/rootsource_check.py`
+**888 rows / 888 sourced / 0 production**.
