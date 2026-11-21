@@ -16,6 +16,24 @@ Fees — official source: https://kalshi.com/docs/kalshi-fee-schedule.pdf (eff. 
     The implementation below reproduces the PDF's General Trading Fees Table exactly
     (see test_engine.py).
 
+Which legs a round trip pays for — same PDF, "Trading Fees": "Trading fees are only
+    charged for orders that are immediately matched with orders sitting on the
+    orderbook." An entry that crosses the book and an exit that crosses the book are
+    therefore two charged executions, and a position that is settled instead of sold
+    pays nothing more ("There is no settlement fee."). So every number this engine
+    labels net is net of BOTH legs:
+
+        net = proceeds - cost - exit fee - entry fee
+
+    `stats().fees` sums the same two legs, and each close row carries `entry_fee`
+    next to `fee` so the split can be re-derived from the published ledger alone.
+    Close rows written before 2026-11-21 (before this rule was applied here) have no
+    `entry_fee` field; their `pnl` was booked on the exit-leg-only basis and is NOT
+    restated, so `stats()` recovers their entry leg by pairing each close with the open
+    row of the same ticker and marks the group `"fees_legacy_paired"`. Mixing a
+    pre-2026-11-21 figure with a later one compares two bases — the convention string
+    in the payload says which one a run used.
+
 Strategies — all simulated, parameters explicit, results measured not promised:
     swing_reversal  after a >= $0.10 down-swing, buy YES expecting partial reversion
                     (and the mirror after an up-swing); exit on +$0.05, -$0.05 stop,
@@ -224,6 +242,11 @@ class Engine:
         if not pos:
             return None
         contracts, avg = pos["contracts"], pos["avg_price"]
+        # The entry leg was charged against cash when the position was opened
+        # (open_position: cash -= cost + fee), so it belongs to this round trip's
+        # net as well. Legacy state without the field contributes 0.00 and is
+        # reported by stats() as a paired legacy fee.
+        entry_fee = round(float(pos.get("entry_fee") or 0.0), 2)
         if settlement is not None:
             # settlement payout: $1 per contract if this side won, else $0
             win = (settlement == pos["side"])
@@ -236,7 +259,7 @@ class Engine:
             proceeds = round(contracts * price, 2)
             fee = round(fee_taker(contracts, price), 2)  # closing crosses the book -> taker
             gross = round(proceeds - contracts * avg - fee, 2)
-        net = round(gross if settlement is not None else gross, 2)
+        net = round(gross - entry_fee, 2)
         self.cash = round(self.cash + proceeds - fee, 2)
         self.fees_paid = round(self.fees_paid + fee, 2)
         self.realized_pnl = round(self.realized_pnl + net, 2)
@@ -247,6 +270,8 @@ class Engine:
                 "closed_at": now_iso(),
                 "exit_price": exit_price,
                 "exit_fee": fee,
+                "entry_fee": entry_fee,
+                "total_fees": round(fee + entry_fee, 2),
                 "pnl": net,
                 "exit_reason": why,
                 "settlement": settlement,
@@ -258,6 +283,9 @@ class Engine:
         return pos
 
     def _log_trade(self, pos: Dict, action: str, price: float, pnl: float, fee: float) -> None:
+        """Append one ledger row. `fee` is always the fee of THIS leg (open row =
+        entry leg, close row = exit leg); `entry_fee`/`total_fees` on a close row
+        restate the whole round trip so the split can be re-derived from the log."""
         self.trades.append(
             {
                 "ts": now_iso(),
@@ -268,6 +296,10 @@ class Engine:
                 "contracts": pos["contracts"],
                 "price": price,
                 "fee": fee,
+                "entry_fee": (round(float(pos.get("entry_fee") or 0.0), 2)
+                              if action == "close" else None),
+                "total_fees": (round(float(pos.get("total_fees") or 0.0), 2)
+                               if action == "close" else None),
                 "pnl": pnl,
                 "strategy": pos.get("strategy"),
                 "signal": pos.get("signal"),
@@ -450,14 +482,54 @@ class Engine:
         return {"opened": opened, "equity": equity, "marks": marks}
 
 
+def _match_entry_fees(trades: List[Dict]) -> Tuple[List[Dict], int]:
+    """Return (close rows, number of them whose entry leg had to be paired).
+
+    Each close row carries ``entry_fee``: the fee it recorded, when the engine wrote
+    one, otherwise the fee of the matching open row for the same ticker (positions
+    are one-per-ticker, so the stack holds at most one entry at a time). A row whose
+    entry leg came from pairing is flagged ``_entry_fee_paired`` and counted, so the
+    published aggregate says how much of it is reconstructed rather than recorded.
+    Nothing is restated: a close row booked before the both-legs rule keeps its own
+    ``pnl`` value exactly as published.
+    """
+    open_fees: Dict[str, List[float]] = {}
+    closes: List[Dict] = []
+    paired = 0
+    for t in trades:
+        action = t.get("action")
+        ticker = t.get("ticker")
+        if action == "open":
+            if ticker:
+                open_fees.setdefault(ticker, []).append(float(t.get("fee") or 0.0))
+            continue
+        if action != "close":
+            continue
+        row = dict(t)
+        if row.get("entry_fee") is None:
+            stack = open_fees.get(ticker) if ticker else None
+            row["entry_fee"] = round(stack.pop(), 2) if stack else 0.0
+            row["_entry_fee_paired"] = True
+            if row["entry_fee"]:
+                paired += 1
+        closes.append(row)
+    return closes, paired
+
+
 def stats(trades: List[Dict]) -> Dict[str, Any]:
-    """Aggregate closed trades by strategy and by trade type (the 'categorize' ask)."""
-    closes = [t for t in trades if t.get("action") == "close"]
+    """Aggregate closed trades by strategy and by trade type (the 'categorize' ask).
+
+    ``fees`` is the cost of BOTH legs of each closed round trip (entry + exit), per
+    the official schedule's "Trading fees are only charged for orders that are
+    immediately matched" — an entry that crosses and an exit that crosses are two
+    charged orders, and settling pays nothing ("There is no settlement fee.").
+    """
+    closes, paired = _match_entry_fees(trades)
 
     def agg(rows: List[Dict]) -> Dict[str, Any]:
         wins = [r for r in rows if (r.get("pnl") or 0) > 0]
         losses = [r for r in rows if (r.get("pnl") or 0) < 0]
-        fees = sum(float(r.get("fee") or 0) for r in rows)
+        fees = sum(float(r.get("fee") or 0) + float(r.get("entry_fee") or 0) for r in rows)
         pnl = sum(float(r.get("pnl") or 0) for r in rows)
         return {
             "trades": len(rows),
@@ -467,6 +539,10 @@ def stats(trades: List[Dict]) -> Dict[str, Any]:
             "net_pnl": round(pnl, 2),
             "avg_pnl": round(pnl / len(rows), 2) if rows else None,
             "fees": round(fees, 2),
+            # How many rows predate the both-legs rule and had their entry leg
+            # reconstructed by pairing rather than read from the row itself.
+            "fees_rows_without_recorded_entry_fee": sum(
+                1 for r in rows if r.get("_entry_fee_paired")),
         }
 
     by_strategy: Dict[str, List[Dict]] = {}
@@ -478,6 +554,17 @@ def stats(trades: List[Dict]) -> Dict[str, Any]:
         "by_strategy": {k: agg(v) for k, v in sorted(by_strategy.items())},
         "by_trade_type": {k: agg(v) for k, v in sorted(by_type.items())},
         "all": agg(closes),
+        "fee_convention": {
+            "rule": "fees and per-trade net P&L include the entry leg and the exit leg; "
+                    "settlement pays no fee",
+            "source": FEE_SCHEDULE_URL,
+            "both_legs_since": "2026-11-21",
+            "close_rows_with_no_recorded_entry_fee_paired_from_the_log": paired,
+            "note": "pnl values are never restated: a close row written before "
+                    "2026-11-21 was booked on the exit-leg-only basis and keeps that "
+                    "number, so its group's fees and net are on different bases "
+                    "until the ledger rolls over",
+        },
     }
 
 
@@ -519,6 +606,13 @@ def main(argv: Optional[List[str]] = None) -> int:
             "spread_max": SPREAD_MAX,
             "fee_formula": "round_up(C*P + M*0.07*C*P*(1-P)) - C*P (taker)",
             "fee_schedule_url": FEE_SCHEDULE_URL,
+            # What a round trip is charged for, so no reader has to guess it from the
+            # arithmetic: fees https://kalshi.com/docs/kalshi-fee-schedule.pdf
+            "fee_legs": "entry leg + exit leg; settlement pays no fee",
+            "fee_legs_source": FEE_SCHEDULE_URL,
+            "net_pnl_basis": "proceeds - cost - exit fee - entry fee "
+                             "(close rows written before 2026-11-21 were booked "
+                             "exit-leg only and are not restated)",
         },
         "positions": list(eng.positions.values()),
         "trades": eng.trades[-300:],
