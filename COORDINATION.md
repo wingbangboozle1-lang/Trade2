@@ -2033,3 +2033,19 @@ this file. **Not** touched: `docs/**`, `kalshi-dashboard/**`, `live/**`,
 | Pull request | **[#57](https://github.com/wingbangboozle1-lang/Trade2/pull/57)** — "Live detection: in-browser ≥$0.10 pulse, tradable-price transparency, YES/NO chart, verification log" |
 | PR checks | `check` **pass** ([44878553353](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878553353)) · `collect` **pass** ([44878548768](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878548768)) · `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` |
 | Merge | see "merge result" line below |
+---
+
+## Session claim — `arena-67bd954a` (2026-11-21, UTC)
+
+Branch `arena/67bd954a-trade2` · base `main` @ `8d15b95` · claimed at session start, before any code change.
+Open PRs at claim time: #57 (`arena/f3cb9b9f-trade2`, live detection, K1–K6), #28, #29 (both `CONFLICTING`). None of their scopes is claimed below.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| R1 | **Root-pipeline resolution coverage (request R-3DCF-1).** `data/resolutions.json` (written by `collector/collector.py`, run every 5 min by `.github/workflows/kalshi-dashboard.yml`) has 0 elections, culture or golf rows; it has only gas-prices (268) and crypto (60) from the exchange-wide settled scan (`limit=400`, `max_pages=3`, no time filter). Fix the settled scan so in-scope settlements are fetched with the documented `min_settled_ts` window and cursor paging. | in progress | `arena-67bd954a` | `collector/collector.py` (settled-scan block in `collect()` and a new helper only), `tests/test_root_settled_scan_67bd954a.py` (new) |
+| R2 | Live verification of R1: `workflow_dispatch` of `kalshi-dashboard.yml` on this branch (the only egress to the demo API from this sandbox is blocked, so the run happens in Actions), then row-by-row check of the new `data/resolutions.json` rows against the official API. | planned | `arena-67bd954a` | `VERIFICATION-67bd954a.md` (new). The dry-run data commit on this branch is reverted before the PR so no `data/` files are merged from this session. |
+| R3 | PR → merge → confirm Pages deploy → post-merge check that the next scheduled `main` run publishes elections/culture/golf resolution rows. | planned | `arena-67bd954a` | `COORDINATION.md` |
+
+**Explicitly not touched:** `site_build/**`, root `*.html`, `index.html`, `review.html`, `docs/**`, `kalshi-dashboard/**`, `.github/workflows/**`, `assets/**`, `server/**`, `trading/**`, `live/**`, `scripts/**`, and every file PR #57 changes.
+
+**Blocker outside this session (not worked around):** Kalshi demo-account portfolio tracking and demo order placement need a demo API key pair (`KALSHI_API_KEY_ID` + private key). None exists in this repository, its secrets, or this session's environment, and creating one needs a person at kalshi.com.
