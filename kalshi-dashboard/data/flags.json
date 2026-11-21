@@ -111,7 +111,7 @@
       "id": "F-08",
       "type": "blocker",
       "title": "Demo-account portfolio and trade execution are NOT connected",
-      "detail": "Reading the demo account and placing demo orders need a demo API key pair created in Kalshi account settings. Those keys were not provided and cannot be created from this session, so no balance, positions or orders are shown, and no orders have been placed. Add repository secrets KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY to enable the portfolio view. The signing code follows the official spec (S6) and is tested offline.",
+      "detail": "Reading the demo account and placing demo orders need a demo API key pair created in Kalshi account settings. Those keys were not provided and cannot be created from this session, so no live balance or positions are shown and no orders have been placed. Two pieces that used to be missing are now in place, so this flag is only about the credential: dashboard.yml runs the read-only snapshot step when the secrets exist (add repository secrets KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY), and the trades page now renders kalshi-dashboard/data/portfolio.json when it exists and states which of the three states applies (no file / file says not connected / connected). The signing code follows the official spec (S6) and is tested offline. Until the credential exists, the published snapshot file will not appear and the page says so.",
       "links": [
         {
           "label": "API keys (create, sign, use)",
@@ -120,27 +120,35 @@
         {
           "label": "Demo environment",
           "url": "https://docs.kalshi.com/getting_started/demo_env"
+        },
+        {
+          "label": "Trades page portfolio block",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/site/assets/app.js"
         }
       ],
-      "status": "open"
+      "status": "blocked on owner"
     },
     {
       "id": "F-09",
       "type": "blocker",
-      "title": "Second-level price ticks need a streaming server",
-      "detail": "The site refreshes about every 30 minutes through a scheduled collector, so the time axis can show minutes and hours but not seconds. The WebSocket API requires an API key (S8), and GitHub Pages is static, so true per-second charts need a small always-on service that holds the key. This is a suggestion on the Suggestions page, not built here.",
+      "title": "Second-level price TICKS need a streaming server; the alerts feed no longer waits for a collector run",
+      "detail": "Two limits, now separated. (a) Alerts: since 2026-11-21 the alerts page also measures in the visitor's browser \u2014 one anonymous GET /markets/orderbooks per 45 s for up to 100 markets, same >= $0.10 rule and same quote-integrity refusals as the collector \u2014 so the chats do not go quiet between scheduled runs. (b) Charts: still limited to collector samples, because the price graph plots the collector's history and Kalshi's own candlestick periods are 1 minute, 1 hour and 1 day. A sub-minute axis therefore needs either the browser poll to be recorded as history (not built) or a small always-on service holding an API key and streaming WebSocket ticks; GitHub Pages is static and the WebSocket handshake needs KALSHI-ACCESS-* headers a browser cannot set (S8).",
       "links": [
         {
           "label": "WebSocket connection",
           "url": "https://docs.kalshi.com/websockets/websocket-connection"
+        },
+        {
+          "label": "Get Multiple Market Orderbooks (1-100 tickers, anonymous)",
+          "url": "https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks"
         }
       ],
-      "status": "open"
+      "status": "partly resolved 2026-11-21"
     },
     {
       "id": "F-10",
       "type": "unverified",
-      "title": "Cause links for ≥ $0.10 moves are NOT determined",
+      "title": "Cause links for \u2265 $0.10 moves are NOT determined",
       "detail": "The brief asks for news or website links that may have caused each sharp move. Nothing in the Kalshi API identifies a cause, and no news source was connected. Alerts carry the official market and rules links only, marked 'cause link: not determined'. Adding causes would need manual review.",
       "links": [
         {
@@ -167,7 +175,7 @@
       "id": "F-12",
       "type": "unverified",
       "title": "'Est. 24h $ volume' is a derived estimate, not an official Kalshi dollar figure",
-      "detail": "Computed as volume_24h_fp × notional_value_dollars, both official fields. The formula is ours and is labeled 'derived' on each page.",
+      "detail": "Computed as volume_24h_fp \u00d7 notional_value_dollars, both official fields. The formula is ours and is labeled 'derived' on each page.",
       "links": [
         {
           "label": "Market schema (volume_24h_fp, notional_value_dollars)",
@@ -180,7 +188,7 @@
       "id": "F-13",
       "type": "decision",
       "title": "'High-ROI' is a placeholder rule, not your model",
-      "detail": "No model was provided. The dashboard uses a transparent rule (entry ≤ 40¢, spread ≤ 5¢, 24h volume ≥ 100 contracts) defined in config/topics.json. Replace it with your model's outputs when available. The rule is not a prediction and makes no claim about profitability.",
+      "detail": "No model was provided. The dashboard uses a transparent rule (entry \u2264 40\u00a2, spread \u2264 5\u00a2, 24h volume \u2265 100 contracts) defined in config/topics.json. Replace it with your model's outputs when available. The rule is not a prediction and makes no claim about profitability.",
       "links": [
         {
           "label": "config/topics.json in this repository",
@@ -279,11 +287,15 @@
       "id": "F-20",
       "type": "irregularity",
       "title": "Demo portfolio snapshot would be published in the public repository",
-      "detail": "When KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY secrets are set, the workflow writes the demo balance and positions to kalshi-dashboard/data/portfolio.json and commits it to the public repo. Demo funds only, but the data is public. Owner should confirm this is acceptable, or the snapshot should be kept out of git. The trades page does not yet read the snapshot file; its portfolio section is static text that says the account is not connected, even after the secrets are set.",
+      "detail": "Two parts. (a) Still open, owner decision: when KALSHI_DEMO_KEY_ID and KALSHI_DEMO_PRIVATE_KEY secrets are set, dashboard.yml writes the demo balance and positions to kalshi-dashboard/data/portfolio.json and commits it to a PUBLIC repository. Demo funds only, but the account's position sizes and P&L become readable by anyone. (b) Fixed 2026-11-21 by session arena-8a8d4294: the trades page now reads that snapshot file. Before the fix the section was static text that said 'not connected' forever; it now renders balance, market positions, event positions and the per-exchange-index breakdown from the file when it exists, and says which of the three states applies (no file / file says not connected / connected).",
       "links": [
         {
           "label": "API key management",
           "url": "https://docs.kalshi.com/getting_started/api_keys"
+        },
+        {
+          "label": "Trades page renderer (site/assets/app.js)",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/site/assets/app.js"
         }
       ],
       "status": "open"
@@ -327,6 +339,69 @@
         {
           "label": "Get events",
           "url": "https://docs.kalshi.com/api-reference/events/get-events"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-24",
+      "type": "unverified",
+      "title": "Resolution coverage is bounded by design: a rotating settled scan, not an exhaustive history",
+      "detail": "What the settled scan can and cannot see, stated so a reader can judge a gap. (1) GET /markets accepts ONE status at a time and the sweep is bounded: RESOLUTION_SCAN_MAX_SERIES series per run, rotated on a 15-minute window, and a hard RESOLUTION_SCAN_MAX_REQUESTS page budget, so a busy series is read page by page across several runs rather than all at once; the run record publishes settled_scan_series / _markets / _requests / _pages / _duplicates_deduped / _budget so truncation is visible. (2) Lookback is 30 days (min_settled_ts); Kalshi documents that markets settled before its historical cutoff are only available through GET /historical/markets, so older resolutions are out of scope. (3) The docs warn that filtered listings can lag behind the market endpoint, so a settlement may appear on the next run rather than the current one. (4) A market the collector never saw open has no event title: the row publishes market_title and leaves event_title null - never a relabelled market title. (5) result values other than yes/no (scalar, empty) are not published as outcomes. (6) No row carries a news or website cause link: no API field provides one (F-10). The prior defect - resolved.json permanently empty because only the top-80 tracked tickers were re-read - is what this scan replaced (Board M8A8, 2026-11-21).",
+      "links": [
+        {
+          "label": "Get Markets - status filter, min_settled_ts, limit, cursor, historical cutoff",
+          "url": "https://docs.kalshi.com/api-reference/market/get-markets"
+        },
+        {
+          "label": "Market settlement (YES/NO pay $1 per contract to the winning side)",
+          "url": "https://docs.kalshi.com/getting_started/market_settlement"
+        },
+        {
+          "label": "Scan implementation",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/scripts/collect.mjs"
+        },
+        {
+          "label": "Tests pinning the request shape, paging, dedupe and titles",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/scripts/test/collect.test.mjs"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-25",
+      "type": "irregularity",
+      "title": "Kalshi publishes markdown emphasis and empty rule text inside market titles on the demo host",
+      "detail": "The settled listing returns market `title` values that contain literal markdown, e.g. \"Will average **gas prices** be above $3.25?\" (ticker KXAAAGASM-25MAR31-US-3.25), and the same rows carry rules_primary and rules_secondary as empty strings. The dashboard prints the title verbatim and shows no rule link for those markets rather than stripping or rewriting the text \u2014 the string is Kalshi's, not ours. Related to the already-published F-05 template-text finding on the demo environment.",
+      "links": [
+        {
+          "label": "Demo API response showing the title and empty rules fields",
+          "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&series_ticker=KXAAAGASM&min_settled_ts=1792653900&limit=2&mve_filter=exclude"
+        },
+        {
+          "label": "Get Markets \u2014 documented market fields (title, rules_primary)",
+          "url": "https://docs.kalshi.com/api-reference/market/get-markets"
+        }
+      ],
+      "status": "open"
+    },
+    {
+      "id": "F-26",
+      "type": "unverified",
+      "title": "GET /portfolio/balance does not state a unit for its integer `balance` and `portfolio_value` fields",
+      "detail": "The documented response is {\"balance\": 123, \"balance_dollars\": \"0.5600\", \"portfolio_value\": 123, \"updated_ts\": 123, \"balance_breakdown\": [{\"exchange_index\": 0, \"balance\": \"0.5600\"}]}. `balance_dollars` and the breakdown's `balance` are dollar strings, while the top-level `balance` and `portfolio_value` are bare integers with no unit on this page, and `updated_ts` is a bare number while positions carry an ISO `last_updated_ts`. The example values are placeholders and are not self-consistent (123 vs 0.5600). scripts/portfolio.mjs therefore publishes them unconverted and the trades page prints them as returned, labelled as such; nothing on the site divides them by 100 or calls them cents. Also unverified: whether `updated_ts` is seconds or milliseconds \u2014 shown raw. This stays open until a real demo key pair lets a live snapshot be compared against the account screen.",
+      "links": [
+        {
+          "label": "Get Balance \u2014 response schema and parameters",
+          "url": "https://docs.kalshi.com/api-reference/portfolio/get-balance"
+        },
+        {
+          "label": "Get Positions \u2014 response schema and defaults",
+          "url": "https://docs.kalshi.com/api-reference/portfolio/get-positions"
+        },
+        {
+          "label": "Snapshot writer",
+          "url": "https://github.com/wingbangboozle1-lang/Trade2/blob/main/scripts/portfolio.mjs"
         }
       ],
       "status": "open"
