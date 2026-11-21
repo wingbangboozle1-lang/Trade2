@@ -23,6 +23,7 @@ import datetime as dt
 import json
 import os
 import time
+import urllib.parse
 from typing import Any
 
 from . import alerts, news
@@ -46,6 +47,10 @@ ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
 # quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
+# Tracked-market settlement (session arena-57e6bd3d, task E57-T1). See resolve_pending().
+RESOLUTION_LOOKUPS_PER_RUN = 60          # GET /markets/{ticker} re-reads per run
+RESOLUTION_GIVE_UP_S = 14 * 24 * 3600    # stop re-reading a market this long after its close
+RESOLUTION_PENDING_MAX = 2000            # cap on markets waiting for a result
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -160,6 +165,156 @@ def migrate_resolutions(store: dict[str, Any],
         kept = dict(ordered[:MAX_RESOLUTIONS])
     store["resolutions"] = kept
     return len(kept)
+
+
+# --- Tracked-market settlement (session arena-57e6bd3d, task E57-T1) ----------
+#
+# The settled scan in collect() reads the newest settled markets exchange-wide, up
+# to about 3,000. High-frequency series (for example the 15-minute crypto series,
+# KXBTC15M) settle often enough to fill that window, so a golf, culture or elections
+# market that settled earlier can fall outside it. Published evidence: data/resolutions.json held 328 rows with 0 rows for
+# elections, culture or golf (R-3DCF-1, COORDINATION.md).
+#
+# This pass follows the markets the collector already watches instead. Each tracked
+# market is remembered with its topic and close time. Once its close time has passed,
+# it is re-read by ticker with GET /markets/{ticker}
+# (https://docs.kalshi.com/api-reference/market/get-market; response shape
+# {"market": {...}}, with "result" = "yes" | "no" once settled, per
+# https://docs.kalshi.com/getting_started/market_settlement). Lookups are bounded per
+# run, least-recently-checked first. A market with no result 14 days after close is
+# dropped from the pending list and reported.
+
+def _epoch(ts: str | None) -> float | None:
+    """ISO-8601 UTC timestamp such as ``2026-11-15T14:52:33Z`` -> epoch seconds."""
+    if not ts or len(ts) < 19:
+        return None
+    try:
+        parsed = dt.datetime.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return None
+    return parsed.replace(tzinfo=dt.timezone.utc).timestamp()
+
+
+def resolution_record(market: dict[str, Any], ticker: str, topic: str,
+                      now: float) -> dict[str, Any]:
+    """One stored YES/NO outcome row built from a market object."""
+    return {
+        "ticker": ticker,
+        "event_ticker": market.get("event_ticker"),
+        "series_ticker": market.get("series_ticker"),
+        "topic": topic,
+        "title": market.get("yes_sub_title") or market.get("title"),
+        "result": (market.get("result") or "").lower(),
+        "settlement_value_dollars": market.get("settlement_value_dollars"),
+        "settlement_ts": market.get("settlement_ts"),
+        "status": market.get("status"),
+        "source_url": f"{DEMO_REST}/markets/{ticker}",
+        "human_url": f"https://kalshi.com/markets/{market.get('event_ticker', '')}",
+        "verified_at": iso(now),
+    }
+
+
+def fetch_market(client: KalshiClient, ticker: str) -> dict[str, Any] | None:
+    """GET /markets/{ticker} -> the market object, or None if the body has none."""
+    payload = client._request("GET", f"/markets/{urllib.parse.quote(ticker, safe='')}")
+    market = (payload or {}).get("market") if isinstance(payload, dict) else None
+    return market if isinstance(market, dict) else None
+
+
+def track_pending(pending: dict[str, dict[str, Any]], observations: list[Any],
+                  now: float) -> None:
+    """Remember every market this run watches until it has a yes/no result."""
+    for obs in observations:
+        if not obs.ticker or not obs.topic:
+            continue
+        row = pending.get(obs.ticker)
+        if row is None:
+            pending[obs.ticker] = {
+                "ticker": obs.ticker,
+                "event_ticker": obs.event_ticker or None,
+                "series_ticker": obs.series_ticker or None,
+                "topic": obs.topic,
+                "title": obs.title or None,
+                "close_time": obs.close_time or None,
+                "first_seen": iso(now),
+                "last_checked": None,
+                "lookups": 0,
+            }
+        elif not row.get("close_time") and obs.close_time:
+            row["close_time"] = obs.close_time
+    if len(pending) > RESOLUTION_PENDING_MAX:
+        # Keep the markets that will close soonest; the rest wait for a later run.
+        keep = sorted(pending.items(),
+                      key=lambda kv: _epoch(kv[1].get("close_time")) or float("inf"))
+        pending.clear()
+        pending.update(keep[:RESOLUTION_PENDING_MAX])
+
+
+def resolve_pending(client: KalshiClient, pending: dict[str, dict[str, Any]], now: float,
+                    *, limit: int = RESOLUTION_LOOKUPS_PER_RUN,
+                    deadline: float | None = None,
+                    errors: list[str] | None = None,
+                    ) -> tuple[list[tuple[str, dict[str, Any]]], list[str], int]:
+    """Re-read due pending markets and return ``(resolved, dropped, lookups)``.
+
+    A market is due once its close time has passed. Due markets are read
+    least-recently-checked first, at most ``limit`` per run, so every pending market
+    is revisited in turn. A resolved market leaves ``pending``. A market with no
+    yes/no result more than ``RESOLUTION_GIVE_UP_S`` after close also leaves it, and
+    is listed in ``dropped``. A failed request keeps the market pending and is
+    reported in ``errors``.
+    """
+    errors = errors if errors is not None else []
+    due: list[tuple[str, float, str]] = []
+    for ticker, row in pending.items():
+        close_ts = _epoch(row.get("close_time"))
+        if close_ts is not None and close_ts <= now:
+            due.append((row.get("last_checked") or "", close_ts, ticker))
+    due.sort()
+
+    resolved: list[tuple[str, dict[str, Any]]] = []
+    dropped: list[str] = []
+    lookups = 0
+    for _, close_ts, ticker in due[:max(0, limit)]:
+        if deadline is not None and time.time() > deadline:
+            errors.append("resolution lookups stopped by the run budget (partial, flagged)")
+            break
+        row = pending[ticker]
+        row["last_checked"] = iso(now)
+        row["lookups"] = int(row.get("lookups") or 0) + 1
+        lookups += 1
+        try:
+            market = fetch_market(client, ticker)
+        except Exception as exc:  # any transport or HTTP failure: retry next run
+            errors.append(f"resolution lookup {ticker} failed ({exc})")
+            continue
+        result = str((market or {}).get("result") or "").lower()
+        if result in ("yes", "no"):
+            resolved.append((ticker, resolution_record(market, ticker, row["topic"], now)))
+            del pending[ticker]
+        elif now - close_ts > RESOLUTION_GIVE_UP_S:
+            dropped.append(ticker)
+            del pending[ticker]
+    return resolved, dropped, lookups
+
+
+def apply_pending_resolutions(store: dict[str, Any],
+                              resolved: list[tuple[str, dict[str, Any]]],
+                              portfolio: Any, history: dict[str, Any],
+                              settled_updates: list[dict[str, Any]], now: float) -> None:
+    """Write newly resolved pending markets to the store and grade simulated positions.
+
+    A held simulated position is settled exactly as the global scan settles it, using
+    the market's official ``result``. ``Portfolio.settle`` only touches open positions,
+    so a market that both the scan and this pass see is graded once.
+    """
+    for ticker, rec in resolved:
+        store["resolutions"][ticker] = rec
+        closed = portfolio.settle(ticker, rec["result"])
+        if closed:
+            settled_updates.append(closed.as_dict())
+            history.setdefault("series", {}).setdefault(ticker, []).append(
+                {"ts": now, "result": rec["result"], "price": closed.exit_price})
 
 
 def load_json(path: str, default: Any):
@@ -624,20 +779,27 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             market.get("event_ticker") or ticker, series_registry, resolution_memo)
         if not topic:
             continue
-        resolutions["resolutions"][ticker] = {
-            "ticker": ticker,
-            "event_ticker": market.get("event_ticker"),
-            "series_ticker": market.get("series_ticker"),
-            "topic": topic,
-            "title": market.get("yes_sub_title") or market.get("title"),
-            "result": result,
-            "settlement_value_dollars": market.get("settlement_value_dollars"),
-            "settlement_ts": market.get("settlement_ts"),
-            "status": market.get("status"),
-            "source_url": f"https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}",
-            "human_url": f"https://kalshi.com/markets/{market.get('event_ticker','')}",
-            "verified_at": iso(now),
-        }
+        resolutions["resolutions"][ticker] = resolution_record(market, ticker, topic, now)
+
+    # Track every market this run watches until it settles. The global scan above
+    # cannot see a quiet topic's settlements under crypto volume (R-3DCF-1), so each
+    # watched market is re-read by ticker once its close time has passed.
+    pending = resolutions.setdefault("pending", {})
+    pending_resolved: list[tuple[str, dict[str, Any]]] = []
+    pending_dropped: list[str] = []
+    pending_lookups = 0
+    try:
+        track_pending(pending, observations, now)
+        if time.time() < deadline:
+            pending_resolved, pending_dropped, pending_lookups = resolve_pending(
+                client, pending, now, deadline=deadline, errors=errors)
+    except Exception as exc:  # never let settlement tracking stop the live run
+        errors.append(f"resolution tracking failed ({exc}); other steps continued")
+    apply_pending_resolutions(resolutions, pending_resolved, portfolio, history,
+                              settled_updates, now)
+    for ticker in pending_dropped:
+        errors.append(f"{ticker}: no yes/no result {RESOLUTION_GIVE_UP_S // 86400} days "
+                      "after close; no longer tracked")
 
     # Manage open simulated positions: bank favourable swings, cut adverse ones.
     obs_by_ticker = {o.ticker: o for o in observations}
@@ -719,6 +881,15 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "portfolio": analytics,
         "resolutions": resolved_by_topic,
         "resolutions_count": len(resolutions["resolutions"]),
+        "resolution_tracking": {
+            "pending": len(pending),
+            "lookups_this_run": pending_lookups,
+            "resolved_this_run": len(pending_resolved),
+            "dropped_this_run": len(pending_dropped),
+            "lookups_per_run_cap": RESOLUTION_LOOKUPS_PER_RUN,
+            "method": "GET /markets/{ticker} for each tracked market after its close_time; "
+                      "https://docs.kalshi.com/api-reference/market/get-market",
+        },
         "opened_this_run": opened,
         "settled_this_run": settled_updates,
         "closed_this_run": closed_now,
