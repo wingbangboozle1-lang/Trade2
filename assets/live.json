@@ -111374,7 +111374,7 @@
  },
  "shortlist": {
   "generated_at": "2026-11-21T07:54:38Z",
-  "generated_at_ts": 1795247790.8823678,
+  "generated_at_ts": 1795247904.4349952,
   "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
   "threshold_dollars": 0.1,
   "min_edge_dollars": 0.02,
@@ -111395,52 +111395,27 @@
   "level_picks_count": 0,
   "verdicts": [],
   "verdicts_count": 0,
-  "rejected_count": 8,
+  "rejected_count": 4,
   "rejection_summary": [
    {
     "reason": "neither side can be bought inside the $0.01-$0.99 grid",
-    "count": 4
-   },
-   {
-    "reason": "YES",
     "count": 2
    },
    {
-    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+    "reason": "YES",
     "count": 1
    },
    {
-    "reason": "YES at 0.1800",
+    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
     "count": 1
    }
   ],
   "rejected_sample": [
    {
-    "ticker": "KXPRESNOMD-28-JAM",
-    "topic": "elections",
-    "kind": "swing",
-    "book_move": -0.4985,
-    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
-   },
-   {
-    "ticker": "KXLPGATOUR-CMEGTC26-JIIM",
-    "topic": "golf",
-    "kind": "swing",
-    "book_move": -0.498,
-    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
-   },
-   {
-    "ticker": "KXBTCY-27JAN0100-B97500",
-    "topic": "crypto",
-    "kind": "swing",
-    "book_move": -0.48,
-    "reason": "YES has only 0 contracts resting"
-   },
-   {
     "ticker": "KXPGATOUR-THRC26-SSTE",
     "topic": "golf",
     "kind": "level",
-    "book_move": 0.316,
+    "book_move": 0.2708,
     "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
    },
    {
@@ -111463,13 +111438,6 @@
     "kind": "level",
     "book_move": -0.045,
     "reason": "neither side can be bought inside the $0.01-$0.99 grid"
-   },
-   {
-    "ticker": "KXBTC15M-26NOV210300-00",
-    "topic": "crypto",
-    "kind": "level",
-    "book_move": 0.015,
-    "reason": "YES at 0.1800 leaves only -$0.0175 of edge before fees; NO at 0.8400 leaves only -$0.0025 of edge before fees"
    }
   ],
   "alerts_seen": 0,
