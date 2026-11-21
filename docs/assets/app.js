@@ -183,6 +183,12 @@
         ticker: raw.ticker, event_ticker: raw.event_ticker, title: raw.title,
         topic: raw._topic || (byT[raw.ticker] && byT[raw.ticker].topic),
         series_ticker: raw.series_ticker, status: raw.status,
+        // Verbatim from the response. GET /markets?status=open answers with
+        // status:"active" — the filter and the field are different vocabularies
+        // (https://docs.kalshi.com/api-reference/market/get-markets), and a
+        // reviewer following this row's own API link must see the word the API
+        // used. Mirrors collector/runner.py's `api_status`.
+        api_status: raw.status,
         yes_bid: bid, yes_ask: ask, last_price: last, volume_fp: vol,
         open_interest_fp: fnum(raw.open_interest_fp),
         notional_usd: vol != null && px != null ? Math.round(vol * px * 100) / 100 : null,
@@ -426,7 +432,7 @@
   const MARKET_HEAD = `<tr><th data-k="ticker">Market</th><th data-k="title">Title</th>
     <th data-k="yes_bid" class="num">YES bid</th><th data-k="yes_ask" class="num">YES ask</th>
     <th data-k="last_price" class="num">Last</th><th data-k="volume_fp" class="num">Vol</th>
-    <th data-k="notional_usd" class="num">$ volume</th><th>Book liquidity</th><th>Source</th></tr>`;
+    <th data-k="notional_usd" class="num" title="Derived, not an official Kalshi figure: volume_fp (or volume_24h_fp when it is non-zero) x last price. Both inputs are official fields of the same market response; the product is ours. The API publishes no traded-dollar figure.">$ volume (derived)</th><th>Book liquidity</th><th>Source</th></tr>`;
 
   function renderMarketsTable(el, list, limit) {
     if (!el) return;
@@ -467,7 +473,7 @@
     const acc = S.portfolio && S.portfolio.account;
     wrap.innerHTML = `
       <div class="stat"><div class="k">Markets tracked</div><div class="v">${open.length}</div>
-        <div class="s">across 5 topics · ranked by $ volume</div></div>
+        <div class="s">across 5 topics · ranked by derived $ volume</div></div>
       <div class="stat"><div class="k">Swings ≥ $0.10 (last run)</div><div class="v">${S.alerts.length}</div>
         <div class="s">alert threshold, both directions</div></div>
       <div class="stat"><div class="k">Resolved (YES/NO)</div><div class="v">${S.resolutions.length}</div>
@@ -482,7 +488,7 @@
         const b = byTopic[t.key];
         return `<a class="topic-card" href="${t.page}">
           <div class="name">${t.label}</div>
-          <div class="meta">${b.n} live market${b.n === 1 ? "" : "s"} · ${money(b.vol)} tracked $ volume</div>
+          <div class="meta">${b.n} live market${b.n === 1 ? "" : "s"} · ${money(b.vol)} tracked $ volume (derived)</div>
           <div class="big">${b.top ? money(b.top.last_price != null ? b.top.last_price : b.top.yes_bid) : "—"}</div>
           <div class="meta">${b.top ? esc(b.top.ticker) : "no market data yet"}</div>
         </a>`;

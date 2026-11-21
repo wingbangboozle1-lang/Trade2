@@ -866,6 +866,31 @@ def build_live(live: dict[str, Any]) -> str:
 # Methodology
 # ---------------------------------------------------------------------------
 
+def verification_logs_section() -> str:
+    """Links to every verification and audit log committed at the repo root.
+
+    Names only — no summaries. A log's own text is the claim; restating it here
+    would create a second version to keep in sync, which is how the two alert
+    counters came to disagree in the first place.
+    """
+    names = sorted(f for f in os.listdir(ROOT)
+                   if (f.startswith(("VERIFICATION", "AUDIT", "REPO_REVIEW",
+                                     "INTEGRATION_REVIEW", "BOARD_AUDIT",
+                                     "DEPLOYMENT_AUDIT", "SOURCE_LINK_AUDIT"))
+                       and f.endswith(".md")))
+    if not names:
+        return ""
+    items = "".join(
+        f'<li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/'
+        f'{html.escape(n)}" target="_blank" rel="noreferrer">'
+        f'<code>{html.escape(n)}</code></a></li>' for n in names)
+    return (f'<h2>Verification logs</h2><p>Every row on this site links the API '
+            f'response it came from; these are the sessions that read those links '
+            f'back and recorded what matched. <code>VERIFICATION-d6a0282d.md</code> '
+            f'is the most recent, and <code>audit/verify-d6a0282d.json</code> is its '
+            f'machine-readable twin.</p><ul>{items}</ul>')
+
+
 def build_methodology(live: dict[str, Any]) -> str:
     return f"""{topbar("Methodology", live.get("generated_at", ""), "", live.get("generated_at_ts"))}
         <section class="page-heading">
@@ -913,6 +938,23 @@ def build_methodology(live: dict[str, Any]) -> str:
           consecutive observations of the same market. Missing quotes are skipped,
           never treated as zero. A $0.10 move on a $1 contract is 10 cents of
           settlement value.</p>
+          <p>The all-events chat adds a second, clearly labelled basis: moves of at
+          least the same threshold measured between two consecutive closes of the
+          official
+          <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks"
+             target="_blank" rel="noreferrer">candlestick series</a> Kalshi
+          publishes for the market. Kalshi returns no two-sided book for many demo
+          markets, so the midpoint rule correctly fires nothing on them while the
+          exchange's own published price history still shows a ≥ ${live.get("swap_threshold_dollars", 0.10):.2f}
+          step; hiding that would be an omission, claiming it was tradeable would
+          be a fabrication, so the row carries its basis and a link to the
+          candlestick response behind both numbers. These rows never enter the
+          model shortlist, which stays gated on an executable midpoint. An empty
+          book — <code>0.0000</code> bid against <code>1.0000</code> ask, the
+          documented
+          <a href="https://docs.kalshi.com/getting_started/orderbook_responses"
+             target="_blank" rel="noreferrer">bids-only</a> shape of a market with
+          nothing resting — is not used as a price anywhere on this site.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the
@@ -948,6 +990,7 @@ def build_methodology(live: dict[str, Any]) -> str:
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
           </ul>
+          {verification_logs_section()}
         </section>"""
 
 

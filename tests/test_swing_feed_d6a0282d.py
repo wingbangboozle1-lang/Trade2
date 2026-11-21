@@ -226,18 +226,43 @@ class Rendering(unittest.TestCase):
 
     def test_the_model_chat_never_shows_a_candle_close_row(self):
         """The gate is the whole point: a published close says nothing about a
-        price that was tradeable, so it cannot carry a net-ROI claim."""
-        live = self._live()
+        price that was tradeable, so it cannot carry a net-ROI claim.
+
+        The same ticker is deliberately made a model pick, so a regression that
+        feeds the merged list to the model chat cannot hide behind a shortlist
+        that happens to be empty."""
+        # A live midpoint move on one market, and a *different* published close
+        # move on another that the model also likes. The candle row survives
+        # dedupe, is a model pick, and must still not enter the model chat.
+        other = live_alert(ticker="KXETHD-26NOV2117-T1459.99",
+                           event_ticker="KXETHD-26NOV2117", series_ticker="KXETHD",
+                           topic="crypto", title="Ethereum at 5pm EST",
+                           direction="down", abs_delta=0.15, previous=0.90,
+                           current=0.75)
+        live = self._live(alerts=[other])
         swingfeed.attach(live, payload([docs_alert()]), now_ts=NOW)
-        live["signals"] = [{"ticker": "KXPGATOUR-THRC26-MTHO", "net_roi": 0.4,
-                            "score": 0.4, "side": "yes", "topic": "golf",
-                            "title": "Michael Thorbjornsen wins",
-                            "executable_price": 0.39,
-                            "market_url": "https://kalshi.com/markets/KXPGATOUR/"
-                                          "KXPGATOUR-THRC26-MTHO", "ts": NOW}]
+        live["events"].append({"ticker": "KXETHD-26NOV2117-T1459.99",
+                               "topic": "crypto", "title": "Ethereum at 5pm EST"})
+        self.assertEqual(len(live["candle_alerts"]), 1,
+                         "fixture must keep a candle row that survived dedupe")
+        live["signals"] = [{"ticker": "KXETHD-26NOV2117-T1459.99", "net_roi": 0.4,
+                            "score": 0.4, "side": "yes", "topic": "crypto",
+                            "title": "Ethereum at 5pm EST",
+                            "executable_price": 0.75,
+                            "market_url": "https://kalshi.com/markets/KXETHD/"
+                                          "KXETHD-26NOV2117-T1459.99", "ts": NOW}]
         html = build.build_overview(live)
         model = html.split('model-chat')[1]
+        self.assertIn(">executable</span>", model,
+                      "the live midpoint row for that ticker belongs there")
         self.assertNotIn("candlestick close", model)
+        self.assertEqual(model.count('<div class="chat-row">'), 1,
+                         "exactly one model row: the candle-close row for the "
+                         "same ticker must not join it")
+        # …and it *is* in the all-events chat, so the row is not simply missing.
+        all_chat = html.split('model-chat')[0]
+        self.assertEqual(all_chat.count('<div class="chat-row">'), 2)
+
 
     def test_empty_buffer_without_a_docs_feed_still_says_so(self):
         html = build.build_overview(self._live())
@@ -256,6 +281,46 @@ class Rendering(unittest.TestCase):
         self.assertIn("candlestick close", html)
         self.assertIn("row(s) measured on Kalshi's published candlestick closes",
                       html)
+
+
+
+class Wiring(unittest.TestCase):
+    """The merge has to be *called*, not merely available.
+
+    Follows this repo's existing source-pattern convention
+    (``tests/test_exchange_status_a3137708.py``): a mutation that deletes the
+    call from ``main()`` leaves every renderer test above green, because each
+    one attaches the feed itself.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "site_build", "build.py")
+        with open(path, encoding="utf-8") as fh:
+            src = fh.read()
+        cls.main_body = src.split("def main(", 1)[1].split("\ndef ", 1)[0]
+        cls.src = src
+
+    def test_main_attaches_the_feed_before_any_page_is_built(self):
+        self.assertIn("swingfeed.attach(live, load_json(DOCS_ALERTS_PATH",
+                      self.main_body)
+        self.assertLess(self.main_body.index("swingfeed.attach"),
+                        self.main_body.index('write("index.html"'),
+                        "the feed must be attached before the pages render")
+
+    def test_the_all_events_chats_read_the_merged_feed(self):
+        # Overview and desk both render from all_feed(); the model loops both
+        # iterate `grouped`/`alerts`, never `feed`.
+        self.assertEqual(self.src.count("all_feed(live)"), 3,
+                         "one definition + the two chat call sites")
+        self.assertIn("for a in grouped:\n        pick = shortlist.get", self.src)
+
+    def test_the_candle_feed_is_published_for_the_browser_path(self):
+        """assets/live.json is what desk.js re-fetches; the rows have to be in
+        it or the live feed and the pre-rendered feed disagree."""
+        self.assertIn('write("assets/live.json", json.dumps(live, default=str, indent=1))',
+                      self.src)
 
 
 if __name__ == "__main__":

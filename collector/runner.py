@@ -267,10 +267,19 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
     # The market object carries no `series_ticker` field (verified against the live
     # API 2026-11-20); the series is the ticker prefix before the first hyphen.
     series = str(m.get("series_ticker") or "") or (ticker.split("-")[0] if ticker else None)
-    # query status=open returns objects whose own status field is "active"
-    status = m.get("status")
-    if status == "active":
-        status = "open"
+    # The ``status=open`` *filter* and the ``status`` *field of a market object*
+    # are two different vocabularies: the filter accepts unopened / open / paused
+    # / closed / settled, while the response field says initialized / inactive /
+    # active / closed / determined / disputed / amended / finalized
+    # (https://docs.kalshi.com/api-reference/market/get-markets). A market
+    # fetched with status=open therefore answers "active".
+    # ``status`` keeps the mapped, filter-vocabulary word so every existing
+    # reader of this file keeps working; ``api_status`` publishes the response's
+    # own value verbatim, so a reviewer comparing a row against the URL it links
+    # to sees the same word the API used instead of a translation. Requested as
+    # R-E1-01 ("show raw status"); implemented by session arena-d6a0282d.
+    api_status = m.get("status")
+    status = "open" if api_status == "active" else api_status
     row = {
         "ticker": m.get("ticker"),
         "event_ticker": m.get("event_ticker"),
@@ -278,6 +287,7 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         "topic": m.get("_topic"),
         "series_ticker": series,
         "status": status,
+        "api_status": api_status,
         "yes_bid": bid,
         "yes_ask": ask,
         "last_price": last,

@@ -47,7 +47,7 @@
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot 2026-11-21T06:28:00Z</time>
-            <span class="snap-age" id="snapshotAge" data-generated-ts="1795242480.3907638">32 min old</span>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795242480.3907638">44 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -95,6 +95,23 @@
           consecutive observations of the same market. Missing quotes are skipped,
           never treated as zero. A $0.10 move on a $1 contract is 10 cents of
           settlement value.</p>
+          <p>The all-events chat adds a second, clearly labelled basis: moves of at
+          least the same threshold measured between two consecutive closes of the
+          official
+          <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks"
+             target="_blank" rel="noreferrer">candlestick series</a> Kalshi
+          publishes for the market. Kalshi returns no two-sided book for many demo
+          markets, so the midpoint rule correctly fires nothing on them while the
+          exchange's own published price history still shows a ≥ $0.10
+          step; hiding that would be an omission, claiming it was tradeable would
+          be a fabrication, so the row carries its basis and a link to the
+          candlestick response behind both numbers. These rows never enter the
+          model shortlist, which stays gated on an executable midpoint. An empty
+          book — <code>0.0000</code> bid against <code>1.0000</code> ask, the
+          documented
+          <a href="https://docs.kalshi.com/getting_started/orderbook_responses"
+             target="_blank" rel="noreferrer">bids-only</a> shape of a market with
+          nothing resting — is not used as a price anywhere on this site.</p>
           <h2>Fees</h2>
           <p>Simulated fills use Kalshi's published taker fee,
           <code>ceil(M × 0.07 × C × P × (1 − P))</code> to the cent, from the
@@ -130,6 +147,7 @@
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
           </ul>
+          <h2>Verification logs</h2><p>Every row on this site links the API response it came from; these are the sessions that read those links back and recorded what matched. <code>VERIFICATION-d6a0282d.md</code> is the most recent, and <code>audit/verify-d6a0282d.json</code> is its machine-readable twin.</p><ul><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/AUDIT_2026-11-20.md" target="_blank" rel="noreferrer"><code>AUDIT_2026-11-20.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/AUDIT_ADDENDUM.md" target="_blank" rel="noreferrer"><code>AUDIT_ADDENDUM.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/BOARD_AUDIT_901c3b83.md" target="_blank" rel="noreferrer"><code>BOARD_AUDIT_901c3b83.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/DEPLOYMENT_AUDIT_997c9c83.md" target="_blank" rel="noreferrer"><code>DEPLOYMENT_AUDIT_997c9c83.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/INTEGRATION_REVIEW.md" target="_blank" rel="noreferrer"><code>INTEGRATION_REVIEW.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/REPO_REVIEW.md" target="_blank" rel="noreferrer"><code>REPO_REVIEW.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/SOURCE_LINK_AUDIT_4f92a11c.md" target="_blank" rel="noreferrer"><code>SOURCE_LINK_AUDIT_4f92a11c.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION-1e3b2594.md" target="_blank" rel="noreferrer"><code>VERIFICATION-1e3b2594.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION-a3137708.md" target="_blank" rel="noreferrer"><code>VERIFICATION-a3137708.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION-d6a0282d.md" target="_blank" rel="noreferrer"><code>VERIFICATION-d6a0282d.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION-dc732aa6.md" target="_blank" rel="noreferrer"><code>VERIFICATION-dc732aa6.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION-e1a76b9d.md" target="_blank" rel="noreferrer"><code>VERIFICATION-e1a76b9d.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION.md" target="_blank" rel="noreferrer"><code>VERIFICATION.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION_479bbd2f.md" target="_blank" rel="noreferrer"><code>VERIFICATION_479bbd2f.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION_79cc0bd5.md" target="_blank" rel="noreferrer"><code>VERIFICATION_79cc0bd5.md</code></a></li><li><a href="https://github.com/wingbangboozle1-lang/Trade2/blob/main/VERIFICATION_856e184e.md" target="_blank" rel="noreferrer"><code>VERIFICATION_856e184e.md</code></a></li></ul>
         </section>
         <footer class="site-footer">
           <span>Simulated trading and public demo market data. Not investment advice.</span>

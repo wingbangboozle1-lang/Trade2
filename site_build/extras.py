@@ -662,6 +662,89 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
 
 SUGGESTIONS: list[dict[str, Any]] = [
     {
+        "group": "Measured this session (2026-11-21) — what the numbers say to do next",
+        "items": [
+            {
+                "title": "Let the desk poll quotes itself between collector runs",
+                "what": "The browser can call the demo REST API directly: the "
+                        "probe in <code>docs/data/capabilities.json</code> got "
+                        "<code>access-control-allow-origin: "
+                        "https://wingbangboozle1-lang.github.io</code> on "
+                        "<code>GET /markets?limit=1</code>, and the answer carries "
+                        "<code>cache-control: public, max-age=5</code>. So the "
+                        "tracked-market table, both chats' prices and the Last "
+                        "column can refresh every ~5-15 s for the visible rows, "
+                        "instead of waiting for the next collector commit.",
+                "why": "The snapshot is only as fresh as the last Actions run. "
+                       "A trader deciding on a $0.10 swing needs the quote that "
+                       "produced it, not the one from 30 minutes ago — and the "
+                       "exchange already allows the read without a key.",
+                "effort": "Low",
+                "status": "proposed",
+                "status_label": "Proposed",
+                "source": "https://docs.kalshi.com/api-reference/market/get-markets",
+                "source_label": "GET /markets (official)",
+            },
+            {
+                "title": "Fetch the tracked set in one request with <code>tickers=</code>",
+                "what": "<code>GET /markets</code> accepts a <code>tickers</code> "
+                        "list, and when it is the only filter the docs promise "
+                        "every matching market in one response with no paging. "
+                        "One call could refresh all 750 tracked rows instead of a "
+                        "loop.",
+                "why": "The collector's own budget is the reason it tracks 12 "
+                       "series per topic rather than every market in scope. "
+                       "Batch reads are the cheap way to widen coverage without "
+                       "hitting the rate limit.",
+                "effort": "Low",
+                "status": "proposed",
+                "status_label": "Proposed",
+                "source": "https://docs.kalshi.com/api-reference/market/get-markets",
+                "source_label": "Paging and ordering note (official)",
+            },
+            {
+                "title": "One alert engine, one snapshot",
+                "what": "The site currently measures swings twice: the root "
+                        "collector compares live order-book mids, the second "
+                        "collector compares published candlestick closes, and the "
+                        "all-events chat now stitches the two together at build "
+                        "time (<code>site_build/swingfeed.py</code>). Moving both "
+                        "bases into one collector pass — one row shape, one "
+                        "<code>quality</code> field, one file — removes the "
+                        "staleness coupling between them.",
+                "why": "Before the stitch, the landing page could say \"zero "
+                       "swings\" while the alert history 30 lines down listed "
+                       "six. Any future renderer that forgets the second file "
+                       "re-creates that contradiction.",
+                "effort": "Medium",
+                "status": "proposed",
+                "status_label": "Proposed",
+                "source": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+                "source_label": "Candlestick endpoint (official)",
+            },
+            {
+                "title": "Second-level detail still needs a stream, not a poll",
+                "what": "The seconds window can only show what the API has "
+                        "already cached (<code>max-age=5</code>), and the "
+                        "documented WebSocket handshake returns "
+                        "<code>401 Unauthorized</code> without API-key headers, "
+                        "which a public page must not hold. Keep the sub-minute "
+                        "chart honest by labelling bar size, and put a tiny "
+                        "server-side fan-out in front of the WS feed if "
+                        "true tick-level detail is wanted.",
+                "why": "Two of the three collectors' probes say the same thing: "
+                       "anonymous streaming is not available, so anything that "
+                       "looks like a tick chart from a poll is a labelling bug "
+                       "waiting to be believed.",
+                "effort": "High",
+                "status": "blocked",
+                "status_label": "Needs a server",
+                "source": "https://docs.kalshi.com/websockets/websocket-connection",
+                "source_label": "WebSocket connection (official)",
+            },
+        ],
+    },
+    {
         "group": "Liveness — how the data arrives",
         "items": [
             {

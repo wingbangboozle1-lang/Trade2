@@ -1,0 +1,281 @@
+{
+ "branch": "arena/d6a0282d-trade2",
+ "checks": [
+  {
+   "fields": {
+    "open_interest_contracts": 58062.52,
+    "open_interest_notional": 58062.52,
+    "volume_contracts": 58071.52
+   },
+   "file": "index.html",
+   "id": 1,
+   "live": {
+    "notional_value_dollars": "1.0000",
+    "open_interest_fp": "58062.52",
+    "volume_fp": "58071.52"
+   },
+   "ticker": "KXAAAGASM-26NOV30-4.70",
+   "verdict": "EXACT"
+  },
+  {
+   "fields": {
+    "yes_ask": null,
+    "yes_bid": null
+   },
+   "file": "index.html",
+   "id": 2,
+   "live": {
+    "yes_ask_dollars": "1.0000",
+    "yes_bid_dollars": "0.0000"
+   },
+   "resolution": "fixed by K2: quote shown with an 'empty book' note",
+   "ticker": "KXAAAGASM-26NOV30-4.70",
+   "verdict": "WRONG-under-report"
+  },
+  {
+   "fields": {
+    "last_price": "absent from the table"
+   },
+   "file": "index.html",
+   "id": 3,
+   "live": {
+    "last_price_dollars": "0.0200"
+   },
+   "resolution": "fixed by K2: Last column added",
+   "ticker": "KXAAAGASM-26NOV30-4.70",
+   "verdict": "WRONG-omission"
+  },
+  {
+   "fields": {
+    "delta": 0.22,
+    "from": 0.17,
+    "t": 1795241520,
+    "t_iso": "2026-11-21T06:12:00+00:00",
+    "to": 0.39
+   },
+   "file": "docs/data/alerts.json",
+   "id": 4,
+   "live": {
+    "close_1795241460": "0.1700",
+    "close_1795241520": "0.3900",
+    "close_1795241580": "0.1700"
+   },
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "verdict": "EXACT"
+  },
+  {
+   "fields": {
+    "alert_stats.fired_this_run": 0
+   },
+   "file": "data/live.json",
+   "id": 5,
+   "live": {
+    "yes_ask.close_dollars": "0.1700",
+    "yes_bid.close_dollars": "0.1600 (every bar)"
+   },
+   "note": "midpoint basis moved $0.00 while the trade close moved $0.22; the two engines measure different things",
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "verdict": "EXACT-and-consistent"
+  },
+  {
+   "fields": {
+    "expected_expiration": "2026-11-22T00:00:00Z",
+    "last_price": 0.17,
+    "open_interest_fp": 58179.95,
+    "price_level_structure": "tapered_deci_cent",
+    "volume_fp": 90917.08,
+    "yes_bid": 0
+   },
+   "file": "docs/data/markets.json",
+   "id": 6,
+   "live": {
+    "expected_expiration_time": "2026-11-22T00:00:00Z",
+    "last_price_dollars": "0.1700",
+    "open_interest_fp": "58179.95",
+    "price_level_structure": "tapered_deci_cent",
+    "volume_fp": "91170.46",
+    "yes_bid_dollars": "0.1600"
+   },
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "verdict": "EXACT x4, DRIFT x2 (yes_bid, volume_fp)"
+  },
+  {
+   "derived_from": {
+    "last_price": 0.17,
+    "volume_24h_fp": 13196.86
+   },
+   "fields": {
+    "notional_usd": 2243.47
+   },
+   "file": "docs/data/markets.json",
+   "id": 7,
+   "resolution": "docs table header relabelled '$ volume (derived)' with the formula",
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "verdict": "EXACT-to-its-definition"
+  },
+  {
+   "fields": {
+    "status": "open"
+   },
+   "file": "docs/data/markets.json",
+   "id": 8,
+   "live": {
+    "status": "active"
+   },
+   "resolution": "api_status added in collector/runner.py and docs/assets/app.js",
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "verdict": "WRONG-as-published (translated)"
+  },
+  {
+   "fields": {
+    "result": "yes",
+    "settlement_ts": "2026-11-20T10:35:14.609488Z",
+    "settlement_value_dollars": "1.0000",
+    "status": "finalized"
+   },
+   "file": "data/resolutions.json",
+   "id": 9,
+   "live": {
+    "result": "yes",
+    "settlement_ts": "2026-11-20T10:35:14.609488Z",
+    "settlement_value_dollars": "1.0000",
+    "status": "finalized"
+   },
+   "ticker": "KXAAAGASCDAK-26NOV20-LD",
+   "verdict": "EXACT"
+  },
+  {
+   "fields": {
+    "result": "no",
+    "settlement_value_dollars": "0.0000"
+   },
+   "file": "data/resolutions.json",
+   "id": 10,
+   "live": {
+    "result": "no",
+    "settlement_value_dollars": "0.0000"
+   },
+   "ticker": "KXAAAGASCDAK-26NOV20-LI",
+   "verdict": "EXACT"
+  },
+  {
+   "fields": {
+    "best_no_bid": 0.97,
+    "implied_yes_ask": 0.03,
+    "no_bid_contracts_at_097": 4144.59,
+    "yes_bids": [
+     [
+      0.02,
+      8333.33
+     ],
+     [
+      0.01,
+      16666.66
+     ]
+    ]
+   },
+   "file": "data/live.json",
+   "id": 11,
+   "live": {
+    "no_bid_at_097": 3901.62,
+    "yes_dollars": [
+     [
+      "0.0100",
+      "16666.66"
+     ],
+     [
+      "0.0200",
+      "8333.33"
+     ]
+    ]
+   },
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "verdict": "EXACT on the YES side and on the ordering rule; DRIFT on one NO size"
+  },
+  {
+   "fields": {
+    "no_level_097": 4163.89
+   },
+   "file": "docs/data/orderbooks.json",
+   "id": 12,
+   "live": {
+    "read_later": 3901.62,
+    "root_snapshot_same_instant": 4144.59
+   },
+   "ticker": "KXAAAGASW-26NOV23-3.6400",
+   "verdict": "three values, three reads - reported, not reconciled"
+  }
+ ],
+ "cleared_false_alarms": [
+  "settlement_value looked blank in data/resolutions.json - the key there is settlement_value_dollars and it is populated",
+  "root site status mapping - assets/live.json already publishes the verbatim 'active' / 'finalized'"
+ ],
+ "exchange_status": {
+  "live": {
+   "exchange_active": true,
+   "indexes": 4,
+   "intra_exchange_transfers_active": true,
+   "trading_active": true
+  },
+  "note": "per-index intra_exchange_transfers_active is dropped by the summary projection",
+  "published_run_meta": {
+   "exchange_active": true,
+   "indexes": 4,
+   "trading_active": true
+  },
+  "verdict": "EXACT"
+ },
+ "fetches": [
+  "https://demo-api.kalshi.co/trade-api/v2/exchange/status",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+  "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795238665&end_ts=1795242265&period_interval=1",
+  "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795241400&end_ts=1795241640&period_interval=1",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASCDAK-26NOV20-LD",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASCDAK-26NOV20-LI",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400/orderbook?depth=10",
+  "https://external-api.demo.kalshi.co/trade-api/v2/markets?status=open&limit=1"
+ ],
+ "method": {
+  "live_reads_via": "platform document fetcher, raw JSON body",
+  "sandbox_shell_egress": "none for Kalshi hosts (curl: SSL_ERROR_SYSCALL)",
+  "verdicts": {
+   "DRIFT": "differs, explained by snapshot age",
+   "EXACT": "published value equals the live value",
+   "WRONG": "does not follow from the cited source"
+  }
+ },
+ "official_docs_pages": [
+  "https://docs.kalshi.com/api-reference/market/get-markets",
+  "https://docs.kalshi.com/getting_started/orderbook_responses",
+  "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+  "https://docs.kalshi.com/getting_started/market_settlement",
+  "https://docs.kalshi.com/websockets/websocket-connection",
+  "https://docs.kalshi.com/getting_started/api_keys"
+ ],
+ "published_snapshot_verified": {
+  "collector_run": "2026-11-21T06:30:04Z",
+  "docs_data_generated_at": "2026-11-21T06:24:58.987284+00:00",
+  "live_json_generated_at": "2026-11-21T06:28:00Z",
+  "run_meta_head_commit": "06738d1bede2b12502704c9fe40331b2fbcc971e"
+ },
+ "session": "arena-d6a0282d",
+ "started_utc": "2026-11-21T06:41:00Z",
+ "still_blocked": [
+  {
+   "item": "demo account portfolio + order placement",
+   "reason": "no API key pair in this repository",
+   "source": "https://docs.kalshi.com/getting_started/api_keys"
+  },
+  {
+   "item": "kalshi-dashboard resolved/pending tables",
+   "logged_as": "K-F1",
+   "reason": "scripts/collect.mjs seeds its watch list from per-run state only (line 170)"
+  },
+  {
+   "item": "anonymous streaming for sub-second charts",
+   "reason": "handshake returns 401 without API-key headers; REST answers are cached max-age=5",
+   "source": "https://docs.kalshi.com/websockets/websocket-connection"
+  }
+ ]
+}

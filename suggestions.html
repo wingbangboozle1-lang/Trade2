@@ -47,7 +47,7 @@
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot 2026-11-21T06:28:00Z</time>
-            <span class="snap-age" id="snapshotAge" data-generated-ts="1795242480.3907638">32 min old</span>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795242480.3907638">44 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -69,6 +69,54 @@
           alone.</p></div>
         </div>
         
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">✦</span><div>
+              <h2>Measured this session (2026-11-21) — what the numbers say to do next</h2>
+              <p>What would make the desk more live and more usable</p></div></div>
+          </div>
+          <div class="sug-grid">
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Let the desk poll quotes itself between collector runs</h3>
+                <span class="sug-status proposed">Proposed</span>
+              </div>
+              <p class="sug-what"><b>What</b> The browser can call the demo REST API directly: the probe in <code>docs/data/capabilities.json</code> got <code>access-control-allow-origin: https://wingbangboozle1-lang.github.io</code> on <code>GET /markets?limit=1</code>, and the answer carries <code>cache-control: public, max-age=5</code>. So the tracked-market table, both chats' prices and the Last column can refresh every ~5-15 s for the visible rows, instead of waiting for the next collector commit.</p>
+              <p class="sug-why"><b>Why</b> The snapshot is only as fresh as the last Actions run. A trader deciding on a $0.10 swing needs the quote that produced it, not the one from 30 minutes ago — and the exchange already allows the read without a key.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">GET /markets (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Fetch the tracked set in one request with &lt;code&gt;tickers=&lt;/code&gt;</h3>
+                <span class="sug-status proposed">Proposed</span>
+              </div>
+              <p class="sug-what"><b>What</b> <code>GET /markets</code> accepts a <code>tickers</code> list, and when it is the only filter the docs promise every matching market in one response with no paging. One call could refresh all 750 tracked rows instead of a loop.</p>
+              <p class="sug-why"><b>Why</b> The collector's own budget is the reason it tracks 12 series per topic rather than every market in scope. Batch reads are the cheap way to widen coverage without hitting the rate limit.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Low</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noreferrer">Paging and ordering note (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>One alert engine, one snapshot</h3>
+                <span class="sug-status proposed">Proposed</span>
+              </div>
+              <p class="sug-what"><b>What</b> The site currently measures swings twice: the root collector compares live order-book mids, the second collector compares published candlestick closes, and the all-events chat now stitches the two together at build time (<code>site_build/swingfeed.py</code>). Moving both bases into one collector pass — one row shape, one <code>quality</code> field, one file — removes the staleness coupling between them.</p>
+              <p class="sug-why"><b>Why</b> Before the stitch, the landing page could say "zero swings" while the alert history 30 lines down listed six. Any future renderer that forgets the second file re-creates that contradiction.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: Medium</span>
+              <a class="source-link" href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">Candlestick endpoint (official) ↗</a></div>
+            </article>
+            <article class="sug-card">
+              <div class="sug-head">
+                <h3>Second-level detail still needs a stream, not a poll</h3>
+                <span class="sug-status blocked">Needs a server</span>
+              </div>
+              <p class="sug-what"><b>What</b> The seconds window can only show what the API has already cached (<code>max-age=5</code>), and the documented WebSocket handshake returns <code>401 Unauthorized</code> without API-key headers, which a public page must not hold. Keep the sub-minute chart honest by labelling bar size, and put a tiny server-side fan-out in front of the WS feed if true tick-level detail is wanted.</p>
+              <p class="sug-why"><b>Why</b> Two of the three collectors' probes say the same thing: anonymous streaming is not available, so anything that looks like a tick chart from a poll is a labelling bug waiting to be believed.</p>
+              <div class="sug-foot"><span class="sug-effort">Effort: High</span>
+              <a class="source-link" href="https://docs.kalshi.com/websockets/websocket-connection" target="_blank" rel="noreferrer">WebSocket connection (official) ↗</a></div>
+            </article></div>
+        </section>
         <section class="panel">
           <div class="panel-title">
             <div><span class="section-icon violet">✦</span><div>
