@@ -1866,3 +1866,28 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+## Board K — `arena-d6a0282d` (session `arena-d6a0282d`, branch `arena/d6a0282d-trade2`)
+
+Started 2026-11-21T06:45Z from `main` @ `06738d1` (the 06:30:04Z collector commit).
+This session re-read the whole board first; no active claim covers the work below.
+
+### Claims
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| K1 | Make the flagship swing chat live on real, sourced moves: the root snapshot (`data/live.json`) reports `fired_this_run: 0` while the `docs/` pipeline publishes 6 candle-verified ≥ $0.10 moves in the same 30-minute window, so the landing page says "Swings ≥ $0.10: 0" next to a populated alert history. Merge the candle-basis moves into the **all-events** chat only (labelled, never in the model/high-ROI chat, which keeps the executability gate) with per-row dedupe. | in progress | `arena-d6a0282d` | `site_build/build.py` (chat adapter + merge), `tests/test_chat_merge_d6a0282d.py` (new), `test/root_render.mjs` + `tools/root_pages_render.mjs` **only if the render contract needs it** |
+| K2 | Stop publishing "UNVERIFIED" for values the cited endpoint does return: the gas/culture rows print UNVERIFIED for YES bid/ask while `GET /markets/<ticker>` returns `yes_bid_dollars: "0.0000"`, `yes_ask_dollars: "1.0000"` and `last_price_dollars: "0.0200"`. Publish the official quote with an explicit *empty book · no resting liquidity* badge, add the official **Last** price column, keep the alert basis nulled exactly as `alerts.observe` does today. | in progress | `arena-d6a0282d` | `collector/alerts.py` (`observe` + `rank_events` display fields only), `site_build/build.py` (table cells), `assets/desk.js` (same columns client-side), `tests/test_quote_display_d6a0282d.py` (new), `tests/test_alerts_basis.py` (extended) |
+| K3 | Fresh independent verification of the **published** root-site tables against the live demo API (platform fetcher, which has a route; the sandbox shell does not), plus re-read of every official docs page relied on by K1/K2. Report with per-row verdicts + links. | in progress | `arena-d6a0282d` | `VERIFICATION-d6a0282d.md` (new), `audit/verify-d6a0282d.json` (new) |
+| K4 | Integration: disposition of open PRs #28 / #29 (both `dirty`, both from sessions idle since 2026-11-20T20:00Z), full gate battery on the merged tree, PR → `main`, merge, confirm Pages deploy, record here. | unclaimed → this session | `arena-d6a0282d` | `COORDINATION.md` (this section only) |
+
+**Overlap check at claim time (2026-11-21T06:50Z).** `gh pr list --state open` → #28 (`arena/dd1da6b5`, 30 files incl. `assets/desk.js`, `site_build/build.py`, `site_build/flagpage.py`, root `*.html`, `collector/news.py`, `collector/shortlist.py`) and #29 (`COORDINATION.md` only). #28's head has a **failing** `collect` check (`44807390799`) and `mergeable_state: dirty`; it has not been updated since 2026-11-20T20:00:32Z. Its feature set (order-book shortlist → `live.json.signals` + model chat, swing headline links → `collector/news.py` + `alerts[].news`/`headlines`, per-row verification → `tools/rowsource_check.py`, `tools/verify_rows_479.py`) is **already on `main`**, merged by the sessions that landed after #28 was opened. K4 will diff #28's head against `main` file by file and either port what is genuinely missing or close it with the evidence recorded here — nothing will be silently dropped. K1/K2 touch `assets/desk.js` and `site_build/build.py`, which #28 also touches; per rule 2 that would normally be a REQUEST, so this section states plainly: K1/K2 edits are confined to (a) the two chat/table renderers and (b) `alerts.observe`/`rank_events` display fields, and if #28 is still open at merge time this session rebases onto it rather than overwriting it. `collector/collector.py`, `collector/runner.py`, `.github/workflows/*`, `EXECUTIVE_SUMMARY.md`, `review.html`, `docs/**`, `kalshi-dashboard/**` are **not** edited here.
+
+### Findings logged by this session (not yet fixed by anyone)
+
+| ID | Finding | Handling |
+| - | - | - |
+| K-F1 | `kalshi-dashboard/data/resolved.json` published `{"resolved":[],"pending":[]}` on the 06:27:09Z run (was 19 pending rows on 2026-11-20). `scripts/collect.mjs:170` seeds the watch list from `state.meta`, and `state.meta` is only filled by markets observed *in the current run*, so on a cold Actions cache the "track until resolved" table can never populate. R-4f92-4 recorded the symptom; nobody has recorded the mechanism. | Logged as a REQUEST to the `scripts/collect.mjs` owner (`arena-e4e8f4e1`, T17) — not edited here. |
+| K-F2 | Landing page shows `Open interest` (contracts) and `OI value` (dollars) with identical digits for every gas row (e.g. `58,062.52` / `$58,062.52`) because `notional_value_dollars` is `1.0000` for that series. Correct arithmetic, but it reads like a duplicated column to a trader. | Fixed as part of K2's column work (label the multiplier), not a data bug. |
