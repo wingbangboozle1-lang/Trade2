@@ -70,6 +70,18 @@ jobs:
             echo "analysis unchanged"
             exit 0
           fi
+          # The provenance age and the generated_at stamp move on every run even when
+          # nothing was learnt. Don't spend a commit on the clock: only commit when at
+          # least one substantive line differs, and put the timestamps back if not.
+          substance=$(git diff --cached --unified=0 -- STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json \
+            | grep -E '^[+-][^+-]' \
+            | grep -vE 'generated_at|_Generated |Generated [0-9]{4}-|h before this analysis|When that book was written' \
+            | head -1)
+          if [ -z "$substance" ]; then
+            echo "only the run timestamp moved; nothing to publish"
+            git checkout HEAD -- STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json
+            exit 0
+          fi
           git commit -m "docs(analysis): refresh strategy lab from the current book [skip ci]"
           for i in 1 2 3 4 5; do
             if git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then

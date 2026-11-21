@@ -229,6 +229,12 @@ class Engine:
             "opened_at": now_iso(),
             "open_periods": 0,
             "entry_fee": fee,
+            # The series' own multiplier, kept so the exit leg is priced the same way
+            # as the entry leg. The official schedule's "Non-Standard Fees" table sets
+            # per-series multipliers (some series are 0, i.e. fee-free), and
+            # `GET /series` carries the same field; charging the entry at M and the
+            # exit at the default 1 is a different trade than the one that was scored.
+            "fee_multiplier": fee_mult,
             "entry_cost": cost,
             "reason": reason,
             "status": "open",
@@ -257,7 +263,15 @@ class Engine:
         else:
             exit_price = price
             proceeds = round(contracts * price, 2)
-            fee = round(fee_taker(contracts, price), 2)  # closing crosses the book -> taker
+            # Same multiplier as the entry leg: a fee-free series exits fee-free.
+            # A position persisted before this field existed falls back to M = 1,
+            # the schedule's documented default ("M = the multiplier for each contract
+            # (default is 1 unless otherwise indicated)",
+            # https://kalshi.com/docs/kalshi-fee-schedule.pdf). An explicit None test
+            # is required: 0.0 is a real multiplier and is falsy.
+            raw_mult = pos.get("fee_multiplier")
+            exit_mult = 1.0 if raw_mult is None else float(raw_mult)
+            fee = round(fee_taker(contracts, price, exit_mult), 2)  # taker, crosses the book
             gross = round(proceeds - contracts * avg - fee, 2)
         net = round(gross - entry_fee, 2)
         self.cash = round(self.cash + proceeds - fee, 2)

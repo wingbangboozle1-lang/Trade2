@@ -204,5 +204,47 @@ class TestPayloadCarriesTheBasis(unittest.TestCase):
         self.assertIn('\"net_pnl_basis\":', text)
 
 
+class TestPerSeriesMultiplierSymmetry(unittest.TestCase):
+    """The entry leg was priced with the series' own multiplier and the exit leg with
+    the default. Official basis: the schedule's Non-Standard Fees table sets
+    per-series multipliers, and 'M = the multiplier for each contract (default is 1
+    unless otherwise indicated)' — https://kalshi.com/docs/kalshi-fee-schedule.pdf.
+    The root book already keeps `fee_multiplier` on the position and uses it on exit
+    (`collector/engine.py`); this pins that the docs-sim book does the same."""
+
+    def test_fee_free_series_exits_fee_free(self):
+        eng = Engine()
+        pos = eng.open_position("T-FREE", "yes", 0.50, "value", "quiet-value", "crypto",
+                                0.0, "series with taker multiplier 0")
+        self.assertEqual(pos["entry_fee"], 0.0)
+        self.assertEqual(pos["fee_multiplier"], 0.0)
+        closed = eng.close_position("T-FREE", 0.55, "target")
+        self.assertEqual(closed["exit_fee"], 0.0,
+                         "a fee-free entry must not be followed by a charged exit")
+        self.assertEqual(closed["pnl"], round(closed["contracts"] * 0.05, 2))
+
+    def test_charged_series_charges_both_legs(self):
+        eng = Engine()
+        pos = eng.open_position("T-M1", "yes", 0.50, "value", "quiet-value", "crypto",
+                                1.0, "standard multiplier")
+        self.assertEqual(pos["entry_fee"], 7.00)  # ceil(0.07*400*0.5*0.5)
+        closed = eng.close_position("T-M1", 0.55, "target")
+        # 0.07*400*0.55*0.45 = 6.930, already a whole cent, so the round-up changes
+        # nothing here — the point of the assertion is that the exit leg used M = 1
+        # and not the free series' 0.
+        self.assertEqual(closed["exit_fee"], 6.93)
+        self.assertEqual(closed["total_fees"], 13.93)
+
+    def test_legacy_position_defaults_to_the_documented_multiplier(self):
+        """State written before the field existed must not silently become free."""
+        eng = Engine()
+        pos = eng.open_position("T-OLD", "yes", 0.50, "value", "quiet-value", "crypto",
+                                1.0, "t")
+        del eng.positions["T-OLD"]["fee_multiplier"]
+        closed = eng.close_position("T-OLD", 0.55, "target")
+        self.assertEqual(closed["exit_fee"], 6.93)
+        self.assertEqual(closed["entry_fee"], pos["entry_fee"])
+
+
 if __name__ == "__main__":
     unittest.main()
