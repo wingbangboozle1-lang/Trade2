@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T07:43:19Z",
- "generated_at_ts": 1795247287.8671398,
+ "generated_at": "2026-11-21T07:48:31Z",
+ "generated_at_ts": 1795247445.2838845,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -21,22 +21,64 @@
  "level_picks_count": 0,
  "verdicts": [],
  "verdicts_count": 0,
- "rejected_count": 3,
+ "rejected_count": 9,
  "rejection_summary": [
   {
-   "reason": "YES",
-   "count": 1
-  },
-  {
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
-   "count": 1
+   "count": 5
   },
   {
-   "reason": "the spread is $0.26, wider than $0.20, so the mid is not meaningful",
-   "count": 1
+   "reason": "the spread is $0.97, wider than $0.20, so the mid is not meaningful",
+   "count": 2
+  },
+  {
+   "reason": "the spread is $0.37, wider than $0.20, so the mid is not meaningful",
+   "count": 2
   }
  ],
  "rejected_sample": [
+  {
+   "ticker": "KXPRESNOMD-28-JAM",
+   "topic": "elections",
+   "kind": "swing",
+   "book_move": 0.4985,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-JAM",
+   "topic": "elections",
+   "kind": "level",
+   "book_move": 0.4985,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXLPGATOUR-CMEGTC26-JIIM",
+   "topic": "golf",
+   "kind": "level",
+   "book_move": 0.4983,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXLPGATOUR-CMEGTC26-JIIM",
+   "topic": "golf",
+   "kind": "swing",
+   "book_move": 0.498,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B97500",
+   "topic": "crypto",
+   "kind": "swing",
+   "book_move": 0.48,
+   "reason": "the spread is $0.97, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B97500",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.3927,
+   "reason": "the spread is $0.97, wider than $0.20, so the mid is not meaningful"
+  },
   {
    "ticker": "KXPGATOUR-THRC26-SSTE",
    "topic": "golf",
@@ -45,18 +87,18 @@
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
   },
   {
-   "ticker": "KXBTCY-27JAN0100-B97500",
+   "ticker": "KXBTCD-26NOV2103-T58299.99",
    "topic": "crypto",
-   "kind": "level",
-   "book_move": -0.0873,
-   "reason": "YES has only 0 contracts resting"
+   "kind": "swing",
+   "book_move": -0.12,
+   "reason": "the spread is $0.37, wider than $0.20, so the mid is not meaningful"
   },
   {
-   "ticker": "KXBTC15M-26NOV210245-45",
+   "ticker": "KXBTCD-26NOV2103-T58299.99",
    "topic": "crypto",
    "kind": "level",
-   "book_move": 0.055,
-   "reason": "the spread is $0.26, wider than $0.20, so the mid is not meaningful"
+   "book_move": -0.12,
+   "reason": "the spread is $0.37, wider than $0.20, so the mid is not meaningful"
   }
  ],
  "alerts_seen": 0,
