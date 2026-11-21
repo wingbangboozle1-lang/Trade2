@@ -1,7 +1,7 @@
-# TEMPORARY verification workflow (session arena-67bd954a, R2). Added on the working branch
-# only, to run one live collector pass with its own concurrency group (the shared "collect"
-# group was cancelling dispatched runs). It commits nothing; it uploads the output as an
-# artifact. This file is deleted before the PR is opened.
+# TEMPORARY verification workflow (session arena-67bd954a, R2). Lives on the working branch
+# only: GitHub logs and artifacts are not reachable from the agent sandbox, so the run writes
+# its summary into verify-67bd954a-run.json and commits the outputs back to THIS branch
+# ([skip ci]). Both the workflow and the outputs are removed/reverted before the PR.
 name: verify-67bd954a (temporary)
 
 on:
@@ -10,7 +10,7 @@ on:
     paths: [".github/workflows/verify-67bd954a.yml"]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: verify-67bd954a
@@ -22,34 +22,46 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Unit tests
         run: python3 -m unittest discover -s tests
       - name: Live collector pass (root pipeline, same command as kalshi-dashboard.yml)
+        id: collect
         run: |
-          set -o pipefail
-          python3 -u -m collector.collector --market-cap 150 --orderbook-cap 300 2>&1 | tee /tmp/collector.log
-      - name: Summaries
+          set +e
+          python3 -u -m collector.collector --market-cap 150 --orderbook-cap 300 > /tmp/collector.log 2>&1
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          tail -40 /tmp/collector.log
+      - name: Write run summary
         run: |
           python3 - <<'PY'
-          import json, collections
+          import json, collections, datetime as dt
           d = json.load(open("data/resolutions.json"))
-          rows = d["resolutions"].values()
-          print("meta:", json.dumps(d.get("meta", {}), indent=1))
-          c = collections.Counter((r.get("topic"), r.get("result")) for r in rows)
-          print("store rows:", len(d["resolutions"]), sorted(c.items()))
+          rows = list(d["resolutions"].values())
           live = json.load(open("data/live.json"))
-          print("live resolutions_count:", live.get("resolutions_count"), "errors:", live.get("errors"))
-          print("settled_this_run:", [s.get("ticker") for s in live.get("settled_this_run", [])])
+          out = {
+            "run_utc": dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "collector_exit": "${{ steps.collect.outputs.exit }}",
+            "store_rows": len(rows),
+            "store_by_topic_result": sorted([f"{k[0]}|{k[1]}", v] for k, v in collections.Counter((r.get("topic"), r.get("result")) for r in rows).items()),
+            "meta": d.get("meta", {}),
+            "live_resolutions_count": live.get("resolutions_count"),
+            "live_errors": live.get("errors"),
+            "live_settled_this_run": [s.get("ticker") for s in live.get("settled_this_run", [])],
+            "live_closed_this_run": [s.get("ticker") for s in live.get("closed_this_run", [])],
+            "resolutions_rows": rows,
+          }
+          json.dump(out, open("verify-67bd954a-run.json", "w"), indent=1, default=str)
+          print(json.dumps({k: v for k, v in out.items() if k != "resolutions_rows"}, indent=1, default=str)[:4000])
           PY
-      - uses: actions/upload-artifact@v4
-        with:
-          name: verify-67bd954a
-          path: |
-            data/resolutions.json
-            data/live.json
-            data/portfolio_state.json
-            /tmp/collector.log
-          retention-days: 7
+      - name: Commit outputs to this branch
+        run: |
+          git config user.name "verify-67bd954a[bot]"
+          git config user.email "verify-67bd954a@users.noreply.github.com"
+          git add -A data verify-67bd954a-run.json
+          git commit -m "chore(verify): arena-67bd954a live dry run [skip ci]" || echo "nothing to commit"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
