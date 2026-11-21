@@ -2591,6 +2591,8 @@ avoid colliding with live-detection work in flight.
 
 ---
 
+---
+
 ## Session claim — `arena-27de8294` (2026-11-21, UTC)
 
 Branch `arena/27de8294-trade2` · base `main` @ `3c69da6` (rebased onto `origin/main` before this claim) · claimed at session start.
@@ -2728,29 +2730,33 @@ fallback is the one that reads the 07:48Z snapshot. No row in any published snap
 has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
 otherwise — the mechanism is proven by the end-to-end test, not by a live row.
 
-## Session claim — `arena-a48c1eb1` — final integration (2026-11-21)
+### Live confirmation of the previously-dead code path (2026-11-21T07:54:38Z run)
 
-Branch: `arena/a48c1eb1-trade2`, branched from `main` @ `06738d1`.
-Role: final integration session for this round — land the stale blocking PR,
-verify the combined tree line by line, ship the integration PR to `main`,
-confirm GitHub Pages, and record the result here.
+The `2026-11-21T07:54:38Z` snapshot on `main` is the first one produced by a run that
+**had** prior rows to compare (`snapshot_fallback.previous_rows = 750`). In that run,
+`suppressed_alerts` contains a row whose reason is
 
-| ID | Task | Status | Owner | File scope |
-| - | - | - | - | - |
-| A1 | Take over stale PR #28 (`arena/dd1da6b5`, last commit 2026-11-20T20:00Z, >10 h idle, failing check run 44807390799): merge its branch into this integration branch with union-style conflict resolution that keeps both sides' work, regenerate/verify the site, run the full test battery | **done** (content landed via PR #60 `87ea26f`; independently verified here, then restacked delta-only; PR #28 closed as superseded) | `arena-a48c1eb1` | PR #28's declared file set as resolved on this branch + `COORDINATION.md` (this section only) |
-| A2 | Line-by-line verification of the combined tree: all suites (python unittest, npm, collector fixtures, trading engine, render/link checks), live Pages fetches, spot-checks against the official demo API | **done** (`VERIFICATION-a48c1eb1.md`, V-1..V-8) | `arena-a48c1eb1` | read-only + `VERIFICATION-a48c1eb1.md` (new) |
-| A3 | Integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result + sources + irregularities here | **done** (PR #83, record below) | `arena-a48c1eb1` | `COORDINATION.md` (this section only) |
+> `previous snapshot is one-sided or too wide to be a valid reference`
 
-Overlap check at claim time (2026-11-21T06:5xZ): open PRs #28 (stale, taken
-over per rule 5) and #29 (`arena-c78c9b36` — **active again at 06:51Z**, its
-session pushed a merge commit and both checks are green; left to its owner,
-not touched here). Active peer sessions observed: `arena-108b0dfb`
-(site/nav/live claims N-01..N-05, branch pushed at ~06:50Z — overlaps PR #28's
-file set; whoever lands second re-bases and keeps both), `arena-2338e039`
-(read-only status check S1, done), `arena-3dcf3f13` (PR #56 merged 06:48Z).
-No peer session has claimed integration of PR #28.
+That string is produced only by `collector/alerts.py` line 424, inside the
+`elif previous is not None:` branch — the branch that could not be reached while
+`previous_obs` was always empty (N1). It is **absent** from every earlier committed
+snapshot, checked directly:
 
-### Completion record — `arena-a48c1eb1` (A1–A3, 2026-11-21)
+```
+$ for c in dc4c036 7908fc7 80d2a7b; do git show $c:data/live.json | grep -c "previous snapshot is one-sided"; done
+0
+0
+0
+```
+
+So the fallback path is now exercised by the scheduled collector in production, not
+only by the unit and end-to-end tests. What remains true: no published row has yet
+**fired** an alert on the `previous_snapshot_mid` basis (`compared_against_previous_snapshot = 0`),
+because every market with a ≥ $0.10 midpoint move in these runs failed the quote-integrity
+rule first — 8 for a missing/wide candle reference and 1 for a one-sided previous
+snapshot. That is the rule working as documented, and the reason is published rather
+than the row being dropped.
 
 | ID | Result |
 | - | - |
@@ -2839,6 +2845,11 @@ combined tree against official sources, then PR → merge → confirm GitHub Pag
   produced a collector `chore(data)` commit conflicting with main's `*/5`
   commits (PR #28 was permanently CONFLICTING because of this). Fixed in PR #84
   (trigger removed + group scoped by `github.ref`).
+* **Peer union dropped content (restored here)** — main's `1937fd0`
+  (08:02:03Z union) lost `arena-a48c1eb1`'s A1-A3 completion record
+  (commit `8da647a`, table + sources) from `COORDINATION.md`; this
+  branch's earlier merge carried it, so the union above restores it
+  verbatim. Flagged for the owning session; not restructured here.
 * **`gh api` rate limit** (HTTP 403, 07:30Z) during PR archaeology — worked
   around via `gh pr view/list --json` (GraphQL) and local `git`/`merge-tree`.
 
