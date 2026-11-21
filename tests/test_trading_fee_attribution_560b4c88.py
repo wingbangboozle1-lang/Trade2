@@ -30,6 +30,7 @@ Run: python3 -m unittest tests.test_trading_fee_attribution_560b4c88 -v
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -42,6 +43,7 @@ from trading.engine import (  # noqa: E402
     START_CASH,
     Engine,
     fee_taker,
+    reconcile,
     stats,
 )
 
@@ -244,6 +246,155 @@ class TestPerSeriesMultiplierSymmetry(unittest.TestCase):
         closed = eng.close_position("T-OLD", 0.55, "target")
         self.assertEqual(closed["exit_fee"], 6.93)
         self.assertEqual(closed["entry_fee"], pos["entry_fee"])
+
+
+class TestStateRoundTrip(unittest.TestCase):
+    """The account has to survive the run. `main()` reads back the file `main()`
+    writes, and that file keeps cash / fees_paid / realised under `account`.
+    Reading only top-level keys reset them every run: the 2026-11-21T06:24:59Z book
+    published cash $10,000.00 against $8,688.09 implied by its own 18 rows,
+    fees_paid $0.00 against $194.87 charged, realized_pnl $0.00 next to
+    stats.all.net_pnl $413.89 in the same file, and `equity` = cash + marks, i.e.
+    overstated by exactly $1,311.91."""
+
+    def _payload(self, eng):
+        """The shape trading.engine.main() writes."""
+        return {
+            "generated_at": "2026-11-21T08:00:00+00:00",
+            "mode": "simulated-paper",
+            "account": {"starting_cash": START_CASH, "cash": eng.cash,
+                        "equity": eng.equity(), "realized_pnl": eng.realized_pnl,
+                        "fees_paid": eng.fees_paid, "open_positions": len(eng.positions),
+                        "daily_loss_cap": 150.0, "blocked_today": eng.blocked_today,
+                        "day_key": eng.day_key, "day_realized": eng.day_realized,
+                        "day_start_equity": eng.day_start_equity},
+            "positions": list(eng.positions.values()),
+            "trades": eng.trades[-300:],
+            "stats": stats(eng.trades),
+            "equity_curve": eng.equity_curve,
+        }
+
+    def test_money_fields_are_restored_from_the_account_block(self):
+        eng = Engine()
+        eng.open_position("T-1", "yes", 0.40, "value", "quiet-value", "crypto", 1.0, "t")
+        closed = eng.close_position("T-1", 0.46, "target")
+        self.assertIsNotNone(closed)
+        reloaded = Engine(self._payload(eng))
+        self.assertEqual(reloaded.cash, eng.cash)
+        self.assertEqual(reloaded.fees_paid, eng.fees_paid)
+        self.assertEqual(reloaded.realized_pnl, eng.realized_pnl)
+        self.assertEqual(reloaded.day_realized, eng.day_realized)
+        self.assertGreater(reloaded.fees_paid, 0.0, "fees actually paid must not reset")
+        self.assertAlmostEqual(reloaded.cash - START_CASH, reloaded.realized_pnl, places=2)
+
+    def test_top_level_state_still_wins(self):
+        """An engine-state dict written by a test or a tool keeps working."""
+        state = {"cash": 1234.56, "fees_paid": 9.0, "realized_pnl": -3.0,
+                 "account": {"cash": 1.0, "fees_paid": 2.0, "realized_pnl": 3.0}}
+        eng = Engine(state)
+        self.assertEqual(eng.cash, 1234.56)
+        self.assertEqual(eng.fees_paid, 9.0)
+        self.assertEqual(eng.realized_pnl, -3.0)
+
+    def test_a_stale_day_key_resets_the_daily_cap(self):
+        payload = self._payload(Engine())
+        payload["account"]["day_key"] = "2000-01-01"
+        payload["account"]["day_realized"] = -500.0
+        payload["account"]["blocked_today"] = True
+        eng = Engine(payload)
+        self.assertEqual(eng.day_realized, 0.0)
+        self.assertFalse(eng.blocked_today, "yesterday's block must not last forever")
+
+    def test_todays_day_key_keeps_the_block(self):
+        eng = Engine()
+        payload = self._payload(eng)
+        payload["account"]["day_key"] = eng.day_key
+        payload["account"]["day_realized"] = -500.0
+        payload["account"]["blocked_today"] = True
+        reloaded = Engine(payload)
+        self.assertTrue(reloaded.blocked_today)
+        self.assertIsNone(reloaded.open_position("T-BLOCKED", "yes", 0.40, "value",
+                                                 "x", "crypto", 1.0, "t"),
+                          "the published risk limit has to bind")
+
+
+class TestReconciliationAndEndToEnd(unittest.TestCase):
+    """`reconcile()` publishes the ledger-implied numbers beside the account ones,
+    and an end-to-end two-run sequence proves the bankroll no longer resets."""
+
+    def _write_inputs(self, data_dir: Path, bid: float, alerts):
+        import json as _json
+        (data_dir / "markets.json").write_text(_json.dumps({"rows": [
+            {"ticker": "T-E2E", "status": "open", "topic": "crypto", "fee_multiplier": 1.0,
+             "event_ticker": "T-E2E-EV"}]}))
+        (data_dir / "orderbooks.json").write_text(_json.dumps({"books": {
+            "T-E2E": {"best_yes_bid": bid, "best_no_bid": round(bid - 0.01, 4),
+                      "yes_depth_usd": 1000, "no_depth_usd": 1000}}}))
+        (data_dir / "alerts.json").write_text(_json.dumps({"alerts": alerts}))
+        (data_dir / "resolutions.json").write_text(_json.dumps({"rows": []}))
+
+    def test_reconcile_is_zero_for_a_consistent_book(self):
+        eng = Engine()
+        eng.open_position("T-R", "yes", 0.40, "value", "quiet-value", "crypto", 1.0, "t")
+        eng.close_position("T-R", 0.46, "target")
+        rec = reconcile(eng)
+        self.assertEqual(rec["cash_delta"], 0.0)
+        self.assertEqual(rec["fees_delta"], 0.0)
+        self.assertEqual(rec["realized_delta"], 0.0)
+        self.assertFalse(rec["log_may_be_truncated"])
+        self.assertGreater(rec["fees_implied_by_trade_log"], 0.0)
+
+    def test_two_runs_keep_the_account_and_the_lab_can_recompute_it(self):
+        import json as _json
+        import trading.engine as engine_mod
+        tmp = Path(tempfile.mkdtemp())
+        saved = engine_mod.DATA
+        try:
+            engine_mod.DATA = str(tmp)
+            self._write_inputs(tmp, 0.50, [{"ticker": "T-E2E", "delta": -0.20,
+                                            "window": "60m"}])
+            self.assertEqual(engine_mod.main([]), 0)
+            first = _json.loads((tmp / "portfolio.json").read_text())
+            self.assertEqual(first["account"]["open_positions"], 1)
+            self.assertLess(first["account"]["cash"], START_CASH,
+                            "run 1 spent something; the published cash must show it")
+            self.assertEqual(first["ledger_reconciliation"]["cash_delta"], 0.0)
+
+            # run 2: no new alerts, mark moves +0.06 -> the position takes profit
+            self._write_inputs(tmp, 0.57, [])
+            self.assertEqual(engine_mod.main([]), 0)
+            second = _json.loads((tmp / "portfolio.json").read_text())
+            rec = second["ledger_reconciliation"]
+            self.assertEqual(rec["cash_delta"], 0.0)
+            self.assertEqual(rec["fees_delta"], 0.0)
+            self.assertEqual(rec["realized_delta"], 0.0)
+            # The exit happened (one closed round trip) and the book then took the
+            # next opportunity its own rules allow, so `open_positions` is 1 again —
+            # what this test pins is that the money fields carried across the run
+            # instead of resetting, and that they stay consistent with the ledger.
+            self.assertEqual(second["stats"]["all"]["trades"], 1)
+            self.assertGreater(second["account"]["fees_paid"], 0.0,
+                               "both legs were charged and both were kept")
+            self.assertLess(second["account"]["cash"], START_CASH,
+                            "an account holding a position has spent money")
+            held = second["positions"][0] if second["positions"] else {}
+            held_cost = round(float(held.get("contracts") or 0)
+                              * float(held.get("avg_price") or 0)
+                              + float(held.get("entry_fee") or 0), 2)
+            self.assertAlmostEqual(second["account"]["cash"] - START_CASH,
+                                   second["account"]["realized_pnl"] - held_cost, places=2,
+                                   msg="cash = start + realised - what is still held")
+            # Two different, both-correct fee scopes, pinned so they can never be
+            # confused again: the account total is every leg charged so far (open
+            # positions included), while `stats.fees` is the two legs of each CLOSED
+            # round trip — which is what the strategy-lab cross-check compares.
+            self.assertEqual(second["account"]["fees_paid"], rec["fees_implied_by_trade_log"])
+            closed_rows = [r for r in second["trades"] if r["action"] == "close"]
+            self.assertEqual(second["stats"]["all"]["fees"],
+                             round(sum(float(r["fee"] or 0) + float(r["entry_fee"] or 0)
+                                       for r in closed_rows), 2))
+        finally:
+            engine_mod.DATA = saved
 
 
 if __name__ == "__main__":

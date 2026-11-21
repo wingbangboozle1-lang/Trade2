@@ -75,6 +75,7 @@ MAX_HOLD_PERIODS = 40          # force-exit after this many candle periods
 REVERSION_SHARE = 0.30         # assumed fraction of a swing that reverts (assumption!)
 ROI_MIN = 0.02                 # min expected net $/contract after fee+spread
 SPREAD_MAX = 0.06              # skip markets wider than this
+TRADE_LOG_CAP = 4000           # rows kept in the published ledger (see reconcile())
 
 FEE_SCHEDULE_URL = "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
 FEE_SCHEDULE_PAGE = "https://kalshi.com/fee-schedule"
@@ -152,7 +153,25 @@ def book_edge(book: Dict) -> Optional[float]:
 class Engine:
     def __init__(self, state: Optional[Dict] = None) -> None:
         state = state or {}
-        self.cash: float = float(state.get("cash", START_CASH))
+        # This engine reads back the very file it writes (docs/data/portfolio.json),
+        # and that file keeps its money fields inside `account`. Reading top-level
+        # keys alone therefore reset the bankroll to $10,000 on every run while the
+        # positions and the trade log carried over: the 2026-11-21T06:24:59Z book
+        # published cash 10000.00 against 8688.09 implied by its own 18 trade rows,
+        # fees_paid 0.00 against 194.87 charged, and realized_pnl 0.00 in the same
+        # file that published stats.all.net_pnl 413.89. `equity` = cash + marks, so
+        # the headline on the portfolio page was overstated by exactly the
+        # difference: $1,311.91.
+        acct = state.get("account") if isinstance(state.get("account"), dict) else {}
+
+        def persisted(key: str, default: Any) -> Any:
+            """Top level first, then the `account` block, then the default."""
+            for src in (state, acct):
+                if key in src and src[key] is not None:
+                    return src[key]
+            return default
+
+        self.cash: float = float(persisted("cash", START_CASH))
         raw_pos = state.get("positions", {})
         if isinstance(raw_pos, list):  # JSON round-trip stores positions as a list
             self.positions = {p["ticker"]: p for p in raw_pos if isinstance(p, dict) and p.get("ticker")}
@@ -160,12 +179,20 @@ class Engine:
             self.positions = dict(raw_pos)
         self.trades: List[Dict] = list(state.get("trades", []))
         self.equity_curve: List[Dict] = list(state.get("equity_curve", []))
-        self.fees_paid: float = float(state.get("fees_paid", 0.0))
-        self.realized_pnl: float = float(state.get("realized_pnl", 0.0))
-        self.day_key: str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-        self.day_start_equity: float = float(state.get("day_start_equity", self.equity()))
-        self.day_realized: float = 0.0
-        self.blocked_today = False
+        self.fees_paid: float = float(persisted("fees_paid", 0.0))
+        self.realized_pnl: float = float(persisted("realized_pnl", 0.0))
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        self.day_key: str = str(persisted("day_key", today))
+        # The daily loss cap is a *daily* rule, so it only survives a run if the day
+        # and the day's realised total survive with it. A stale day key resets both.
+        if self.day_key != today:
+            self.day_key = today
+            self.day_realized: float = 0.0
+            self.blocked_today = False
+        else:
+            self.day_realized = float(persisted("day_realized", 0.0))
+            self.blocked_today = bool(persisted("blocked_today", False))
+        self.day_start_equity: float = float(persisted("day_start_equity", self.equity()))
 
     # ------------------------------------------------------------ valuation
     def equity(self, marks: Optional[Dict[str, float]] = None) -> float:
@@ -325,8 +352,8 @@ class Engine:
                 "fee_schedule_url": FEE_SCHEDULE_URL,
             }
         )
-        if len(self.trades) > 4000:
-            self.trades = self.trades[-4000:]
+        if len(self.trades) > TRADE_LOG_CAP:
+            self.trades = self.trades[-TRADE_LOG_CAP:]
 
     # -------------------------------------------------------------- signals
     def signals(self, markets: List[Dict], books: Dict[str, Dict], alerts: List[Dict]) -> List[Dict]:
@@ -530,6 +557,44 @@ def _match_entry_fees(trades: List[Dict]) -> Tuple[List[Dict], int]:
     return closes, paired
 
 
+def reconcile(eng: "Engine") -> Dict[str, Any]:
+    """The account fields beside the ones implied by the engine's own trade log.
+
+    Every number here is derived from rows the site already publishes, so a reader
+    can check the bankroll without re-running anything. Before 2026-11-21 the
+    published `cash`, `fees_paid` and `realized_pnl` were the reset defaults of a new
+    run while the log carried the whole history, and nothing on the page said so;
+    `cash_delta` is the field that can never quietly disagree again.
+    """
+    implied = START_CASH
+    fees = 0.0
+    realized = 0.0
+    for r in eng.trades:
+        fee = float(r.get("fee") or 0.0)
+        fees = round(fees + fee, 2)
+        if r.get("action") == "open":
+            implied -= float(r.get("contracts") or 0) * float(r.get("price") or 0.0) + fee
+        elif r.get("action") == "close":
+            implied += float(r.get("contracts") or 0) * float(r.get("price") or 0.0) - fee
+            realized += float(r.get("pnl") or 0.0)
+    return {
+        "cash": round(eng.cash, 2),
+        "cash_implied_by_trade_log": round(implied, 2),
+        "cash_delta": round(eng.cash - implied, 2),
+        "fees_paid": round(eng.fees_paid, 2),
+        "fees_implied_by_trade_log": fees,
+        "fees_delta": round(eng.fees_paid - fees, 2),
+        "realized_pnl": round(eng.realized_pnl, 2),
+        "realized_implied_by_trade_log": round(realized, 2),
+        "realized_delta": round(eng.realized_pnl - realized, 2),
+        "trade_rows_in_log": len(eng.trades),
+        # The log is capped, so a long-lived book can legitimately hold more history
+        # than the rows above; say which case the reader is looking at.
+        "log_may_be_truncated": len(eng.trades) >= TRADE_LOG_CAP,
+        "note": "computed from this repo's simulated ledger; no order was sent",
+    }
+
+
 def stats(trades: List[Dict]) -> Dict[str, Any]:
     """Aggregate closed trades by strategy and by trade type (the 'categorize' ask).
 
@@ -609,7 +674,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             "open_positions": len(eng.positions),
             "daily_loss_cap": DAILY_LOSS_CAP,
             "blocked_today": eng.blocked_today,
+            # read back by Engine.__init__ so the account survives the next run:
+            "day_key": eng.day_key,
+            "day_realized": eng.day_realized,
+            "day_start_equity": eng.day_start_equity,
         },
+        "ledger_reconciliation": reconcile(eng),
         "parameters": {
             "max_open": MAX_OPEN,
             "per_position_usd": PER_POSITION_USD,
