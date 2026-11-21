@@ -1955,10 +1955,11 @@ None new found by this session. All pre-existing flags stand (see `VERIFICATION.
 | Merge | Merged without waiting for approval, merge commit `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR state `MERGED` |
 | Pages deploy | Confirmed: status `built`, source branch `main`, path `/`, public, https enforced at https://wingbangboozle1-lang.github.io/Trade2/ (build completed ~6 minutes after merge) |
 | PR link / merge result | https://github.com/wingbangboozle1-lang/Trade2/pull/58 — merged at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a` |
+| Follow-up PR | [#61 — bring completed merge/deploy record into main](https://github.com/wingbangboozle1-lang/Trade2/pull/61), from `arena/36f4a466-trade2` → `main` |
+| Follow-up merge | Merged without waiting for approval, merge commit `2b895c570ab4ad54472e116496e4d38ba65b1a1f`; PR state `MERGED` |
 
 
-**Merge/deploy record:** PR #58 merged into `main`; GitHub Pages rebuilt and `status: built`; live site verified serving real demo-market data (750 markets, 5 topics, two scrolling alert chats, seconds/minutes/hours graph, per-market liquidity). No new irregularities found by this session.
-**Merge/deploy record:** to be appended after PR merge.
+**Merge/deploy record:** PR #58 merged the claim branch into `main` at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR #61 then brought this session's completed record into `main` at `2b895c570ab4ad54472e116496e4d38ba65b1a1f`. GitHub Pages rebuilt and `status: built` at https://wingbangboozle1-lang.github.io/Trade2/; live site verified serving real demo-market data (750 markets, 5 topics, two scrolling alert chats, seconds/minutes/hours graph, per-market liquidity). No new irregularities found by this session.
 
 # Board K — session `arena-f3cb9b9f` (branch `arena/f3cb9b9f-trade2`, base `main` @ `06738d1`)
 
