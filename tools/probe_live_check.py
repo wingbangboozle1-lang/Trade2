@@ -180,6 +180,14 @@ def main() -> int:
         print("\nPROBE LIVE CHECK FAILED", file=sys.stderr)
         for p in problems:
             print(" - " + p, file=sys.stderr)
+        # Under Actions, also publish each problem as an annotation. Run logs
+        # and artifacts are not always reachable from a restricted client, but
+        # the annotations API always is — and evidence nobody can read is not
+        # evidence.
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            for p in problems:
+                msg = p.replace("%", "%25").replace("\n", "%0A").replace("\r", "%0D")
+                print(f"::error title=Probe live check::{msg}")
         return 1
     print(f"\nprobe live check OK — {len(tickers)} tickers, documented shape confirmed\n"
           f"  {SPEC_BOOKS}\n  {SPEC_MARKETS}")
