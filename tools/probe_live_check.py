@@ -146,14 +146,23 @@ def main() -> int:
         "single": "tickers=" + urllib.parse.quote(tickers[0]),
     }
     report["forms"] = {}
-    for label, qs in forms.items():
-        for endpoint in ("markets", "orderbooks"):
-            status, body, err = fetch(f"{BASE}/{endpoint}?{qs}")
+    endpoints = {
+        "markets": "/markets",
+        "orderbooks-plural": "/markets/orderbooks",
+        "orderbook-plural": "/market/orderbooks",
+        "orderbook-single": f"/markets/{urllib.parse.quote(tickers[0])}/orderbook",
+    }
+    for path_label, path in endpoints.items():
+        for label, qs in forms.items():
+            if path_label == "orderbook-single" and label != "single":
+                continue
+            status, body, err = fetch(f"{BASE}{path}?{qs}")
             got = result_shape(body)
-            report["forms"][f"{endpoint}:{label}"] = {
+            report["forms"][f"{path_label}:{label}"] = {
                 "status": status,
                 "n": None if got is None else len(got),
                 "returned": got,
+                "has_book": bool(body and (body.get("orderbook") or body.get("orderbook_fp"))),
                 "error": err,
             }
 
