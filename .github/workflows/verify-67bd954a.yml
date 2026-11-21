@@ -29,6 +29,23 @@ jobs:
           python-version: "3.12"
       - name: Unit tests
         run: python3 -m unittest discover -s tests
+      - name: Seed watchlist with official settled markets (TEMPORARY test of the ticker path)
+        if: ${{ env.SEED == '1' }}
+        env:
+          SEED: "1"
+        run: |
+          python3 - <<'PY'
+          import json, time
+          d = json.load(open("data/resolutions.json"))
+          now = time.time()
+          seeds = {
+            "KXDPWORLDTOUR-DPWTC26-THAT": "golf",
+            "KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC": "elections",
+          }
+          d["watch"] = {t: {"topic": tp, "last_seen": now, "last_checked": 0} for t, tp in seeds.items()}
+          json.dump(d, open("data/resolutions.json", "w"), indent=1)
+          print("seeded", sorted(d["watch"]))
+          PY
       - name: Live collector pass (root pipeline, same command as kalshi-dashboard.yml)
         id: collect
         run: |
@@ -65,4 +82,4 @@ jobs:
           git add -A data verify-67bd954a-run.json
           git commit -m "chore(verify): arena-67bd954a live dry run [skip ci]" || echo "nothing to commit"
           git push origin "HEAD:${GITHUB_REF_NAME}"
-# run 2 07:21
+# run 3 07:21

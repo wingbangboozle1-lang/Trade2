@@ -752,6 +752,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         settled_info["watch_size"] = watch_size
         settled_info["watch_checked"] = len(checking)
         settled_info["watch_resolved"] = len(newly)
+        settled_info["watch_resolved_tickers"] = sorted(r.get("ticker") or "" for r in newly)[:100]
         settled_info["watch_remaining"] = len(watch)
 
     lap("settled_scan", t_settle)
