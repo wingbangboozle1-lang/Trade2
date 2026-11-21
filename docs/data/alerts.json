@@ -1,7 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795197793&end_ts=1795219393&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795202647&end_ts=1795224247&period_interval=60",
    "delta": -0.73,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -28,6 +28,13 @@
      "status": "verified-fetch",
      "title": "Finding the anti-Trump: The Democratic contenders for president in 2028 - Nine.com.au",
      "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOMmNVM1lubktoMFU5cHZUZm93TWsxbnZ3VEg2RjNMQlZVMnBZN2VfUXpkRWdvaUUwYWI2OEJFM2pxeWpVM0o3Ym9yRC1RT3otaTJiMzN3SHlJbnc0d1llR0xFQWt2TzN5M1VocThIVjBRNWdTSEVnOVRPLXJiN3huVFEwWWVxYjVEOGY3TmJiQzhDNExFeFg5TkQ3cUdGem5BdFN6X1phTEdyUWFVWXZzcEZrbjNXbFUwbEFsYUQ5RE5Tcm1XZ3RuSkpB?oc=5"
+    },
+    {
+     "published": "2026-11-20T20:45:00+00:00",
+     "source": "Irish Examiner",
+     "status": "verified-fetch",
+     "title": "The Democrats who would be 'king' of the United States - Irish Examiner",
+     "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5xVU9ITDdjemJ0U0hkWDlULXE5VlV6WkgzOEM4NHdkVGMzNENfVjhaTnZwLXhsV3lyOGwtbWFYWEZHcnFHMkZ2XzZVaVFaTm1venZzZFctQWctN1FfamptWTUyNWJqMnVCcm13dG1FdGg?oc=5"
     }
    ],
    "news_status": "ok",
@@ -42,34 +49,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795197793&end_ts=1795219393&period_interval=60",
-   "delta": 0.858,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.005,
-   "headlines": [
-    {
-     "published": "2026-11-20T21:55:00+00:00",
-     "source": "The Independent",
-     "status": "verified-fetch",
-     "title": "Rising star among Democrats becomes the new frontrunner for 2028 nod - The Independent",
-     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOQnF0bk1JdWhvSkNFS0FSQ0tfb0VNUTFaa2ZOSnVSYkdEc1FUQkdHdFNPT0o0ZFRCWF9PX2piYmM4Sy0zVUN2YUtUSDg0bnpGZmFzNWd2VkZMUFJ3Mkp1S3JwcVZRZVQzT2p6Smg5MHJydUZEMFNNSGxUYUxoUHhaTnJ4Z1FzVkYySU5SRnAzZHNEQ1hDSWVkNzh5WDQyQTF3dEM2eVNDc3BkZVNtcjlENjNZSUpQT0lIUWt4OFFiUXFpdw?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
-   "t": 1795204800,
-   "t_iso": "2026-11-20T20:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXPRESNOMD-28-BOBA",
-   "title": "Will Barack Obama be the Democratic Presidential nominee in 2028?",
-   "to": 0.863,
-   "topic": "elections",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -91,13 +71,6 @@
      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
     },
     {
-     "published": "2026-11-20T05:44:18+00:00",
-     "source": "Geeks of Color",
-     "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
-     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
-    },
-    {
      "published": "2026-11-19T23:00:11+00:00",
      "source": "Comic Book Resources",
      "status": "verified-fetch",
@@ -105,11 +78,18 @@
      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
     },
     {
-     "published": "2026-11-20T02:16:43+00:00",
-     "source": "Comic Book Resources",
+     "published": "2026-11-20T05:44:18+00:00",
+     "source": "Geeks of Color",
      "status": "verified-fetch",
-     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
-     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
+    },
+    {
+     "published": "2026-11-20T07:44:22+00:00",
+     "source": "wehotimes.com",
+     "status": "verified-fetch",
+     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Movie Review: A Hangout Sequel Nobody Needed Turns Out to Be a Blast - wehotimes.com",
+     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNWjFKVm1YT0ZVVmh3Z21zOFduZDhLSGxzU0UzR1dRVUNMT0l0aDg5OG9OZHBKYm05b2oySExwQ1VuTlUxSl9UdWVnNTB2cURnNGR2bi1QQ21kWHVOaUNYejk1bEhDQ2xpQmo1V3VPWGtqOW0wVGN3dE5IYzFXajVHeC05NzRNbDJNcTVSQ1lVb0hzNXJLY2E5UXBqSXNueE45ZC1Oa1ZNd01qTjZzS0dqWXN3Rk1uSUVlOElQYW50N0o0OWNuMk1xdndQOUk?oc=5"
     }
    ],
    "news_status": "ok",
@@ -124,7 +104,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -151,7 +131,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -172,7 +152,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -199,7 +179,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -240,7 +220,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T00:03:47.211895+00:00",
+ "generated_at": "2026-11-21T01:24:42.854098+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
