@@ -97,7 +97,47 @@ def pct(x: float | None) -> str:
 
 
 def money(x: float | None) -> str:
-    return "—" if x is None else f"${x:,.2f}"
+    """A dollar amount. A loss reads `-$125.00`, never `$-125.00`.
+
+    Request R-79CC-5 (open on this board since 2026-11-20): the root site's
+    `site_build/format.money()` was fixed to hoist the sign outside the currency
+    symbol; this lab's copy was left behind, so `docs/strategies.html` and
+    `STRATEGY_ANALYSIS.md` printed losses as `$-155.00` while every other page
+    printed `-$155.00`. Same rule as the site: sign first, then the symbol.
+    """
+    if x is None:
+        return "—"
+    try:
+        n = float(x)
+    except (TypeError, ValueError):
+        return str(x)
+    sign = "-" if n < 0 else ""
+    return f"{sign}${abs(n):,.2f}"
+
+
+def _hours_between(older: str | None, newer: str | None) -> float | None:
+    """Whole-and-fractional hours from `older` to `newer`, either ISO-8601 Z.
+    None when either side is missing or unparseable — never guessed."""
+    if not older or not newer:
+        return None
+
+    def parse(v):
+        # The three books stamp themselves three different ways (…Z, …+00:00, with
+        # and without microseconds) because they are written by three engines; all
+        # three parse, and anything else stays None rather than becoming a guess.
+        s = str(v).strip()
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        try:
+            dt = datetime.fromisoformat(s)
+        except ValueError:
+            return None
+        return dt.astimezone(timezone.utc) if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+    a, b = parse(older), parse(newer)
+    if a is None or b is None:
+        return None
+    return round((b - a).total_seconds() / 3600.0, 2)
 
 
 def iso_now() -> str:
@@ -139,11 +179,16 @@ def load_docs_book(root: Path) -> dict:
     """
     data = _load_json(root / "docs" / "data" / "portfolio.json")
     book = {"name": "docs-sim book", "engine": "docs/data/portfolio.json (roi_edge)",
-            "round_trips": [], "published_stats": None, "equity_curve": []}
+            "round_trips": [], "published_stats": None, "equity_curve": [],
+            "source_generated_at": None}
     if not isinstance(data, dict):
         return book
     book["published_stats"] = data.get("stats")
     book["equity_curve"] = data.get("equity_curve") or []
+    # When the BOOK was written, not when this analysis ran. A pre-rendered page
+    # without this is indistinguishable from a fresh one, and 2026-11-20 to
+    # 2026-11-21 proved that readers assume freshness they are not getting.
+    book["source_generated_at"] = data.get("generated_at")
     trades = data.get("trades") or []
     open_by_key: dict[tuple, dict] = {}
     for t in trades:
@@ -193,9 +238,14 @@ def load_docs_book(root: Path) -> dict:
 def load_root_book(root: Path) -> dict:
     """Round-trips from data/live.json + data/portfolio_state.json (root book)."""
     book = {"name": "root book", "engine": "data/live.json portfolio + data/portfolio_state.json",
-            "round_trips": [], "published_stats": None, "equity_curve": []}
+            "round_trips": [], "published_stats": None, "equity_curve": [],
+            "source_generated_at": None}
     live = _load_json(root / "data" / "live.json")
     state = _load_json(root / "data" / "portfolio_state.json")
+    for src in (live, state):
+        if isinstance(src, dict) and src.get("generated_at"):
+            book["source_generated_at"] = src["generated_at"]
+            break
     if isinstance(live, dict):
         port = live.get("portfolio") or {}
         if isinstance(port, dict):
@@ -224,35 +274,62 @@ def load_root_book(root: Path) -> dict:
                            ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
                 "source_url": market_url(ticker, t.get("source_url")),
             })
-    # Dedupe guard: data/live.json portfolio.trades and data/portfolio_state.json
-    # positions come from the same engine and may describe the same round-trips.
+    # Dedupe guard: data/live.json portfolio.trades, portfolio.settled_positions and
+    # data/portfolio_state.json positions all come from the same engine and may
+    # describe the same round-trips.
     seen = {(rt["ticker"], rt["side"], rt.get("entry_ts")) for rt in book["round_trips"]}
+
+    def position_row(p: dict) -> dict | None:
+        """One root-book round trip from a *position* record.
+
+        This matters: the root engine's `portfolio.trades` log carries the entry leg
+        only, and a position that has been exited is labelled with its exit reason
+        (`stopped`, `settled`, `closed`) rather than `closed`. Reading
+        `status == "closed"` alone therefore found **zero** closed trades in the root
+        book and the cross-check blamed the book for its own blind spot — three
+        "arithmetic" rows (trades 1 vs 0, realized -166.91 vs 0, fees 16.91 vs 0)
+        while `portfolio.settled_positions` held the trade the whole time. An exit
+        price or exit timestamp is what makes a round trip closed.
+        """
+        if not isinstance(p, dict):
+            return None
+        ticker = p.get("ticker") or ""
+        key = (ticker, p.get("side") or "", p.get("entry_ts"))
+        if key in seen:
+            return None
+        seen.add(key)
+        closed = (p.get("status") == "closed" or p.get("exit_price") is not None
+                  or p.get("exit_ts") is not None)
+        net = p.get("realized") if closed else None
+        return {
+            "book": book["name"], "ticker": ticker, "topic": p.get("topic") or "",
+            "strategy": p.get("strategy") or "",
+            "signal": p.get("title") or "",
+            "trade_type": p.get("trade_type") or f"{p.get('strategy')}|settlement|{p.get('side')}",
+            "side": p.get("side") or "", "status": "closed" if closed else "open",
+            "entry_ts": norm_ts(p.get("entry_ts")), "entry_px": p.get("entry_price"),
+            "contracts": p.get("contracts"), "entry_fee": p.get("entry_fee"),
+            "exit_ts": norm_ts(p.get("exit_ts")), "exit_px": p.get("exit_price"),
+            "exit_fee": p.get("exit_fee"),
+            "gross": None, "net": net,
+            "result": (p.get("result") or ("win" if (net or 0) > 0 else
+                       ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
+            # The row's SOURCE is the official API response for that ticker, not
+            # Kalshi's marketing page for it (`market_url` on the record points at
+            # kalshi.com/markets/..., which is a page, not the data this row shows).
+            "source_url": market_url(ticker, p.get("source_url")),
+        }
+
+    for row in ((port.get("settled_positions") or []) if isinstance(port, dict) else []):
+        rt = position_row(row)
+        if rt:
+            book["round_trips"].append(rt)
     if isinstance(state, dict):
         for p in (state.get("positions") or []):
-            if not isinstance(p, dict):
+            rt = position_row(p)
+            if rt is None:
                 continue
-            ticker = p.get("ticker") or ""
-            key = (ticker, p.get("side") or "", p.get("entry_ts"))
-            if key in seen:
-                continue
-            seen.add(key)
-            closed = (p.get("status") == "closed")
-            net = p.get("realized") if closed else None
-            book["round_trips"].append({
-                "book": book["name"], "ticker": ticker, "topic": p.get("topic") or "",
-                "strategy": p.get("strategy") or "",
-                "signal": p.get("title") or "",
-                "trade_type": f"{p.get('strategy')}|settlement|{p.get('side')}",
-                "side": p.get("side") or "", "status": "closed" if closed else "open",
-                "entry_ts": norm_ts(p.get("entry_ts")), "entry_px": p.get("entry_price"),
-                "contracts": p.get("contracts"), "entry_fee": p.get("entry_fee"),
-                "exit_ts": norm_ts(p.get("exit_ts")), "exit_px": p.get("exit_price"),
-                "exit_fee": p.get("exit_fee"),
-                "gross": None, "net": net,
-                "result": (p.get("result") or ("win" if (net or 0) > 0 else
-                           ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
-                "source_url": market_url(ticker, p.get("source_url")),
-            })
+            book["round_trips"].append(rt)
     return book
 
 
@@ -260,8 +337,11 @@ def load_kd_book(root: Path) -> dict:
     """Round-trips from kalshi-dashboard/data/trades.json (5788e385 book)."""
     book = {"name": "kalshi-dashboard book",
             "engine": "kalshi-dashboard/data/trades.json",
-            "round_trips": [], "published_stats": None, "equity_curve": []}
+            "round_trips": [], "published_stats": None, "equity_curve": [],
+            "source_generated_at": None}
     data = _load_json(root / "kalshi-dashboard" / "data" / "trades.json")
+    if isinstance(data, dict) and data.get("generated_at"):
+        book["source_generated_at"] = data["generated_at"]
     rows = data if isinstance(data, list) else (data.get("trades") or [] if isinstance(data, dict) else [])
     for t in rows:
         if not isinstance(t, dict):
@@ -351,6 +431,14 @@ def _max_drawdown(nets: list[float]) -> float | None:
 # published-stats cross-check
 # --------------------------------------------------------------------------
 
+def _matches(published, recomputed) -> bool:
+    """Agreement to the cent, which is the finest unit Kalshi settles in."""
+    try:
+        return abs(float(published) - float(recomputed)) < 0.011
+    except (TypeError, ValueError):
+        return False
+
+
 def crosscheck_docs_book(book: dict) -> list[dict]:
     """Compare a book's published aggregates with a fresh recomputation over
     the same trade rows. Handles the docs book's `stats.all` shape and the root
@@ -363,24 +451,56 @@ def crosscheck_docs_book(book: dict) -> list[dict]:
     closed = [rt for rt in book["round_trips"] if rt["status"] == "closed"]
     n = len(closed)
     net = sum(rt.get("net") or 0.0 for rt in closed)
-    fees = sum((rt.get("entry_fee") or 0) + (rt.get("exit_fee") or 0) for rt in closed)
+    exit_only = round(sum(rt.get("exit_fee") or 0 for rt in closed), 2)
+    both_legs = round(sum((rt.get("entry_fee") or 0) + (rt.get("exit_fee") or 0)
+                          for rt in closed), 2)
     wins = sum(1 for rt in closed if rt.get("result") == "win")
+    # `fees` is the one figure whose meaning has differed between the two books, so
+    # it is matched against BOTH definitions and the winner is named. A published
+    # total that equals the exit legs alone is a stated convention, not an
+    # arithmetic error; a total that equals neither is an error and is reported.
+    # Official basis for both legs: a fee is charged for every order immediately
+    # matched against the book and there is no settlement fee
+    # (https://kalshi.com/docs/kalshi-fee-schedule.pdf), which is what `both_legs` is.
+    fee_published = allstat.get("fees")
     checks = [
-        ("trades (closed round-trips)", allstat.get("trades"), n),
-        ("net_pnl/realized", allstat.get("net_pnl", allstat.get("realized")), round(net, 2)),
-        ("fees (entry+exit)", allstat.get("fees"), round(fees, 2)),
-        ("wins", allstat.get("wins"), wins),
+        ("trades (closed round-trips)", allstat.get("trades"), n, "count"),
+        ("net_pnl/realized", allstat.get("net_pnl", allstat.get("realized")), round(net, 2),
+         "sum of each closed row's pnl as published"),
+        ("wins", allstat.get("wins"), wins, "count"),
     ]
-    for label, published, recomputed in checks:
+    for label, published, recomputed, definition in checks:
         if published is None:
             continue
-        try:
-            match = abs(float(published) - float(recomputed)) < 0.011
-        except (TypeError, ValueError):
-            match = False
-        if not match:
-            issues.append({"book": book["name"], "metric": label,
-                           "published": published, "recomputed": recomputed})
+        if not _matches(published, recomputed):
+            issues.append({"book": book["name"], "metric": label, "published": published,
+                           "recomputed": recomputed, "definition": definition,
+                           "kind": "arithmetic"})
+    if fee_published is not None:
+        if _matches(fee_published, both_legs):
+            book["fee_basis"] = "entry + exit legs (official: one fee per matched order)"
+        elif _matches(fee_published, exit_only):
+            # Arithmetically consistent with ONE definition, but the definition is the
+            # wrong one to publish on a performance table: the entry leg was charged
+            # to the account, so an "exit only" fee column understates the cost of
+            # every round trip and flatters nothing else in the row. Reported as a
+            # definitional gap, never as a counting error.
+            book["fee_basis"] = ("exit leg only — the published figure excludes each "
+                                 "entry-leg fee, which was still charged to cash")
+            book["fee_understated_by"] = round(both_legs - exit_only, 2)
+            issues.append({"book": book["name"], "metric": "fees (entry+exit)",
+                           "published": fee_published, "recomputed": both_legs,
+                           "kind": "definition",
+                           "definition": f"the book publishes the exit leg only "
+                                         f"({exit_only}); both legs cost {both_legs}",
+                           "also_matches": exit_only})
+        else:
+            issues.append({"book": book["name"], "metric": "fees (entry+exit)",
+                           "published": fee_published, "recomputed": both_legs,
+                           "kind": "arithmetic",
+                           "definition": f"neither entry+exit ({both_legs}) nor "
+                                         f"exit-only ({exit_only})",
+                           "both_legs": both_legs, "exit_only": exit_only})
     return issues
 
 
@@ -531,6 +651,19 @@ def backtest_all(series_list: list[dict]) -> dict:
 # rendering
 # --------------------------------------------------------------------------
 
+def _age_cell(entry: dict | None) -> str:
+    """"2026-…Z (0.50 h before this analysis)" or the unverified marker."""
+    if not entry:
+        return f"— {UNVERIFIED}"
+    gen = entry.get("book_generated_at")
+    age = entry.get("hours_before_this_analysis")
+    if not gen:
+        return f"— {UNVERIFIED}"
+    if age is None:
+        return f"`{gen}`"
+    return f"`{gen}` ({age:g} h before this analysis)"
+
+
 def fmt_table(headers: list[str], rows: list[list[str]]) -> str:
     md = "| " + " | ".join(headers) + " |\n"
     md += "| " + " | ".join("---" for _ in headers) + " |\n"
@@ -564,8 +697,15 @@ def build_report(root: Path) -> dict:
         issues.extend(crosscheck_docs_book(b))
     series_list = load_candle_series(root)
     bt = backtest_all(series_list)
+    now = iso_now()
+    ages = [(b["name"], b.get("source_generated_at"),
+             _hours_between(b.get("source_generated_at"), now)) for b in books]
+    known = [a for _, _, a in ages if a is not None]
     return {
-        "generated_at": iso_now(),
+        "generated_at": now,
+        "book_freshness": [{"book": n, "book_generated_at": g,
+                            "hours_before_this_analysis": a} for n, g, a in ages],
+        "max_book_age_hours": max(known) if known else None,
         "books": books, "round_trips": all_rts,
         "by_strategy": by_strategy, "by_trade_type": by_type,
         "by_topic": by_topic, "by_book": by_book,
@@ -595,7 +735,12 @@ def render_markdown(rep: dict) -> str:
     L.append(f"Fee model used throughout: {FEE_FORMULA_DOC}.\n")
 
     L.append("## 1. Data sources (provenance)\n")
+    L.append(f"_This page is generated by `python3 tools/strategy_lab.py`; it is only as "
+             f"fresh as the last run of that tool. The books it reads are refreshed by the "
+             f"collector workflow on its own cadence, so the age column below is the number "
+             f"to read before trusting any row._\n")
     src_rows = []
+    fresh = {f["book"]: f for f in rep.get("book_freshness", [])}
     for b in rep["books"]:
         n_rows = len(b["round_trips"])
         coverage = ("yes" if all(rt.get("source_url") for rt in b["round_trips"])
@@ -605,9 +750,11 @@ def render_markdown(rep: dict) -> str:
             f"{sum(1 for rt in b['round_trips'] if rt['status']=='closed')} / "
             f"{sum(1 for rt in b['round_trips'] if rt['status']=='open')}",
             coverage,
+            _age_cell(fresh.get(b["name"])),
         ])
     L.append(fmt_table(
-        ["Book", "Engine file", "Round-trips (closed / open)", "Rows carry official source links"],
+        ["Book", "Engine file", "Round-trips (closed / open)",
+         "Rows carry official source links", "When that book was written"],
         src_rows))
 
     L.append("## 2. Performance by strategy\n")
@@ -652,8 +799,11 @@ def render_markdown(rep: dict) -> str:
                  "recomputation from their own trade rows — **flagged for review**, "
                  "not silently reconciled:\n")
         engines = {b["name"]: b["engine"] for b in rep["books"]}
-        L.append(fmt_table(["Book", "Metric", "Published", "Recomputed", "Source"],
+        L.append(fmt_table(["Book", "Metric", "Published", "Recomputed", "What the two numbers mean", "Source"],
                            [[i["book"], i["metric"], i["published"], i["recomputed"],
+                             ("**definitional gap** — " + i.get("definition", "")
+                              if i.get("kind") == "definition"
+                              else "arithmetic — " + i.get("definition", "")),
                              f"`{engines.get(i['book'], '')}`"]
                             for i in rep["crosscheck_issues"]]))
     else:
@@ -753,6 +903,19 @@ def render_html(rep: dict) -> str:
         return (f'<a href="{e(url)}">source</a>' if url
                 else f"— {UNVERIFIED}")
 
+    ages = "; ".join(
+        f"{e(f['book'])} written "
+        + (f"<code>{e(str(f['book_generated_at']))}</code>"
+           f" ({f['hours_before_this_analysis']:g} h before this analysis)"
+           if f.get("hours_before_this_analysis") is not None
+           else f"<code>{e(str(f['book_generated_at']))}</code> {UNVERIFIED} age")
+        if f.get("book_generated_at") else f"{e(f['book'])} book timestamp {UNVERIFIED}"
+        for f in rep.get("book_freshness", []))
+    freshness = (
+        "This page is rendered by <code>tools/strategy_lab.py</code>, so it is only as "
+        "fresh as the last run of that tool; the ledgers it reads refresh on the "
+        "collector's own cadence. " + (ages + "." if ages else ""))
+
     def stats_rows(groups):
         rows = []
         for g in groups:
@@ -827,8 +990,11 @@ def render_html(rep: dict) -> str:
     if rep["crosscheck_issues"]:
         engines = {b["name"]: b["engine"] for b in rep["books"]}
         cc = ("<h3>Flagged: published vs recomputed stats</h3>" + tbl(
-            ["Book", "Metric", "Published", "Recomputed", "Source"],
+            ["Book", "Metric", "Published", "Recomputed", "What the two numbers mean", "Source"],
             [[i["book"], i["metric"], str(i["published"]), str(i["recomputed"]),
+              ("<b>definitional gap</b> — " + e(i.get("definition", ""))
+               if i.get("kind") == "definition"
+               else "arithmetic — " + e(i.get("definition", ""))),
               f"<code>{e(engines.get(i['book'], ''))}</code>"]
              for i in rep["crosscheck_issues"]]))
     else:
@@ -861,6 +1027,7 @@ def render_html(rep: dict) -> str:
   <strong>simulated</strong> ledgers and recorded demo candles — not verified live performance,
   not investment advice. Demo environment: <a href="https://docs.kalshi.com/getting_started/demo_env">docs.kalshi.com</a>.</p>
   <p class="muted">Fee model: {e(FEE_FORMULA_DOC)}</p>
+  <p class="muted">{freshness}</p>
   <nav><a href="index.html">Dashboard</a> · <a href="portfolio.html">Portfolio</a> ·
   <a href="resolutions.html">Resolutions</a> · <a href="flagged.html">Flagged</a> ·
   <a href="summary.html">Summary</a></nav>
@@ -936,6 +1103,8 @@ def main(argv=None) -> int:
         "generated_at": rep["generated_at"],
         "parameters": rep["parameters"],
         "crosscheck_issues": rep["crosscheck_issues"],
+        "book_freshness": rep["book_freshness"],
+        "max_book_age_hours": rep["max_book_age_hours"],
         "candle_series": rep["candle_series"],
         "round_trips": rep["round_trips"],
         "aggregates": {

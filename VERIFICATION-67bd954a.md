@@ -17,7 +17,7 @@ Anything that could not be checked is marked **UNVERIFIED**, not filled in.
 | Finalized markets are not published as live events (`status` ∈ finalized, settled, determined) | `collector/collector.py::is_live_market` | status values as returned by https://docs.kalshi.com/api-reference/market/get-markets and by the live market objects below |
 | Tests | `tests/test_root_settled_scan_67bd954a.py` (16 methods): request parameters, paging, truncation, live-market rule, per-topic floor, the `CollectEndToEndOffline` test (window + pending re-read + held position graded), and the retention tests | — |
 
-Test results on the final merged tree: `python3 -m unittest discover -s tests` → OK (skipped=12, the usual jsdom/optional skips; 372 tests); `npm test` → 59/59; `python3 -m collector.test_runner` → PASSED.
+Test results on the final merged tree: `python3 -m unittest discover -s tests` → OK (406 tests, skipped=12, the usual jsdom/optional skips); `npm test` → 59/59; `python3 -m collector.test_runner` → PASSED.
 Mutation checks were run on the earlier watchlist implementation, which was replaced during the merge with main's pending tracker. They are not repeated for the final code.
 
 ## 2. Live runs (GitHub Actions, official demo API)
