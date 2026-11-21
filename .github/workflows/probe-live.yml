@@ -56,7 +56,14 @@ jobs:
       - name: Verify the probe's URLs against the live demo API
         run: |
           set -o pipefail
-          python3 tools/probe_live_check.py --json probe-live.json | tee probe-check.log
+          # Print the report to the run log as well as the artifact: artifacts
+          # are not always downloadable from a restricted client, and a failing
+          # check whose evidence cannot be read is not a check.
+          python3 tools/probe_live_check.py --json probe-live.json 2>&1 | tee probe-check.log
+          if [ ! -s probe-live.json ]; then
+            echo "::error::probe_live_check.py wrote no report"
+            exit 1
+          fi
           # Re-assert the two documented invariants from the report itself, so a
           # silently-passing script cannot hide a shape change.
           # A heredoc body must start at column 0, so this lives in its own file
