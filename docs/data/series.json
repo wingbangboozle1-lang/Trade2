@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T09:31:32.598492+00:00",
+ "generated_at": "2026-11-21T10:24:49.577265+00:00",
  "rows": [
   {
    "categories": [
@@ -7,14 +7,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AVAX.pdf",
-   "last_updated": "2026-11-21T08:25:01.929332Z",
+   "last_updated": "2026-11-21T09:56:33.490284Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/AVAXUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": null,
    "ticker": "KXAVAX",
    "title": "Avalanche range",
@@ -28,14 +28,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/BTCMINMAX.pdf",
-   "last_updated": "2026-11-21T07:51:51.622853Z",
+   "last_updated": "2026-11-21T10:02:53.191897Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/BRTI?ref=blog.cfbenchmarks.com"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Bitcoin"
@@ -44,7 +44,7 @@
    "title": "How low will Bitcoin fall this year?",
    "topic": "crypto",
    "verified": true,
-   "volume": 19494289.0
+   "volume": 19495685.0
   },
   {
    "categories": [
@@ -52,14 +52,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/DOGE.pdf",
-   "last_updated": "2026-11-21T08:06:14.517728Z",
+   "last_updated": "2026-11-21T10:15:55.219324Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/DOGEUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Hourly",
@@ -77,14 +77,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/DOGE.pdf",
-   "last_updated": "2026-11-21T08:06:14.509443Z",
+   "last_updated": "2026-11-21T10:15:55.207969Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/DOGEUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Hourly",
@@ -102,14 +102,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ETH.pdf",
-   "last_updated": "2026-11-21T08:12:48.57871Z",
+   "last_updated": "2026-11-21T10:22:28.205658Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/ETHUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Hourly",
@@ -127,14 +127,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ETH.pdf",
-   "last_updated": "2026-11-21T08:12:48.568925Z",
+   "last_updated": "2026-11-21T10:22:28.190958Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/ETHUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Hourly",
@@ -144,7 +144,7 @@
    "title": "Ethereum price Above/below",
    "topic": "crypto",
    "verified": true,
-   "volume": 142622301.0
+   "volume": 142622351.0
   },
   {
    "categories": [
@@ -152,14 +152,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ETHMINMAX.pdf",
-   "last_updated": "2026-11-21T08:12:53.98727Z",
+   "last_updated": "2026-11-21T10:22:33.598375Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Ethereum"
@@ -176,14 +176,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/LINK.pdf",
-   "last_updated": "2026-11-21T08:36:33.616699Z",
+   "last_updated": "2026-11-21T09:53:41.638842Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/LINKUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": null,
    "ticker": "KXLINK",
    "title": "Chainlink range",
@@ -197,14 +197,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/LINK.pdf",
-   "last_updated": "2026-11-21T08:36:33.634603Z",
+   "last_updated": "2026-11-21T09:56:36.209865Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/LINKUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": null,
    "ticker": "KXLINKD",
    "title": "Chainlink price Above/below",
@@ -218,14 +218,14 @@
    ],
    "category": "Crypto",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/LTC.pdf",
-   "last_updated": "2026-11-21T08:38:08.960755Z",
+   "last_updated": "2026-11-21T09:55:49.140492Z",
    "settlement_sources": [
     {
      "name": "CF Benchmarks",
      "url": "https://www.cfbenchmarks.com/data/indices/LTCUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": null,
    "ticker": "KXLTCD",
    "title": "Litecoin price Above/below",
@@ -246,7 +246,7 @@
      "url": "https://www.cfbenchmarks.com/data/indices/SHIBUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Shiba Inu"
@@ -270,7 +270,7 @@
      "url": "https://www.cfbenchmarks.com/data/indices/SHIBUSD_RTI"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Crypto&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Crypto",
     "Shiba Inu"
@@ -287,7 +287,7 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/COMPETITIONREALITYELIM.pdf",
-   "last_updated": "2026-11-21T08:24:54.661452Z",
+   "last_updated": "2026-11-21T10:09:12.68676Z",
    "settlement_sources": [
     {
      "name": "The Source Agencies are",
@@ -302,7 +302,7 @@
      "url": "https://kalshi.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Reality TV",
     "Television"
@@ -319,7 +319,7 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ATTEND.pdf",
-   "last_updated": "2026-11-21T07:42:24.522408Z",
+   "last_updated": "2026-11-21T09:56:06.716785Z",
    "settlement_sources": [
     {
      "name": "ABC",
@@ -390,7 +390,7 @@
      "url": "https://www.politico.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "People"
    ],
@@ -413,7 +413,7 @@
      "url": "https://www.oscars.org/oscars"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oscars",
     "Awards"
@@ -430,14 +430,14 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/RANKLISTSONG.pdf",
-   "last_updated": "2026-11-21T09:07:51.787801Z",
+   "last_updated": "2026-11-21T09:53:13.335803Z",
    "settlement_sources": [
     {
      "name": "Billboard",
      "url": "https://www.billboard.com"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Music charts",
     "Music"
@@ -454,14 +454,14 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/RANKLISTTIME.pdf",
-   "last_updated": "2026-11-21T09:08:01.295477Z",
+   "last_updated": "2026-11-21T09:54:59.545564Z",
    "settlement_sources": [
     {
      "name": "Google Trends",
      "url": "https://trends.google.com/home"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": null,
    "ticker": "KXRANKLISTTIMEMAG",
    "title": "TIME\u2019s Person of the Year for 2025 SHORTLIST?",
@@ -475,14 +475,14 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/RT.pdf",
-   "last_updated": "2026-11-21T09:10:48.564035Z",
+   "last_updated": "2026-11-21T09:54:23.102706Z",
    "settlement_sources": [
     {
      "name": "Rotten Tomatoes",
      "url": "https://www.rottentomatoes.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Rotten Tomatoes"
    ],
@@ -498,7 +498,7 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/COMPETITIONREALITYWIN.pdf",
-   "last_updated": "2026-11-21T07:59:40.735752Z",
+   "last_updated": "2026-11-21T10:09:20.854104Z",
    "settlement_sources": [
     {
      "name": "\ue907the official broadcaster or streaming platform of  (e",
@@ -513,7 +513,7 @@
      "url": "https://kalshi.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Reality TV",
     "Television"
@@ -530,14 +530,14 @@
    ],
    "category": "Entertainment",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/TIME.pdf",
-   "last_updated": "2026-11-21T06:33:27.057782Z",
+   "last_updated": "2026-11-21T09:32:21.494376Z",
    "settlement_sources": [
     {
      "name": "TIME",
      "url": "https://time.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Achievements",
     "People",
@@ -614,7 +614,7 @@
      "url": "https://www.politico.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Trump",
     "Politicians"
@@ -631,7 +631,7 @@
    ],
    "category": "Mentions",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/TRUMPSAY.pdf",
-   "last_updated": "2026-11-21T06:54:53.812827Z",
+   "last_updated": "2026-11-21T09:55:19.930976Z",
    "settlement_sources": [
     {
      "name": "ABC",
@@ -706,7 +706,7 @@
      "url": "https://www.whitehouse.gov/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Trump",
     "Politicians"
@@ -723,7 +723,7 @@
    ],
    "category": "Mentions",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/TRUMPSAY.pdf",
-   "last_updated": "2026-11-21T06:57:08.488715Z",
+   "last_updated": "2026-11-21T09:53:06.259171Z",
    "settlement_sources": [
     {
      "name": "ABC",
@@ -798,7 +798,7 @@
      "url": "https://www.whitehouse.gov/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Mentions&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Trump",
     "Politicians"
@@ -889,7 +889,7 @@
      "url": "https://www.google.com/search?q=official+social+media+accounts+of+confirmed+performers"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Entertainment&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Live Music"
    ],
@@ -905,14 +905,14 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ELECTIONPLACE.pdf",
-   "last_updated": "2026-11-21T08:08:45.73643Z",
+   "last_updated": "2026-11-21T10:18:25.539371Z",
    "settlement_sources": [
     {
      "name": "official election authority responsible for certifying results in geography",
      "url": "https://kalshi.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Primaries",
     "US Elections"
@@ -996,7 +996,7 @@
      "url": "https://www.politico.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "US Elections",
     "Governor"
@@ -1080,7 +1080,7 @@
      "url": "https://www.politico.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "US Elections",
     "Governor"
@@ -1097,7 +1097,7 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/USELECTION.pdf",
-   "last_updated": "2026-11-21T06:42:34.545754Z",
+   "last_updated": "2026-11-21T09:38:30.307807Z",
    "settlement_sources": [
     {
      "name": "relevant county clerk or board of elections",
@@ -1120,7 +1120,7 @@
      "url": "https://kalshi.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Primaries"
    ],
@@ -1143,7 +1143,7 @@
      "url": "https://gop.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Primaries"
    ],
@@ -1159,7 +1159,7 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/USELECTION.pdf",
-   "last_updated": "2026-11-21T06:42:34.431929Z",
+   "last_updated": "2026-11-21T09:38:30.178099Z",
    "settlement_sources": [
     {
      "name": "relevant county clerk or board of elections",
@@ -1182,7 +1182,7 @@
      "url": "https://kalshi.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "US Elections",
     "Other US Elections"
@@ -1199,14 +1199,14 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ELECTIONMOV.pdf",
-   "last_updated": "2026-11-21T08:08:43.852977Z",
+   "last_updated": "2026-11-21T10:18:23.650908Z",
    "settlement_sources": [
     {
      "name": "official election authority responsible for certifying results in ",
      "url": "https://www.nass.org/can-I-vote"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "US Elections"
    ],
@@ -1233,7 +1233,7 @@
      "url": "https://democrats.org/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "2028",
     "US Elections"
@@ -1242,7 +1242,7 @@
    "title": "Democratic Primary winner",
    "topic": "elections",
    "verified": true,
-   "volume": 7983719841.0
+   "volume": 7983732603.0
   },
   {
    "categories": [
@@ -1261,7 +1261,7 @@
      "url": "https://democrats.org/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "2028",
     "US Elections"
@@ -1270,7 +1270,7 @@
    "title": "Republican Primary winner",
    "topic": "elections",
    "verified": true,
-   "volume": 1027953097.0
+   "volume": 1027967949.0
   },
   {
    "categories": [
@@ -1285,7 +1285,7 @@
      "url": "https://www.whitehouse.gov/administration/executive-office-of-the-president/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "2028",
     "US Elections"
@@ -1294,7 +1294,7 @@
    "title": "Pres person",
    "topic": "elections",
    "verified": true,
-   "volume": 1443166469.0
+   "volume": 1443179677.0
   },
   {
    "categories": [
@@ -1302,14 +1302,14 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/ELECTIONMOV.pdf",
-   "last_updated": "2026-11-21T08:08:43.539106Z",
+   "last_updated": "2026-11-21T10:18:23.309327Z",
    "settlement_sources": [
     {
      "name": "official election authority responsible for certifying results in ",
      "url": "https://www.nass.org/can-I-vote"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Primaries"
    ],
@@ -1325,14 +1325,14 @@
    ],
    "category": "Elections",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/VOTEPERCENT.pdf",
-   "last_updated": "2026-11-21T06:44:38.669331Z",
+   "last_updated": "2026-11-21T09:40:31.798059Z",
    "settlement_sources": [
     {
      "name": "official state or local election division websites",
      "url": "https://www.vote.gov/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Elections&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Primaries"
    ],
@@ -1348,14 +1348,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:32.208729Z",
+   "last_updated": "2026-11-21T09:49:52.54422Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy",
@@ -1373,14 +1373,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:32.266339Z",
+   "last_updated": "2026-11-21T09:49:52.600996Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/?state=GA"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil and energy",
     "Econ Daily"
@@ -1397,14 +1397,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:32.095051Z",
+   "last_updated": "2026-11-21T09:49:52.433767Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1421,14 +1421,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGASMINMAX.pdf",
-   "last_updated": "2026-11-21T07:33:33.779927Z",
+   "last_updated": "2026-11-21T09:49:54.07965Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1445,14 +1445,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGASMINMAX.pdf",
-   "last_updated": "2026-11-21T07:33:33.792466Z",
+   "last_updated": "2026-11-21T09:49:54.091578Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1469,14 +1469,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGASMINMAX.pdf",
-   "last_updated": "2026-11-21T07:33:33.818344Z",
+   "last_updated": "2026-11-21T09:49:54.113481Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1494,14 +1494,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:31.981972Z",
+   "last_updated": "2026-11-21T09:49:52.321998Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/?state=TX"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Commodities&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Commodities&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil and energy"
    ],
@@ -1517,14 +1517,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:31.96467Z",
+   "last_updated": "2026-11-21T09:49:52.306548Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Econ Weekly",
     "Oil and energy"
@@ -1533,7 +1533,7 @@
    "title": "US gas price up",
    "topic": "gas-prices",
    "verified": true,
-   "volume": 94721802.0
+   "volume": 94722443.0
   },
   {
    "categories": [
@@ -1541,14 +1541,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
-   "last_updated": "2026-11-21T07:33:32.222901Z",
+   "last_updated": "2026-11-21T09:49:52.558398Z",
    "settlement_sources": [
     {
      "name": "AAA",
      "url": "https://gasprices.aaa.com/?state=NJ"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Econ Weekly",
     "Oil and energy"
@@ -1565,14 +1565,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/NGAS.pdf",
-   "last_updated": "2026-11-21T08:56:22.423335Z",
+   "last_updated": "2026-11-21T09:54:52.248113Z",
    "settlement_sources": [
     {
      "name": "Energy Information Administration",
      "url": "https://www.eia.gov/dnav/ng/NG_PRI_FUT_S1_D.htm"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1589,14 +1589,14 @@
    ],
    "category": "Economics",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/NGAS.pdf",
-   "last_updated": "2026-11-21T08:56:22.440392Z",
+   "last_updated": "2026-11-21T09:55:16.419048Z",
    "settlement_sources": [
     {
      "name": "Energy Information Administration",
      "url": "https://www.eia.gov/dnav/ng/NG_PRI_FUT_S1_D.htm"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Economics&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Oil & Gas",
     "Oil and energy"
@@ -1620,7 +1620,7 @@
      "url": "https://www.europeantour.com/dpworld-tour/schedule/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1651,7 +1651,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1682,7 +1682,7 @@
      "url": "https://www.foxsports.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1713,7 +1713,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1729,7 +1729,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFROUNDSCORE.pdf",
-   "last_updated": "2026-11-21T08:22:51.903656Z",
+   "last_updated": "2026-11-21T09:56:03.720223Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1744,7 +1744,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1760,7 +1760,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFFINISH.pdf",
-   "last_updated": "2026-11-21T08:22:26.260516Z",
+   "last_updated": "2026-11-21T09:55:05.796404Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1775,7 +1775,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1791,7 +1791,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFFINISH.pdf",
-   "last_updated": "2026-11-21T08:22:26.204496Z",
+   "last_updated": "2026-11-21T09:56:45.180331Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1806,7 +1806,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1822,7 +1822,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFFINISH.pdf",
-   "last_updated": "2026-11-21T08:22:26.187217Z",
+   "last_updated": "2026-11-21T09:54:37.205457Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1837,7 +1837,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1853,7 +1853,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFFINISH.pdf",
-   "last_updated": "2026-11-21T08:22:26.268914Z",
+   "last_updated": "2026-11-21T09:56:07.011026Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1868,7 +1868,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1899,7 +1899,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1907,7 +1907,7 @@
    "title": "PGA Tour",
    "topic": "golf",
    "verified": true,
-   "volume": 42200098187.0
+   "volume": 42200115276.0
   },
   {
    "categories": [
@@ -1915,7 +1915,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/PGATOUR.pdf",
-   "last_updated": "2026-11-21T09:02:30.919393Z",
+   "last_updated": "2026-11-21T09:55:22.200557Z",
    "settlement_sources": [
     {
      "name": "The Wall Street Journal",
@@ -1930,7 +1930,7 @@
      "url": "https://www.foxsports.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
@@ -1946,7 +1946,7 @@
    ],
    "category": "Sports",
    "contract_terms_url": "https://assets.kalshi.com/contract_terms/GOLFPTSLEADER.pdf",
-   "last_updated": "2026-11-21T08:22:46.267246Z",
+   "last_updated": "2026-11-21T09:55:43.257069Z",
    "settlement_sources": [
     {
      "name": "ESPN",
@@ -1957,7 +1957,7 @@
      "url": "https://www.pgatour.com/"
     }
    ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794648615",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/?category=Sports&include_product_metadata=false&min_updated_ts=1794651810",
    "tags": [
     "Golf"
    ],
