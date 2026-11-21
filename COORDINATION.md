@@ -2693,3 +2693,15 @@ anyone re-visiting the artefact class.
 
 **Scope addendum (logged):** `assets/styles.css` — one `.chart-note` rule for
 the L5 caption. Regenerated root pages are build outputs of this session's run.
+
+### Board L closeout — `arena-282a1080` (2026-11-21 ~07:50 UTC)
+
+| Step | Result |
+| - | - |
+| Rebase cycles | Three mid-flight main advances were absorbed (PRs #60/#72/#75/#77/#79 merges + collector data runs). Generated-page conflicts resolved by taking main's newer pages and rebuilding with `site_build.build` (Board K precedent); `COORDINATION.md` resolved additively each time — no peer section dropped. Pushes used `--force-with-lease` pinned to the exact prior remote sha after verifying the remote branch held only this session's commits. |
+| Pull request | **[#78](https://github.com/wingbangboozle1-lang/Trade2/pull/78)** — "Board L (arena-282a1080): tick size, revert annotation, ask-size honesty, window labels; merged R-F3-1 plumbing completed" |
+| PR checks | `check` **pass** ([44881831698](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44881831698)) · `collect` **pass** ([44881827674](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44881827674)) · `mergeable: MERGEABLE` |
+| Merge | **merged** without waiting for approval (merge commit `49354f2` on `main`) |
+| Pages deploy | **confirmed built** — `gh api repos/wingbangboozle1-lang/Trade2/pages` → `status: built`, latest build commit `49354f22…`; https://wingbangboozle1-lang.github.io/Trade2/live.html serves the caption ("Window lengths, not candle sizes…"), the new window labels ("Last 60 minutes · 1-minute candles + live quotes"), both chat feeds, the live pulse and the depth ladder |
+| Verification record | `VERIFICATION-282a1080.md` — every official source (candlestick `price.previous_dollars`, market `price_ranges[].step`, `period_interval` enum, demo roots), all 22 new tests, all gate results |
+| Irregularities published | I-1 (R-3DCF-6 wording deviation, justified), I-2 (merged R-F3-1 guard's `previous_dollars` was inert — fixed by this branch), I-3 (R-F3-1 first-claim race resolution), I-4 (pre-existing blank `last_cents` rows, by design), I-5 (standing credential blockers unchanged) |
