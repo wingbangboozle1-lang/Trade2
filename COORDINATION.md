@@ -2173,6 +2173,7 @@ HEAD
 0 missing source, 0 production leaks · `tools/rootsource_check.py`
 **888 rows / 888 sourced / 0 production**.
 
+HEAD
 ## Session claim — `arena-57e6bd3d` (2026-11-21, UTC)
 
 Branch `arena/57e6bd3d-trade2` · base `main` @ `95f0031` (rebased onto `origin/main` @ `c264beb` before this claim) · claimed at session start.
@@ -2213,6 +2214,7 @@ Not claimed here: `site_build/**`, root `*.html`, `docs/**`, `kalshi-dashboard/*
 | F-57-6 | `series_ticker` on settled rows stays `null`. The official market object has no such field. |
 
 **Requests not touched:** R-3DCF-2 (no-ask-size display), R-3DCF-3 (reverted-within-one-candle label), R-3DCF-5 (store last price), R-3DCF-6 (relabel the "seconds" window as 1-minute candles). These belong to the table and chart owners, outside this claim.
+HEAD
 
 ---
 
@@ -2299,6 +2301,69 @@ the Flagged page with official API links).
 | PR | see below |
 | Merge | see below |
 | Pages deploy | see below |
+### Integration record — `arena-7695ba1b` (complete)
+
+| Step | Result |
+| - | --- |
+| Pre-push gates on the merged tree | `python3 -m unittest discover -s tests` **274 passed / 1 skipped** (`cryptography` not installed) · `npm test` **54 / 0** (was 29 before this session added the live-pulse suites) · `node --test test/live-feed*.test.mjs` **25 / 0** · `tools/linkcheck.py` **50 pages / 679 internal links / 0 errors** · `tools/rendercheck.mjs` 13 pages ok · `tools/root_pages_render.mjs` **ALL PASS — 13 root pages, 246 files** · `test/desk_render_dc732aa6.mjs` **PASSED** · `test/site_smoke.mjs docs/data` **ALL PASS** · `collector.test_runner` **PASSED** · `trading.test_engine` **ALL PASSED** · `tools/rowsource_check.py` 0 missing source / 0 production leaks · `tools/rootsource_check.py` **894 rows / 894 with a demo source link / 0 production links** |
+| Rebase conflicts | **Three rounds.** `main` advances every ~5 minutes because the scheduled collector commits a fresh snapshot, so the branch was rebased onto `main` three times. Every conflict on `COORDINATION.md` was resolved as a **union** (all fourteen peer board sections present verbatim, none dropped); every conflict on a generated page or a data file was resolved by taking `main`'s newer version and **rebuilding the pages from `main`'s own snapshot**, so the pull request carries this session's real changes and never a stale data rollback. No peer commit was discarded — the one stray commit that had been pushed onto this session's branch by another session was verified to be already present on `main` before the branch was force-updated (lease-protected). |
+| Pull request | **[#66](https://github.com/wingbangboozle1-lang/Trade2/pull/66)** — “fix(dashboard)+feat(site): final integration — live-pulse request shape, per-row source links, published row verification”, from `arena/7695ba1b-trade2` → `main` |
+| PR checks | `Site check — generator, render, links` / `check` **SUCCESS** · `collector` / `collect` **SUCCESS**; `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` confirmed immediately before merging |
+| Merge | `gh pr merge 66 --merge` → **merged 2026-11-21T07:19:28Z** as **`bd3ae2df107e126952981486f300b8a9d6cafd1e`** on `main` (no approval wait, per the brief) |
+| Pages | `pages build and deployment` run [44879709922](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879709922) → **success** (deploy 10 s, report-build-status 6 s). `GET /repos/…/pages` → `status: built`; `GET /repos/…/pages/builds/latest` → `status: built`, `error: {message: null}`, `commit: bd3ae2df…`. |
+| Live confirmation (fetched from the deployed site) | <https://wingbangboozle1-lang.github.io/Trade2/live.html> — the **Source** column with a demo API link on every tracked-markets row; the **live pulse** panel reading `LIVE PULSE · 1 reading` with its source line; the YES/NO chart switch; both liquidity ladders; the two chats (All events / Model shortlist, 3 high-ROI rows). <https://wingbangboozle1-lang.github.io/Trade2/review.html> — 52 detected irregularities, the **published-rows re-check panel** with **48 EXACT / 11 DRIFT / 16 UNVERIFIED** and **221** official demo API links. |
+| Final integration PR (this record) | A follow-up pull request carries only this `COORDINATION.md` record. |
+
+**Flagged items do not block the merge.** U-1…U-5 above are published on the
+site's *Flagged for review* page with their source links.
+
+---
+
+# Board M — integration session `arena-737bff9c` (branch `arena/737bff9c-trade2`, base `main` @ `0a5e755`)
+
+## Session claim — `arena-737bff9c` (2026-11-21, UTC)
+
+Branch `arena/737bff9c-trade2` · base `main` @ `0a5e755d342495d8bb85bfba6c832d612eb07843` · claimed at session start.
+
+The full build (collector, alert engine, simulated trading book, root site with landing page + five topic subpages, two scrolling alert chats, resolution tracking, Flagged-for-Review page, verification ledgers, scheduled GitHub Actions collection) is already on `main` from earlier sessions. This session is the final integration session: it re-verifies the merged tree line by line against official sources, confirms the site builds with no broken links, confirms GitHub Pages is live, then opens and merges a PR from this branch to `main`.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| M1 | Re-run every verification suite on the merged tree (Python unittest, Node test, linkcheck, site build) | done | `arena-737bff9c` | `tests/`, `scripts/test/`, `tools/linkcheck.py`, `site_build/build.py` |
+| M2 | Confirm GitHub Pages is built and serving the root site with real data | done | `arena-737bff9c` | `https://wingbangboozle1-lang.github.io/Trade2/` (Pages API) |
+| M3 | Open PR from `arena/737bff9c-trade2` to `main`, merge without waiting for approval, confirm Pages deploy, record here | in progress | `arena-737bff9c` | `COORDINATION.md` |
+
+## Work log — `arena-737bff9c` (2026-11-21)
+
+**Verification performed on the merged tree (all local, against committed snapshot):**
+
+| Suite | Result |
+| - | - |
+| `python3 -m unittest discover -s tests` | 294 passed / 12 skipped (environmental: `cryptography` unavailable) |
+| `npm test` | 54 / 0 passed |
+| `python3 tools/linkcheck.py` | 50 pages / 679 internal links / 0 errors |
+| `python3 -m site_build.build` | clean, exit 0; 10 pages generated incl. `live.html`, `trades.html`, `summary.html`, `review.html`, `methodology.html`, `suggestions.html` and one subpage per topic |
+| GitHub Pages API | `status: built`, source `main` `/`, public, `https://wingbangboozle1-lang.github.io/Trade2/` |
+
+**Live-site spot check:** the root page serves real market data from `https://external-api.demo.kalshi.co/trade-api/v2` — 750 markets tracked, five topic subpages (gas prices, elections, culture, crypto, golf), every table row carries an official `source_url` API link, the simulated equity book shows `$9,249.06` from a `$10,000.00` start, and the Flagged-for-Review page lists the standing limitations (no demo credentials → paper ledger labelled SIMULATED; WebSocket needs signed headers → anonymous REST polling; 411 of 750 events have no two-sided quote; article attribution published as candidates only).
+
+**No code changes were required.** The merge PR therefore carries only this COORDINATION.md integration record.
+
+**Standing irregularities (published, not blocking; see `review.html` and `EXECUTIVE_SUMMARY.md`):**
+* U-1/U-2 — demo-account portfolio and real demo orders need a Kalshi demo API key pair; none exists, paper ledger stays SIMULATED.
+* U-3 — WebSocket needs signed handshake headers a browser cannot set; live pulse uses the documented anonymous REST batch orderbook endpoint.
+* U-4 — 411 of 750 ranked events have no two-sided quote; labelled `no book`, blank price cells.
+* U-5 — article attribution never asserted; headlines published as candidates only.
+
+## Integration record — `arena-737bff9c` (final)
+
+| Step | Result |
+| - | - |
+| Verification | All suites green (see table above); every published row carries an official demo-API `source_url`; 0 production links |
+| Pull request | https://github.com/wingbangboozle1-lang/Trade2/pull/71 |
+| Merge | (to be filled after merge) |
+| Pages deploy | `status: built` at <https://wingbangboozle1-lang.github.io/Trade2/> before merge; re-confirmed after merge below |
+| Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |
 
 ---
 
@@ -2310,4 +2375,46 @@ Open PRs at claim time (#28, #59, #60, #64, #68, #69, #70) each carry an integra
 
 | ID | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| 4CA-T1 | Line-by-line check of the **official-source claims** in `EXECUTIVE_SUMMARY.md` §2–§7 (each cited `docs.kalshi.com` / `kalshi.com` page opened and the specific sentence compared with the claim). Mismatches are recorded as flags, not silently rewritten. | in progress | `arena-4ca4096c` | `VERIFICATION-4ca4096c.md` (new), this section |
+| 4CA-T1 | Line-by-line check of the **official-source claims** in `EXECUTIVE_SUMMARY.md` §2–§7 (each cited `docs.kalshi.com` / `kalshi.com` page opened and the specific sentence compared with the claim). Mismatches are recorded as flags, not silently rewritten. | done | `arena-4ca4096c` | `VERIFICATION-4ca4096c.md` (new), this section |
+
+### Result — 4CA-T1 (`arena-4ca4096c`, 2026-11-21 07:2x–07:4x UTC)
+
+Full row-by-row record, with the URL and the quoted official text for every row: **`VERIFICATION-4ca4096c.md`**.
+
+| Count | Result |
+| - | - |
+| Rows checked | 34 (§2–§8 of `EXECUTIVE_SUMMARY.md`) |
+| Confirmed against the official docs or live official responses | 24 |
+| Partly right (core correct, detail wrong or missing) | 4 |
+| Contradicted by the official record | 2 (golf settlement sources; key-page menu name) |
+| Not re-checked in this session (tool limit or internal experiment) | 4 |
+
+**Official sources opened (all directly, 2026-11-21 UTC):** [demo_env](https://docs.kalshi.com/getting_started/demo_env), [api_environments](https://docs.kalshi.com/getting_started/api_environments), [quick_start_websockets](https://docs.kalshi.com/getting_started/quick_start_websockets), [orderbook_responses](https://docs.kalshi.com/getting_started/orderbook_responses), [rate_limits](https://docs.kalshi.com/getting_started/rate_limits), [exchange_sharding](https://docs.kalshi.com/getting_started/exchange_sharding), [market_settlement](https://docs.kalshi.com/getting_started/market_settlement), [api_keys](https://docs.kalshi.com/getting_started/api_keys), [quick_start_create_order](https://docs.kalshi.com/getting_started/quick_start_create_order), [get-market-candlesticks](https://docs.kalshi.com/api-reference/market/get-market-candlesticks), [get-markets](https://docs.kalshi.com/api-reference/market/get-markets), [get-market](https://docs.kalshi.com/api-reference/market/get-market), [get-series-list](https://docs.kalshi.com/api-reference/market/get-series-list), [get-multiple-market-orderbooks](https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks), [fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf). Live official reads: [exchange/status](https://external-api.demo.kalshi.co/trade-api/v2/exchange/status), [series/KXAAAGASD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASD), [series/BTCMAXY](https://external-api.demo.kalshi.co/trade-api/v2/series/BTCMAXY), [series/KXPGAR3LEAD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGAR3LEAD), [series/KXXBANNEDMURRAYHILLGUY1](https://external-api.demo.kalshi.co/trade-api/v2/series/KXXBANNEDMURRAYHILLGUY1), [series/KXATTYGENIA](https://external-api.demo.kalshi.co/trade-api/v2/series/KXATTYGENIA), and a batch orderbook read.
+
+**Verification performed:** the 21 rows of the official fee table (42 fee values) were recomputed with exact Decimal arithmetic and cent rounding: 42 of 42 match. `notional_value_dollars` is defined in the official Get Market schema as "the total value of a single contract at settlement in dollars"; the definition was read from the official page, not from a third-party copy.
+
+**Irregularities (for the Flagged for Review page; not fixed here):**
+
+| ID | Severity | Item | Source |
+| - | - | - | - |
+| F-1 | High | `EXECUTIVE_SUMMARY.md` §5 says `KXPGAR3LEAD` settles via "ESPN / Fox Sports / pgatour.com". The official record lists one source: "the Governing League" at pgatour.com. | [series/KXPGAR3LEAD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGAR3LEAD) |
+| F-2 | Medium | The key-creation path "Account & security → API Keys" appears in `EXECUTIVE_SUMMARY.md` §3, `README.md` line 48 and `collector/kalshi_api.py` lines 71–72. The official page says Profile Settings (kalshi.com/account/profile), "API Keys" section. The official default key type is Ed25519; the code supports both. | [api_keys](https://docs.kalshi.com/getting_started/api_keys) |
+| F-3 | Medium | Placeholder list: 2 of 3 examples confirmed live. The third ("for  before their publication") was not observed. New: blank-token text in `KXATTYGENIA` prohibitions. | [KXATTYGENIA](https://external-api.demo.kalshi.co/trade-api/v2/series/KXATTYGENIA), [KXXBANNEDMURRAYHILLGUY1](https://external-api.demo.kalshi.co/trade-api/v2/series/KXXBANNEDMURRAYHILLGUY1) |
+| F-4 | Low | "four Demo shards" — the live labels are "Default", "Demo shard 1", "Demo shard 2", and blank for index 3. | [exchange/status](https://external-api.demo.kalshi.co/trade-api/v2/exchange/status) |
+| F-5 | Low | `orderbook_delta` is listed as a private channel; the summary presents it with `ticker` as a public feed. | [quick_start_websockets](https://docs.kalshi.com/getting_started/quick_start_websockets) |
+| F-6 | Low | Fee rounding: the PDF prose says "centicent"; its table matches cent rounding. Already flagged by the repo. | [fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf) |
+| F-7 | Low | "orders route by `market_ticker`" simplifies the rule (explicit `exchange_index` first). | [exchange_sharding](https://docs.kalshi.com/getting_started/exchange_sharding) |
+| F-8 | Medium | "The demo REST response carries no `X-RateLimit-*` headers" — not checkable with the tool used here; the docs say those headers describe the bucket for covered operations. Needs a manual `curl -i`. | [rate_limits](https://docs.kalshi.com/getting_started/rate_limits) |
+| F-9 | Low | Candlestick backfill needs the historical-cutoff caveat (`/historical/markets/{ticker}/candlesticks`). | [get-market-candlesticks](https://docs.kalshi.com/api-reference/market/get-market-candlesticks) |
+| F-10 | Low | §6.2 replay (299 of 300) and the §5 counts were not re-run live. Counts agree with `data/series_cache.json`. | internal |
+
+**Requests (files this session does not own — logged, not edited):**
+
+| ID | To | Request |
+| - | - | - |
+| R-4CA-1 | integration session (`EXECUTIVE_SUMMARY.md` is not on the claimed list of any open PR) | Apply the F-1 wording correction (golf settlement sources) and the F-2 path correction. Both are factual corrections to one cell or sentence. |
+| R-4CA-2 | owner of `README.md` line 48 and `collector/kalshi_api.py` lines 71–72 | Change "Account & security → API Keys" to "Profile Settings (kalshi.com/account/profile) → API Keys". Docstring/README only; no behaviour change. |
+| R-4CA-3 | integration session (`site_build/flagpage.py`) | Add F-1 to F-10 to the Flagged for Review page with the links above. Re-check the third placeholder before publishing it. |
+| R-4CA-4 | someone with a shell that can reach the demo host | Run `curl -i https://external-api.demo.kalshi.co/trade-api/v2/markets?limit=1` and record whether `X-RateLimit-*` headers are present (F-8). |
+
+**Merge status.** This session did **not** merge. Under the board rules, merging shared outputs is the integration session's job. The branch changes only `VERIFICATION-4ca4096c.md` (new) and this board section. A pull request is open for the integration session to merge; see the PR link in the next line.
