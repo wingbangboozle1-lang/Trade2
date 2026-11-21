@@ -91,6 +91,9 @@ class Handler(SimpleHTTPRequestHandler):
         if route == "/api/candle":
             return self._candle(query)
 
+        if route == "/api/orderbooks":
+            return self._orderbooks(query)
+
         return super().do_GET()
 
     # -- SSE --------------------------------------------------------------
@@ -165,6 +168,34 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json(data)
         except KalshiHTTPError as exc:
             return self._json({"error": str(exc)}, HTTPStatus.BAD_GATEWAY)
+
+    def _orderbooks(self, query):
+        """Same-origin proxy for GET /markets/orderbooks (the live pulse).
+
+        The browser talks to Kalshi directly when it can — CORS was verified for
+        the Pages origin (docs/data/capabilities.json). When it cannot (a
+        locked-down network, or a preview origin the exchange has not seen), the
+        pulse falls back to this route, so the panel measures the real books
+        instead of going dark. The response is passed through unchanged so the
+        page parses one shape either way.
+        """
+        raw = (query.get("tickers") or [""])[0]
+        tickers = [t.strip() for t in raw.split(",") if t.strip()][:100]
+        if not tickers:
+            return self._json({"error": "tickers is required"}, HTTPStatus.BAD_REQUEST)
+        client = KalshiClient(DEMO_REST)
+        try:
+            books = client.orderbooks(tickers)
+        except KalshiHTTPError as exc:
+            return self._json({"error": str(exc), "api_root": DEMO_REST},
+                              HTTPStatus.BAD_GATEWAY)
+        return self._json({
+            "orderbooks": [{"ticker": t, "orderbook_fp": b}
+                           for t, b in books.items()],
+            "as_of": time.time(),
+            "api_root": DEMO_REST,
+            "source": "local proxy (same data as GET /markets/orderbooks)",
+        })
 
     # quieter logs
     def log_message(self, fmt, *args):

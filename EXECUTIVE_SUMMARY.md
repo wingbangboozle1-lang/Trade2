@@ -2,7 +2,7 @@
 
 **Project:** `wingbangboozle1-lang/Trade2` · **Live site:** <https://wingbangboozle1-lang.github.io/Trade2/>
 **Environment:** Kalshi **demo** only (`https://external-api.demo.kalshi.co/trade-api/v2`)
-**Prepared:** 2026-11-20 · Every claim below links to the official source it came from.
+**Prepared:** 2026-11-20 · **Updated:** 2026-11-21 (session `arena-f3cb9b9f`) · Every claim below links to the official source it came from.
 
 ---
 
@@ -43,7 +43,7 @@ endpoint](https://docs.kalshi.com/api-reference/exchange/get-exchange-status).
 | Capability | Status | Evidence |
 | --- | --- | --- |
 | Market data (events, markets, order books, candlesticks) | **Live** from the demo REST API | Collector runs in GitHub Actions; every table row links to its API response |
-| Price-swing alerting (≥ $0.10) | **Live**, computed from successive order-book mids | `collector/alerts.py`, 32 unit tests |
+| Price-swing alerting (≥ $0.10) | **Live** — two layers: the scheduled collector compares each book mid with Kalshi's previous 1-minute candle quote, and the live desk additionally re-measures every tracked book in the visitor's browser every 45 s (`assets/live-feed.js`, 18 tests) | `collector/alerts.py` (61 tests across the suite) · `tests/test_live_pulse_f3cb9b9f.py` |
 | Event resolution (YES/NO) | **Live**, from the official `result` field | [Market Settlement](https://docs.kalshi.com/getting_started/market_settlement) |
 | Trading | **Simulated** paper ledger | No Kalshi credentials are configured in this repo |
 | Demo-account portfolio performance | **Not available — UNVERIFIED** | Requires signed requests with an API key |
@@ -97,11 +97,19 @@ suite now pins all 42 rows, so the regression cannot come back.
 
 | Topic | Kalshi category / tag used | Verified | Series matched |
 | --- | --- | --- | --- |
-| Gas prices | `category=Economics` + `category=Commodities`, matched on `KXAAAGAS*` and gas keywords | `GET /series/KXAAAGASD` → *"US gas price up"*, settlement source **AAA**, <https://gasprices.aaa.com/> | 162 |
-| Elections | `category=Elections` | `GET /series?category=Elections` returns 1,450+ series (e.g. `CONTROLS` "Senate winner", `GOVPARTY*` state governors) | 1,450 |
-| Culture | `category=Culture` **and** `category=Entertainment` | Culture itself holds only 2 series; Kalshi files most culture content under **Entertainment** (413 open events observed) | see site |
-| Crypto | `category=Crypto` | e.g. `BTCMAXY` "How high will Bitcoin get this year?", settlement source **CF Benchmarks** | 158 |
-| Golf | `category=Sports&tags=Golf` | e.g. `KXPGAR3LEAD` "PGA Round 3 Leader", settlement sources ESPN / Fox Sports / pgatour.com | 104 |
+| Gas prices | `category=Economics` + `category=Commodities`, matched on `KXAAAGAS*` and gas keywords | `GET /series/KXAAAGASD` → *"US gas price up"*, settlement source **AAA**, <https://gasprices.aaa.com/> | **162** |
+| Elections | `category=Elections` | `GET /series?category=Elections` (e.g. `CONTROLS` "Senate winner", `GOVPARTY*` state governors) | **1,451** |
+| Culture | `category=Culture` **and** `category=Entertainment` | Kalshi files almost all culture content under **Entertainment**: of the 789 matched series, **788 carry `categories: ["Entertainment"]`** (Oscars, Spotify charts, albums, awards) and **1 carries `["Culture"]`**. The earlier note that Culture "holds only 2 series" was a stale count and is corrected here. | **789** (788 Entertainment + 1 Culture) |
+| Crypto | `category=Crypto` | e.g. `BTCMAXY` "How high will Bitcoin get this year?", settlement source **CF Benchmarks** | **159** |
+| Golf | `category=Sports&tags=Golf` | e.g. `KXPGAR3LEAD` "PGA Round 3 Leader", settlement sources ESPN / Fox Sports / pgatour.com | **104** |
+
+Counts are the collector's discovery cache at snapshot **2026-11-21T06:28:00Z**
+(`data/series_cache.json`, cross-checked against `data/live.json.topics`); they
+move as Kalshi opens and closes series, so re-read them from the collector rather
+than from this table. The category labels themselves were re-checked live during
+session `arena-f3cb9b9f`:
+[Culture](https://external-api.demo.kalshi.co/trade-api/v2/series?category=Culture) ·
+[Entertainment](https://external-api.demo.kalshi.co/trade-api/v2/series?category=Entertainment).
 
 Everything else on Kalshi — sports games, weather, financials — is out of scope
 and is excluded by an explicit per-topic rule set in `collector/topics.py`.
@@ -155,6 +163,18 @@ and is excluded by an explicit per-topic rule set in `collector/topics.py`.
   stays global while the shortlist feed follows what they care about.
 * **Throttle the chat instead of the data.** Keep every alert in the JSON store
   but collapse bursts visually, so a fast market does not flood the reader.
+* **Measure the books in the browser, not just the snapshot** *(implemented in
+  session `arena-f3cb9b9f`)*. One anonymous `GET /markets/orderbooks` request
+  carries up to 100 books, so the desk can re-measure every tracked market every
+ 45 s between collector runs. `assets/live-feed.js` does that with the same
+  quote-integrity rule the collector uses.
+* **Say how far $0.10 actually is** *(recommendation, open)*. On a 0.0010-tick
+  market $0.10 is 100 ticks; on a one-cent market it is 10; on a dead 0.01/1.00
+  book it is 1. Printing "≈ N ticks" beside the threshold makes the alert
+  comparable across markets — see finding F-01 on the Flagged-for-Review page.
+* **Show the price mix before the leaderboard** *(implemented)*. 411 of 750
+  ranked events carry no two-sided quote; the overview now says so up front
+  instead of leaving a reader to guess why a cell is blank.
 
 ---
 
