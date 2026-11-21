@@ -2364,3 +2364,59 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | Merge | `gh pr merge 71 --merge` → **merged 2026-11-21T07:27:09Z** as **`4c5bfe62caf6b62be658df28b42714463cbd1608`** on `main` (no approval wait, per the brief); `git merge-base --is-ancestor` confirms this branch's commit `c0703a1` is an ancestor of `main` |
 | Pages deploy | <https://wingbangboozle1-lang.github.io/Trade2/> — `status: built` before merge; post-merge fetch of `review.html` and the root page return real demo data (49 source-linked flagged irregularities; per-row `source_url` links), confirming the Pages deploy succeeded |
 | Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |
+
+---
+
+## Session claim — `arena-4ca4096c` (2026-11-21, UTC)
+
+Branch `arena/4ca4096c-trade2` · base `main` @ `d84c94d` · claimed before any file edit.
+
+Open PRs at claim time (#28, #59, #60, #64, #68, #69, #70) each carry an integration or re-verification role. This session does **not** integrate, merge, or touch any shared output (`site_build/**`, root `*.html`, `categories/**`, `data/**`, `docs/**`, `assets/**`).
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| 4CA-T1 | Line-by-line check of the **official-source claims** in `EXECUTIVE_SUMMARY.md` §2–§7 (each cited `docs.kalshi.com` / `kalshi.com` page opened and the specific sentence compared with the claim). Mismatches are recorded as flags, not silently rewritten. | done | `arena-4ca4096c` | `VERIFICATION-4ca4096c.md` (new), this section |
+
+### Result — 4CA-T1 (`arena-4ca4096c`, 2026-11-21 07:2x–07:4x UTC)
+
+Full row-by-row record, with the URL and the quoted official text for every row: **`VERIFICATION-4ca4096c.md`**.
+
+| Count | Result |
+| - | - |
+| Rows checked | 34 (§2–§8 of `EXECUTIVE_SUMMARY.md`) |
+| Confirmed against the official docs or live official responses | 24 |
+| Partly right (core correct, detail wrong or missing) | 4 |
+| Contradicted by the official record | 2 (golf settlement sources; key-page menu name) |
+| Not re-checked in this session (tool limit or internal experiment) | 4 |
+
+**Official sources opened (all directly, 2026-11-21 UTC):** [demo_env](https://docs.kalshi.com/getting_started/demo_env), [api_environments](https://docs.kalshi.com/getting_started/api_environments), [quick_start_websockets](https://docs.kalshi.com/getting_started/quick_start_websockets), [orderbook_responses](https://docs.kalshi.com/getting_started/orderbook_responses), [rate_limits](https://docs.kalshi.com/getting_started/rate_limits), [exchange_sharding](https://docs.kalshi.com/getting_started/exchange_sharding), [market_settlement](https://docs.kalshi.com/getting_started/market_settlement), [api_keys](https://docs.kalshi.com/getting_started/api_keys), [quick_start_create_order](https://docs.kalshi.com/getting_started/quick_start_create_order), [get-market-candlesticks](https://docs.kalshi.com/api-reference/market/get-market-candlesticks), [get-markets](https://docs.kalshi.com/api-reference/market/get-markets), [get-market](https://docs.kalshi.com/api-reference/market/get-market), [get-series-list](https://docs.kalshi.com/api-reference/market/get-series-list), [get-multiple-market-orderbooks](https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks), [fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf). Live official reads: [exchange/status](https://external-api.demo.kalshi.co/trade-api/v2/exchange/status), [series/KXAAAGASD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASD), [series/BTCMAXY](https://external-api.demo.kalshi.co/trade-api/v2/series/BTCMAXY), [series/KXPGAR3LEAD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGAR3LEAD), [series/KXXBANNEDMURRAYHILLGUY1](https://external-api.demo.kalshi.co/trade-api/v2/series/KXXBANNEDMURRAYHILLGUY1), [series/KXATTYGENIA](https://external-api.demo.kalshi.co/trade-api/v2/series/KXATTYGENIA), and a batch orderbook read.
+
+**Verification performed:** the 21 rows of the official fee table (42 fee values) were recomputed with exact Decimal arithmetic and cent rounding: 42 of 42 match. `notional_value_dollars` is defined in the official Get Market schema as "the total value of a single contract at settlement in dollars"; the definition was read from the official page, not from a third-party copy.
+
+**Irregularities (for the Flagged for Review page; not fixed here):**
+
+| ID | Severity | Item | Source |
+| - | - | - | - |
+| F-1 | High | `EXECUTIVE_SUMMARY.md` §5 says `KXPGAR3LEAD` settles via "ESPN / Fox Sports / pgatour.com". The official record lists one source: "the Governing League" at pgatour.com. | [series/KXPGAR3LEAD](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGAR3LEAD) |
+| F-2 | Medium | The key-creation path "Account & security → API Keys" appears in `EXECUTIVE_SUMMARY.md` §3, `README.md` line 48 and `collector/kalshi_api.py` lines 71–72. The official page says Profile Settings (kalshi.com/account/profile), "API Keys" section. The official default key type is Ed25519; the code supports both. | [api_keys](https://docs.kalshi.com/getting_started/api_keys) |
+| F-3 | Medium | Placeholder list: 2 of 3 examples confirmed live. The third ("for  before their publication") was not observed. New: blank-token text in `KXATTYGENIA` prohibitions. | [KXATTYGENIA](https://external-api.demo.kalshi.co/trade-api/v2/series/KXATTYGENIA), [KXXBANNEDMURRAYHILLGUY1](https://external-api.demo.kalshi.co/trade-api/v2/series/KXXBANNEDMURRAYHILLGUY1) |
+| F-4 | Low | "four Demo shards" — the live labels are "Default", "Demo shard 1", "Demo shard 2", and blank for index 3. | [exchange/status](https://external-api.demo.kalshi.co/trade-api/v2/exchange/status) |
+| F-5 | Low | `orderbook_delta` is listed as a private channel; the summary presents it with `ticker` as a public feed. | [quick_start_websockets](https://docs.kalshi.com/getting_started/quick_start_websockets) |
+| F-6 | Low | Fee rounding: the PDF prose says "centicent"; its table matches cent rounding. Already flagged by the repo. | [fee schedule PDF](https://kalshi.com/docs/kalshi-fee-schedule.pdf) |
+| F-7 | Low | "orders route by `market_ticker`" simplifies the rule (explicit `exchange_index` first). | [exchange_sharding](https://docs.kalshi.com/getting_started/exchange_sharding) |
+| F-8 | Medium | "The demo REST response carries no `X-RateLimit-*` headers" — not checkable with the tool used here; the docs say those headers describe the bucket for covered operations. Needs a manual `curl -i`. | [rate_limits](https://docs.kalshi.com/getting_started/rate_limits) |
+| F-9 | Low | Candlestick backfill needs the historical-cutoff caveat (`/historical/markets/{ticker}/candlesticks`). | [get-market-candlesticks](https://docs.kalshi.com/api-reference/market/get-market-candlesticks) |
+| F-10 | Low | §6.2 replay (299 of 300) and the §5 counts were not re-run live. Counts agree with `data/series_cache.json`. | internal |
+
+**Requests (files this session does not own — logged, not edited):**
+
+| ID | To | Request |
+| - | - | - |
+| R-4CA-1 | integration session (`EXECUTIVE_SUMMARY.md` is not on the claimed list of any open PR) | Apply the F-1 wording correction (golf settlement sources) and the F-2 path correction. Both are factual corrections to one cell or sentence. |
+| R-4CA-2 | owner of `README.md` line 48 and `collector/kalshi_api.py` lines 71–72 | Change "Account & security → API Keys" to "Profile Settings (kalshi.com/account/profile) → API Keys". Docstring/README only; no behaviour change. |
+| R-4CA-3 | integration session (`site_build/flagpage.py`) | Add F-1 to F-10 to the Flagged for Review page with the links above. Re-check the third placeholder before publishing it. |
+| R-4CA-4 | someone with a shell that can reach the demo host | Run `curl -i https://external-api.demo.kalshi.co/trade-api/v2/markets?limit=1` and record whether `X-RateLimit-*` headers are present (F-8). |
+
+**Merge status.** This session did **not** merge. Under the board rules, merging shared outputs is the integration session's job. The branch changes only `VERIFICATION-4ca4096c.md` (new) and this board section. A pull request is open for the integration session to merge; see the PR link in the next line.
+
+**PR for this claim:** [#74 — verify(exec-summary): official-source check of EXECUTIVE_SUMMARY.md (4CA-T1)](https://github.com/wingbangboozle1-lang/Trade2/pull/74). Status at time of writing: open, awaiting the integration session. Merge result: not merged by this session (see the merge-status note in the PR body).
