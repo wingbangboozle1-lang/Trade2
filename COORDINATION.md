@@ -2418,3 +2418,5 @@ Full row-by-row record, with the URL and the quoted official text for every row:
 | R-4CA-4 | someone with a shell that can reach the demo host | Run `curl -i https://external-api.demo.kalshi.co/trade-api/v2/markets?limit=1` and record whether `X-RateLimit-*` headers are present (F-8). |
 
 **Merge status.** This session did **not** merge. Under the board rules, merging shared outputs is the integration session's job. The branch changes only `VERIFICATION-4ca4096c.md` (new) and this board section. A pull request is open for the integration session to merge; see the PR link in the next line.
+
+**PR for this claim:** [#74 — verify(exec-summary): official-source check of EXECUTIVE_SUMMARY.md (4CA-T1)](https://github.com/wingbangboozle1-lang/Trade2/pull/74). Status at time of writing: open, awaiting the integration session. Merge result: not merged by this session (see the merge-status note in the PR body).
