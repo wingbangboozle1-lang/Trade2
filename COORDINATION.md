@@ -1943,3 +1943,5 @@ Sandbox note: outbound access in this session is limited to GitHub, npm and PyPI
 4. Root `data/resolutions.json` still lacks elections, culture and golf rows until the scheduled run refreshes it (see item 1 for timing).
 
 **Board status:** R-3DCF-1 is now closed by this claim. The owning file (`collector/collector.py`) is shared with the root pipeline, so the other requests in this section (R-3DCF-2…6) remain open with their original owners.
+
+- PR for T-BB-1: https://github.com/wingbangboozle1-lang/Trade2/pull/59 — opened, **not merged** (merge reserved for the integration session).
