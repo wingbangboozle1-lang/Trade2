@@ -3003,3 +3003,82 @@ combined tree against official sources, then PR → merge → confirm GitHub Pag
 * Sessions `arena-8a82e634` and `arena-2338e039` (2026-11-21) both did
   read-only spot-checks and explicitly deferred integration/merge to the final
   integration session — no collision with this claim.
+
+---
+
+# Board M8A8 — session `arena-8a8d4294` (claimed 2026-11-21 ~07:20Z, completed 07:55Z)
+
+*(Board letters collide under concurrency, so this section is keyed by session id. It was first
+titled "Board M"; `arena-737bff9c` published a different "# Board M" (tasks M1–M3) on `main` while
+this claim was in flight, hence the rename. Task ids are `8A8-1`…`8A8-4`.)*
+
+Branch `arena/8a8d4294-trade2` · branched from `main` @ `c264beb4d084b1a02df342d22375ec5095c91264`
+· rebased onto `8718553`. Claim committed and pushed **before** any file was edited.
+
+## Claim-time overlap check
+
+| Check | Result |
+| ----- | ------ |
+| `gh pr list --state open` | #60 (root pages, `site_build/**`), #59 (`collector/collector.py`). Neither touches `scripts/**`, `config/**`, `site/**`, `kalshi-dashboard/**` |
+| Peer claims read in this file before claiming | `arena-3dcf3f13` X1 (`collector/runner.py`), `arena-67bd954a` R1 (`collector/collector.py`), `arena-108b0dfb` / `arena-57e6bd3d` (same file), Board L (`site_build/**`), `arena-e4e8f4e1` T17 (previously complete over `scripts/collect.mjs`) → **no live claim on this lane** |
+| Standing requests this session answers | **R-4f92-4** (durable resolution tracking for the node pipeline) — implemented, see the collision note below; **R-F3-3** (one copy of the ≥ $0.10 rule) — the browser pulse reuses `assets/live-feed.js` instead of re-implementing it; **R-3DCF-6** (candlestick "seconds" wording) — left to its owner, this branch only relabels the *suggestions* row that touched it |
+
+## Tasks
+
+| ID | Task | Status | Files |
+| -- | ---- | ------ | ----- |
+| 8A8-1 | `kalshi-dashboard/` published **zero** resolutions, so its simulated book was never graded. Measured on `main`: `kalshi-dashboard/data/resolved.json` = `{"resolved":[],"pending":[]}`, `status.json` = `run 14 · resolved_total 0 · resolution_checks_this_run 0` with 1,577 active markets, `trades.json` = 14 positions all `open`, `win_rate null` — because step 9 only re-read the top-80 *tracked* tickers. | **superseded, then incremented** — see the collision note. `bb9a9f7` paginates `main`'s scan, adds a published request budget, dedupes by ticker, stops relabelling market titles as event titles, and gives every row `detected_by` + `request_url` provenance. | `scripts/collect.mjs`, `scripts/test/collect.test.mjs`, `config/flags.json` (F-24) |
+| 8A8-2 | Line-by-line verification record: official URLs opened, the exact request shape, what the API actually returned, and what is *not* verified. | **done** — `VERIFICATION-8a8d4294.md` §1–§8, with five live demo-host probes (§3) and three mutations run against the tree (§4) | `VERIFICATION-8a8d4294.md` |
+| 8A8-3 | `README.md` documents `collector/client.py`, which does not exist; the pipeline imports `collector/kalshi.py` (`runner.py:33-34`). | **done** (`bb9a9f7`, one line; every other README claim about that pipeline was re-checked first) | `README.md` |
+| 8A8-4 | Two further gaps in the brief that were still open on `main`: the demo-account portfolio block (built but never read by the page) and alert latency (both chats silent for up to 30 min between runs). | **done** — `abd72ed` renders `data/portfolio.json` in three honest states and publishes the documented fields `scripts/portfolio.mjs` used to drop (F-26 records that Get Balance states no unit for its integer fields); `480dd52` measures ≥ $0.10 swings in the browser using the shared detector, with a new jsdom test | `site/assets/app.js`, `site/assets/style.css`, `scripts/portfolio.mjs`, `scripts/test/pulse.test.mjs`, `config/flags.json` (F-08/F-09/F-20/F-26) |
+
+**Collision, and how it was resolved (recorded here, per the protocol, not edited silently).**
+Mid-rebase, `main` gained `8b2606e` (`arena-f642a30a`, F642-T1) — a settled-market scan for
+`scripts/collect.mjs`, the same file and the same request R-4f92-4 this board had claimed. Both
+designs fixed the empty-file defect. `arena-f642a30a`'s is the better base: it has a pending/watch
+list for closed-but-undetermined markets and merges the previously published `resolved.json` back at
+startup so history survives Actions state-cache eviction, and it is already what reviewers see on
+`main`. So this branch **discarded its own scan** (`git reset --hard origin/main` after rebasing,
+then re-deriving only the gap) rather than merging two implementations of one rule. What survived
+is what theirs still lacked, each point read off `GET /markets`: cursor pagination to exhaustion
+(theirs stopped at page 2), a published per-run request budget, dedupe-by-ticker with a counter,
+no market-title-as-event-title, and per-row provenance. Their eleven tests still pass unchanged;
+four were added. A reviewer who wants the original draft can read it on
+`backup/8a8d4294-prescan-rebase` (`9f54171`), which this branch does not delete.
+
+## Gates on the final tree
+
+`node --test scripts/test/collect.test.mjs` **15 pass** · `npm test` **64 pass** ·
+`python3 -m unittest discover -s tests` **334 OK (skipped 1)** · `python3 -m collector.test_runner`
+**PASSED** · `python3 -m trading.test_engine` **PASSED** · `node scripts/build-site.mjs`
+**built 13 pages · links and config OK** · `python3 tools/linkcheck.py`
+**pages=50 · internal_links_checked=699 · errors=0**.
+
+## Irregularities found in the repo (all published, none blocking)
+
+| ID | Finding |
+| --| -------|
+| F-24 (new) | Resolution coverage is bounded by design: rotation + 30-day lookback + a page budget, cache lag on filtered listings, `event_title` blank for markets never seen open, no cause link. Stated on the page, not hidden |
+| F-25 (new) | Kalshi's own demo data carries literal `**` markdown inside market titles and empty `rules_primary`. Printed verbatim; no rule link invented |
+| F-26 (new) | `GET /portfolio/balance` documents `balance` / `portfolio_value` as bare integers with **no unit**; the code publishes them unconverted and the page says so. `portfolio_value_cents` removed, because "cents" was never documented |
+| I-5 (record, unfixed) | `RESOLUTION_WINDOW_S = 900` ("rotate every 15 minutes") vs `dashboard.yml` `cron: '*/30 * * * *'` vs README's "every 5 minutes" — three different cadences for one pipeline. The cadence is a deployment decision; a reviewer should pick one |
+
+## Requests raised (logged, not edited in other owners' files)
+
+| ID | To | Request |
+| --| --| ------- |
+| R-8A8-1 | owner of `collector/alerts.py` + `site_build/build.py` (root pipeline) | Give the root and `docs/` resolution publishers the same `detected_by` / `request_url` provenance this branch adds, so scan rows and probe rows can be told apart and re-checked with one click |
+| R-8A8-2 | integration session | `README.md` documents two of the three pipelines and never mentions `scripts/` + `site/` + `kalshi-dashboard/` or `dashboard.yml`. Three near-identical publishers whose headline numbers disagree is the standing R-3DCF-4; declare one canonical or state the split |
+| R-8A8-3 | owner of `docs/assets/live.js` | `docs/data/capabilities.json` goes stale silently on a repo with this much churn — show an age warning when it is older than 24 h, and gate the live layer on it |
+| R-8A8-4 | owner of the root `assets/desk.js` | The desk implements the same browser pulse a second time. `kalshi-dashboard/` now reuses the shared `assets/live-feed.js`; move that module somewhere both sites can reference without a relative `../`, and let the capabilities age warning (R-8A8-3) gate the pulse too, not only the WS layer |
+
+## Integration record
+
+| Step | Result |
+| ---- | ------ |
+| Post-rebase gates | all green (see above) |
+| Push | `--force-with-lease` after the reset-and-rederive; a later `git merge origin/main` (through PR #83) instead of a second rebase, because the only conflicted file was this one's tail and a merge keeps both sides' sections intact in one resolution instead of one per commit |
+| Post-merge gates, re-run on the merged tree | `node --test scripts/test/collect.test.mjs` **15 pass** · `npm test` **64 pass** · `python3 -m unittest discover -s tests` **356 OK (skipped 1)** · `python3 -m collector.test_runner` **PASSED** · `python3 -m trading.test_engine` **PASSED** · build **13 pages · links and config OK** · `tools/linkcheck.py` **50 pages / 699 links / 0 errors** |
+| Actions | dispatch **44881459826** green on the pre-rebase tree; dispatch **44882549670** on `3c7a226` (post-rebase, includes the pagination increment) — **completed · success**, covering `npm test`, restore state, **collect public Kalshi demo data** (live requests to the demo host from the runner), save state, record run result, portfolio snapshot, build + link check. Log **lines** are unreachable from this sandbox — the log blob host is outside the egress allowlist — so per-series counts are read after the merge from `status.json`, not claimed here |
+| Pull request | **[#88](https://github.com/wingbangboozle1-lang/Trade2/pull/88)** — "feat(dashboard): paginated settled scan (increment on main's), live browser pulse, wired demo-portfolio block". Opened without waiting for approval, per the brief. `check`/`collect` SUCCESS; the first `mergeStateStatus: DIRTY` was this file's tail again (main advanced to `cc11b35` while the PR was open), resolved as a union above and re-pushed |
+| Merge / Pages | appended by this session in the follow-up, with the merge SHA and the Pages build state — deliberately not written here before it happened, so the board never records an outcome that has not occurred |

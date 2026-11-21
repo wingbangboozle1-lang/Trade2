@@ -253,6 +253,148 @@
   }
 
   // ---------- ALERTS (two chats) ----------
+  // ---------- LIVE PULSE — measured in this browser, between collector runs ----------
+  // Why: `dashboard.yml` refreshes the published snapshot on a */30 schedule, so between two runs
+  // nothing re-measures a price and both chats go quiet even while a market moves. What IS
+  // available anonymously from a browser is GET /markets/orderbooks — up to 100 books in one
+  // request, one `tickers=` occurrence per ticker (the shape the exchange actually parses).
+  // Cross-origin use is measured, not assumed: docs/data/capabilities.json records
+  // `access-control-allow-origin: https://wingbangboozle1-lang.github.io` on a GET to the demo
+  // host, probed 2026-11-20T19:40:46Z by run 44804363290 (that file also records its own age for
+  // the same reason).
+  // The detector is the site root's shared `assets/live-feed.js` (merged in PR #57), loaded at
+  // runtime — the same quote-integrity rule the collector uses, deliberately NOT re-implemented
+  // here (request R-F3-3). If it cannot load, the panel says so and nothing else changes.
+  const PULSE = { started: false, det: null, timer: null, on: true, inflight: false, refreshes: 0, error: '', rows: [], markets: {}, base: null, rule: null, urls: [] };
+  const PULSE_EVERY_MS = 45000; // one polite request per refresh
+  const PULSE_CAP = 100;        // documented cap of GET /markets/orderbooks
+
+  function loadScript(src, timeoutMs = 1200) {
+    if (window.LiveFeed) return Promise.resolve(true);
+    return new Promise((res) => {
+      let done = false;
+      const finish = (v) => { if (!done) { done = true; res(v); } };
+      const el = document.createElement('script');
+      el.src = src;
+      el.onload = () => finish(!!window.LiveFeed);
+      el.onerror = () => finish(false);
+      document.head.appendChild(el);
+      // never leave the panel hanging on "reading…" if the asset is blocked; the page re-renders
+      // every 60 s and startPulse() retries then (see the reset below).
+      setTimeout(() => finish(!!window.LiveFeed), timeoutMs);
+    });
+  }
+
+  // A live row is NOT the collector's object shape and says so on its face: quote mid to quote
+  // mid, browser-polled, no cause link, quality stated. Merging it silently into collector rows
+  // would imply the scheduled run produced it.
+  function liveLine(a) {
+    const cls = a.direction === 'up' ? 'up' : 'down';
+    const arrow = a.direction === 'up' ? '▲' : '▼';
+    const cents = (x) => Math.round(x * 100);
+    return `<div class="msg ${cls}">
+      <div class="meta">${esc(fmtTime(a.iso))} · <span class="chip hi">live · browser poll</span> · <span class="chip">${esc(TOPIC_LABEL[a.topic] || a.topic)}</span>${a.high_roi ? ' <span class="chip hi">High-ROI rule</span>' : ''}</div>
+      <div><strong>${esc(a.title)}</strong>${a.ticker ? `<div class="note mono">${esc(a.ticker)}</div>` : ''}</div>
+      <div class="${cls}">${arrow} ${cents(a.delta) > 0 ? '+' : ''}${cents(a.delta)}¢ mid ${cents(a.previous)}¢ → ${cents(a.current)}¢</div>
+      <div class="links">${link(a.market_url, 'market JSON')} <span class="note">${esc(a.quality)} — ${esc(a.quality_reason)} · quote mid to quote mid (browser poll) · cause link: not determined</span></div>
+    </div>`;
+  }
+
+  function pulseState() {
+    const el = $('#pulse-state');
+    if (!el) return;
+    const txt = PULSE.error ? `offline: ${PULSE.error}` : PULSE.refreshes ? `${PULSE.refreshes} reading${PULSE.refreshes === 1 ? '' : 's'} · ${PULSE.rows.length} live swing${PULSE.rows.length === 1 ? '' : 's'}` : 'reading…';
+    el.innerHTML = `${PULSE.on ? '<span class="chip ' + (PULSE.error ? 'warn' : 'hi') + '">' + esc(txt) + '</span>' : '<span class="chip">paused</span>'} <span class="note">one anonymous <span class="mono">GET /markets/orderbooks</span> every ${Math.round(PULSE_EVERY_MS / 1000)}s against <span class="mono">${esc(PULSE.base || 'the demo API')}</span> from this browser · collector rows come from the scheduled run and are labelled with their own source</span>`;
+  }
+
+  function pulseRefresh() {
+    if (!PULSE.on || PULSE.inflight || !PULSE.det) return Promise.resolve(null);
+    const tickers = Object.keys(PULSE.markets).slice(0, PULSE_CAP);
+    if (!tickers.length) return Promise.resolve(null);
+    const url = window.LiveFeed.batchOrderbookUrl(`${PULSE.base}/markets/orderbooks`, tickers);
+    if (!url) return Promise.resolve(null);
+    PULSE.inflight = true;
+    const started = Date.now();
+    return fetch(url, { cache: 'no-store' })
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((data) => {
+        const books = {};
+        ((data && data.orderbooks) || []).forEach((e) => { if (e && e.ticker) books[e.ticker] = e.orderbook_fp || {}; });
+        if (!Object.keys(books).length) throw new Error('empty response');
+        const quotes = {};
+        Object.keys(books).forEach((t) => {
+          if (!PULSE.markets[t]) return;
+          quotes[t] = { meta: PULSE.markets[t].meta, quote: window.LiveFeed.quoteFromBook(books[t]) };
+        });
+        if (!Object.keys(quotes).length) throw new Error(`no tracked ticker in response (${Object.keys(books).length} unmatched)`);
+        const out = PULSE.det.ingest(quotes, started);
+        PULSE.refreshes += 1;
+        PULSE.error = '';
+        for (const row of out.fired) {
+          PULSE.rows.unshift({ ...row, high_roi: liveHighRoi(row) });
+        }
+        PULSE.rows = PULSE.rows.slice(0, 200);
+        PULSE.urls = [url];
+        return out;
+      })
+      .catch((err) => { PULSE.error = String((err && err.message) || err); return null; })
+      .then((out) => {
+        PULSE.inflight = false;
+        pulseState();
+        if (out && out.fired.length && typeof renderAlerts === 'function') renderAlerts();
+        return out;
+      });
+  }
+
+  // The published High-ROI rule from config/topics.json (copied to data/topics.json by the build),
+  // applied to the live quote. The entry price is the implied ask (1 − best opposite bid), which is
+  // the same complement relation the collector uses on this book.
+  function liveHighRoi(row) {
+    const rule = PULSE.rule;
+    const mkt = PULSE.markets[row.ticker];
+    if (!rule || !mkt) return false;
+    const entry = row.direction === 'up' ? row.yes_ask : (row.yes_bid === null ? null : 1 - row.yes_bid);
+    if (entry === null || entry === undefined) return false;
+    const spread = row.spread;
+    return Math.round(entry * 100) <= rule.max_entry_price_cents
+      && spread !== null && spread !== undefined && Math.round(spread * 100) <= rule.max_spread_cents
+      && Number(mkt.volume_24h || 0) >= rule.min_volume_24h_contracts;
+  }
+
+  function startPulse(markets, base, rule) {
+    PULSE.base = base || PULSE.base;
+    PULSE.rule = rule || PULSE.rule;
+    for (const m of markets.slice(0, PULSE_CAP)) {
+      if (!m || !m.ticker) continue;
+      PULSE.markets[m.ticker] = {
+        volume_24h: m.volume_24h,
+        meta: { ticker: m.ticker, title: m.event_title || m.ticker, topic: m.topic, series_ticker: m.series_ticker || '', event_ticker: m.event_ticker || '', market_url: m.source_url || '' },
+      };
+    }
+    const toggle = $('#pulse-on');
+    if (toggle && !toggle.dataset.wired) {
+      toggle.dataset.wired = '1';
+      toggle.checked = PULSE.on;
+      toggle.addEventListener('change', () => {
+        PULSE.on = !!toggle.checked;
+        pulseState();
+        if (PULSE.on) pulseRefresh();
+      });
+    }
+    // a previous attempt that never got the detector retries on the next re-render (60 s)
+    if (PULSE.started && PULSE.det) { pulseState(); return Promise.resolve(false); }
+    if (PULSE.started) PULSE.started = false;
+    PULSE.started = true;
+    if (!PULSE.base) { PULSE.error = 'no API base in the snapshot'; pulseState(); return Promise.resolve(false); }
+    return loadScript('../assets/live-feed.js').then((ok) => {
+      if (!ok) { PULSE.error = 'shared detector assets/live-feed.js did not load'; pulseState(); return false; }
+      PULSE.det = window.LiveFeed.newDetector();
+      if (!PULSE.timer) PULSE.timer = setInterval(pulseRefresh, PULSE_EVERY_MS);
+      pulseRefresh();
+      return true;
+    });
+  }
+
   function alertLine(a) {
     const cls = a.direction === 'up' ? 'up' : 'down';
     const arrow = a.direction === 'up' ? '▲' : '▼';
@@ -272,24 +414,29 @@
     const [latest, alerts, status] = await Promise.all([load('latest.json'), load('alerts.json'), load('status.json')]);
     statusBar(status, latest);
     const main = $('#app');
-    const all = alerts?.alerts || [];
+    const collector = alerts?.alerts || [];
+    const atOf = (a) => Date.parse(a.at || a.iso) || 0;
+    const newestFirst = (list) => list.slice().sort((x, y) => atOf(y) - atOf(x));
+    const all = newestFirst([...PULSE.rows, ...collector]);
     const hi = all.filter((a) => a.high_roi);
     main.innerHTML = `
       <h1>Live alerts</h1>
       <p class="lead">Two scrolling feeds. <strong>All alerts</strong> lists every contract whose last price moved ≥ 10¢ between two collector runs. <strong>High-ROI picks</strong> lists only alerts that pass the rule-based High-ROI heuristic (entry ≤ 40¢, spread ≤ 5¢, 24h volume ≥ 100). The heuristic is not a predictive model; see Suggestions.</p>
+      <div class="card"><label><input type="checkbox" id="pulse-on"> live pulse — re-measure the top ${PULSE_CAP} markets by dollar volume in this browser between collector runs (the same ≥ $0.10 rule, the same quote-integrity refusals)</label><div id="pulse-state" class="note"></div></div>
       <div class="controls"><label>Topic <select id="tf"><option value="">All topics</option>${Object.entries(TOPIC_LABEL).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('')}</select></label></div>
       <div class="two">
         <div><h2 style="margin-top:6px">All alerts (${all.length})</h2><div class="chat" id="chat-all"></div></div>
         <div><h2 style="margin-top:6px">High-ROI picks (${hi.length})</h2><div class="chat" id="chat-hi"></div></div>
       </div>
       <p class="note">Newest messages are at the bottom. The feed shows the most recent 1,000 alerts kept by the collector. "Cause link: not determined" means the site does not attribute a price move to a news or website source; such links need manual review (see Flagged for Review).</p>`;
+    const lineFor = (a) => (a.source === 'live' ? liveLine(a) : alertLine(a));
     const render = () => {
       const tf = $('#tf').value;
       const f = (a) => !tf || a.topic === tf;
       const chronological = (list) => list.filter(f).slice().reverse();
       const fill = (el, list) => {
         const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-        el.innerHTML = chronological(list).map(alertLine).join('') || '<div class="empty">No alerts yet. Alerts appear when a price moves ≥ 10¢ between two collector runs.</div>';
+        el.innerHTML = chronological(list).map(lineFor).join('') || '<div class="empty">No alerts yet. Alerts appear when a price moves ≥ 10¢ between two collector runs.</div>';
         if (atBottom || !el.dataset.init) el.scrollTop = el.scrollHeight;
         el.dataset.init = '1';
       };
@@ -300,11 +447,13 @@
     if (savedTf !== null) $('#tf').value = savedTf;
     $('#tf').addEventListener('change', () => { sessionStorage.setItem('alerts-topic', $('#tf').value); render(); });
     render();
+    // the pulse needs the market list (already loaded for the page) and the published High-ROI rule
+    startPulse(latest?.markets || [], latest?.source?.base_url || null, (await load('topics.json'))?.high_roi_rule);
   }
 
   // ---------- TRADES ----------
   async function renderTrades() {
-    const [latest, trades, status] = await Promise.all([load('latest.json'), load('trades.json'), load('status.json')]);
+    const [latest, trades, status, portfolio] = await Promise.all([load('latest.json'), load('trades.json'), load('status.json'), load('portfolio.json')]);
     statusBar(status, latest);
     const main = $('#app');
     const s = trades?.summary;
@@ -323,8 +472,32 @@
       <h2>Recent simulated positions (latest 200)</h2>
       <div class="table-wrap"><table><thead><tr><th>Opened</th><th>Strategy</th><th>Topic</th><th>Event / outcome</th><th>Side</th><th class="num">Contracts</th><th class="num">Entry</th><th class="num">Fee</th><th class="num">Cost</th><th>Status</th><th class="num">P&amp;L</th><th>Source</th></tr></thead><tbody>${pos || '<tr><td colspan="12" class="empty">No positions yet.</td></tr>'}</tbody></table></div>
       <h2>Demo account portfolio</h2>
-      <div class="card flag"><strong>Not connected.</strong> Portfolio tracking for the Kalshi demo account needs a demo API key pair stored as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>). No account balance, positions or demo orders are shown on this page. Even when the secrets are set, this section is not yet wired to the snapshot file (flag F-20). See Flagged for Review.</div>`;
+      ${acctCard(portfolio)}`;
   }
+  // The demo-account block reads data/portfolio.json, written by scripts/portfolio.mjs only when a
+  // demo key pair exists (GET /portfolio/balance + GET /portfolio/positions, read-only, signed).
+  // Values are shown exactly as the API returned them — the docs do not publish a unit for the
+  // integer `balance` / `portfolio_value`, so they are not converted here (flag F-26).
+  function acctCard(p) {
+    if (!p) {
+      return '<div class="card flag"><strong>No snapshot file.</strong> <span class="mono">data/portfolio.json</span> is not published, so nothing about the demo account is claimed on this page. It appears once a demo API key pair exists as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>) and the collector runs the read-only snapshot step. See <a href="flagged.html">Flagged for review</a> F-08.</div>';
+    }
+    if (!p.connected) {
+      return `<div class="card flag"><strong>Not connected.</strong> ${esc(p.reason || 'The snapshot step reported no credentials.')} No account balance, positions or demo orders are shown on this page.</div>`;
+    }
+    const money = (x) => (x === null || x === undefined ? '—' : esc(String(x)));
+    const rows = (p.positions || []).map((m) => `<tr><td class="mono">${esc(m.ticker)}</td><td class="num">${money(m.position_fp)}</td><td class="num">${money(m.market_exposure_dollars)}</td><td class="num">${money(m.realized_pnl_dollars)}</td><td class="num">${money(m.fees_paid_dollars)}</td><td class="num">${money(m.total_traded_dollars)}</td><td class="mono">${m.exchange_index === null || m.exchange_index === undefined ? '—' : esc(m.exchange_index)}</td><td>${m.netting_enabled === true ? 'yes' : m.netting_enabled === false ? 'no' : '—'}</td><td class="mono">${esc(fmtTime(m.last_updated_ts))}</td><td>${link(m.source_url, 'market JSON')}</td></tr>`).join('');
+    const evs = (p.event_positions || []).map((e) => `<tr><td class="mono">${esc(e.event_ticker)}</td><td class="num">${money(e.total_cost_dollars)}</td><td class="num">${money(e.total_cost_shares_fp)}</td><td class="num">${money(e.event_exposure_dollars)}</td><td class="num">${money(e.realized_pnl_dollars)}</td><td class="num">${money(e.fees_paid_dollars)}</td><td>${link(e.source_url, 'event JSON')}</td></tr>`).join('');
+    const breakdown = (p.balance_breakdown || []).map((b) => `<tr><td class="mono">${b.exchange_index === null || b.exchange_index === undefined ? '—' : esc(b.exchange_index)}</td><td class="num">${money(b.balance)}</td></tr>`).join('');
+    return `<div class="card ok"><strong>Read-only snapshot of the Kalshi demo account</strong> — ${esc(p.environment || 'Kalshi demo')}, taken ${esc(fmtTime(p.generated_at))}. Balance <span class="mono">${money(p.balance_dollars)}</span> dollars (API <span class="mono">balance_dollars</span>); API <span class="mono">balance</span> ${money(p.balance)} and <span class="mono">portfolio_value</span> ${money(p.portfolio_value)} published unconverted, because the endpoint does not state their unit on its page (F-26). ${p.positions_cursor ? 'More positions exist behind the cursor.' : 'All positions returned in one page.'} No orders are placed by this site.</div>
+      <div class="table-wrap"><table><thead><tr><th>Market</th><th class="num">Position (fp)</th><th class="num">Market exposure $</th><th class="num">Realised P&amp;L $</th><th class="num">Fees paid $</th><th class="num">Total traded $</th><th>Index</th><th>Netting</th><th>Updated</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="10" class="empty">The account holds no unsettled market positions.</td></tr>'}</tbody></table></div>
+      <h3>Event positions</h3>
+      <div class="table-wrap"><table><thead><tr><th>Event</th><th class="num">Total cost $</th><th class="num">Shares (fp)</th><th class="num">Event exposure $</th><th class="num">Realised P&amp;L $</th><th class="num">Fees paid $</th><th>Source</th></tr></thead><tbody>${evs || '<tr><td colspan="7" class="empty">None returned.</td></tr>'}</tbody></table></div>
+      <h3>Balance by exchange index</h3>
+      <div class="table-wrap"><table><thead><tr><th>Exchange index</th><th class="num">Balance (as returned)</th></tr></thead><tbody>${breakdown || '<tr><td colspan="2" class="empty">Not returned.</td></tr>'}</tbody></table></div>
+      <p class="note">Fields and defaults per the official pages: <a href="https://docs.kalshi.com/api-reference/portfolio/get-balance" target="_blank" rel="noopener">Get Balance</a> · <a href="https://docs.kalshi.com/api-reference/portfolio/get-positions" target="_blank" rel="noopener">Get Positions</a>. Raw responses: ${(p.source_urls || []).map((u, i) => link(u, i === 0 ? 'balance' : 'positions')).join(' · ') || '<span class="muted">none recorded</span>'}. ${esc(p.note || '')}</p>`;
+  }
+
   const STRAT_NAME = { follow: 'Follow big moves', fade: 'Fade big moves', high_roi_rule: 'High-ROI rule (heuristic)' };
 
   // ---------- RESOLVED ----------
@@ -332,13 +505,13 @@
     const [latest, resolved, status] = await Promise.all([load('latest.json'), load('resolved.json'), load('status.json')]);
     statusBar(status, latest);
     const main = $('#app');
-    const rows = (resolved?.resolved || []).map((r) => `<tr><td>${esc(fmtTime(r.detected_at))}</td><td>${esc(TOPIC_LABEL[r.topic] || r.topic)}</td><td>${esc(r.event_title)}<div class="note">${esc(r.outcome_label || r.ticker)}</div></td><td><span class="chip ${r.result === 'yes' ? 'yes' : r.result === 'no' ? 'no' : ''}">${esc(r.result.toUpperCase())}</span></td><td class="mono">${esc(r.status)}</td><td>${esc(fmtTime(r.close_time))}</td><td class="mono">${esc(r.ticker)}</td><td>${link(r.source_url, 'market JSON')}</td></tr>`).join('');
+    const rows = (resolved?.resolved || []).map((r) => `<tr><td>${esc(fmtTime(r.detected_at))}</td><td>${esc(TOPIC_LABEL[r.topic] || r.topic)}</td><td>${esc(r.event_title || r.market_title) || '<span class="muted">no title published</span>'}${r.event_title ? '' : '<div class="note">market title from the settled listing — the event was not tracked while open</div>'}<div class="note">${esc(r.outcome_label || r.ticker)}</div></td><td><span class="chip ${r.result === 'yes' ? 'yes' : r.result === 'no' ? 'no' : ''}">${esc((r.result || '').toUpperCase())}</span></td><td>${esc(fmtTime(r.settlement_ts))}<div class="note">${r.settlement_value_dollars == null ? '' : esc(`payout $${r.settlement_value_dollars}`)}</div></td><td class="mono">${esc(r.status)}</td><td>${esc(fmtTime(r.close_time))}</td><td class="mono">${esc(r.ticker)}</td><td>${link(r.source_url, 'market JSON')}<div class="note">${link(r.request_url || r.source_url, r.request_url ? 'settled listing' : 'market read')} · ${esc(r.via === 'settled-scan' ? 'settled listing' : r.via === 'watch' ? 'watched by ticker' : (r.via || r.detected_by || 'unknown path'))}</div></td></tr>`).join('');
     const pend = (resolved?.pending || []).map((p) => `<tr><td>${esc(TOPIC_LABEL[p.topic] || p.topic || '—')}</td><td>${esc(p.event_title || '')}</td><td class="mono">${esc(p.ticker)}</td><td class="mono">${esc(p.status)}</td><td>${esc(fmtTime(p.close_time))}</td><td>${link(p.source_url, 'market JSON')}</td></tr>`).join('');
     main.innerHTML = `
       <h1>Resolved events — yes or no</h1>
-      <p class="lead">Markets the collector followed that now carry an official result. "YES" or "NO" is the market's <span class="mono">result</span> field from the Kalshi API. Markets that have closed but have no result yet are listed below as pending.</p>
+      <p class="lead">Markets that now carry an official result. "YES" or "NO" is the market's <span class="mono">result</span> field from the Kalshi API — nothing here is inferred. Two paths fill this table, and each row says which: <span class="mono">settled-scan</span> is <span class="mono">GET /markets?status=settled&amp;series_ticker=…&amp;min_settled_ts=…</span> (the documented settled listing, rotated per topic over a 30-day window), and <span class="mono">watch</span> is a followed or pending market that left the open-events list and was re-read by ticker. Each row links whichever request returned it, so a reviewer can re-run the exact query. Markets that have closed but have no result yet are listed below as pending.</p>
       <h2>Resolved (${(resolved?.resolved || []).length})</h2>
-      <div class="table-wrap"><table><thead><tr><th>Detected</th><th>Topic</th><th>Event / outcome</th><th>Result</th><th>Status</th><th>Closed</th><th>Ticker</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="8" class="empty">No followed markets have resolved yet.</td></tr>'}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Detected</th><th>Topic</th><th>Event / outcome</th><th>Result</th><th>Settled</th><th>Status</th><th>Closed</th><th>Ticker</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="empty">No followed markets have resolved yet.</td></tr>'}</tbody></table></div>
       <h2>Closed, awaiting result (${(resolved?.pending || []).length})</h2>
       <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Event</th><th>Ticker</th><th>Status</th><th>Closed</th><th>Source</th></tr></thead><tbody>${pend || '<tr><td colspan="6" class="empty">None.</td></tr>'}</tbody></table></div>`;
   }
