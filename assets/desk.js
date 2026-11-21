@@ -36,7 +36,16 @@
     books: {},
     timers: [],
     lastSync: null,
+    // Rows this tab detected itself, newest first. Kept apart from the served
+    // snapshot so a stale page stays visibly stale: `liveRows` is layered on
+    // top at render time and every row carries origin:"live".
+    liveRows: [],
+    liveIndicative: [],
+    liveStats: null,
+    liveState: "idle",
   };
+  var LIVE_WATCH = 60;      // markets polled per tick, two requests per tick
+  var LIVE_INTERVAL_MS = 5000;
 
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $all(sel, root) {
@@ -205,7 +214,10 @@
 
   function alertRow(a, isModel) {
     var up = a.direction === "up";
-    var when = (a.iso || "").slice(11, 19) || hhmmss(a.ts);
+    /* CI rows carry `iso`; browser rows carry `t_iso`. Accept both so one
+     * renderer serves both feeds and they cannot drift apart. */
+    var when = (a.iso || a.t_iso || "").slice(11, 19) || hhmmss(a.ts);
+    if (a.from !== undefined && a.previous === undefined) a.previous = a.from;
     var basis = a.basis || "mid";
     var badge = "";
     if (a.thin_book || (basis && basis !== "mid")) {
@@ -230,6 +242,12 @@
       badges += '<span class="flag-badge" title="YES bid ' + money(a.yes_bid) +
         " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
         'this midpoint is not an executable price.">wide spread · not executable</span> ';
+    }
+    if (a.origin === "live") {
+      badges += '<span class="tag tag-live" title="Measured in this browser from ' +
+        "the public Kalshi demo order books while this page was open, using the " +
+        'same >= $0.10 rule as the CI collector. Not saved to the snapshot.">' +
+        "LIVE</span> ";
     }
     /* The collector stamps a verdict on every row it writes; a row without one
      * predates the rule and says so instead of being assumed executable. */
@@ -317,10 +335,23 @@
     return row;
   }
 
+  /* Browser-detected rows are merged in front of the served ones. They are
+   * never written back into the snapshot, so the two sources stay separable:
+   * a row with origin:"live" was measured in this tab, everything else came
+   * from the CI collector's verified snapshot. */
+  function mergeLive(snapshotAlerts) {
+    var served = snapshotAlerts || [];
+    if (!state.liveRows.length) return served;
+    var seen = {};
+    served.forEach(function (a) { if (a && a.id) seen[a.id] = true; });
+    var extra = state.liveRows.filter(function (a) { return !seen[a.id]; });
+    return extra.concat(served);
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
-    var raw = s.alerts || [];
+    var raw = mergeLive(s.alerts);
     /* R-D-01 (arena-0b2d2a2a): identical repeated rows are grouped and rows
      * whose quoted YES spread is >= the $0.10 threshold are marked
      * non-executable. Display-only: the raw rows stay in the snapshot. */
@@ -336,7 +367,19 @@
      * since a swing usually leaves little modelled edge behind it — the
      * chat shows the model's current top signals, exactly like the
      * server-rendered chat in build_overview. */
-    var model = s.high_roi_alerts;
+    /* Anything this tab detected that also cleared the published net-ROI gate
+     * belongs in the shortlist alongside the collector's rows. */
+    var liveModel = state.liveRows.filter(function (a) { return !!a.model; })
+      .map(function (a) {
+        var copy = Object.assign({}, a);
+        copy.model_net_roi = a.model.net_roi;
+        copy.model_side = a.model.side;
+        copy.model_price = a.model.executable_price;
+        copy.model_fee = a.model.fee;
+        copy.model_edge = a.model.edge;
+        return copy;
+      });
+    var model = liveModel.concat(s.high_roi_alerts || []);
     if (!Array.isArray(model) || !model.length) {
       var gate = (s.model_gate && s.model_gate.min_net_roi != null)
         ? Number(s.model_gate.min_net_roi) : 0.05;
@@ -370,7 +413,11 @@
       if (!all.length) {
         var refusedN = (s.suppressed_alerts || []).length;
         feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
-          "two-sided book in the current buffer. " +
+          "two-sided book in the current buffer" +
+          (state.liveState === "live"
+            ? ", and this tab is watching " + (state.liveStats && state.liveStats.markets || 0) +
+              " live order books for one."
+            : ".") + " " +
           (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
             " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
             ' listed with the reason on <a href="review.html#refused">Flagged for ' +
@@ -868,6 +915,105 @@
 
     // Keep the visible snapshot age current (R-D-01).
     setInterval(tickAge, 5000);
+
+    startLiveProbe();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* browser-side live probe (assets/live-probe.js)                      */
+  /* ------------------------------------------------------------------ */
+
+  /* The page is static, so the collector's >= $0.10 buffer only changes when
+   * CI runs. The demo REST API is CORS-open (data/_cors.txt), so the tab can
+   * poll the public order books itself and run the same rule while it is open.
+   *
+   * Scope is deliberately small: the 60 highest-dollar markets across the five
+   * topics, two unauthenticated GETs every five seconds, cancelled when the tab
+   * is hidden and resumed when it comes back. Nothing is POSTed and no
+   * credential is used, so this cannot place an order or read an account. */
+  function startLiveProbe() {
+    var L = window.KalshiLive;
+    var pill = document.getElementById("streamState");
+    if (!L || typeof L.createPoller !== "function") {
+      state.liveState = "unavailable";
+      return;
+    }
+    var snapshot = state.snapshot;
+    if (!snapshot) { state.liveState = "no-snapshot"; return; }
+
+    var gate = (snapshot.model_gate && snapshot.model_gate.min_net_roi != null)
+      ? Number(snapshot.model_gate.min_net_roi) : undefined;
+
+    var poller = L.createPoller({
+      intervalMs: LIVE_INTERVAL_MS,
+      modelGate: gate,
+      watchlistSize: LIVE_WATCH,
+      fetchJson: function (url) {
+        return fetch(url, { cache: "no-store", credentials: "omit" })
+          .then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          });
+      },
+      onStatus: function (st) {
+        state.liveState = st.state;
+        if (!pill) return;
+        if (st.state === "live") {
+          pill.className = "live-pill live";
+          pill.innerHTML = "<i></i> <span>LIVE · browser poll</span>";
+        } else if (st.state === "error") {
+          pill.className = "live-pill warn";
+          pill.innerHTML = "<i></i> <span>LIVE retrying</span>";
+          pill.title = String(st.detail || "");
+        }
+      },
+      onAlert: function (a) {
+        state.liveRows.unshift(a);
+        if (state.liveRows.length > 200) state.liveRows.length = 200;
+        renderFeeds();
+        if (a.ticker === state.market) {
+          appendPoint(a.ticker, a.to);
+          renderChartNotes();
+          drawChart();
+        }
+      },
+      onIndicative: function (row) {
+        state.liveIndicative.unshift(row);
+        if (state.liveIndicative.length > 50) state.liveIndicative.length = 50;
+      },
+      onPoll: function (p) {
+        state.liveStats = p.stats;
+        var allCount = document.getElementById("allCount");
+        if (allCount && !state.liveRows.length) {
+          allCount.textContent = "0";
+        }
+      }
+    });
+
+    /* Seed the watchlist from the served snapshot, highest dollar value first,
+     * so the biggest events are the ones under live watch. */
+    var seeded = 0;
+    try {
+      var obs = L.observationsFromSnapshot(snapshot);
+      poller.setWatchlist(obs.slice(0, LIVE_WATCH));
+      seeded = obs.length;
+    } catch (e) { seeded = 0; }
+
+    if (!seeded) {
+      state.liveState = "no-eligible-markets";
+      return;
+    }
+
+    /* Do not spend a visitor's battery or a public endpoint's quota on a tab
+     * nobody is looking at. */
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) poller.stop();
+      else if (!poller.isRunning()) poller.start();
+    });
+
+    window.addEventListener("beforeunload", function () { poller.stop(); });
+    state.livePoller = poller;
+    poller.start();
   }
 
   if (document.readyState === "loading") {

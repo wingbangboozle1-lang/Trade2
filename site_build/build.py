@@ -44,36 +44,53 @@ SERIES_CACHE_PATH = os.path.join(DATA_DIR, "series_cache.json")
 PORTFOLIO_STATE_PATH = os.path.join(DATA_DIR, "portfolio_state.json")
 
 
-def nav(active: str, prefix: str = "") -> str:
-    items = [("index.html", "Overview", "◫")]
-    for slug in TOPIC_ORDER:
-        label = {"gas-prices": "Gas prices", "elections": "Elections",
-                 "culture": "Culture", "crypto": "Crypto", "golf": "Golf"}[slug]
-        icon = {"gas-prices": "⌁", "elections": "◉", "culture": "✳",
-                "crypto": "₿", "golf": "⛳"}[slug]
-        items.append((f"categories/{slug}.html", label, icon))
+# One navigation, rendered identically on every page. Two rules, both learned
+# from the defects this replaced (see COORDINATION.md N-01):
+#
+#   1. A destination appears exactly once in the sidebar. "Overview" used to be
+#      in both the Topics and the Research list, so it rendered twice.
+#   2. The active page keeps its slot and is marked, rather than being dropped.
+#      Dropping it changed the menu order from page to page, which is exactly
+#      the kind of instability that makes a dashboard feel unreliable when a
+#      trader is switching between topics under time pressure.
+#
+# `tests/test_nav_canonical.py` parses the generated pages and asserts both
+# rules, so a future template change cannot silently reintroduce either.
+TOPIC_LABELS = {"gas-prices": "Gas prices", "elections": "Elections",
+                "culture": "Culture", "crypto": "Crypto", "golf": "Golf"}
+TOPIC_ICONS = {"gas-prices": "⌁", "elections": "◉", "culture": "✳",
+               "crypto": "₿", "golf": "⛳"}
+
+NAV_TOPICS = [("index.html", "Overview", "◫")] + [
+    (f"categories/{slug}.html", TOPIC_LABELS[slug], TOPIC_ICONS[slug])
+    for slug in TOPIC_ORDER
+]
+
+NAV_RESEARCH = [
+    ("live.html", "Live desk", "◈"),
+    ("summary.html", "Executive summary", "▤"),
+    ("resolutions.html", "Resolved", "✓"),
+    ("trades.html", "Trades", "⇄"),
+    ("suggestions.html", "Suggestions", "✦"),
+    ("methodology.html", "Methodology", "⚙"),
+    ("review.html", "Flagged for review", "⚑"),
+]
+
+
+def _render_nav(items, active: str, prefix: str) -> str:
     out = []
     for href, label, icon in items:
-        cls = ' class="active"' if href == active else ""
+        cls = ' class="active" aria-current="page"' if href == active else ""
         out.append(f'<a{cls} href="{prefix}{href}"><span>{icon}</span> {label}</a>')
     return "\n          ".join(out)
 
 
+def nav(active: str, prefix: str = "") -> str:
+    return _render_nav(NAV_TOPICS, active, prefix)
+
+
 def research_nav(active: str, prefix: str = "") -> str:
-    items = [("live.html", "Live desk", "◈"),
-             ("index.html", "Overview", "◫"),
-             ("summary.html", "Executive summary", "▤"),
-             ("resolutions.html", "Resolved", "✓"),
-             ("trades.html", "Trades", "⇄"),
-             ("suggestions.html", "Suggestions", "✦"),
-             ("methodology.html", "Methodology", "⚙"),
-             ("review.html", "Flagged for review", "⚑")]
-    out = []
-    for href, label, icon in items:
-        if href == active:
-            continue
-        out.append(f'<a href="{prefix}{href}"><span>{icon}</span> {label}</a>')
-    return "\n          ".join(out)
+    return _render_nav(NAV_RESEARCH, active, prefix)
 
 
 def page(title: str, active: str, body: str, prefix: str = "",
@@ -120,6 +137,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
       </main>
     </div>
     <script src="{prefix}assets/alerts-view.js" defer></script>
+    <script src="{prefix}assets/live-probe.js" defer></script>
     <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
@@ -625,18 +643,25 @@ def build_live(live: dict[str, Any]) -> str:
                if s.get("ticker")}
     alerts = extras.group_alerts(live.get("alerts") or [])
     feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
-        '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
-        "feed fills as successive snapshots are compared.</div>")
+        '<div class="empty-state inline">No ≥ $0.10 move is in the stored '
+        "buffer right now. The chat fills from two independent sources: the "
+        "scheduled CI collector comparing successive snapshots, and this page "
+        "itself polling the public demo order books every five seconds while "
+        "it is open (rows measured here are tagged <b>LIVE</b>).</div>")
     model_rows = []
     shortlist = {a.get("ticker"): a for a in model_shortlist(live)}
     for a in alerts:
         pick = shortlist.get(a.get("ticker"))
         if pick is not None:
             model_rows.append(alert_chat_row(a, pick.get("model_net_roi")))
+    gate = (live.get("model_gate") or {}).get("min_net_roi")
+    gate_txt = (f"{float(gate) * 100:.0f}%" if isinstance(gate, (int, float))
+                else "the published gate")
     if not model_rows:
         model_html = ('<div class="empty-state inline">Nothing clears the '
-                      "model's net-ROI gate right now. An empty feed is an "
-                      "honest answer.</div>")
+                      f"model's {gate_txt} net-ROI gate right now. An empty "
+                      "feed is an honest answer: the gate is a fee-adjusted "
+                      "edge test, not a promise that a trade exists.</div>")
     else:
         model_html = "".join(model_rows[:40])
 
