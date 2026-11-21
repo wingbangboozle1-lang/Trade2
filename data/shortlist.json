@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T07:54:38Z",
- "generated_at_ts": 1795247904.4349952,
+ "generated_at": "2026-11-21T08:07:54Z",
+ "generated_at_ts": 1795248590.952702,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -21,7 +21,7 @@
  "level_picks_count": 0,
  "verdicts": [],
  "verdicts_count": 0,
- "rejected_count": 4,
+ "rejected_count": 6,
  "rejection_summary": [
   {
    "reason": "neither side can be bought inside the $0.01-$0.99 grid",
@@ -32,7 +32,15 @@
    "count": 1
   },
   {
+   "reason": "YES at 0.4400",
+   "count": 1
+  },
+  {
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+   "count": 1
+  },
+  {
+   "reason": "YES at 0.2100",
    "count": 1
   }
  ],
@@ -41,7 +49,7 @@
    "ticker": "KXPGATOUR-THRC26-SSTE",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.2708,
+   "book_move": 0.1805,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
   },
   {
@@ -50,6 +58,13 @@
    "kind": "level",
    "book_move": -0.1309,
    "reason": "YES has only 0 contracts resting"
+  },
+  {
+   "ticker": "KXBTC50VS100-BTC-26DEC31",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.075,
+   "reason": "YES at 0.4400 leaves only -$0.0575 of edge before fees; NO at 0.7500 leaves only -$0.1325 of edge before fees"
   },
   {
    "ticker": "KXPRESNOMD-28-JAM",
@@ -62,8 +77,15 @@
    "ticker": "KXLPGATOUR-CMEGTC26-JIIM",
    "topic": "golf",
    "kind": "level",
-   "book_move": -0.045,
+   "book_move": -0.0451,
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+  },
+  {
+   "ticker": "KXBTC15M-26NOV210315-15",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.03,
+   "reason": "YES at 0.2100 leaves only $0.0050 of edge before fees; NO at 0.8100 leaves only -$0.0250 of edge before fees"
   }
  ],
  "alerts_seen": 0,

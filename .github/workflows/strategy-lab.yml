@@ -1,0 +1,94 @@
+# Strategy-lab refresh (session `arena-560b4c88`, task M4).
+#
+# Why this exists: `STRATEGY_ANALYSIS.md`, `docs/strategies.html` and
+# `docs/data/strategy_lab.json` are the site's answer to "analyse the results of
+# the trades, categorise trades and create strategies based on the type of trade"
+# (REQUIREMENTS.md R10). They are *rendered* artefacts: they only change when
+# `tools/strategy_lab.py` runs. Nothing in the repo ran it on a schedule, so the
+# page published a 2026-11-20T19:34Z view of a ledger the collector rewrites every
+# 15 minutes — the classic "the number on the screen stopped being true quietly".
+#
+# This workflow re-renders the analysis from whatever `main` currently holds, gates
+# it on the lab's own tests (a broken analysis is never published), and commits the
+# three artefacts. It reads no network: every input is a file already on `main`,
+# which is itself sourced from the Kalshi demo API. Schedule hourly + manual;
+# deliberately no `push` trigger, so a commit here cannot loop the pipeline.
+
+name: strategy-lab refresh
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  # One at a time, and a schedule must not be displaced by another run in the same
+  # group (request R-1E3-1 on the coordination board: name the event in the group).
+  group: strategy-lab-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Test the lab before publishing its output
+        run: |
+          python3 -m unittest tests.test_strategy_lab tests.test_strategy_lab_fees_560b4c88 -v
+          python3 -m unittest tests.test_trading_fee_attribution_560b4c88 -v
+
+      - name: Re-render the analysis from the book on this branch
+        run: python3 tools/strategy_lab.py --root .
+
+      - name: Show what changed
+        run: |
+          {
+            echo "## Strategy-lab refresh"
+            echo '```'
+            git status --porcelain STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json
+            echo '```'
+            python3 -c "import json;d=json.load(open('docs/data/strategy_lab.json'));print('- analysis generated:',d['generated_at']);[print('- %s: written %s, %s h before this analysis'%(f['book'],f.get('book_generated_at'),f.get('hours_before_this_analysis'))) for f in d.get('book_freshness',[])];print('- round trips analysed:',len(d.get('round_trips',[])));print('- cross-check items:',len(d.get('crosscheck_issues',[])))"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit refreshed analysis
+        run: |
+          git config user.name "strategy-lab[bot]"
+          git config user.email "strategy-lab[bot]@users.noreply.github.com"
+          git config rebase.autoStash true
+          git add STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json
+          if git diff --cached --quiet; then
+            echo "analysis unchanged"
+            exit 0
+          fi
+          # The provenance age and the generated_at stamp move on every run even when
+          # nothing was learnt. Don't spend a commit on the clock: only commit when at
+          # least one substantive line differs, and put the timestamps back if not.
+          substance=$(git diff --cached --unified=0 -- STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json \
+            | grep -E '^[+-][^+-]' \
+            | grep -vE 'generated_at|_Generated |Generated [0-9]{4}-|h before this analysis|When that book was written' \
+            | head -1)
+          if [ -z "$substance" ]; then
+            echo "only the run timestamp moved; nothing to publish"
+            git checkout HEAD -- STRATEGY_ANALYSIS.md docs/strategies.html docs/data/strategy_lab.json
+            exit 0
+          fi
+          git commit -m "docs(analysis): refresh strategy lab from the current book [skip ci]"
+          for i in 1 2 3 4 5; do
+            if git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            echo "rebase/push attempt $i failed; retrying"
+            sleep $((i * 8))
+          done
+          echo "::error::strategy-lab refresh could not be committed after 5 attempts"
+          exit 1
