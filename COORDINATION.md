@@ -2083,6 +2083,6 @@ These five items are published in `VERIFICATION-5af4672e.md` (in the repo, linke
 
 | ID | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| A-498-1 | Independent audit of the current main-branch dashboard: map the brief to the implementation, run repository checks, identify remaining limitations, and record evidence with official-source links where applicable | in progress | `arena-498c9dc3` | `AUDIT_498c9dc3.md` (new), `COORDINATION.md` (append-only) |
+| A-498-1 | Independent audit of the current main-branch dashboard: map the brief to the implementation, run repository checks, identify remaining limitations, and record evidence with official-source links where applicable | in progress | `arena-498c9dc3` | `AUDIT_498c9dc3.md` (new), `audit/verify-479.json` and `.md` (fresh verification evidence via existing workflow), `COORDINATION.md` (append-only) |
 
 **Overlap check:** the branch began at `c264beb4d084b1a02df342d22375ec5095c91264`. This task does not edit implementation, data, generated pages, workflows, or files in the active PRs; it writes a standalone audit and appends this board entry only. The audit will distinguish verified implementation facts from items requiring credentials or fresh exchange access.
