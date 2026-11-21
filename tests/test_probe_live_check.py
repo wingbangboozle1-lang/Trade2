@@ -33,9 +33,16 @@ def run(report: dict) -> subprocess.CompletedProcess:
 
 GOOD = {
     "tickers": ["A", "B"],
-    "urls": {"query": "tickers=A&tickers=B"},
-    "markets": {"returned": ["B", "A"]},
-    "orderbooks": {"returned": ["A", "B"]},
+    "probe": {"markets": {"returned": ["A", "B"]},
+              "orderbooks": {"returned": ["A", "B"]}},
+    "forms": {
+        "markets:comma": {"status": 200, "n": 2, "returned": ["A", "B"]},
+        "markets:repeated": {"status": 400, "n": None},
+        "orderbooks-plural:repeated": {"status": 200, "n": 2,
+                                       "returned": ["A", "B"]},
+        "orderbooks-plural:comma": {"status": 200, "n": 1,
+                                    "returned": ["A,B"]},
+    },
     "problems": [],
 }
 
@@ -45,28 +52,35 @@ class TestShapeAssert(unittest.TestCase):
         proc = run(GOOD)
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
-    def test_comma_joined_query_is_rejected(self):
+    def test_markets_no_longer_accepting_comma_is_rejected(self):
+        """The measured contract: /markets takes ONE comma-joined value."""
         bad = json.loads(json.dumps(GOOD))
-        bad["urls"]["query"] = "tickers=A,B"
+        bad["forms"]["markets:comma"] = {"status": 400, "n": None}
         proc = run(bad)
         self.assertEqual(proc.returncode, 1)
-        self.assertIn("comma-joins", proc.stderr)
+        self.assertIn("comma-joined form", proc.stderr)
+
+    def test_books_no_longer_accepting_repeats_is_rejected(self):
+        bad = json.loads(json.dumps(GOOD))
+        bad["forms"]["orderbooks-plural:repeated"] = {"status": 404, "n": None}
+        proc = run(bad)
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("repeated parameters", proc.stderr)
 
     def test_out_of_order_books_are_rejected(self):
         bad = json.loads(json.dumps(GOOD))
-        bad["orderbooks"]["returned"] = ["B", "A"]
+        bad["probe"]["orderbooks"]["returned"] = ["B", "A"]
         proc = run(bad)
         self.assertEqual(proc.returncode, 1)
         self.assertIn("request order", proc.stderr)
 
     def test_partial_markets_response_is_rejected(self):
         bad = json.loads(json.dumps(GOOD))
-        bad["markets"]["returned"] = ["A"]
+        bad["probe"]["markets"]["returned"] = ["A"]
         self.assertEqual(run(bad).returncode, 1)
 
     def test_empty_ticker_list_proves_nothing(self):
-        bad = {"tickers": [], "urls": {"query": ""}, "markets": {"returned": []},
-               "orderbooks": {"returned": []}, "problems": []}
+        bad = {"tickers": [], "probe": {}, "forms": {}, "problems": []}
         self.assertEqual(run(bad).returncode, 1)
 
     def test_carried_problems_are_surfaced(self):
@@ -76,15 +90,14 @@ class TestShapeAssert(unittest.TestCase):
         self.assertEqual(proc.returncode, 1)
         self.assertIn("timeout", proc.stderr)
 
-    def test_the_checker_builds_repeated_parameters(self):
-        """Static guard: the URL builder must repeat, never join with a comma."""
-        with open(CHECK, encoding="utf-8") as fh:
-            src = fh.read()
-        self.assertIn("tickersQuery", src)
+    def test_the_probe_uses_a_serialisation_per_endpoint(self):
+        """Static guard: comma for /markets, repeated for /markets/orderbooks."""
         with open(os.path.join(ROOT, "assets", "live-probe.js"), encoding="utf-8") as fh:
             probe = fh.read()
-        self.assertIn('"tickers=" + encodeURIComponent(t)', probe)
-        self.assertNotIn('join(",")', probe.split("function tickersQuery")[1][:200])
+        self.assertIn('fetchAll(tickers, ENDPOINTS.markets, "markets", "comma")', probe)
+        self.assertIn('fetchAll(tickers, ENDPOINTS.orderbooks, "orderbooks", "repeated")',
+                      probe)
+        self.assertIn('list.join(",")', probe)
 
 
 if __name__ == "__main__":

@@ -75,9 +75,10 @@ const path = require("path");
 const L = require(path.join(process.argv[1], "assets", "live-probe.js"));
 const tickers = JSON.parse(process.argv[2]);
 process.stdout.write(JSON.stringify({
-  query: L.tickersQuery(tickers),
-  markets: L.ENDPOINTS.markets + "?" + L.tickersQuery(tickers),
-  orderbooks: L.ENDPOINTS.orderbooks + "?" + L.tickersQuery(tickers)
+  markets_query: L.tickersQuery(tickers, "comma"),
+  orderbooks_query: L.tickersQuery(tickers, "repeated"),
+  markets: L.ENDPOINTS.markets + "?" + L.tickersQuery(tickers, "comma"),
+  orderbooks: L.ENDPOINTS.orderbooks + "?" + L.tickersQuery(tickers, "repeated")
 }));
 """
     out = subprocess.run([node, "-e", script, ROOT, json.dumps(tickers)],
@@ -110,7 +111,6 @@ def main() -> int:
 
     urls = probe_urls(tickers)
     report["probe_urls"] = urls
-    report["probe_query"] = urls["query"]
 
     # -- what the probe actually sends, per endpoint -----------------------
     report["probe"] = {}

@@ -379,16 +379,27 @@
     return out;
   }
 
-  /* `tickers` is declared as a repeated query parameter
-   * (`style: form, explode: true`), so it must be serialised as
-   * `?tickers=A&tickers=B`, not `?tickers=A,B`. The Python client in
-   * collector/kalshi_api.py already does this via urlencode(doseq=True); this is
-   * the browser equivalent. Comma-joining is *not* equivalent: the API reads the
-   * whole string as one unknown ticker and returns an empty book for it, which
-   * would look exactly like "no swings" instead of a bug.
+  /* The two batch endpoints do NOT share a `tickers` serialisation, and the
+   * documentation does not say so — this was measured against the live demo
+   * host by .github/workflows/probe-live.yml on 2026-11-21:
+   *
+   *   GET /markets?tickers=A,B            200, 2 records
+   *   GET /markets?tickers=A&tickers=B    400 "multiple values for single value
+   *                                           parameter 'tickers'"
+   *   GET /markets/orderbooks?tickers=A,B            200, 1 entry
+   *   GET /markets/orderbooks?tickers=A&tickers=B    200, 2 entries, request order
+   *
+   * So the listing takes a comma-joined single value and the order-book batch
+   * takes repeated parameters. Getting either one wrong fails *silently* as an
+   * empty result, which would have looked exactly like "no swings" in the chat.
+   * https://docs.kalshi.com/api-reference/market/get-markets
    * https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks */
-  function tickersQuery(tickers) {
-    return (tickers || []).map(function (t) {
+  function tickersQuery(tickers, style) {
+    var list = tickers || [];
+    if (style === "comma") {
+      return "tickers=" + encodeURIComponent(list.join(","));
+    }
+    return list.map(function (t) {
       return "tickers=" + encodeURIComponent(t);
     }).join("&");
   }
@@ -447,11 +458,11 @@
      * never tolerating a total one: if no chunk answered, the poll must surface
      * an error rather than present itself as a healthy poll with 0 markets.
      * (Bug caught by tests: all-fail used to look like "live, 0 books".) */
-    function fetchAll(tickers, baseUrl, key) {
+    function fetchAll(tickers, baseUrl, key, style) {
       var groups = chunk(tickers, MAX_BOOKS);
       var errors = [];
       return Promise.all(groups.map(function (group) {
-        var url = baseUrl + "?" + tickersQuery(group);
+        var url = baseUrl + "?" + tickersQuery(group, style);
         return withTimeout(fetchJson(url)).then(function (body) {
           if (!body || !Array.isArray(body[key])) {
             errors.push("no " + key + " in response");
@@ -473,11 +484,12 @@
     }
 
     function fetchBooks(tickers) {
-      return fetchAll(tickers, ENDPOINTS.orderbooks, "orderbooks");
+      return fetchAll(tickers, ENDPOINTS.orderbooks, "orderbooks", "repeated");
     }
 
     function fetchMarkets(tickers) {
-      return fetchAll(tickers, ENDPOINTS.markets, "markets");
+      /* The listing endpoint takes the comma-joined form; see tickersQuery. */
+      return fetchAll(tickers, ENDPOINTS.markets, "markets", "comma");
     }
 
     function pollOnce() {

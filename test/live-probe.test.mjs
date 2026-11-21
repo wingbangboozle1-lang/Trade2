@@ -194,10 +194,15 @@ test("fee reproduces the published table rows", () => {
   assert.equal(L.fee(0.99, 100, 1), 0.07);
 });
 
-test("tickersQuery repeats the parameter, never comma-joins", () => {
+/* Measured on the live demo host (probe-live.yml, 2026-11-21): the listing
+ * endpoint wants ONE comma-joined value and 400s on repeated parameters; the
+ * order-book endpoint wants repeated parameters and reads a comma-joined value
+ * as a single unknown ticker, returning one empty entry. */
+test("tickersQuery has a shape per endpoint", () => {
   assert.equal(L.tickersQuery(["A", "B"]), "tickers=A&tickers=B");
-  assert.equal(L.tickersQuery(["KX-ONE"]), "tickers=KX-ONE");
-  assert.equal(L.tickersQuery(["A B"]), "tickers=A%20B");
+  assert.equal(L.tickersQuery(["A", "B"], "comma"), "tickers=A%2CB");
+  assert.equal(L.tickersQuery(["A B"], "comma"), "tickers=A%20B");
+  assert.equal(L.tickersQuery(["KX-ONE"], "comma"), "tickers=KX-ONE");
 });
 
 test("fee is zero for a zero multiplier and for off-grid prices", () => {
@@ -344,6 +349,29 @@ await testAsync("the poller backs off and reports an error instead of throwing",
   assert.ok(states.some((s) => s.state === "error"));
 });
 
+await testAsync("each endpoint gets the serialisation the live host accepts", async () => {
+  const urls = [];
+  const poller = L.createPoller({
+    fetchJson: async (url) => {
+      urls.push(url);
+      return url.includes("orderbooks") ? { orderbooks: [] } : { markets: [] };
+    },
+    intervalMs: 1
+  });
+  poller.setWatchlist([{ ticker: "A" }, { ticker: "B" }]);
+  await poller.pollOnce();
+  const marketsUrl = urls.find(u => u.includes("/markets?"));
+  const booksUrl = urls.find(u => u.includes("/orderbooks"));
+  assert.ok(marketsUrl && booksUrl, "both endpoints must be called");
+  assert.ok(marketsUrl.includes("tickers=A%2CB") || marketsUrl.includes("tickers=A,B"),
+            "markets must comma-join: " + marketsUrl);
+  assert.ok(!marketsUrl.includes("tickers=A&"), "markets must not repeat: " + marketsUrl);
+  assert.ok(booksUrl.includes("tickers=A&tickers=B"),
+            "orderbooks must repeat: " + booksUrl);
+  assert.ok(!/orderbooks\?tickers=[^&]*%2C/.test(booksUrl),
+            "orderbooks must not comma-join: " + booksUrl);
+});
+
 await testAsync("the poller sends only unauthenticated GET URLs", async () => {
   const urls = [];
   const poller = L.createPoller({
@@ -363,7 +391,8 @@ await testAsync("the poller sends only unauthenticated GET URLs", async () => {
   /* `tickers` is a repeated parameter (form/explode), so the URL must carry it
    * once per ticker. A comma-joined value would be read as a single unknown
    * ticker and come back as an empty book. */
-  assert.match(urls[0], /tickers=A&tickers=B/);
+  assert.ok(urls.some(u => u.includes("/markets?tickers=A%2CB")),
+            "markets call must be comma-joined");
   assert.ok(!/tickers=[^&]*,/.test(urls[0]), "must not comma-join tickers");
 });
 
