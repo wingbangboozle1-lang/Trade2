@@ -12,8 +12,11 @@ on:
         default: "150"
   push:
     # main publishes the site; the working branches are included so the
-    # pipeline can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2",
+    # pipeline can be exercised before merge. (arena/dd1da6b5 removed by
+    # arena-544245c8: its PR #28 content landed on main via PR #60; the
+    # branch is superseded and a push there would only create a data commit
+    # that conflicts with main's */5 commits.)
+    branches: ["main", "arena/f5837994-trade2",
                "arena/fb6cb424-trade2"]
 
 permissions:
@@ -25,7 +28,7 @@ permissions:
 # be replaceable by a queued push run (observed: schedule run 44804717748 was
 # cancelled 17 s in by push runs 44809122838 / 44809455693 / 44809872442).
 concurrency:
-  group: collect-${{ github.event_name }}
+  group: collect-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:

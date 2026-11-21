@@ -518,23 +518,25 @@ STANDING = [
         "source": ("https://docs.kalshi.com/api-reference/market/get-markets",),
     },
     {
-        "title": "Three scheduled workflows collect the same data, and the most "
-                 "frequent one rarely runs",
+        "title": "Snapshot cadence is best-effort: three scheduled workflows, one queue",
         "body": ("Verified from the repository and the Actions API, not inferred. "
                  "Three workflows collect from the demo API and commit to `main`: "
                  "`kalshi-dashboard.yml` (cron `*/5`), `collector.yml` (`*/15`) and "
-                 "`dashboard.yml` (`*/30`). The `*/5` one groups its runs under "
-                 "`concurrency: collect` with `cancel-in-progress: false`, and on a "
-                 "repository this busy a run in that group spends longer than five "
-                 "minutes than not — so new runs replace queued ones instead of "
-                 "waiting. Two runs of it on 2026-11-20 ended `cancelled` after 17 s "
-                 "and 43 s (runs 44804717748 and 44804612803), while the `collector` "
-                 "workflow triggered by the same merge completed in 19 s. Consequence "
-                 "for a trader: the published snapshot's age is what the top bar shows, "
-                 "not five minutes. Reading of the queueing behaviour above is this "
-                 "project's interpretation of the workflow configuration and the two "
-                 "cancelled runs, not a confirmed GitHub guarantee — see the "
-                 "concurrency documentation for the rule."),
+                 "`dashboard.yml` (`*/30`). On 2026-11-20 the `*/5` workflow grouped "
+                 "all of its runs under one `concurrency: collect` group, and two of "
+                 "them ended `cancelled` after 17 s and 43 s (runs 44804717748 and "
+                 "44804612803) while the `collector` workflow triggered by the same "
+                 "merge completed in 19 s. R-1E3-1 (applied 2026-11-21 via PR #60) "
+                 "keys that group by event name now (`collect-schedule` vs "
+                 "`collect-push`), so a queued schedule run is only ever replaced by "
+                 "a newer schedule run. What remains is the repo-wide effect: this "
+                 "repository runs many workflows per minute, so queue pressure — not "
+                 "the concurrency key — still decides the real cadence. Consequence "
+                 "for a trader: the published snapshot's age is what the top bar "
+                 "shows, not five minutes. The queueing reading is this project's "
+                 "interpretation of the workflow configuration and the recorded "
+                 "runs, not a confirmed GitHub guarantee — see the concurrency "
+                 "documentation for the rule."),
         "source": ("https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804717748",
                    "https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44804612803",
                    "https://github.com/wingbangboozle1-lang/Trade2/blob/main/.github/workflows/kalshi-dashboard.yml"),
