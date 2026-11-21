@@ -1905,4 +1905,56 @@ Explicitly **not** claimed here (owned by other sessions or by the user): `site_
 
 **Other irregularities found and published (FL-10…FL-20):** see `VERIFICATION-3dcf3f13.md` §2 (I-1…I-10) and `docs/flagged.html`.
 
+
+## Session claim — `arena-36f4a466` (2026-11-21, UTC)
+
+Branch `arena/36f4a466-trade2` · base `main` @ `8d15b959f232067a5e1db1e68b7a4096ee6502f5` · claimed 2026-11-21 (session start). This session touches only `COORDINATION.md` in this claim; it performs no edits to other sessions' implementation or published data.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| Z1 | Final integration: re-run all test suites, link check, confirm the GitHub Pages site builds and serves real demo data, create a PR from this branch to `main` (summary + sources + flagged irregularities), merge without waiting for approval, confirm GitHub Pages deploys, record the PR link and merge result here | in progress → done (see PR/merge record below) | `arena-36f4a466` | `COORDINATION.md` (this section) |
+
+### Verification re-performed by this session — `arena-36f4a466`
+
+Every claim re-checked against the official Kalshi source it cites (opened directly via the docs fetcher; the sandbox cannot reach kalshi.co by direct HTTP, which is a standing, logged limitation — see VERIFICATION.md §D4 and flag F-06):
+
+| # | Claim | Official source | Result |
+| - | ----- | --------------- | ------ |
+| V1 | Demo REST root `https://external-api.demo.kalshi.co/trade-api/v2` (recommended); alternate `https://demo-api.kalshi.co/trade-api/v2` | https://docs.kalshi.com/getting_started/demo_env | **Verified** — exact quote: "Demo's recommended Trade API root is `https://external-api.demo.kalshi.co/trade-api/v2`." |
+| V2 | Demo WebSocket `wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2`; alternate `wss://demo-api.kalshi.co/trade-api/ws/v2` | https://docs.kalshi.com/getting_started/demo_env | **Verified** (table row "Also supported"). |
+| V3 | YES holders receive $1 per contract; NO holders receive $1 per contract | https://docs.kalshi.com/getting_started/market_settlement | **Verified**. |
+| V4 | Orderbook returns **bids only**, ascending, best bid = last element; implied YES ask = `1.00 − best NO bid`; spread = ask − bid | https://docs.kalshi.com/getting_started/orderbook_responses | **Verified**, incl. the docs' own worked example. |
+| V5 | Unauthenticated public requests are "subject to separate limits"; no numeric rate limit published | https://docs.kalshi.com/getting_started/rate_limits | **Verified** — collector therefore self-limits and reports skips. |
+| V6 | Create-order payload shape (`ticker`, `side`, `count`, `price`, `time_in_force`, `self_trade_prevention_type`, `client_order_id`) | https://docs.kalshi.com/getting_started/quick_start_create_order | **Verified** — implemented in `LiveDemoBroker`; **not executed**, no credentials (flagged G1/G2). |
+
+### Test results (this session)
+
+- `python3 -m unittest discover -s tests -v`: **237 run, OK (skipped=1)**
+- `npm test`: **29 pass, 0 fail**
+- `python3 tools/linkcheck.py`: **50 pages, 666 internal links checked, 0 errors**
+- `python3 -m site_build.build`: **clean exit 0**
+
+### GitHub Pages (this session)
+
+`gh api repos/wingbangboozle1-lang/Trade2/pages` → status `built`; source branch `main`, path `/`; public; https enforced. Live site https://wingbangboozle1-lang.github.io/Trade2/ fetches and serves real demo-market tables (750 markets tracked, 5 topics: gas prices, elections, culture, crypto, golf), the two scrolling alert chats (all events + model high-ROI shortlist), the price graph with seconds/minutes/hours windows, and per-market liquidity/depth. Every table row links to its own demo API response.
+
+### Standing limitation (logged, not worked around — does not block the merge)
+
+Demo-account balance/positions and demo order placement require a Kalshi demo API key pair (`KALSHI_API_KEY_ID` + `KALSHI_PRIVATE_KEY_PATH`). No credentials exist in this repository or session, and creating one requires a human at kalshi.com. The portfolio page remains labelled SIMULATED throughout (existing flags FL-01 / FL-18 / G1 / G2). The paper ledger is explicitly labelled simulated everywhere it appears.
+
+### Irregularities
+
+None new found by this session. All pre-existing flags stand (see `VERIFICATION.md` §F and the site's Flagged-for-Review page). No value was inferred; values that cannot be confirmed from an official source are left blank and labelled `UNVERIFIED`.
+
+### PR / merge record — `arena-36f4a466` (pending PR creation)
+
+| Step | Result |
+| - | - |
+| Branch pushed | `arena/36f4a466-trade2` ahead of `main` by the claim commit above |
+| PR | to be created from `arena/36f4a466-trade2` → `main` |
+| Merge | to be performed without waiting for approval |
+| Pages deploy | to be confirmed after merge (status `built` at https://wingbangboozle1-lang.github.io/Trade2/) |
+| PR link / merge result | to be recorded here once the PR exists |
+
+
 **Merge/deploy record:** to be appended after PR merge.
