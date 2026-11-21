@@ -163,6 +163,43 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
                 "source": f"{API}/markets/{a.get('ticker')}/orderbook",
             })
 
+    # 4. A published value that the automated re-check could not confirm.
+    for row in ((live.get("verification") or {}).get("mismatches") or []):
+        issues.append({
+            "kind": "Published value disagrees with the official API",
+            "topic": None,
+            "ticker": row.get("field"),
+            "detail": (f"the re-check read {row.get('official')!r} from the official "
+                       f"response while the site publishes {row.get('published')!r}"
+                       + (f" — {row.get('detail')}" if row.get("detail") else "")),
+            "source": row.get("url"),
+        })
+
+    # 5. A published swing that the order book does not confirm.
+    # The Kalshi demo feed prints alternating trades on some markets while the
+    # quoted book stays flat. A price move the book did not make is a trade
+    # print, not a change in the market, so it is flagged here rather than
+    # presented as a swing. The model's verdict for each alert says the same
+    # thing on the live desk.
+    for verdict in ((live.get("shortlist") or {}).get("verdicts") or []):
+        if verdict.get("verdict") == "picked":
+            continue
+        reason = verdict.get("reason") or ""
+        if "book has not moved" not in reason:
+            continue
+        ticker = verdict.get("ticker")
+        issues.append({
+            "kind": "Swing not confirmed by the order book",
+            "topic": verdict.get("topic"),
+            "ticker": ticker,
+            "detail": ("the alert stream reports a >= $0.10 move for this market, "
+                       "but the quoted book did not move between the last two "
+                       "snapshots — the demo feed printed an alternating trade. "
+                       "The model passes on it and the row is labelled as an "
+                       "unconfirmed print."),
+            "source": f"{API}/markets/{ticker}/orderbook",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -348,6 +385,17 @@ STANDING = [
                  "topbar computes and shows the snapshot's age in your browser so "
                  "staleness is always visible."),
         "source": ("https://docs.kalshi.com/getting_started/demo_env",),
+
+        "title": "The demo feed prints alternating trades on some markets",
+        "body": ("On several demo markets the traded price oscillates between two "
+                 "levels every minute while the quoted order book never changes. "
+                 "For example the one-minute candles for KXPRESNOMD-28-AKLO "
+                 "alternate between $0.8030 and $0.0030 while the book stays at "
+                 "$0.0020 x $0.0030 for the whole window. A move the book did not "
+                 "make is a trade print rather than a market move, so the model "
+                 "rejects it and it is listed on this page."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/series/"
+                   "KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks",),
     },
     {
         "title": "Live streaming uses polling, not the WebSocket",

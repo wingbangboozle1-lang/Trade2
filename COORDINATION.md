@@ -448,6 +448,29 @@ Verified: dispatch run `44769581312` on `main` → **success**, data commit
 
 ---
 
+## Session E — current Arena branch `arena/dd1da6b5-trade2`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-dd1da6b5` | `arena/dd1da6b5-trade2` (base `main` @ `1bc32b7`) | Root-site integration: model shortlist, swing news links, formatting, site organisation, line-by-line verification, PR + merge + Pages deploy | 2026-11-20 | active |
+
+Scope is non-overlapping with the sessions active at the time of this claim:
+
+| Session | Owns | My session does not touch |
+| --- | --- | --- |
+| `arena-e4e8f4e1` | `COORDINATION.md`, `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` (T14), `docs/summary.html` (T15), `tools/rendercheck.mjs` (T16) | those files |
+| `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` | those files |
+| `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `scripts/collect.mjs`, `VERIFICATION_856e184e.md` | those files |
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T20 | Coordination claim, scope, and session registry | done | `arena-dd1da6b5` | `COORDINATION.md` (this section only) |
+| T21 | Root-site number formatting (integer counters) + UNVERIFIED legend | in progress | `arena-dd1da6b5` | `site_build/build.py` |
+| T22 | "Model shortlist" second chat: basis-consistent book-mid model, ranked, gated | in progress | `arena-dd1da6b5` | `collector/shortlist.py` (new), `site_build/build.py`, `assets/desk.js`, `tests/test_shortlist.py` (new) |
+| T23 | News links attached to >= $0.10 swings | in progress | `arena-dd1da6b5` | `collector/news.py`, `site_build/build.py`, `.github/workflows/kalshi-dashboard.yml` |
+| T24 | Site organisation: canonical root, site map, cross-links between the three published views | in progress | `arena-dd1da6b5` | `site_build/build.py`, `assets/*.js`, `assets/styles.css`, root `*.html` (generated) |
+| T25 | Line-by-line verification pass against the official demo API + irregularity log | in progress | `arena-dd1da6b5` | `VERIFICATION.md`, `site_build/flagpage.py`, `data/shortlist.json`, `data/news.json` |
+| T26 | Integration: PR `arena/dd1da6b5-trade2` -> `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-dd1da6b5` | `COORDINATION.md` (this section only) |
 ## Session claim — `arena-856e184e` (2026-11-20)
 
 Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlapping with the active audit session `arena-e4e8f4e1` (T13–T15, which own `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` and `docs/summary.html`). This session does not edit those files.

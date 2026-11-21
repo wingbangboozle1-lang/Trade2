@@ -1149,6 +1149,58 @@ table .source-link:hover { text-decoration: underline; }
 table code { font-size: 11px; }
 
 /* ------------------------------------------------------------------ */
+/* Model shortlist, candidate headlines, model verdicts                */
+/* ------------------------------------------------------------------ */
+.chat-row.model-pick,
+.chat-row.model-verdict { grid-template-columns: 96px 1fr; }
+.chat-delta.flat { color: var(--muted); font-weight: 500; }
+.chat-row.model-verdict.passed .chat-body > a { color: var(--muted); }
+.chat-row.model-pick { background: var(--mint); border-radius: 6px; }
+.model-panel .chat-feed { height: 320px; }
+.model-panel .alert-note { border-top: 1px solid var(--line); }
+
+.headlines {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.headlines b { color: var(--amber); font-weight: 600; }
+.headline-link { color: var(--green-dark); text-decoration: none; }
+.headline-link:hover { text-decoration: underline; }
+
+/* ------------------------------------------------------------------ */
+/* Site map (landing page)                                              */
+/* ------------------------------------------------------------------ */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 11px;
+  padding: 4px 2px 10px;
+}
+.link-card {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 9px;
+  row-gap: 2px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--paper);
+  text-decoration: none;
+  color: var(--ink);
+}
+.link-card:hover { border-color: var(--green); box-shadow: var(--shadow); }
+.link-card .section-icon { grid-row: 1 / span 2; align-self: start; }
+.link-card b { font-size: 13.5px; }
+.link-card small { color: var(--muted); font-size: 11.5px; line-height: 1.45; }
+@media (max-width: 900px) {
+  .link-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .link-grid { grid-template-columns: 1fr; }
+}
 /* Session arena-fb6cb424 — components added with the topic-grouped    */
 /* overview, the two-chat landing page and the new research pages.     */
 /* ------------------------------------------------------------------ */

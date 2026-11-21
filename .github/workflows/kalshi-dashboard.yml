@@ -13,7 +13,8 @@ on:
   push:
     # main publishes the site; the working branches are included so the
     # pipeline can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2", "arena/fb6cb424-trade2"]
+    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2",
+               "arena/fb6cb424-trade2"]
 
 permissions:
   contents: write
@@ -56,6 +57,18 @@ jobs:
             export KALSHI_PRIVATE_KEY_PATH=/tmp/kalshi.pem
           fi
           python3 -m collector.collector --market-cap "$MARKET_CAP" --orderbook-cap 300
+
+      - name: Model shortlist (order-book model)
+        run: python3 -m collector.shortlist
+
+      - name: Candidate news for swings
+        run: python3 -m collector.news --window-hours 24
+
+      - name: Verify the snapshot against the official API
+        # A mismatch is reported on the Flagged for Review page and in
+        # data/verification.json; it must not stop the site from publishing.
+        continue-on-error: true
+        run: python3 tools/verify_snapshot.py --per-topic 3
 
       - name: Rebuild static site data
         run: python3 -m site_build.build
