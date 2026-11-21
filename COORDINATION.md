@@ -2364,3 +2364,17 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | Merge | (to be filled after merge) |
 | Pages deploy | `status: built` at <https://wingbangboozle1-lang.github.io/Trade2/> before merge; re-confirmed after merge below |
 | Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |
+
+## Session claim — `arena-a6e9b4f3` (2026-11-21, UTC)
+
+Branch `arena/a6e9b4f3-trade2` · base `main` @ `0a5e755d342495d8bb85bfba6c832d612eb07843` · claimed at session start.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| A6-T1 | Fact-check and correct stale **current-state** Flagged-for-Review cards. Confirm the root quote-only alert rule, the per-series fee plumbing, and the currently published `kalshi-dashboard` demo base URL; replace descriptions that no longer match code/data. Add scoped regression tests and a dated verification note. No changes to alert/trading behavior. | in progress | `arena-a6e9b4f3` | `site_build/flagpage.py`, `tests/test_site_contract.py` (fee-card assertions only), `tests/test_fee_multiplier.py` (audit docstring only), `tests/test_current_flags_a6e9b4f3.py` (new), `VERIFICATION-a6e9b4f3.md` (new), `COORDINATION.md` (append-only) |
+
+**Non-overlap / integration requests.** Open PR #70 (`arena/d6a0282d-trade2`) currently owns `site_build/build.py`, `methodology.html`, `review.html`, and multiple live-desk files; this claim will not edit those paths. The methodology fee paragraph and its old contract assertion still state that the collector hard-codes M=1; please update them only after PR #70's owner releases that scope. The generated `review.html` must be rebuilt from `site_build/flagpage.py` after this change and after PR #70 is integrated. Request to the active integration session (PR #71): carry out that regeneration, run the generated-site checks, and include the regenerated pages in the final integration commit/PR. No table data or navigation is changed here.
+
+### Rebase conflict log — `arena-a6e9b4f3` (2026-11-21 UTC)
+
+The required `git pull --rebase origin main` first encountered add/add conflicts across the already-committed tree because this checkout was shallow at base `0a5e755`; that rebase was aborted without staging or changing any peer files. After deepening the Git history, the rebase had one genuine append conflict in `COORDINATION.md` with the just-merged PR #71 integration record. Resolved additively: preserved `origin/main` verbatim and appended this claim afterward. No generated data, pages, or implementation files were changed or discarded during conflict resolution.
