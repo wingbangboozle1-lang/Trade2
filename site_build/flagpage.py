@@ -301,9 +301,13 @@ STANDING = [
                  "KXPRESNOMD-28-RW, trades on a 0.0010 step, so its midpoint needs a hundred ticks "
                  "to clear the threshold, while an empty demo book clears it on a single tick. "
                  "The alert rule is correct but the number is not comparable across markets. "
-                 "Recommendation (not yet implemented, needs a per-row price_ranges source link "
-                 "and a payload change owned by other sessions): show 'approx N ticks' on each "
-                 "alert row. Worked examples are in LIVE_DETECTION_EVALUATION-f3cb9b9f.md section 3."),
+                 "Implemented 2026-11-21: every alert row now publishes the market's "
+                 "price_ranges[0].step as tick_size plus threshold_ticks, and both the static "
+                 "pages and the live desk print '$0.10 ≈ N ticks of X' beside the move "
+                 "(payload R-F3-2, rendered in site_build/build.py and assets/desk.js); the "
+                 "ranked-event tables link each row to GET /markets/{ticker}, the record that "
+                 "publishes price_ranges. Omitted, never inferred, when a market publishes no "
+                 "step. Worked examples are in LIVE_DETECTION_EVALUATION-f3cb9b9f.md section 3."),
         "source": (
             "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
             "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-COL",
@@ -319,10 +323,15 @@ STANDING = [
                  "ending 2026-11-21T05:00Z closed with yes_bid 0.0010 against yes_ask 0.8820, "
                  "one stray NO bid at 0.118 on a two-cent market. The quote rule refuses the "
                  "resulting $0.877 'move' (see 'Refused midpoint moves'), which is the right "
-                 "outcome, but the check fires only after the number exists. Recommendation: "
-                 "cross-check with the documented price.previous_dollars field already present "
-                 "in every candle. Logged as R-F3-1; not implemented because it changes the "
-                 "shared alert payload."),
+                 "outcome, but the check fires only after the number exists. "
+                 "Implemented 2026-11-21 (R-F3-1, PRs #72 and #78): the collector now "
+                 "cross-checks the reference quote mid against the candle's documented trade "
+                 "price — price.previous_dollars, falling back to price.close_dollars — and "
+                 "refuses the candidate swing at the source when the two disagree by the $0.10 "
+                 "threshold, publishing the refusal with both numbers instead of only the "
+                 "downstream spread gate. The cross-check applies to candle-basis references "
+                 "only; a previous-snapshot reference carries no trade price and is left "
+                 "untouched."),
         "source": (
             "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983000&end_ts=1795243400&period_interval=1440",
             "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -567,14 +576,22 @@ STANDING = [
                    "https://github.com/wingbangboozle1-lang/Trade2/commit/81d68b14e758e4852710184d04debe6500df9d57"),
     },
     {
-        "title": "Big Brother markets are 'culture' in one pipeline and untracked in the root pipeline",
+        "title": "Big Brother markets are 'culture' in one pipeline and untracked in the root pipeline (resolved 2026-11-21, R-67-1)",
         "body": ("The docs pipeline's series list labels the Big Brother series culture, but the root "
-                 "culture keyword matcher in collector/topics.py does not match it, so the root collector "
-                 "never tracks those markets and never stores their outcomes. Example, read from the official "
-                 "record: KXBIGBROTHER-26DEC31-RIC, 'Will Rick Devens win Big Brother Season 28?', result yes, "
-                 "settlement 2026-10-02T04:20:30Z. Not changed in this task: the matcher is shared by both "
-                 "pipelines, so the scope decision needs a reviewer."),
+                 "culture keyword matcher in collector/topics.py did not match it, so the root collector "
+                 "never tracked those markets and never stored their outcomes. Scope decision, checked "
+                 "against the official record: GET /series/KXBIGBROTHER returns category \"Entertainment\", "
+                 "tags \"Reality TV\"/\"Television\", title \"Big Brother\" — reality TV is inside the "
+                 "culture topic's stated \"entertainment ... contracts\" scope, and the docs pipeline had "
+                 "already classified it that way. The root matcher now includes the title keyword "
+                 "\"big brother\" and the ticker prefix KXBIGBROTHER, so both pipelines agree; ordinary "
+                 "Entertainment series stay excluded by the deliberate keyword filter. Example, read "
+                 "from the official record: KXBIGBROTHER-26DEC31-RIC, 'Will Rick Devens win Big Brother "
+                 "Season 28?', result yes, settlement 2026-10-02T04:20:30Z. Outcomes settled before "
+                 "the root pipeline first sees the series are still not backfilled — that limit is "
+                 "unchanged."),
         "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBIGBROTHER-26DEC31-RIC",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBIGBROTHER",
                    "https://github.com/wingbangboozle1-lang/Trade2/blob/main/docs/data/series.json"),
     },
     {
