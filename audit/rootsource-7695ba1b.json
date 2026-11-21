@@ -1,0 +1,130 @@
+{
+  "pages": {
+    "index.html": {
+      "data_rows": 30,
+      "non_data_rows": 6,
+      "with_demo_source": 30,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "live.html": {
+      "data_rows": 40,
+      "non_data_rows": 1,
+      "with_demo_source": 40,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "methodology.html": {
+      "data_rows": 40,
+      "non_data_rows": 11,
+      "with_demo_source": 40,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "resolutions.html": {
+      "data_rows": 80,
+      "non_data_rows": 8,
+      "with_demo_source": 80,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "review.html": {
+      "data_rows": 162,
+      "non_data_rows": 9,
+      "with_demo_source": 162,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "summary.html": {
+      "data_rows": 1,
+      "non_data_rows": 20,
+      "with_demo_source": 1,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "trades.html": {
+      "data_rows": 19,
+      "non_data_rows": 14,
+      "with_demo_source": 19,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "categories/crypto.html": {
+      "data_rows": 123,
+      "non_data_rows": 20,
+      "with_demo_source": 123,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "categories/culture.html": {
+      "data_rows": 60,
+      "non_data_rows": 44,
+      "with_demo_source": 60,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "categories/elections.html": {
+      "data_rows": 60,
+      "non_data_rows": 44,
+      "with_demo_source": 60,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "categories/gas-prices.html": {
+      "data_rows": 124,
+      "non_data_rows": 19,
+      "with_demo_source": 124,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "categories/golf.html": {
+      "data_rows": 100,
+      "non_data_rows": 4,
+      "with_demo_source": 100,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "docs/flagged.html": {
+      "data_rows": 6,
+      "non_data_rows": 15,
+      "with_demo_source": 6,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "docs/strategies.html": {
+      "data_rows": 39,
+      "non_data_rows": 10,
+      "with_demo_source": 39,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "docs/summary.html": {
+      "data_rows": 0,
+      "non_data_rows": 11,
+      "with_demo_source": 0,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "kalshi-dashboard/suggestions.html": {
+      "data_rows": 0,
+      "non_data_rows": 11,
+      "with_demo_source": 0,
+      "missing_demo_source": 0,
+      "production_links": 0
+    },
+    "kalshi-dashboard/summary.html": {
+      "data_rows": 0,
+      "non_data_rows": 12,
+      "with_demo_source": 0,
+      "missing_demo_source": 0,
+      "production_links": 0
+    }
+  },
+  "totals": {
+    "pages": 22,
+    "data_rows": 929,
+    "with_demo_source": 929,
+    "missing_demo_source": 0,
+    "production_links": 0
+  }
+}

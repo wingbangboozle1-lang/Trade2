@@ -23,6 +23,7 @@ import datetime as dt
 import json
 import os
 import time
+import urllib.parse
 from typing import Any
 
 from . import alerts, news
@@ -45,37 +46,24 @@ ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
 # 2026-11-20T18:41Z snapshot). Stored rows are also re-checked against the
 # quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
-MAX_RESOLUTIONS = 2000    # hard ceiling on the in-scope YES/NO store (all topics)
-# Per-topic floor (session arena-67bd954a / R1). The old single global newest-2000
-# cut let crypto and gas-prices (which settle many times a day) push out elections,
-# culture and golf. Each topic now keeps its newest RESOLUTION_TOPIC_FLOOR rows first;
-# the rest of the MAX_RESOLUTIONS budget is filled with the newest rows overall, so
-# the total stays bounded exactly as before.
-RESOLUTION_TOPIC_FLOOR = 100
-# Watchlist resolutions (session arena-67bd954a / R1). A market the watchlist followed to
-# resolution is stored with ``source: "watch"`` and ranked ahead of the bulk settled-scan
-# rows, up to this many of the newest. Without it, 15-minute crypto settlements (about
-# 1,900 rows in 30 minutes) filled the bound and evicted every older watched outcome in
-# the same run it was stored (run R-C, 2026-11-21 07:26Z). Evictions are logged in
+MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
+# Tracked-market settlement (session arena-57e6bd3d, task E57-T1). See resolve_pending().
+RESOLUTION_LOOKUPS_PER_RUN = 60          # GET /markets/{ticker} re-reads per run
+RESOLUTION_GIVE_UP_S = 14 * 24 * 3600    # stop re-reading a market this long after its close
+RESOLUTION_PENDING_MAX = 2000            # cap on markets waiting for a result
+# Store retention (session arena-67bd954a / R1). Each topic keeps its newest
+# RESOLUTION_TOPIC_FLOOR rows first, so a busy topic cannot evict a quiet one. A market
+# that the pending tracker followed to resolution (source "watch") ranks ahead of the
+# bulk scan rows, up to the newest WATCH_RESOLUTION_KEEP. Evictions are logged in
 # meta.retention, never silent.
+RESOLUTION_TOPIC_FLOOR = 100
 WATCH_RESOLUTION_KEEP = 1000
-# Settled scan (session arena-67bd954a / R1). Replaces the exchange-wide
-# ``status=settled`` read of the newest 400 markets, which had no time filter and
-# returned only gas-prices and crypto. The documented ``min_settled_ts`` filter
-# (https://docs.kalshi.com/api-reference/market/get-markets) bounds the window; the
-# store keeps accumulating, so a run only has to overlap the previous run's window.
-SETTLED_LOOKBACK_S = 2 * 3600   # settled after now - 2h (supplement only; see WATCH_*)
+# Settled scan (session arena-67bd954a / R1). A documented min_settled_ts window
+# (https://docs.kalshi.com/api-reference/market/get-markets) replaces the untimed read
+# of the newest settled markets, which returned only gas-prices and crypto.
+SETTLED_LOOKBACK_S = 2 * 3600   # settled after now - 2h; runs every 5 min, so windows overlap
 SETTLED_PAGE_SIZE = 1000        # documented maximum for GET /markets ``limit``
-SETTLED_DEFAULT_CAP = 3000      # default ``settle_scan``: at most 3 pages per run
-# Resolution watchlist (session arena-67bd954a / R1, rev. 2). The 2-hour exchange-wide
-# window is not enough: in the live run of 2026-11-21 it returned 10,000 settled markets
-# (truncated), almost all 15-minute crypto, and no elections, culture or golf. So every
-# in-scope market the collector has seen open is kept on a watchlist and checked BY TICKER
-# (documented ``tickers`` filter) until Kalshi reports a yes/no result. That is the
-# brief's "track the event until it resolves", done directly.
-WATCH_BATCH = 50                # tickers per GET /markets?tickers=... request
-WATCH_MAX_CALLS = 30            # lookups per run: at most 1,500 watched tickers
-WATCH_TTL_S = 14 * 86400        # an unresolved ticker not seen open for 14 days is dropped
+SETTLED_DEFAULT_CAP = 3000      # default settle scan: at most 3 pages per run
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -173,6 +161,16 @@ def scan_settled(client: KalshiClient, now: float,
     """
     since = int(now - SETTLED_LOOKBACK_S)
     max_pages = max(1, -(-int(cap) // SETTLED_PAGE_SIZE))   # ceil(cap / page size)
+    if not hasattr(client, "_request"):
+        # A client that offers only the public ``markets()`` helper (offline fakes) gets
+        # the same request through it. That helper returns no cursor state, so a read
+        # that fills the cap is reported as possibly truncated (conservative).
+        out = client.markets(max_pages=max_pages, status="settled", min_settled_ts=since,
+                             mve_filter="exclude", limit=SETTLED_PAGE_SIZE)
+        return out, {"min_settled_ts": since, "lookback_s": SETTLED_LOOKBACK_S,
+                     "pages": None, "markets": len(out),
+                     "truncated": len(out) >= max_pages * SETTLED_PAGE_SIZE,
+                     "cap": max_pages * SETTLED_PAGE_SIZE}
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
     cursor: str | None = None
@@ -200,55 +198,13 @@ def scan_settled(client: KalshiClient, now: float,
     return out, info
 
 
-def lookup_settled_tickers(client: KalshiClient, tickers: list[str],
-                           batch: int = WATCH_BATCH) -> tuple[list[dict[str, Any]], list[str]]:
-    """Settled rows (result yes/no) for specific market tickers.
-
-    Uses the documented ``tickers`` filter on GET /markets ("Comma-separated list of
-    market tickers to retrieve",
-    https://docs.kalshi.com/api-reference/market/get-markets), ``batch`` tickers per
-    request. Only a market that reports a yes/no result is returned, so an open
-    market is never graded. Returns ``(rows, errors)``.
-    """
-    rows: list[dict[str, Any]] = []
-    errors: list[str] = []
-    for i in range(0, len(tickers), batch):
-        chunk = tickers[i:i + batch]
-        try:
-            page = client._request("GET", "/markets", {
-                "tickers": ",".join(chunk), "limit": SETTLED_PAGE_SIZE})
-        except KalshiHTTPError as exc:
-            errors.append(f"ticker lookup failed ({exc})")
-            continue
-        for market in page.get("markets") or []:
-            if market.get("ticker") and market.get("result") in ("yes", "no"):
-                rows.append(market)
-    return rows, errors
+TERMINAL_MARKET_STATUSES = frozenset({"finalized", "settled", "determined"})
 
 
-def update_watchlist(watch: dict[str, dict[str, Any]], seen: dict[str, str],
-                     holdings: set[str], now: float) -> int:
-    """Refresh the resolution watchlist in place and return its size.
-
-    ``seen`` maps every in-scope ticker observed this run to its topic; ``holdings`` are
-    open simulated positions. Both are watched. Entries not seen open for
-    ``WATCH_TTL_S`` are dropped, so the list cannot grow without bound.
-    """
-    for ticker, topic in seen.items():
-        entry = watch.setdefault(ticker, {"topic": topic, "last_seen": now, "last_checked": 0})
-        entry["topic"] = topic
-        entry["last_seen"] = now
-    for ticker in holdings:
-        entry = watch.setdefault(ticker, {"topic": None, "last_seen": now, "last_checked": 0})
-        entry["last_seen"] = now
-    for ticker in [t for t, e in watch.items() if now - float(e.get("last_seen") or 0) > WATCH_TTL_S]:
-        del watch[ticker]
-    return len(watch)
-
-
-def pick_watchlist(watch: dict[str, dict[str, Any]], limit: int) -> list[str]:
-    """The ``limit`` watched tickers checked longest ago (never-checked first)."""
-    return sorted(watch, key=lambda t: (float(watch[t].get("last_checked") or 0), t))[:limit]
+def is_live_market(market: dict[str, Any]) -> bool:
+    """False for a market whose own status is terminal. Grading still happens through the
+    settlement path (scan_settled / the resolution watchlist), not through the live table."""
+    return (market.get("status") or "").lower() not in TERMINAL_MARKET_STATUSES
 
 
 def migrate_resolutions(store: dict[str, Any],
@@ -315,6 +271,221 @@ def migrate_resolutions(store: dict[str, Any],
     store["resolutions"] = kept
     return len(kept)
 
+# --- Tracked-market settlement (session arena-57e6bd3d, task E57-T1) ----------
+#
+# The settled scan in collect() reads the newest settled markets exchange-wide, up
+# to about 3,000. High-frequency series (for example the 15-minute crypto series,
+# KXBTC15M) settle often enough to fill that window, so a golf, culture or elections
+# market that settled earlier can fall outside it. Published evidence: data/resolutions.json held 328 rows with 0 rows for
+# elections, culture or golf (R-3DCF-1, COORDINATION.md).
+#
+# This pass follows the markets the collector already watches instead. Each tracked
+# market is remembered with its topic and close time. Once its close time has passed,
+# it is re-read by ticker with GET /markets/{ticker}
+# (https://docs.kalshi.com/api-reference/market/get-market; response shape
+# {"market": {...}}, with "result" = "yes" | "no" once settled, per
+# https://docs.kalshi.com/getting_started/market_settlement). Lookups are bounded per
+# run, least-recently-checked first. A market with no result 14 days after close is
+# dropped from the pending list and reported.
+
+def _epoch(ts: str | None) -> float | None:
+    """ISO-8601 UTC timestamp such as ``2026-11-15T14:52:33Z`` -> epoch seconds."""
+    if not ts or len(ts) < 19:
+        return None
+    try:
+        parsed = dt.datetime.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return None
+    return parsed.replace(tzinfo=dt.timezone.utc).timestamp()
+
+
+def resolution_record(market: dict[str, Any], ticker: str, topic: str,
+                      now: float) -> dict[str, Any]:
+    """One stored YES/NO outcome row built from a market object."""
+    return {
+        "ticker": ticker,
+        "event_ticker": market.get("event_ticker"),
+        "series_ticker": market.get("series_ticker"),
+        "topic": topic,
+        "title": market.get("yes_sub_title") or market.get("title"),
+        "result": (market.get("result") or "").lower(),
+        "settlement_value_dollars": market.get("settlement_value_dollars"),
+        "settlement_ts": market.get("settlement_ts"),
+        "status": market.get("status"),
+        "source_url": f"{DEMO_REST}/markets/{ticker}",
+        "human_url": f"https://kalshi.com/markets/{market.get('event_ticker', '')}",
+        "verified_at": iso(now),
+    }
+
+
+def fetch_market(client: KalshiClient, ticker: str) -> dict[str, Any] | None:
+    """GET /markets/{ticker} -> the market object, or None if the body has none."""
+    payload = client._request("GET", f"/markets/{urllib.parse.quote(ticker, safe='')}")
+    market = (payload or {}).get("market") if isinstance(payload, dict) else None
+    return market if isinstance(market, dict) else None
+
+
+def track_pending(pending: dict[str, dict[str, Any]], observations: list[Any],
+                  now: float) -> None:
+    """Remember every market this run watches until it has a yes/no result."""
+    for obs in observations:
+        if not obs.ticker or not obs.topic:
+            continue
+        row = pending.get(obs.ticker)
+        if row is None:
+            pending[obs.ticker] = {
+                "ticker": obs.ticker,
+                "event_ticker": obs.event_ticker or None,
+                "series_ticker": obs.series_ticker or None,
+                "topic": obs.topic,
+                "title": obs.title or None,
+                "close_time": obs.close_time or None,
+                "first_seen": iso(now),
+                "last_checked": None,
+                "lookups": 0,
+            }
+        elif not row.get("close_time") and obs.close_time:
+            row["close_time"] = obs.close_time
+    if len(pending) > RESOLUTION_PENDING_MAX:
+        # Keep the markets that will close soonest; the rest wait for a later run.
+        keep = sorted(pending.items(),
+                      key=lambda kv: _epoch(kv[1].get("close_time")) or float("inf"))
+        pending.clear()
+        pending.update(keep[:RESOLUTION_PENDING_MAX])
+
+
+def track_held(pending: dict[str, dict[str, Any]], positions: list[dict[str, Any]],
+               now: float) -> None:
+    """Follow every open simulated position to settlement, observed or not.
+
+    A position whose market is no longer a live observation (for example a finalized
+    market, which is kept out of the live table) would otherwise never be graded. Such a
+    row has no close time on file, so it is marked due at once and re-read by ticker
+    like any other pending market (least recently checked first, bounded per run).
+    """
+    for pos in positions:
+        ticker = pos.get("ticker")
+        if not ticker or ticker in pending:
+            continue
+        pending[ticker] = {
+            "ticker": ticker,
+            "event_ticker": pos.get("event_ticker") or None,
+            "series_ticker": None,
+            "topic": pos.get("topic") or None,
+            "title": pos.get("title") or None,
+            "close_time": iso(now),
+            "first_seen": iso(now),
+            "last_checked": None,
+            "lookups": 0,
+            "held": True,
+        }
+
+
+def resolve_pending(client: KalshiClient, pending: dict[str, dict[str, Any]], now: float,
+                    *, limit: int = RESOLUTION_LOOKUPS_PER_RUN,
+                    deadline: float | None = None,
+                    errors: list[str] | None = None,
+                    ) -> tuple[list[tuple[str, dict[str, Any]]], list[str], int]:
+    """Re-read due pending markets and return ``(resolved, dropped, lookups)``.
+
+    A market is due once its close time has passed. Due markets are read
+    least-recently-checked first, at most ``limit`` per run, so every pending market
+    is revisited in turn. A resolved market leaves ``pending``. A market with no
+    yes/no result more than ``RESOLUTION_GIVE_UP_S`` after close also leaves it, and
+    is listed in ``dropped``. A failed request keeps the market pending and is
+    reported in ``errors``.
+    """
+    errors = errors if errors is not None else []
+    due: list[tuple[str, float, str]] = []
+    for ticker, row in pending.items():
+        close_ts = _epoch(row.get("close_time"))
+        if close_ts is not None and close_ts <= now:
+            due.append((row.get("last_checked") or "", close_ts, ticker))
+    due.sort()
+
+    resolved: list[tuple[str, dict[str, Any]]] = []
+    dropped: list[str] = []
+    lookups = 0
+    for _, close_ts, ticker in due[:max(0, limit)]:
+        if deadline is not None and time.time() > deadline:
+            errors.append("resolution lookups stopped by the run budget (partial, flagged)")
+            break
+        row = pending[ticker]
+        row["last_checked"] = iso(now)
+        row["lookups"] = int(row.get("lookups") or 0) + 1
+        lookups += 1
+        try:
+            market = fetch_market(client, ticker)
+        except Exception as exc:  # any transport or HTTP failure: retry next run
+            errors.append(f"resolution lookup {ticker} failed ({exc})")
+            continue
+        result = str((market or {}).get("result") or "").lower()
+        if result in ("yes", "no"):
+            resolved.append((ticker, resolution_record(market, ticker, row["topic"], now)))
+            del pending[ticker]
+        elif now - close_ts > RESOLUTION_GIVE_UP_S:
+            dropped.append(ticker)
+            del pending[ticker]
+    return resolved, dropped, lookups
+
+
+def apply_pending_resolutions(store: dict[str, Any],
+                              resolved: list[tuple[str, dict[str, Any]]],
+                              portfolio: Any, history: dict[str, Any],
+                              settled_updates: list[dict[str, Any]], now: float) -> None:
+    """Write newly resolved pending markets to the store and grade simulated positions.
+
+    A held simulated position is settled exactly as the global scan settles it, using
+    the market's official ``result``. ``Portfolio.settle`` only touches open positions,
+    so a market that both the scan and this pass see is graded once.
+    """
+    for ticker, rec in resolved:
+        store["resolutions"][ticker] = {**rec, "source": "watch"}
+        closed = portfolio.settle(ticker, rec["result"])
+        if closed:
+            settled_updates.append(closed.as_dict())
+            history.setdefault("series", {}).setdefault(ticker, []).append(
+                {"ts": now, "result": rec["result"], "price": closed.exit_price})
+
+
+def observation_store(observations: list[Any]) -> list[dict[str, Any]]:
+    """The rows the *next* run reads back as its previous snapshot.
+
+    ``collect()`` builds ``previous_obs`` from ``live.json["observations"]`` so a
+    market without a candlestick reference bar can still be measured quote-to-quote
+    (``collector.alerts._swing`` basis ``previous_snapshot_mid``). Until session
+    arena-27de8294 the payload never wrote that key, so the reader always saw an
+    empty list and the documented fallback could never fire.
+
+    Rows are copied, not aliased: the live run keeps using its own Observation
+    objects, and a malformed row without a ticker is dropped rather than being
+    published under an empty key.
+    """
+    rows: list[dict[str, Any]] = []
+    for obs in observations:
+        if isinstance(obs, dict):
+            row = dict(obs)
+        else:  # an alerts.Observation dataclass
+            row = dict(getattr(obs, "__dict__", {}) or {})
+        if row.get("ticker"):
+            rows.append(row)
+    return rows
+
+
+def previous_observations(payload: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    """Index a published snapshot's observations by ticker.
+
+    A snapshot written before this key existed contains no ``observations`` and
+    yields ``{}`` — the first run after a deploy simply has no earlier measurement
+    to compare against, and says so (``snapshot_fallback.previous_rows == 0``)
+    instead of inventing a baseline.
+    """
+    out: dict[str, dict[str, Any]] = {}
+    for row in (payload or {}).get("observations") or []:
+        if isinstance(row, dict) and row.get("ticker"):
+            out[row["ticker"]] = row
+    return out
+
 
 def load_json(path: str, default: Any):
     try:
@@ -333,20 +504,6 @@ def save_json(path: str, payload: Any) -> None:
 
 
 _series_volume: dict[str, float] = {}
-
-
-# Market statuses that mean the contract has already resolved. Kalshi can keep a parent
-# event listed as open while one of its markets is finalized: KXBTCMAX100-26-APR was
-# published as a live crypto event with 694,493 contracts of open interest and no quote,
-# although the official record shows status "finalized", result "no", settled 2026-05-02
-# (https://docs.kalshi.com/api-reference/market/get-markets). Such markets are not live.
-TERMINAL_MARKET_STATUSES = frozenset({"finalized", "settled", "determined"})
-
-
-def is_live_market(market: dict[str, Any]) -> bool:
-    """False for a market whose own status is terminal. Grading still happens through the
-    settlement path (scan_settled / the resolution watchlist), not through the live table."""
-    return (market.get("status") or "").lower() not in TERMINAL_MARKET_STATUSES
 
 
 def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
@@ -432,12 +589,30 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     # ``trade_close`` is published next to the quote mid for transparency only
     # (the chart legend and the methodology page); it is never the basis of a
     # swing alert, which is the point of 856e184e's quote rule.
+    # ``price.previous_dollars`` of the reference candle (documented at
+    # https://docs.kalshi.com/api-reference/market/get-market-candlesticks).
+    # The merged R-F3-1 corroboration reads ``previous_dollars`` from this
+    # record (Observation.ref_previous_dollars); without it the guard can only
+    # fall back to ``price.close_dollars``, so the plumbing ends here by design.
+    price_block = chosen.get("price") or {}
+    try:
+        price_previous = float(price_block.get("previous_dollars"))
+    except (TypeError, ValueError):
+        price_previous = None
     return {"mid": round((bid + ask) / 2.0, 4),
             "ts": float(chosen["end_period_ts"]),
             "spread": round(ask - bid, 4),
             "yes_bid": bid, "yes_ask": ask,
             "trade_close": _candle_close(chosen, "price"),
-            "period_interval_minutes": 1}
+            "previous_dollars": price_previous,
+            "period_interval_minutes": 1,
+            # Completed candles in the window, for the revert check (R-3DCF-3).
+            # The still-forming current bar is excluded — its close is not final.
+            "candles": [{"ts": float(c["end_period_ts"]),
+                         "trade_close": _candle_close(c, "price"),
+                         "yes_bid_close": _candle_close(c, "yes_bid"),
+                         "yes_ask_close": _candle_close(c, "yes_ask")}
+                        for c in completed]}
 
 
 def _candle_close(candle: dict[str, Any], side: str) -> float | None:
@@ -535,10 +710,10 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         exchange = {"error": str(exc)}
 
     previous_live = load_json(LIVE_PATH, {})
-    previous_obs: dict[str, dict[str, Any]] = {}
-    for row in previous_live.get("observations", []):
-        if row.get("ticker"):
-            previous_obs[row["ticker"]] = row
+    # Previously read from ``previous_live["observations"]``, a key the payload never
+    # wrote — so this mapping was always empty and ``alerts._swing`` could never use
+    # its documented ``previous_snapshot_mid`` fallback (session arena-27de8294).
+    previous_obs: dict[str, dict[str, Any]] = previous_observations(previous_live)
     alerts_store = load_json(os.path.join(DATA_DIR, "alerts.json"),
                              {"alerts": [], "version": 0})
     if alerts_store.get("version") != ALERTS_VERSION:
@@ -549,9 +724,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     resolutions = load_json(RESOLUTIONS_PATH, {"resolutions": {}, "meta": {}})
 
     series_cache = load_json(os.path.join(DATA_DIR, "series_cache.json"), {})
-    holdings = {p["ticker"] for p in
-                load_json(STATE_PATH, {}).get("positions", [])
-                if p.get("status") == "open"}
+    held_positions = [p for p in load_json(STATE_PATH, {}).get("positions", [])
+                      if p.get("status") == "open"]
+    holdings = {p["ticker"] for p in held_positions}
 
     observations: list[alerts.Observation] = []
     # Two documented endpoints can disagree on the same market; publish the
@@ -596,6 +771,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         for event in events:
             for market in event.get("markets") or []:
                 if not is_live_market(market):
+                    # Finalized markets are graded through the settlement path, never
+                    # published as live events (fix on arena/67bd954a-trade2).
                     continue
                 market = {**market,
                           "event_ticker": event.get("event_ticker"),
@@ -695,6 +872,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             obs.ref_yes_bid = ref.get("yes_bid")
             obs.ref_yes_ask = ref.get("yes_ask")
             obs.ref_trade_close = ref.get("trade_close")
+            obs.ref_previous_dollars = ref.get("previous_dollars")
 
     new_alerts: list[dict[str, Any]] = []
     suppressed: list[dict[str, Any]] = []
@@ -741,6 +919,11 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     fold = alerts.fold_alerts(new_alerts, existing, max_alerts=MAX_ALERTS)
     merged = fold["alerts"]
 
+    # Revert check (R-3DCF-3): annotate rows whose move unwound within one
+    # candle, using the completed candles fetched with the reference bars.
+    reverted_count = alerts.mark_reverted(merged, references,
+                                          threshold=alerts.SWING_THRESHOLD)
+
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
     for obs in observations:
@@ -765,37 +948,11 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     settled_markets: list[dict[str, Any]] = []
     settled_info: dict[str, Any] = {}
     t_settle = time.time()
-    # Every in-scope market seen open this run, plus open simulated positions, is watched
-    # until it resolves (see WATCH_*). The watchlist lives in the resolutions store.
-    watch: dict[str, dict[str, Any]] = resolutions.setdefault("watch", {})
-    seen_topics = {o.ticker: o.topic for o in observations if o.topic}
-    watch_size = update_watchlist(watch, seen_topics, holdings, now)
-    watched_now: set[str] = set()   # tickers the watchlist saw resolve this run
     if time.time() < deadline:
         try:
             settled_markets, settled_info = scan_settled(client, now, settle_scan)
         except KalshiHTTPError as exc:
             errors.append(f"settled scan failed ({exc})")
-        # Check the watchlist by ticker, least recently checked first, bounded per run.
-        checking = pick_watchlist(watch, WATCH_BATCH * WATCH_MAX_CALLS)
-        watched_rows, lookup_errors = lookup_settled_tickers(client, checking)
-        errors.extend(lookup_errors)
-        for ticker in checking:
-            if ticker in watch:
-                watch[ticker]["last_checked"] = now
-        already = {m.get("ticker") for m in settled_markets}
-        newly = [r for r in watched_rows if r.get("ticker") not in already]
-        settled_markets.extend(newly)
-        # A watched market that has a yes/no result is done, whichever pass found it.
-        for market in settled_markets:
-            if (market.get("result") or "").lower() in ("yes", "no"):
-                if watch.pop(market.get("ticker"), None) is not None:
-                    watched_now.add(market.get("ticker"))
-        settled_info["watch_size"] = watch_size
-        settled_info["watch_checked"] = len(checking)
-        settled_info["watch_resolved"] = len(newly)
-        settled_info["watch_resolved_tickers"] = sorted(r.get("ticker") or "" for r in newly)[:100]
-        settled_info["watch_remaining"] = len(watch)
 
     lap("settled_scan", t_settle)
     resolution_memo: dict[str, str | None] = {}
@@ -819,21 +976,28 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             market.get("event_ticker") or ticker, series_registry, resolution_memo)
         if not topic:
             continue
-        resolutions["resolutions"][ticker] = {
-            "ticker": ticker,
-            "event_ticker": market.get("event_ticker"),
-            "series_ticker": market.get("series_ticker"),
-            "topic": topic,
-            "title": market.get("yes_sub_title") or market.get("title"),
-            "result": result,
-            "settlement_value_dollars": market.get("settlement_value_dollars"),
-            "settlement_ts": market.get("settlement_ts"),
-            "status": market.get("status"),
-            "source": "watch" if ticker in watched_now else "scan",
-            "source_url": f"https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}",
-            "human_url": f"https://kalshi.com/markets/{market.get('event_ticker','')}",
-            "verified_at": iso(now),
-        }
+        resolutions["resolutions"][ticker] = resolution_record(market, ticker, topic, now)
+
+    # Track every market this run watches until it settles. The global scan above
+    # cannot see a quiet topic's settlements under crypto volume (R-3DCF-1), so each
+    # watched market is re-read by ticker once its close time has passed.
+    pending = resolutions.setdefault("pending", {})
+    pending_resolved: list[tuple[str, dict[str, Any]]] = []
+    pending_dropped: list[str] = []
+    pending_lookups = 0
+    try:
+        track_pending(pending, observations, now)
+        track_held(pending, held_positions, now)
+        if time.time() < deadline:
+            pending_resolved, pending_dropped, pending_lookups = resolve_pending(
+                client, pending, now, deadline=deadline, errors=errors)
+    except Exception as exc:  # never let settlement tracking stop the live run
+        errors.append(f"resolution tracking failed ({exc}); other steps continued")
+    apply_pending_resolutions(resolutions, pending_resolved, portfolio, history,
+                              settled_updates, now)
+    for ticker in pending_dropped:
+        errors.append(f"{ticker}: no yes/no result {RESOLUTION_GIVE_UP_S // 86400} days "
+                      "after close; no longer tracked")
 
     # Manage open simulated positions: bank favourable swings, cut adverse ones.
     obs_by_ticker = {o.ticker: o for o in observations}
@@ -869,10 +1033,10 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     # (market objects carry no series_ticker — see resolution_topic()) and
     # drop out-of-scope settlements so the bounded store tracks the five
     # topics the brief asks for.
-    migrate_resolutions(resolutions, series_registry)
     resolutions.setdefault("meta", {})["settled_scan"] = {
-        **settled_info, "errors": [e for e in errors if "settled" in e or "held-position" in e],
+        **settled_info, "errors": [e for e in errors if "settled" in e],
         "generated_at": iso(now)}
+    migrate_resolutions(resolutions, series_registry)
     resolved_by_topic: dict[str, list[dict[str, Any]]] = {t.slug: [] for t in topic_mod.TOPICS}
     series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
     for ticker, rec in resolutions["resolutions"].items():
@@ -918,10 +1082,36 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "portfolio": analytics,
         "resolutions": resolved_by_topic,
         "resolutions_count": len(resolutions["resolutions"]),
+        "resolution_tracking": {
+            "pending": len(pending),
+            "lookups_this_run": pending_lookups,
+            "resolved_this_run": len(pending_resolved),
+            "dropped_this_run": len(pending_dropped),
+            "lookups_per_run_cap": RESOLUTION_LOOKUPS_PER_RUN,
+            "method": "GET /markets/{ticker} for each tracked market after its close_time; "
+                      "https://docs.kalshi.com/api-reference/market/get-market",
+        },
         "opened_this_run": opened,
         "settled_this_run": settled_updates,
         "closed_this_run": closed_now,
         "observation_count": len(observations),
+        # The rows the next run uses as its previous snapshot. Published so the
+        # quote-to-quote fallback is measurable rather than assumed, and so the
+        # desk can state how many markets had a candle reference this run.
+        "observations": observation_store(observations),
+        "snapshot_fallback": {
+            "previous_rows": len(previous_obs),
+            "compared_against_previous_snapshot": sum(
+                1 for a in merged if a.get("reference_basis") == "previous_snapshot_mid"),
+            "candle_reference_rows": len(references),
+            "measured_rows": len(observations),
+            "carried_forward_rows": len(previous_obs),
+            "basis_documented_at": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+            "note": ("A market is compared against its official 1-minute candle quote "
+                     "when one exists, otherwise against the previous snapshot's quoted "
+                     "mid. Both bases are quote-to-quote; a last-trade price is never the "
+                     "basis of an alert."),
+        },
         "reference_bar_seconds": BAR_SECONDS,
         "reference_bars_used": len(references),
         "alert_stats": {
@@ -934,6 +1124,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "executable": sum(1 for a in merged if a.get("quality") == "executable"),
             "indicative": sum(1 for a in merged if a.get("quality") == "indicative"),
             "suppressed_this_run": len(suppressed),
+            "reverted_annotated_this_run": reverted_count,
         },
         "suppressed_alerts": suppressed[:40],
         "book_record_gaps": sorted(gaps, key=lambda g: g["abs_gap"],
@@ -967,8 +1158,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--market-cap", type=int, default=150)
     ap.add_argument("--orderbook-cap", type=int, default=300)
-    ap.add_argument("--settle-scan", type=int, default=SETTLED_DEFAULT_CAP,
-                    help="max settled markets read per run (1000 per page)")
+    ap.add_argument("--settle-scan", type=int, default=SETTLED_DEFAULT_CAP)
     ap.add_argument("--budget", type=float, default=330.0)
     args = ap.parse_args()
     started = time.time()

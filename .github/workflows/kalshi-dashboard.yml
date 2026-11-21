@@ -13,13 +13,19 @@ on:
   push:
     # main publishes the site; the working branches are included so the
     # pipeline can be exercised before merge.
-    branches: ["main", "arena/f5837994-trade2", "arena/fb6cb424-trade2"]
+    branches: ["main", "arena/f5837994-trade2", "arena/dd1da6b5-trade2",
+               "arena/fb6cb424-trade2"]
 
 permissions:
   contents: write
 
+# R-1E3-1 (arena-1e3b2594): key the group by event name, like collector.yml
+# already does. A *pending* run in a group is cancelled when a newer run enters
+# it even with cancel-in-progress: false, so a queued */5 schedule run must not
+# be replaceable by a queued push run (observed: schedule run 44804717748 was
+# cancelled 17 s in by push runs 44809122838 / 44809455693 / 44809872442).
 concurrency:
-  group: collect
+  group: collect-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
@@ -42,7 +48,14 @@ jobs:
         run: |
           node --check assets/alerts-view.js
           node --check assets/desk.js
+          node --check assets/live-feed.js
           node --test test/alerts-view.test.mjs
+          # The browser live pulse (assets/live-feed.js + assets/desk.js) had no
+          # CI coverage until session arena-7695ba1b: a comma-joined
+          # `?tickers=A,B` request shape made the pulse measure nothing while
+          # the panel reported healthy readings. These two suites pin the
+          # documented request shape and the detector's rules.
+          node --test test/live-feed.test.mjs test/live-feed-url.test.mjs
 
       - name: Collect
         env:
@@ -56,6 +69,18 @@ jobs:
             export KALSHI_PRIVATE_KEY_PATH=/tmp/kalshi.pem
           fi
           python3 -m collector.collector --market-cap "$MARKET_CAP" --orderbook-cap 300
+
+      - name: Model shortlist (order-book model)
+        run: python3 -m collector.shortlist
+
+      - name: Candidate news for swings
+        run: python3 -m collector.news --window-hours 24
+
+      - name: Verify the snapshot against the official API
+        # A mismatch is reported on the Flagged for Review page and in
+        # data/verification.json; it must not stop the site from publishing.
+        continue-on-error: true
+        run: python3 tools/verify_snapshot.py --per-topic 3
 
       - name: Rebuild static site data
         run: python3 -m site_build.build

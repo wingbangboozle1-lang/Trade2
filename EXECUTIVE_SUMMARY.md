@@ -328,3 +328,28 @@ FL-09 pinned-branch exception to the session-branch protocol. Full detail with l
 - Verification ledger: `docs/verification/sources.md`
 - Task board / PR record: `COORDINATION.md`
 - Reproduce any row: open its `source_url` — it is a GET on the public demo API, no key needed.
+
+---
+
+# Addendum — session `arena-dd1da6b5` (2026-11-20)
+
+## 10. What this session added
+
+| Addition | Where | Detail |
+| --- | --- | --- |
+| **Order-book model** for the high-ROI chat | `collector/shortlist.py`, published in `data/shortlist.json` | Fair value = book mid (YES bid + best NO bid) / 2; net edge = \|fair − price\| − the official taker fee `0.07·C·P·(1−P)` at the schedule's default multiplier M = 1 (the module works offline from the snapshot, which carries no per-series multiplier; the trading engine and the paper ledger read `fee_multiplier` from `GET /series`). Gates, applied before any row is published: the book must be quoted on both sides with spread ≤ $0.20; the side the model would buy must have ≥ 10 contracts resting; the executable price must sit on Kalshi's $0.01–$0.99 grid; the edge after the fee must be ≥ $0.02 with positive net ROI. Two references, both book mids: a **swing** pick requires the book itself to have moved ≥ $0.10 between snapshots, and a **level** pick compares the mid with the mean of its last ≤ 12 snapshots (drift ≥ $0.01). Every alerted market also gets a `picked`/`passed` verdict with a plain reason; the live counts are published on the site rather than restated here. |
+| **Candidate news headlines** | `collector/news.py`, `data/news.json` | Google News RSS per swing, 24 h window, labelled *candidate — not a confirmed cause*. |
+| **Per-topic swing + model feeds** | topic pages under `categories/` | Each topic page now carries its own ≥ $0.10 swing chat and the model's verdicts, so a trader never leaves the topic. |
+| **Automated snapshot verification** | `tools/verify_snapshot.py`, Methodology page | Re-opens every published market/book/series response and classifies each field as match / drift / mismatch / unverified with the exact URL. Structural fields (ticker, event, status, result) must match exactly; live prices and books may drift inside tolerance. The latest run's counts are rendered on the Methodology page from `data/verification.json` rather than restated here, because the scheduled pipeline refreshes them every few minutes. |
+| **Landing site map** | `index.html` | "How to use this site" links every page in one click. |
+
+## 11. New irregularity found (published on Flagged for Review)
+
+**The demo trade tape alternates on a flat book.** On
+`KXPRESNOMD-28-AKLO` the official 1-minute candlesticks alternate
+`0.8030 / 0.0030` while the order book stays `0.0020 / 0.0030` for every bar
+([candles](https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks?start_ts=1795190000&end_ts=1795200500&period_interval=1),
+[book](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-AKLO/orderbook)).
+A $0.10 swing measured against the *traded* price can therefore be a print, not
+a market move. The model refuses to price any move the book did not confirm,
+and swings without a verifiable quote basis are dropped (PR #22) or flagged.

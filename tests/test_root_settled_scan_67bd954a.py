@@ -24,6 +24,7 @@ the assertions check what would be sent to https://external-api.demo.kalshi.co/t
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 import unittest
@@ -121,31 +122,6 @@ class ScanSettledPaging(unittest.TestCase):
         self.assertEqual(root.SETTLED_DEFAULT_CAP // root.SETTLED_PAGE_SIZE, 3)
 
 
-class WatchlistRules(unittest.TestCase):
-    def test_seen_and_held_tickers_are_added_with_topic(self) -> None:
-        watch: dict = {}
-        size = root.update_watchlist(watch, {"KXA-1": "golf"}, {"KXHELD-1"}, NOW)
-        self.assertEqual(size, 2)
-        self.assertEqual(watch["KXA-1"]["topic"], "golf")
-        self.assertIsNone(watch["KXHELD-1"]["topic"])
-
-    def test_entries_not_seen_for_ttl_are_dropped(self) -> None:
-        watch = {"KXOLD-1": {"topic": "golf", "last_seen": NOW - root.WATCH_TTL_S - 1, "last_checked": 0},
-                 "KXNEW-1": {"topic": "golf", "last_seen": NOW - 60, "last_checked": 0}}
-        root.update_watchlist(watch, {}, set(), NOW)
-        self.assertEqual(sorted(watch), ["KXNEW-1"])
-
-    def test_pick_checks_least_recently_checked_first(self) -> None:
-        watch = {"KXA": {"last_checked": 500}, "KXB": {"last_checked": 100},
-                 "KXC": {"last_checked": 0}}
-        self.assertEqual(root.pick_watchlist(watch, 2), ["KXC", "KXB"])
-
-    def test_pick_respects_the_per_run_bound(self) -> None:
-        watch = {f"KXT-{i}": {"last_checked": i} for i in range(5000)}
-        self.assertEqual(len(root.pick_watchlist(watch, root.WATCH_BATCH * root.WATCH_MAX_CALLS)),
-                         root.WATCH_BATCH * root.WATCH_MAX_CALLS)
-
-
 class LiveMarketRule(unittest.TestCase):
     """Finalized markets must not be published as live events (KXBTCMAX100-26-APR case)."""
 
@@ -157,34 +133,6 @@ class LiveMarketRule(unittest.TestCase):
         self.assertTrue(root.is_live_market({"ticker": "X", "status": "active"}))
         self.assertTrue(root.is_live_market({"ticker": "X", "status": "closed"}))
         self.assertTrue(root.is_live_market({"ticker": "X"}))
-
-
-class HeldPositionLookup(unittest.TestCase):
-    def test_uses_tickers_filter_in_batches(self) -> None:
-        client = FakeRequestClient()
-        tickers = [f"KXT-{i}" for i in range(120)]
-        root.lookup_settled_tickers(client, tickers, batch=50)
-        lookups = [c for c in client.calls if "tickers" in c[2]]
-        self.assertEqual(len(lookups), 3)                    # 50 + 50 + 20
-        self.assertEqual(lookups[0][2]["tickers"].split(","), tickers[:50])
-
-    def test_returns_only_yes_or_no_results(self) -> None:
-        client = FakeRequestClient()
-        client.lookup_table = {
-            "KXOPEN-1": {"ticker": "KXOPEN-1", "result": ""},            # still open: never graded
-            "KXDONE-1": market("KXDONE-1", "no"),
-            "KXDONE-2": market("KXDONE-2", "yes"),
-        }
-        rows, errors = root.lookup_settled_tickers(client, ["KXOPEN-1", "KXDONE-1", "KXDONE-2"])
-        self.assertEqual(sorted(r["ticker"] for r in rows), ["KXDONE-1", "KXDONE-2"])
-        self.assertEqual(errors, [])
-
-    def test_failed_lookup_is_reported_not_silent(self) -> None:
-        client = FakeRequestClient(raise_on={"KXBAD-1"})
-        rows, errors = root.lookup_settled_tickers(client, ["KXBAD-1"])
-        self.assertEqual(rows, [])
-        self.assertEqual(len(errors), 1)
-        self.assertIn("ticker lookup failed", errors[0])
 
 
 class PerTopicFloor(unittest.TestCase):
@@ -301,6 +249,7 @@ class CollectEndToEndOffline(unittest.TestCase):
 
     def test_quiet_topics_reach_the_store_and_held_position_is_graded(self) -> None:
         from unittest import mock
+        from urllib.parse import unquote
 
         from collector import topics as topic_mod
         from collector.kalshi_api import KalshiHTTPError
@@ -323,23 +272,28 @@ class CollectEndToEndOffline(unittest.TestCase):
         ]
         # 2,600 crypto settlements, newer than the quiet topics (the old failure mode).
         settled += [mk(f"KXBTCD-26NOV{i:04d}-{i}", f"KXBTCD-26NOV{i:04d}", "no") for i in range(2600)]
-        held_result = {"KXHELD-1": mk("KXHELD-1", "KXDPWORLDTOUR-HELD", "yes"),      # in-scope golf
-                       # watched elections market that the exchange window does NOT return
-                       "KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH": mk(
-                           "KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH", "KXCAGOVPRIMARY1ST-26JUN02-2ND", "no")}
+        # Markets re-read by ticker (GET /markets/{ticker}): the held golf position, and an
+        # elections market the pending tracker followed that the window does NOT return.
+        by_ticker = {
+            "KXHELD-1": mk("KXHELD-1", "KXDPWORLDTOUR-HELD", "yes"),
+            "KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH": mk(
+                "KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH", "KXCAGOVPRIMARY1ST-26JUN02-2ND", "no"),
+        }
 
         class FakeClient:
             budget = None
 
             def __init__(self) -> None:
-                self.params: list[dict] = []
+                self.params: list[tuple[str, dict]] = []
 
             def _request(self, method, path, params=None, **kw):
                 params = dict(params or {})
-                self.params.append(params)
-                if "tickers" in params:
-                    return {"markets": [held_result[t] for t in params["tickers"].split(",")
-                                        if t in held_result], "cursor": ""}
+                self.params.append((path, params))
+                if path.startswith("/markets/"):
+                    ticker = unquote(path[len("/markets/"):])
+                    if ticker in by_ticker:
+                        return {"market": by_ticker[ticker]}
+                    raise KalshiHTTPError(404, "not found", path)
                 start = int(params.get("cursor") or 0)
                 nxt = str(start + 1000) if start + 1000 < len(settled) else ""
                 return {"markets": settled[start:start + 1000], "cursor": nxt}
@@ -351,8 +305,11 @@ class CollectEndToEndOffline(unittest.TestCase):
 
         fake = FakeClient()
         captured: dict[str, object] = {}
-        watched = {"KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH": {"topic": "elections", "last_seen": NOW - 60,
-                                                          "last_checked": 0}}
+        pending_state = {"KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH": {
+            "ticker": "KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH",
+            "event_ticker": "KXCAGOVPRIMARY1ST-26JUN02-2ND", "series_ticker": None,
+            "topic": "elections", "title": "watched", "close_time": "2026-11-20T00:00:00Z",
+            "first_seen": "2026-11-20T00:00:00Z", "last_checked": None, "lookups": 0}}
         held_state = {"bankroll": 10000.0, "starting_bankroll": 10000.0, "trades": [],
                       "equity_curve": [], "started_at": 1795189000.0,
                       "positions": [{
@@ -366,7 +323,7 @@ class CollectEndToEndOffline(unittest.TestCase):
             if str(path).endswith("portfolio_state.json"):
                 return held_state
             if str(path).endswith("resolutions.json"):
-                return {"resolutions": {}, "meta": {}, "watch": dict(watched)}
+                return {"resolutions": {}, "meta": {}, "pending": json.loads(json.dumps(pending_state))}
             return default
 
         with mock.patch.object(root, "KalshiClient", lambda *a, **k: fake), \
@@ -376,31 +333,29 @@ class CollectEndToEndOffline(unittest.TestCase):
                                   lambda client, topic, cache, max_age_seconds=0: series_by_topic[topic.slug]):
             payload = root.collect(market_cap=5, orderbook_cap=0, settle_scan=10000, budget_seconds=60)
 
-        store = captured[root.RESOLUTIONS_PATH]["resolutions"]
-        by_topic = {}
+        resolutions_out = captured[root.RESOLUTIONS_PATH]
+        store = resolutions_out["resolutions"]
+        by_topic: dict[str, int] = {}
         for rec in store.values():
             by_topic[rec["topic"]] = by_topic.get(rec["topic"], 0) + 1
-        self.assertEqual(by_topic.get("elections"), 2)   # window row + watched row (quiet topic kept)
-        self.assertTrue("KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH" in store)   # found only by ticker
+        self.assertEqual(by_topic.get("elections"), 2)   # window row + pending row (quiet topic kept)
+        self.assertIn("KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH", store)   # found only by ticker
+        self.assertEqual(store["KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH"]["source"], "watch")
         self.assertEqual(by_topic.get("culture"), 1)
-        self.assertEqual(by_topic.get("golf"), 2)        # DPWTC26-THAT and the held KXDPWORLDTOUR-HELD market
-        self.assertEqual(by_topic.get("gas-prices"), None)
-        self.assertFalse("KXSOCCERX-1" in store)          # out of scope: never stored
+        self.assertEqual(by_topic.get("golf"), 2)        # DPWTC26-THAT and the held KXHELD-1
+        self.assertIsNone(by_topic.get("gas-prices"))
+        self.assertNotIn("KXSOCCERX-1", store)           # out of scope: never stored
         self.assertLessEqual(len(store), root.MAX_RESOLUTIONS)
-        self.assertTrue("KXHELD-1" in store)              # held position's settlement recorded
+        self.assertEqual(store["KXHELD-1"]["source"], "watch")
         graded = [c["ticker"] for c in payload["settled_this_run"]]
-        self.assertTrue("KXHELD-1" in graded)             # and the simulated position is graded
-        scan = captured[root.RESOLUTIONS_PATH]["meta"]["settled_scan"]
-        self.assertEqual(scan["watch_resolved"], 2)       # KXHELD-1 and the watched elections market
-        self.assertFalse("KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH" in captured[root.RESOLUTIONS_PATH]["watch"])
-        self.assertEqual(scan["pages"], 3)                 # 2,604 markets / 1,000 per page (cap = 3 pages)
+        self.assertIn("KXHELD-1", graded)                # the simulated position is graded
+        # Resolved markets leave the pending list; nothing unresolved remains due.
+        self.assertNotIn("KXCAGOVPRIMARY1ST-26JUN02-2ND-WATCH", resolutions_out["pending"])
+        self.assertNotIn("KXHELD-1", resolutions_out["pending"])
+        scan = resolutions_out["meta"]["settled_scan"]
+        self.assertEqual(scan["pages"], 3)               # 2,604 markets / 1,000 per page
         self.assertFalse(scan["truncated"])
-        self.assertEqual(scan["watch_checked"], 2)         # the held position and the watched market
-        # The request that went out carried the documented window and filters.
-        first = fake.params[0]
-        self.assertEqual(first["status"], "settled")
-        self.assertEqual(first["mve_filter"], "exclude")
-
+        self.assertEqual(resolutions_out["meta"]["retention"]["watch_resolved_evicted"], 0)
 
 class WatchResolutionRetention(unittest.TestCase):
     """Watchlist outcomes survive a store saturated by bulk scan rows (run R-C finding).
