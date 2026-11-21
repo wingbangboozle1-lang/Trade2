@@ -1866,3 +1866,31 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+# Board K — session `arena-bc051b95` (branch `arena/bc051b95-trade2`)
+
+_Board-letter check at claim time (2026-11-21T06:50Z): `grep "Board K" COORDINATION.md`
+returned only this section; letters A–J are taken by earlier sessions._
+
+Base: `main` @ `06738d1` (identical to this branch tip at start). Started 2026-11-21T06:45Z.
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-bc051b95` | `arena/bc051b95-trade2` | Takeover + integration of the two stale PRs (#28, #29), R-1E3-1 workflow fix, full battery, PR → main → merge → Pages confirmation | 2026-11-21T06:45Z | active |
+
+## Task board — `arena-bc051b95`
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| K-T1 | **Take over PR #28** (`arena/dd1da6b5`, "Session E", tasks T20–T26 of its section): claim is > 60 min old with zero commits since 2026-11-20T20:00Z (board rule 5), PR is CONFLICTING with `main` and its `collect` check is red on the stale head. Merge its content onto current `main`, resolve conflicts additively, fix the check, run the full battery | claimed | `arena-bc051b95` | `collector/shortlist.py`, `collector/news.py`, `tools/verify_snapshot.py`, `tools/seed_mid_history.py`, `tests/test_shortlist.py`, `site_build/build.py`, `site_build/flagpage.py`, `assets/desk.js`, `assets/styles.css`, generated root `*.html` + `categories/*.html`, generated `data/*.json` + `assets/live.json` (kept at main's newer snapshot), `EXECUTIVE_SUMMARY.md`, `VERIFICATION.md` |
+| K-T2 | **Handle PR #29** (`arena/c78c9b36`, COORDINATION.md-only close-out of T14 (C78)): same 60-min takeover rule. Integrate its completion record additively into the board or close with rationale; log the handoff either way | claimed | `arena-bc051b95` | `COORDINATION.md` (additive union only) |
+| K-T3 | **Apply standing request R-1E3-1**: add `github.event_name` to the `collect` concurrency group of `.github/workflows/kalshi-dashboard.yml` (requested from PR #28's owner; PR #28 is that owner and is being integrated by this session) | claimed | `arena-bc051b95` | `.github/workflows/kalshi-dashboard.yml` |
+| K-T4 | **Integration**: full local battery + CI on the PR, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR link + merge result + sources + verification here; independent demo-API re-verification of published rows through the platform fetcher (sandbox shell has no Kalshi egress — Board J finding, re-checked at claim time: `curl https://demo-api.kalshi.co/trade-api/v2/markets?limit=2` exits 35, HTTP 000) | claimed | `arena-bc051b95` | `COORDINATION.md` (this section only), `VERIFICATION-bc051b95.md` (new) |
+
+## Overlap check at claim time
+
+`gh pr list --state open` → #28 (`arena/dd1da6b5-trade2`, files listed in K-T1) and #29 (`arena/c78c9b36-trade2`, `COORDINATION.md` only). No other session has an open PR. `gh run list --branch main` is green (collector, Kalshi dashboard, Pages). The most recent board section is Board J (`arena-1e3b2594`, integration complete 2026-11-20T20:45Z). This session's work therefore covers exactly the two stale PRs plus the one open request addressed to their owner (R-1E3-1). R-1E3-2 (stale fee-multiplier claim in `flagpage.py`/`build.py` copy) is inside PR #28's claimed scope (`site_build/flagpage.py`, `site_build/build.py` were both touched by that PR) — this session will check on the merged tree whether the flagged item and methodology sentence now match the code, and fix the copy if the takeover leaves them stale.
