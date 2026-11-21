@@ -2708,3 +2708,22 @@ the L5 caption. Regenerated root pages are build outputs of this session's run.
 | Pages deploy | **confirmed built** — `gh api repos/wingbangboozle1-lang/Trade2/pages` → `status: built`, latest build commit `49354f22…`; https://wingbangboozle1-lang.github.io/Trade2/live.html serves the caption ("Window lengths, not candle sizes…"), the new window labels ("Last 60 minutes · 1-minute candles + live quotes"), both chat feeds, the live pulse and the depth ladder |
 | Verification record | `VERIFICATION-282a1080.md` — every official source (candlestick `price.previous_dollars`, market `price_ranges[].step`, `period_interval` enum, demo roots), all 22 new tests, all gate results |
 | Irregularities published | I-1 (R-3DCF-6 wording deviation, justified), I-2 (merged R-F3-1 guard's `previous_dollars` was inert — fixed by this branch), I-3 (R-F3-1 first-claim race resolution), I-4 (pre-existing blank `last_cents` rows, by design), I-5 (standing credential blockers unchanged) |
+
+### Merge and Pages record — `arena-27de8294`
+
+| Step | Result |
+| - | - |
+| Pull request | <https://github.com/wingbangboozle1-lang/Trade2/pull/79> |
+| CI on the PR head | `collect` **pass** ([runs/44881204332](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44881204332/job/136776672719)) · `Site check — generator, render, links` **pass** ([runs/44881206886](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44881206886/job/136776681588)) |
+| Merge | `gh pr merge 79 --merge` → **merged 2026-11-21T07:41:43Z** as **`dc4c0365fdb4ab129bed299f4ba7502523465bff`**, without waiting for approval, per the brief. Two rebases were needed first because `origin/main` advanced twice under parallel sessions; both conflicts were in generated pages plus `COORDINATION.md`. Generated pages took main's version and were then rebuilt with `python3 -m site_build.build` (no HTML hand-merged); `COORDINATION.md` was resolved as a **union** — every peer section kept verbatim, this session's claim + work log appended. |
+| Pages | `GET /repos/.../pages` → `status: "built"`, source `main` `/`, public, `https_enforced`. <https://wingbangboozle1-lang.github.io/Trade2/> |
+| Live proof the fix reached the published snapshot | `data/live.json` on `main` at `2026-11-21T07:48:31Z`: `"observations"` **present, 750 rows**; `snapshot_fallback` = `{"previous_rows": 750, "compared_against_previous_snapshot": 0, "candle_reference_rows": 97, "measured_rows": 750, ...}`. Before the merge the key was **absent**. |
+| Live proof the page says it | <https://wingbangboozle1-lang.github.io/Trade2/live.html> "All events" panel now reads: *"No alert row in this snapshot. 3 midpoint moves cleared $0.10 but the quote rule refused them … Measured: 750 markets measured this snapshot · 97 had an official 1-minute candle reference · no earlier rows yet, so the previous-snapshot fallback had nothing to compare. Every row is quote mid to quote mid against one of two bases — candle_quote_mid … previous_snapshot_mid …"* |
+| Why it still says "no earlier rows yet" | The 07:48Z run was the **first** run of the fixed collector; it read a snapshot written before the key existed. The 07:53Z and later runs have 750 prior rows, so the sentence changes on its own. Not a defect; the honest answer for that run. |
+| Flagged entry live | <https://wingbangboozle1-lang.github.io/Trade2/review.html> carries the new standing limitation ("The previous-snapshot fallback was dead until 2026-11-21 (fixed, session arena-27de8294)"). |
+
+**What this does not claim.** `compared_against_previous_snapshot` is 0 in the 07:48Z
+run because that run had no prior rows to compare. The first run that *can* use the
+fallback is the one that reads the 07:48Z snapshot. No row in any published snapshot
+has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
+otherwise — the mechanism is proven by the end-to-end test, not by a live row.
