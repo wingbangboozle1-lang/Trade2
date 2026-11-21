@@ -52,6 +52,13 @@ MAX_RESOLUTIONS = 2000    # hard ceiling on the in-scope YES/NO store (all topic
 # the rest of the MAX_RESOLUTIONS budget is filled with the newest rows overall, so
 # the total stays bounded exactly as before.
 RESOLUTION_TOPIC_FLOOR = 100
+# Watchlist resolutions (session arena-67bd954a / R1). A market the watchlist followed to
+# resolution is stored with ``source: "watch"`` and ranked ahead of the bulk settled-scan
+# rows, up to this many of the newest. Without it, 15-minute crypto settlements (about
+# 1,900 rows in 30 minutes) filled the bound and evicted every older watched outcome in
+# the same run it was stored (run R-C, 2026-11-21 07:26Z). Evictions are logged in
+# meta.retention, never silent.
+WATCH_RESOLUTION_KEEP = 1000
 # Settled scan (session arena-67bd954a / R1). Replaces the exchange-wide
 # ``status=settled`` read of the newest 400 markets, which had no time filter and
 # returned only gas-prices and crypto. The documented ``min_settled_ts`` filter
@@ -272,9 +279,16 @@ def migrate_resolutions(store: dict[str, Any],
             rec["topic"] = topic
             kept[ticker] = rec
     # Bounded store with a per-topic floor: each topic's newest RESOLUTION_TOPIC_FLOOR
-    # rows are kept first, then the newest rows overall fill up to MAX_RESOLUTIONS.
-    # A single global cut would let the busiest topic evict the others.
-    ordered = sorted(kept.items(), key=lambda kv: kv[1].get("settlement_ts") or "",
+    # rows are kept first, then the rows overall fill up to MAX_RESOLUTIONS. A single
+    # global cut would let the busiest topic evict the others. Rows the watchlist
+    # resolved (source "watch") rank first, newest WATCH_RESOLUTION_KEEP of them, so the
+    # outcomes the user follows are not evicted by the bulk scan rows.
+    in_scope = kept
+    watch_tickers = sorted((t for t, r in in_scope.items() if r.get("source") == "watch"),
+                           key=lambda t: in_scope[t].get("settlement_ts") or "", reverse=True)
+    priority = set(watch_tickers[:WATCH_RESOLUTION_KEEP])
+    ordered = sorted(in_scope.items(),
+                     key=lambda kv: (kv[0] in priority, kv[1].get("settlement_ts") or ""),
                      reverse=True)
     bounded: dict[str, dict[str, Any]] = {}
     per_topic: dict[str, int] = {}
@@ -287,6 +301,16 @@ def migrate_resolutions(store: dict[str, Any],
         if len(bounded) >= MAX_RESOLUTIONS:
             break
         bounded.setdefault(ticker, rec)
+    evicted = [t for t in in_scope if t not in bounded]
+    store.setdefault("meta", {})["retention"] = {
+        "in_scope_rows": len(in_scope),
+        "kept": len(bounded),
+        "evicted_by_bound": len(evicted),
+        "watch_resolved_kept": sum(1 for r in bounded.values() if r.get("source") == "watch"),
+        "watch_resolved_evicted": sum(1 for t in evicted if in_scope[t].get("source") == "watch"),
+        "oldest_kept_settlement_ts": min((r.get("settlement_ts") or "" for r in bounded.values()),
+                                         default=None),
+    }
     kept = bounded
     store["resolutions"] = kept
     return len(kept)
@@ -746,6 +770,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     watch: dict[str, dict[str, Any]] = resolutions.setdefault("watch", {})
     seen_topics = {o.ticker: o.topic for o in observations if o.topic}
     watch_size = update_watchlist(watch, seen_topics, holdings, now)
+    watched_now: set[str] = set()   # tickers the watchlist saw resolve this run
     if time.time() < deadline:
         try:
             settled_markets, settled_info = scan_settled(client, now, settle_scan)
@@ -764,7 +789,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         # A watched market that has a yes/no result is done, whichever pass found it.
         for market in settled_markets:
             if (market.get("result") or "").lower() in ("yes", "no"):
-                watch.pop(market.get("ticker"), None)
+                if watch.pop(market.get("ticker"), None) is not None:
+                    watched_now.add(market.get("ticker"))
         settled_info["watch_size"] = watch_size
         settled_info["watch_checked"] = len(checking)
         settled_info["watch_resolved"] = len(newly)
@@ -803,6 +829,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "settlement_value_dollars": market.get("settlement_value_dollars"),
             "settlement_ts": market.get("settlement_ts"),
             "status": market.get("status"),
+            "source": "watch" if ticker in watched_now else "scan",
             "source_url": f"https://external-api.demo.kalshi.co/trade-api/v2/markets/{ticker}",
             "human_url": f"https://kalshi.com/markets/{market.get('event_ticker','')}",
             "verified_at": iso(now),

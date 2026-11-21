@@ -27,6 +27,7 @@ from __future__ import annotations
 import os
 import sys
 import unittest
+from unittest.mock import patch
 from typing import Any
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -399,6 +400,78 @@ class CollectEndToEndOffline(unittest.TestCase):
         first = fake.params[0]
         self.assertEqual(first["status"], "settled")
         self.assertEqual(first["mve_filter"], "exclude")
+
+
+class WatchResolutionRetention(unittest.TestCase):
+    """Watchlist outcomes survive a store saturated by bulk scan rows (run R-C finding).
+
+    Before this change, 1,900 crypto rows settled in the last 30 minutes filled the 2,000
+    bound, so any watched outcome settled earlier was stored and evicted in the same run.
+    """
+
+    REGISTRY = {
+        "BTCMAX100": {"ticker": "BTCMAX100", "topic": "crypto"},
+        "KXBTCD": {"ticker": "KXBTCD", "topic": "crypto"},
+        "AAAGASMAXCA": {"ticker": "AAAGASMAXCA", "topic": "gas-prices"},
+    }
+
+    def _scan_row(self, i: int) -> dict[str, Any]:
+        t = f"KXBTCD-{i}"
+        return {"ticker": t, "event_ticker": f"KXBTCD-26NOV{i:04d}", "topic": None,
+                "result": "no", "settlement_ts": f"2026-11-21T07:{i // 60 % 60:02d}:{i % 60:02d}Z",
+                "source": "scan"}
+
+    def _watch_row(self, ticker: str, event: str, settled: str) -> dict[str, Any]:
+        return {"ticker": ticker, "event_ticker": event, "topic": None, "result": "no",
+                "settlement_ts": settled, "source": "watch"}
+
+    def _saturated_store(self) -> dict[str, Any]:
+        store: dict[str, Any] = {"resolutions": {}, "meta": {}}
+        for i in range(2500):
+            r = self._scan_row(i)
+            store["resolutions"][r["ticker"]] = r
+        return store
+
+    def test_watched_outcomes_older_than_bulk_rows_are_kept(self) -> None:
+        store = self._saturated_store()
+        watched = {
+            "KXBTCMAX100-26-AUG": ("KXBTCMAX100-26", "2026-09-01T05:25:15.343112Z"),
+            "KXBTCMAX100-26-SEP": ("KXBTCMAX100-26", "2026-10-01T05:48:17.146179Z"),
+            "KXAAAGASMAXCA-26DEC31-6.20": ("KXAAAGASMAXCA-26DEC31", "2026-09-27T14:32:57.561485Z"),
+        }
+        for t, (ev, ts) in watched.items():
+            store["resolutions"][t] = self._watch_row(t, ev, ts)
+        root.migrate_resolutions(store, self.REGISTRY)
+        for t in watched:
+            self.assertIn(t, store["resolutions"], t)
+        retention = store["meta"]["retention"]
+        self.assertEqual(retention["watch_resolved_kept"], 3)
+        self.assertEqual(retention["watch_resolved_evicted"], 0)
+        self.assertLessEqual(retention["kept"], root.MAX_RESOLUTIONS)
+        # The bulk rows still fill the bound, and the eviction is counted, not silent.
+        self.assertGreater(retention["evicted_by_bound"], 0)
+
+    def test_watch_priority_is_capped_and_drops_are_logged(self) -> None:
+        store = self._saturated_store()
+        for i in range(5):
+            t = f"KXBTCMAX100-26-M{i}"
+            store["resolutions"][t] = self._watch_row(
+                t, "KXBTCMAX100-26", f"2026-0{i + 1}-01T05:00:00Z")
+        with patch.object(root, "WATCH_RESOLUTION_KEEP", 3):
+            root.migrate_resolutions(store, self.REGISTRY)
+        kept_watch = sorted(t for t, r in store["resolutions"].items()
+                            if r.get("source") == "watch")
+        # The three newest watched outcomes are kept, the two oldest are logged as evicted.
+        self.assertEqual(kept_watch, ["KXBTCMAX100-26-M2", "KXBTCMAX100-26-M3",
+                                      "KXBTCMAX100-26-M4"])
+        self.assertEqual(store["meta"]["retention"]["watch_resolved_evicted"], 2)
+
+    def test_scan_rows_are_still_evicted_by_the_bound(self) -> None:
+        store = self._saturated_store()
+        root.migrate_resolutions(store, self.REGISTRY)
+        self.assertEqual(len(store["resolutions"]), root.MAX_RESOLUTIONS)
+        self.assertNotIn("KXBTCD-0", store["resolutions"])
+        self.assertEqual(store["meta"]["retention"]["watch_resolved_evicted"], 0)
 
 
 if __name__ == "__main__":

@@ -2052,12 +2052,14 @@ Open PRs at claim time: #57 (`arena/f3cb9b9f-trade2`, live detection, K1–K6), 
 
 ### Work log — `arena-67bd954a` (2026-11-21)
 
-**Result R1 (request R-3DCF-1 closed in code):** the root collector's resolution store now covers the tracked topics by ticker. Four changes in `collector/collector.py`, each with a test in `tests/test_root_settled_scan_67bd954a.py` (20 tests, incl. an offline end-to-end `collect()` run):
+**Result R1 (request R-3DCF-1 closed in code):** the root collector's resolution store now covers the tracked topics by ticker. Four changes in `collector/collector.py`, each with a test in `tests/test_root_settled_scan_67bd954a.py` (23 tests, incl. an offline end-to-end `migrate_resolutions` retention check):
 
 1. `scan_settled()` — the old read (newest 400 markets, no time filter, only gas-prices and crypto ever arrived) is replaced by `GET /markets?status=settled&min_settled_ts=<now-2h>&mve_filter=exclude&limit=1000` with cursor paging and a `truncated` flag. Now a supplement only, capped at 3 pages.
 2. **Resolution watchlist** — every in-scope market seen open this run, plus open simulated positions, is checked **by ticker** (`tickers=`, 50 per request, ≤ 30 requests per run, least recently checked first) until Kalshi reports yes/no. Unseen for 14 days → dropped. The watchlist sits in `data/resolutions.json` under `watch`.
 3. Per-topic floor — each topic keeps its newest 100 rows; the global 2,000-row bound is unchanged.
 4. Finalized markets (`finalized`, `settled`, `determined`) are not published as live events (fixes a defect found during verification, see I-A below).
+
+**Watch-resolved gap (diagnosed from data, not assumed):** the 8 resolutions found in run R-B were not in the store. Two candidate causes were checked. The topic lookup is not the cause (all 8 map correctly). The cause is the 2,000-row bound, which the 15-minute crypto rows fill (see I-E). Fixed on this branch, with 3 new tests (23 in the file).
 
 **Why the first version was not enough (measured, not assumed):** verification run R-A (`853278f`, 2026-11-21 07:19Z) read the 2-hour exchange-wide window and got 10,000 settled markets, `truncated: true`, almost all 15-minute crypto. Elections, culture and golf were absent. Hence the watchlist.
 
@@ -2082,7 +2084,7 @@ Open PRs at claim time: #57 (`arena/f3cb9b9f-trade2`, live detection, K1–K6), 
 | I-B | Root culture matcher does not classify `KXBIGBROTHER`; the docs pipeline does (`docs/data/series.json`). So root never stores Big Brother outcomes. | **Not changed** (shared matcher, scope decision). Flagged. |
 | I-C | No backfill: outcomes that settled before a market joined the watchlist are not in the store. No verified earlier elections/culture/golf source exists in the repo to backfill from. | Stated as a limitation. Coverage builds forward. Flagged. |
 | I-D | `KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC` has `custom_strike: {"demo strike": "demo strike"}` (placeholder, Kalshi-side). Result fields are populated and match. | Flagged for Kalshi. |
-| I-E | Retention: the store keeps 2,000 rows by settlement time, so a resolved market older than the cut is read and then discarded. | Stated. Flagged. |
+| I-E | Retention: the 2,000-row bound was filled by 15-minute crypto rows, so the 8 watch-resolved outcomes (settled 2026-03 to 2026-11) were evicted in the run that stored them (diagnosed from R-C, see `VERIFICATION-67bd954a.md` §4.3). | **Fixed on this branch:** watched outcomes rank ahead of bulk rows (newest 1,000); evictions counted in `meta.retention`. Flagged. |
 | I-F | Shared `collect` concurrency group cancelled my dispatched run (queued runs replaced by newer `main` runs). | Already a standing Flagged item. Worked around with a temporary workflow in its own group. |
 
 **Requests:**

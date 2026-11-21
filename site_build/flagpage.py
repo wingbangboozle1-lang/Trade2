@@ -514,6 +514,17 @@ STANDING = [
                  "item and not changed here."),
         "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC",),
     },
+    {
+        "title": "Watched outcomes are kept ahead of bulk rows; the 2,000-row bound still drops the oldest bulk rows (arena-67bd954a)",
+        "body": ("Found in verification run R-C: 1,898 crypto rows settled in the last 30 minutes filled the "
+                 "2,000-row bound, so any watched outcome settled earlier was evicted in the same run it was stored. "
+                 "Fix: a market the watchlist followed to resolution keeps priority over bulk scan rows, up to the "
+                 "newest 1,000. Bulk rows are still dropped by the bound, and each run records the eviction counts in "
+                 "the store's meta.retention. Not stored: outcomes that settled before the watchlist first saw the "
+                 "market (no backfill, see the Flagged item above)."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-AUG",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.20"),
+    },
 ]
 
 
