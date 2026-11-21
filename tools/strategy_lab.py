@@ -122,13 +122,17 @@ def _hours_between(older: str | None, newer: str | None) -> float | None:
         return None
 
     def parse(v):
-        for fmt in ("%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S.%fZ",
-                    "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%MZ"):
-            try:
-                return datetime.strptime(str(v), fmt).replace(tzinfo=timezone.utc)
-            except ValueError:
-                continue
-        return None
+        # The three books stamp themselves three different ways (…Z, …+00:00, with
+        # and without microseconds) because they are written by three engines; all
+        # three parse, and anything else stays None rather than becoming a guess.
+        s = str(v).strip()
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        try:
+            dt = datetime.fromisoformat(s)
+        except ValueError:
+            return None
+        return dt.astimezone(timezone.utc) if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
 
     a, b = parse(older), parse(newer)
     if a is None or b is None:
@@ -270,35 +274,62 @@ def load_root_book(root: Path) -> dict:
                            ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
                 "source_url": market_url(ticker, t.get("source_url")),
             })
-    # Dedupe guard: data/live.json portfolio.trades and data/portfolio_state.json
-    # positions come from the same engine and may describe the same round-trips.
+    # Dedupe guard: data/live.json portfolio.trades, portfolio.settled_positions and
+    # data/portfolio_state.json positions all come from the same engine and may
+    # describe the same round-trips.
     seen = {(rt["ticker"], rt["side"], rt.get("entry_ts")) for rt in book["round_trips"]}
+
+    def position_row(p: dict) -> dict | None:
+        """One root-book round trip from a *position* record.
+
+        This matters: the root engine's `portfolio.trades` log carries the entry leg
+        only, and a position that has been exited is labelled with its exit reason
+        (`stopped`, `settled`, `closed`) rather than `closed`. Reading
+        `status == "closed"` alone therefore found **zero** closed trades in the root
+        book and the cross-check blamed the book for its own blind spot — three
+        "arithmetic" rows (trades 1 vs 0, realized -166.91 vs 0, fees 16.91 vs 0)
+        while `portfolio.settled_positions` held the trade the whole time. An exit
+        price or exit timestamp is what makes a round trip closed.
+        """
+        if not isinstance(p, dict):
+            return None
+        ticker = p.get("ticker") or ""
+        key = (ticker, p.get("side") or "", p.get("entry_ts"))
+        if key in seen:
+            return None
+        seen.add(key)
+        closed = (p.get("status") == "closed" or p.get("exit_price") is not None
+                  or p.get("exit_ts") is not None)
+        net = p.get("realized") if closed else None
+        return {
+            "book": book["name"], "ticker": ticker, "topic": p.get("topic") or "",
+            "strategy": p.get("strategy") or "",
+            "signal": p.get("title") or "",
+            "trade_type": p.get("trade_type") or f"{p.get('strategy')}|settlement|{p.get('side')}",
+            "side": p.get("side") or "", "status": "closed" if closed else "open",
+            "entry_ts": norm_ts(p.get("entry_ts")), "entry_px": p.get("entry_price"),
+            "contracts": p.get("contracts"), "entry_fee": p.get("entry_fee"),
+            "exit_ts": norm_ts(p.get("exit_ts")), "exit_px": p.get("exit_price"),
+            "exit_fee": p.get("exit_fee"),
+            "gross": None, "net": net,
+            "result": (p.get("result") or ("win" if (net or 0) > 0 else
+                       ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
+            # The row's SOURCE is the official API response for that ticker, not
+            # Kalshi's marketing page for it (`market_url` on the record points at
+            # kalshi.com/markets/..., which is a page, not the data this row shows).
+            "source_url": market_url(ticker, p.get("source_url")),
+        }
+
+    for row in ((port.get("settled_positions") or []) if isinstance(port, dict) else []):
+        rt = position_row(row)
+        if rt:
+            book["round_trips"].append(rt)
     if isinstance(state, dict):
         for p in (state.get("positions") or []):
-            if not isinstance(p, dict):
+            rt = position_row(p)
+            if rt is None:
                 continue
-            ticker = p.get("ticker") or ""
-            key = (ticker, p.get("side") or "", p.get("entry_ts"))
-            if key in seen:
-                continue
-            seen.add(key)
-            closed = (p.get("status") == "closed")
-            net = p.get("realized") if closed else None
-            book["round_trips"].append({
-                "book": book["name"], "ticker": ticker, "topic": p.get("topic") or "",
-                "strategy": p.get("strategy") or "",
-                "signal": p.get("title") or "",
-                "trade_type": f"{p.get('strategy')}|settlement|{p.get('side')}",
-                "side": p.get("side") or "", "status": "closed" if closed else "open",
-                "entry_ts": norm_ts(p.get("entry_ts")), "entry_px": p.get("entry_price"),
-                "contracts": p.get("contracts"), "entry_fee": p.get("entry_fee"),
-                "exit_ts": norm_ts(p.get("exit_ts")), "exit_px": p.get("exit_price"),
-                "exit_fee": p.get("exit_fee"),
-                "gross": None, "net": net,
-                "result": (p.get("result") or ("win" if (net or 0) > 0 else
-                           ("loss" if (net or 0) < 0 else "flat"))) if closed else "open",
-                "source_url": market_url(ticker, p.get("source_url")),
-            })
+            book["round_trips"].append(rt)
     return book
 
 
