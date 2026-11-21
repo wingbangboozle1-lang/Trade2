@@ -138,6 +138,17 @@ def _rejection(reason: str) -> dict[str, Any]:
     return {"accepted": False, "reason": reason}
 
 
+def _usd(value: float, places: int = 4) -> str:
+    """Format a dollar amount with the sign before the currency symbol.
+
+    ``$-0.0388`` is not a valid money form; negative amounts render as
+    ``-$0.0388``. Used for every dollar figure that can be negative (edge,
+    net edge), so no published row ever shows the wrong form.
+    """
+    v = float(value)
+    return f"{'-' if v < 0 else ''}${abs(v):.{places}f}"
+
+
 def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
              kind: str, alert: dict[str, Any] | None = None) -> dict[str, Any]:
     """Price one market with the model and apply every gate.
@@ -184,7 +195,7 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
         edge = round(fair_side - price, 4)
         if edge < MIN_EDGE:
             reasons.append(f"{side.upper()} at {price:.4f} leaves only "
-                           f"${edge:.4f} of edge before fees")
+                           f"{_usd(edge)} of edge before fees")
             continue
         if depth < MIN_DEPTH_CONTRACTS:
             reasons.append(f"{side.upper()} has only {depth:.0f} contracts resting")
@@ -192,8 +203,8 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
         fee = kalshi_fee(price, 1.0)
         net = round(edge - fee, 4)
         if net < MIN_EDGE:
-            reasons.append(f"{side.upper()} leaves ${net:.4f} after the "
-                           f"${fee:.4f} taker fee")
+            reasons.append(f"{side.upper()} leaves {_usd(net)} after the "
+                           f"{_usd(fee)} taker fee")
             continue
         if price <= 0:
             continue
@@ -227,8 +238,8 @@ def evaluate(event: dict[str, Any], p_ref: float, p_now: float,
             "book_source_url": f"{API}/markets/{event.get('ticker')}/orderbook",
             "reason": (f"book mid moved {p_ref:.4f} -> {p_now:.4f}; fair value "
                        f"{fair:.4f} is the midpoint of the two, so {side.upper()} "
-                       f"at {price:.4f} leaves ${edge:.4f} of edge and "
-                       f"${net:.4f} after the ${fee:.4f} taker fee"),
+                       f"at {price:.4f} leaves {_usd(edge)} of edge and "
+                       f"{_usd(net)} after the {_usd(fee)} taker fee"),
             "ts": time.time(),
         }
         if alert:

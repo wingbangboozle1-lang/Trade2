@@ -445,21 +445,18 @@
     var modelCount = 0;
     if (feedModel) {
       feedModel.innerHTML = "";
-      /* Order-book model rows first (picks + a verdict for every alert), then
-       * any high-ROI alert row on a market the book model did not price, so
-       * the two model views never show the same ticker twice. When the order
-       * book priced nothing, fall back to the model's top signals. */
-      var rows = modelRows(shortlist);
-      var covered = {};
-      (shortlist.picks || []).forEach(function (p) { covered[p.ticker] = 1; });
-      (shortlist.verdicts || []).forEach(function (v) { covered[v.ticker] = 1; });
-      var extra = (model || []).filter(function (a) { return !covered[a.ticker]; });
-      if (rows.length || extra.length) {
-        rows.forEach(function (row) { feedModel.appendChild(row); });
-        extra.slice(0, 200).forEach(function (a) {
+      /* The model chat shows the collector's published gated shortlist
+       * (`high_roi_alerts`) exactly as published — the rows, their badges and
+       * their net ROI come from the snapshot, never from a client-side re-gate.
+       * When the gate published nothing, it falls back to the collector's
+       * published signals (top <= 8), so a healthy signal with no matching
+       * >= $0.10 swing still reaches the chat. Either way every row is
+       * published by the collector. */
+      if (model.length) {
+        model.slice(0, 200).forEach(function (a) {
           feedModel.appendChild(alertRow(a, true));
         });
-        modelCount = rows.length + extra.length;
+        modelCount = model.length;
       } else if (signalRows.length) {
         signalRows.slice(0, 200).forEach(function (sig) {
           feedModel.appendChild(signalRow(sig, seriesByTicker));
