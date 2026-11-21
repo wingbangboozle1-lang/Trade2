@@ -304,7 +304,7 @@
 
   // ---------- TRADES ----------
   async function renderTrades() {
-    const [latest, trades, status] = await Promise.all([load('latest.json'), load('trades.json'), load('status.json')]);
+    const [latest, trades, status, portfolio] = await Promise.all([load('latest.json'), load('trades.json'), load('status.json'), load('portfolio.json')]);
     statusBar(status, latest);
     const main = $('#app');
     const s = trades?.summary;
@@ -323,8 +323,32 @@
       <h2>Recent simulated positions (latest 200)</h2>
       <div class="table-wrap"><table><thead><tr><th>Opened</th><th>Strategy</th><th>Topic</th><th>Event / outcome</th><th>Side</th><th class="num">Contracts</th><th class="num">Entry</th><th class="num">Fee</th><th class="num">Cost</th><th>Status</th><th class="num">P&amp;L</th><th>Source</th></tr></thead><tbody>${pos || '<tr><td colspan="12" class="empty">No positions yet.</td></tr>'}</tbody></table></div>
       <h2>Demo account portfolio</h2>
-      <div class="card flag"><strong>Not connected.</strong> Portfolio tracking for the Kalshi demo account needs a demo API key pair stored as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>). No account balance, positions or demo orders are shown on this page. Even when the secrets are set, this section is not yet wired to the snapshot file (flag F-20). See Flagged for Review.</div>`;
+      ${acctCard(portfolio)}`;
   }
+  // The demo-account block reads data/portfolio.json, written by scripts/portfolio.mjs only when a
+  // demo key pair exists (GET /portfolio/balance + GET /portfolio/positions, read-only, signed).
+  // Values are shown exactly as the API returned them — the docs do not publish a unit for the
+  // integer `balance` / `portfolio_value`, so they are not converted here (flag F-26).
+  function acctCard(p) {
+    if (!p) {
+      return '<div class="card flag"><strong>No snapshot file.</strong> <span class="mono">data/portfolio.json</span> is not published, so nothing about the demo account is claimed on this page. It appears once a demo API key pair exists as repository secrets (<span class="mono">KALSHI_DEMO_KEY_ID</span>, <span class="mono">KALSHI_DEMO_PRIVATE_KEY</span>) and the collector runs the read-only snapshot step. See <a href="flagged.html">Flagged for review</a> F-08.</div>';
+    }
+    if (!p.connected) {
+      return `<div class="card flag"><strong>Not connected.</strong> ${esc(p.reason || 'The snapshot step reported no credentials.')} No account balance, positions or demo orders are shown on this page.</div>`;
+    }
+    const money = (x) => (x === null || x === undefined ? '—' : esc(String(x)));
+    const rows = (p.positions || []).map((m) => `<tr><td class="mono">${esc(m.ticker)}</td><td class="num">${money(m.position_fp)}</td><td class="num">${money(m.market_exposure_dollars)}</td><td class="num">${money(m.realized_pnl_dollars)}</td><td class="num">${money(m.fees_paid_dollars)}</td><td class="num">${money(m.total_traded_dollars)}</td><td class="mono">${m.exchange_index === null || m.exchange_index === undefined ? '—' : esc(m.exchange_index)}</td><td>${m.netting_enabled === true ? 'yes' : m.netting_enabled === false ? 'no' : '—'}</td><td class="mono">${esc(fmtTime(m.last_updated_ts))}</td><td>${link(m.source_url, 'market JSON')}</td></tr>`).join('');
+    const evs = (p.event_positions || []).map((e) => `<tr><td class="mono">${esc(e.event_ticker)}</td><td class="num">${money(e.total_cost_dollars)}</td><td class="num">${money(e.total_cost_shares_fp)}</td><td class="num">${money(e.event_exposure_dollars)}</td><td class="num">${money(e.realized_pnl_dollars)}</td><td class="num">${money(e.fees_paid_dollars)}</td><td>${link(e.source_url, 'event JSON')}</td></tr>`).join('');
+    const breakdown = (p.balance_breakdown || []).map((b) => `<tr><td class="mono">${b.exchange_index === null || b.exchange_index === undefined ? '—' : esc(b.exchange_index)}</td><td class="num">${money(b.balance)}</td></tr>`).join('');
+    return `<div class="card ok"><strong>Read-only snapshot of the Kalshi demo account</strong> — ${esc(p.environment || 'Kalshi demo')}, taken ${esc(fmtTime(p.generated_at))}. Balance <span class="mono">${money(p.balance_dollars)}</span> dollars (API <span class="mono">balance_dollars</span>); API <span class="mono">balance</span> ${money(p.balance)} and <span class="mono">portfolio_value</span> ${money(p.portfolio_value)} published unconverted, because the endpoint does not state their unit on its page (F-26). ${p.positions_cursor ? 'More positions exist behind the cursor.' : 'All positions returned in one page.'} No orders are placed by this site.</div>
+      <div class="table-wrap"><table><thead><tr><th>Market</th><th class="num">Position (fp)</th><th class="num">Market exposure $</th><th class="num">Realised P&amp;L $</th><th class="num">Fees paid $</th><th class="num">Total traded $</th><th>Index</th><th>Netting</th><th>Updated</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="10" class="empty">The account holds no unsettled market positions.</td></tr>'}</tbody></table></div>
+      <h3>Event positions</h3>
+      <div class="table-wrap"><table><thead><tr><th>Event</th><th class="num">Total cost $</th><th class="num">Shares (fp)</th><th class="num">Event exposure $</th><th class="num">Realised P&amp;L $</th><th class="num">Fees paid $</th><th>Source</th></tr></thead><tbody>${evs || '<tr><td colspan="7" class="empty">None returned.</td></tr>'}</tbody></table></div>
+      <h3>Balance by exchange index</h3>
+      <div class="table-wrap"><table><thead><tr><th>Exchange index</th><th class="num">Balance (as returned)</th></tr></thead><tbody>${breakdown || '<tr><td colspan="2" class="empty">Not returned.</td></tr>'}</tbody></table></div>
+      <p class="note">Fields and defaults per the official pages: <a href="https://docs.kalshi.com/api-reference/portfolio/get-balance" target="_blank" rel="noopener">Get Balance</a> · <a href="https://docs.kalshi.com/api-reference/portfolio/get-positions" target="_blank" rel="noopener">Get Positions</a>. Raw responses: ${(p.source_urls || []).map((u, i) => link(u, i === 0 ? 'balance' : 'positions')).join(' · ') || '<span class="muted">none recorded</span>'}. ${esc(p.note || '')}</p>`;
+  }
+
   const STRAT_NAME = { follow: 'Follow big moves', fade: 'Fade big moves', high_roi_rule: 'High-ROI rule (heuristic)' };
 
   // ---------- RESOLVED ----------
@@ -332,13 +356,13 @@
     const [latest, resolved, status] = await Promise.all([load('latest.json'), load('resolved.json'), load('status.json')]);
     statusBar(status, latest);
     const main = $('#app');
-    const rows = (resolved?.resolved || []).map((r) => `<tr><td>${esc(fmtTime(r.detected_at))}</td><td>${esc(TOPIC_LABEL[r.topic] || r.topic)}</td><td>${esc(r.event_title)}<div class="note">${esc(r.outcome_label || r.ticker)}</div></td><td><span class="chip ${r.result === 'yes' ? 'yes' : r.result === 'no' ? 'no' : ''}">${esc(r.result.toUpperCase())}</span></td><td class="mono">${esc(r.status)}</td><td>${esc(fmtTime(r.close_time))}</td><td class="mono">${esc(r.ticker)}</td><td>${link(r.source_url, 'market JSON')}</td></tr>`).join('');
+    const rows = (resolved?.resolved || []).map((r) => `<tr><td>${esc(fmtTime(r.detected_at))}</td><td>${esc(TOPIC_LABEL[r.topic] || r.topic)}</td><td>${esc(r.event_title || r.market_title) || '<span class="muted">no title published</span>'}${r.event_title ? '' : '<div class="note">market title from the settled listing — the event was not tracked while open</div>'}<div class="note">${esc(r.outcome_label || r.ticker)}</div></td><td><span class="chip ${r.result === 'yes' ? 'yes' : r.result === 'no' ? 'no' : ''}">${esc((r.result || '').toUpperCase())}</span></td><td>${esc(fmtTime(r.settlement_ts))}<div class="note">${r.settlement_value_dollars == null ? '' : esc(`payout $${r.settlement_value_dollars}`)}</div></td><td class="mono">${esc(r.status)}</td><td>${esc(fmtTime(r.close_time))}</td><td class="mono">${esc(r.ticker)}</td><td>${link(r.source_url, 'market JSON')}<div class="note">${link(r.request_url || r.source_url, r.request_url ? 'settled listing' : 'market read')} · ${esc(r.via === 'settled-scan' ? 'settled listing' : r.via === 'watch' ? 'watched by ticker' : (r.via || r.detected_by || 'unknown path'))}</div></td></tr>`).join('');
     const pend = (resolved?.pending || []).map((p) => `<tr><td>${esc(TOPIC_LABEL[p.topic] || p.topic || '—')}</td><td>${esc(p.event_title || '')}</td><td class="mono">${esc(p.ticker)}</td><td class="mono">${esc(p.status)}</td><td>${esc(fmtTime(p.close_time))}</td><td>${link(p.source_url, 'market JSON')}</td></tr>`).join('');
     main.innerHTML = `
       <h1>Resolved events — yes or no</h1>
-      <p class="lead">Markets the collector followed that now carry an official result. "YES" or "NO" is the market's <span class="mono">result</span> field from the Kalshi API. Markets that have closed but have no result yet are listed below as pending.</p>
+      <p class="lead">Markets that now carry an official result. "YES" or "NO" is the market's <span class="mono">result</span> field from the Kalshi API — nothing here is inferred. Two paths fill this table, and each row says which: <span class="mono">settled-scan</span> is <span class="mono">GET /markets?status=settled&amp;series_ticker=…&amp;min_settled_ts=…</span> (the documented settled listing, rotated per topic over a 30-day window), and <span class="mono">watch</span> is a followed or pending market that left the open-events list and was re-read by ticker. Each row links whichever request returned it, so a reviewer can re-run the exact query. Markets that have closed but have no result yet are listed below as pending.</p>
       <h2>Resolved (${(resolved?.resolved || []).length})</h2>
-      <div class="table-wrap"><table><thead><tr><th>Detected</th><th>Topic</th><th>Event / outcome</th><th>Result</th><th>Status</th><th>Closed</th><th>Ticker</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="8" class="empty">No followed markets have resolved yet.</td></tr>'}</tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Detected</th><th>Topic</th><th>Event / outcome</th><th>Result</th><th>Settled</th><th>Status</th><th>Closed</th><th>Ticker</th><th>Source</th></tr></thead><tbody>${rows || '<tr><td colspan="9" class="empty">No followed markets have resolved yet.</td></tr>'}</tbody></table></div>
       <h2>Closed, awaiting result (${(resolved?.pending || []).length})</h2>
       <div class="table-wrap"><table><thead><tr><th>Topic</th><th>Event</th><th>Ticker</th><th>Status</th><th>Closed</th><th>Source</th></tr></thead><tbody>${pend || '<tr><td colspan="6" class="empty">None.</td></tr>'}</tbody></table></div>`;
   }
