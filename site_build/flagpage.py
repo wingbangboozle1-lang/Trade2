@@ -548,13 +548,13 @@ STANDING = [
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
     {
-        "title": "Resolutions for the root snapshot are checked by ticker from a watchlist; earlier outcomes are not published (arena-67bd954a)",
-        "body": ("The root collector keeps every in-scope market it has seen open, plus open simulated "
-                 "positions, on a watchlist and asks Kalshi for each one by ticker (documented tickers= "
-                 "filter) until a yes/no result is reported. The earlier exchange-wide read returned only "
+        "title": "Resolutions for the root snapshot are checked by ticker once a market closes; earlier outcomes are not published (arena-67bd954a)",
+        "body": ("The root collector tracks every in-scope market it has seen open, plus open simulated "
+                 "positions, and re-reads each one by ticker after its close time (documented GET /markets/{ticker}) "
+                 "until a yes/no result is reported. The earlier exchange-wide read returned only "
                  "gas-prices and crypto. A two-hour settled window returned 10,000 markets (truncated) in the "
                  "verification run, almost all 15-minute crypto, and no elections, culture or golf, so that "
-                 "window is now a supplement only. Outcomes that settled before a market joined the watchlist "
+                 "window is now a supplement only. Outcomes that settled before the tracker first saw a market "
                  "are not in the store, and no pipeline on this site holds verified earlier elections, culture "
                  "or golf outcomes to backfill from. Rows for those topics appear as markets settle. Checked by "
                  "ticker on 2026-11-21: KXDPWORLDTOUR-DPWTC26-THAT (golf, yes) and "
@@ -593,12 +593,12 @@ STANDING = [
         "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC",),
     },
     {
-        "title": "Watched outcomes are kept ahead of bulk rows; the 2,000-row bound still drops the oldest bulk rows (arena-67bd954a)",
+        "title": "Tracked outcomes are kept ahead of bulk rows; the 2,000-row bound still drops the oldest bulk rows (arena-67bd954a)",
         "body": ("Found in verification run R-C: 1,898 crypto rows settled in the last 30 minutes filled the "
                  "2,000-row bound, so any watched outcome settled earlier was evicted in the same run it was stored. "
-                 "Fix: a market the watchlist followed to resolution keeps priority over bulk scan rows, up to the "
+                 "Fix: a market the tracker followed to resolution keeps priority over bulk scan rows, up to the "
                  "newest 1,000. Bulk rows are still dropped by the bound, and each run records the eviction counts in "
-                 "the store's meta.retention. Not stored: outcomes that settled before the watchlist first saw the "
+                 "the store's meta.retention. Not stored: outcomes that settled before the tracker first saw the "
                  "market (no backfill, see the Flagged item above)."),
         "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-AUG",
                    "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.20"),
