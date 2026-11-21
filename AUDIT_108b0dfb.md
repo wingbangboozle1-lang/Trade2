@@ -130,10 +130,14 @@ and the check now fails if the host flips which form it accepts:
 * `.github/workflows/probe-live.yml` — runs both hourly and on any change to the
   probe, because this is a fact about a live API and a live API can change.
 
-Verification: [run 44878937002](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878937002)
-passed all six substantive steps against the demo host, and the same run on the
-uncorrected branch failed with the 400 above — so the gate is demonstrably able
-to fail.
+* `tools/live_e2e.mjs` — loads the shipped module, seeds the watchlist from the
+  snapshot exactly as the page does, and runs two real polls, because every
+  other test stubs the network and none of them proved the page receives books.
+
+Verification: [run 44879250677](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879250677)
+passed every step against the demo host, including the end-to-end poll; the same
+check on the uncorrected branch failed with the exact 400 above, so the gate is
+demonstrably able to fail rather than merely observed to pass.
 
 ## 3. Prompt items that cannot be satisfied, and why
 

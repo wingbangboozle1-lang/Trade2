@@ -27,6 +27,7 @@ python3 tools/linkcheck.py          # fail on a broken internal link
 python3 tools/navcheck.py           # fail if any page's sidebar differs
 python3 tools/probe_live_check.py   # real demo API: proves the probe asks correctly
                                     # (needs network; runs hourly in CI as probe-live.yml)
+node tools/live_e2e.mjs             # the shipped page, two real polls (needs network)
 node test/live-probe.test.mjs       # the browser swing rule (27 checks)
 node test/desk_live_probe_dc.mjs    # shipped page + real probe + stubbed API (jsdom)
 ```
