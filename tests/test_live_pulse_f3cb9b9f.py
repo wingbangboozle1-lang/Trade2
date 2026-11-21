@@ -95,8 +95,22 @@ win.HTMLCanvasElement.prototype.getContext = function () {
   };
 };
 
+let directBlocked = false;
+let usedProxy = 0;
+directBlocked = process.env.FORCE_PROXY === "1";
 win.fetch = (url) => {
-  const u = String(url);
+  let u = String(url);
+  /* FORCE_PROXY simulates a network where the exchange is unreachable: every
+   * direct demo-API call rejects, so the pulse must fall back to this site's
+   * own /api/orderbooks route. */
+  if (directBlocked && u.includes("external-api.demo.kalshi.co")) {
+    return Promise.reject(new Error("blocked by test"));
+  }
+  if (u.includes("/api/orderbooks")) {
+    usedProxy++;
+    u = "https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks?tickers=" +
+        (u.split("tickers=")[1] || "");
+  }
   /* Route on the path, not a substring: the desk also fetches
    * /markets/{ticker}/orderbook and /series/{s}/markets/{t}/candlesticks, and
    * /markets/orderbooks is the batch endpoint this check is about. */
@@ -157,6 +171,7 @@ console.log(JSON.stringify({
   panel: !!doc.getElementById("livePulse"),
   moduleLoaded: !!win.LiveFeed,
   refreshes: call,
+  usedProxy,
   rows: rows.length,
 
   tickers: rows.map((r) => {
@@ -229,22 +244,32 @@ class TestLivePulseBrowserPath(unittest.TestCase):
     """Execute desk.js in jsdom and drive two readings through the pulse."""
 
     @classmethod
-    def setUpClass(cls):
+    def _run(cls, force_proxy: str):
+        env = dict(os.environ, FORCE_PROXY=force_proxy)
         proc = subprocess.run(
             ["node", "--input-type=module", "-e", BROWSER_CASE],
-            cwd=ROOT, capture_output=True, text=True, timeout=180,
+            cwd=ROOT, capture_output=True, text=True, timeout=180, env=env,
         )
-        cls.stdout = proc.stdout.strip()
-        cls.stderr = proc.stderr.strip()
-        cls.returncode = proc.returncode
-        cls.result = None
-        for line in reversed(cls.stdout.splitlines()):
+        result = None
+        for line in reversed(proc.stdout.strip().splitlines()):
             if line.startswith("{"):
                 try:
-                    cls.result = json.loads(line)
+                    result = json.loads(line)
                     break
                 except json.JSONDecodeError:
                     continue
+        return proc, result
+
+    @classmethod
+    def setUpClass(cls):
+        cls.proc, cls.result = cls._run("0")
+        cls.stdout = cls.proc.stdout.strip()
+        cls.stderr = cls.proc.stderr.strip()
+        cls.returncode = cls.proc.returncode
+        if cls.result is not None:
+            cls.proxy_proc, cls.proxy_result = cls._run("1")
+        else:
+            cls.proxy_proc, cls.proxy_result = None, None
 
     def setUp(self):
         if self.returncode != 0:
@@ -261,6 +286,11 @@ class TestLivePulseBrowserPath(unittest.TestCase):
     def test_panel_exists_and_module_loaded(self):
         self.assertTrue(self.result["panel"])
         self.assertTrue(self.result["moduleLoaded"])
+
+    def test_direct_api_is_the_first_route(self):
+        self.assertEqual(self.result["usedProxy"], 0,
+                         "the pulse must not detour through the local proxy "
+                         "when the demo API is reachable")
 
     def test_two_readings_were_taken(self):
         self.assertGreaterEqual(self.result["refreshes"], 2,
@@ -294,6 +324,22 @@ class TestLivePulseBrowserPath(unittest.TestCase):
         self.assertEqual(self.result["sideButtons"], ["YES", "NO"])
         self.assertTrue(self.result["noSideClickable"],
                         "clicking NO must relabel the Y axis")
+
+    def test_site_origin_fallback_measures_the_same_books(self):
+        """When the exchange is unreachable, the panel must use the site's own
+        proxy (/api/orderbooks, served by server/app.py) — not go dark and not
+        invent rows. The same two readings are served either way, so the same
+        single row must appear and the same sub-threshold market must stay out."""
+        if self.proxy_result is None:
+            self.skipTest("proxy run produced no result")
+        pr = self.proxy_result
+        self.assertEqual(pr["errors"], [])
+        self.assertGreaterEqual(pr["usedProxy"], 1,
+                                "the fallback route was never called")
+        self.assertGreaterEqual(pr["refreshes"], 2)
+        self.assertEqual(pr["rows"], 1)
+        self.assertTrue(pr["firedMover"])
+        self.assertFalse(pr["firedQuiet"])
 
 
 if __name__ == "__main__":

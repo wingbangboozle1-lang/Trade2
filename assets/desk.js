@@ -1083,18 +1083,47 @@
     pulseStats();
   }
 
-  function pulseRefresh() {
-    if (!pulse.on || pulse.inflight || !pulse.detector) return Promise.resolve(null);
-    if (!pulse.tickers.length) return Promise.resolve(null);
-    pulse.inflight = true;
-    var url = "https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks?tickers=" +
-      pulse.tickers.map(encodeURIComponent).join(",");
-    var started = Date.now();
-    return fetch(url, { cache: "no-store" })
+  /* Where to read the books from.
+   *
+   * 1. The demo API directly — CORS for the Pages origin was verified by
+   *    tools/live_probe.py (docs/data/capabilities.json), and this keeps the
+   *    visitor's browser talking to one origin it already trusts.
+   * 2. This site's own origin, when it is being served by server/app.py, which
+   *    proxies the identical documented endpoint (/api/orderbooks). Used when
+   *    the direct call fails, e.g. a network that blocks the exchange or a
+   *    preview origin the exchange has never seen.
+   * A failure of both is reported on the panel; the rows are never fabricated. */
+  function pulseUrls() {
+    var list = pulse.tickers.map(encodeURIComponent).join(",");
+    var urls = ["https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks?tickers=" + list];
+    if (/^https?:$/.test(location.protocol)) {
+      urls.push(location.origin + "/api/orderbooks?tickers=" + list);
+    }
+    return urls;
+  }
+
+  function tryUrls(urls, i) {
+    if (i >= urls.length) return Promise.reject(new Error(pulse.error || "no route"));
+    return fetch(urls[i], { cache: "no-store" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
+      .catch(function (err) {
+        if (i + 1 < urls.length) {
+          pulse.error = String((err && err.message) || err);
+          return tryUrls(urls, i + 1);
+        }
+        throw err;
+      });
+  }
+
+  function pulseRefresh() {
+    if (!pulse.on || pulse.inflight || !pulse.detector) return Promise.resolve(null);
+    if (!pulse.tickers.length) return Promise.resolve(null);
+    pulse.inflight = true;
+    var started = Date.now();
+    return tryUrls(pulseUrls(), 0)
       .then(function (data) {
         var books = {};
         ((data && data.orderbooks) || []).forEach(function (entry) {
