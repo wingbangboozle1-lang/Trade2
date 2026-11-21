@@ -29,9 +29,9 @@
       "production_links": 0
     },
     "review.html": {
-      "data_rows": 86,
-      "non_data_rows": 8,
-      "with_demo_source": 86,
+      "data_rows": 161,
+      "non_data_rows": 9,
+      "with_demo_source": 161,
       "missing_demo_source": 0,
       "production_links": 0
     },
@@ -122,8 +122,8 @@
   },
   "totals": {
     "pages": 22,
-    "data_rows": 813,
-    "with_demo_source": 813,
+    "data_rows": 888,
+    "with_demo_source": 888,
     "missing_demo_source": 0,
     "production_links": 0
   }
