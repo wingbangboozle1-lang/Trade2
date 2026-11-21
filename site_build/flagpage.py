@@ -343,6 +343,28 @@ STANDING = [
         ),
     },
     {
+        "title": "The previous-snapshot fallback was dead until 2026-11-21 (fixed, session arena-27de8294)",
+        "body": ("Two bases turn a book into an alert: the official 1-minute candle quote "
+                 "(candle_quote_mid) when Kalshi published one, and the previous "
+                 "snapshot's quoted mid (previous_snapshot_mid) when it did not. Only 98 "
+                 "of the 750 tracked markets had a candle reference in the "
+                 "2026-11-21T07:19Z snapshot, so the second basis carries most of the "
+                 "feed. The collector read it from live.json['observations'], a key the "
+                 "same collector never wrote, so the mapping was always empty and the "
+                 "fallback could never fire. Fixed by publishing the observation rows and "
+                 "reading them back. The chat also stopped saying that nothing had been "
+                 "observed: it now states how many markets were measured, how many had a "
+                 "candle reference, and how many earlier rows the comparison could use. "
+                 "The published snapshot in this branch predates the first run of the "
+                 "fixed collector, so it still says 'no earlier rows yet' — which is the "
+                 "honest answer, not an invented baseline."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+            "https://docs.kalshi.com/getting_started/orderbook_responses",
+            "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794983065&end_ts=1795242265&period_interval=1440",
+        ),
+    },
+    {
         "title": "Demo-account portfolio performance cannot be shown",
         "body": ("Reading a Kalshi demo balance, fills or positions requires signed "
                  "requests with an API key pair. No key is configured for this "

@@ -81,3 +81,16 @@ breaks "settled-scan records official results"; removing the protect-set breaks
 | - | - | - |
 | Real Kalshi demo-account portfolio/balance/fills | Requires an API key pair; none exists in this repo and creating one needs a human at kalshi.com (docs: https://docs.kalshi.com/api-reference/portfolio/get-balance — signed `KALSHI-ACCESS-KEY`/`SIGNATURE`/`TIMESTAMP` headers required) | Blocker B-1 (pre-existing); the portfolio stays labelled SIMULATED |
 | Causal news links for ≥ $0.10 swings | No official source attributes a price move to a headline; candidates are labelled as candidates | Pre-existing flag on the site's Flagged page |
+
+## 9. Production verification after merge (2026-11-21T07:35–07:40Z)
+
+PR [#77](https://github.com/wingbangboozle1-lang/Trade2/pull/77) merged to `main` as `7e7fd62`
+(checks: `check` pass 17s, `collect` pass 11s). The post-merge `Kalshi dashboard — collect,
+build, publish` run collected with the new code and published run 15
+(generated 2026-11-21T07:35:43.570Z), verified **live on the deployed Pages site**:
+
+| Check | Live URL | Result |
+| - | - | - |
+| Pipeline counts | https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/status.json | `resolved_total: 143` (pre-fix: 0) · `resolved_added_this_run: 443` · `settled_scan_series: 13` · `settled_scan_markets: 443` · `errors: []` · `base_url: https://external-api.demo.kalshi.co/trade-api/v2`. The new count keys exist only in the merged `scripts/collect.mjs`, so this run cannot be pre-fix output |
+| Outcome rows | https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/data/resolved.json | rows carry `result: "yes"|"no"` verbatim + `settlement_ts` + `settlement_value_dollars` + `via` + per-row `source_url` (`…/markets/{ticker}`) + `docs_url`. Example: `KXPGATOUR-AUCPBCS26-CRAM` (Chad Ramey wins) → `result: "yes"`, `settlement_value_dollars: "1.0000"` — consistent with the official $1/contract rule (V4); the other finalists → `result: "no"`, `"0.0000"` |
+| Rendered page | https://wingbangboozle1-lang.github.io/Trade2/kalshi-dashboard/resolved.html | "Resolved events — yes or no" table renders **Resolved (143)** with YES/NO chips, `finalized` status, close times, tickers and market JSON links; "Data is 2 min old" age badge (the `age_label` UTC fix under load) |
