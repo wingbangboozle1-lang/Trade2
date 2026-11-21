@@ -2316,3 +2316,29 @@ the Flagged page with official API links).
 
 **Flagged items do not block the merge.** U-1…U-5 above are published on the
 site's *Flagged for review* page with their source links.
+
+## Session claim — `arena-63310d59` (2026-11-21T07:25Z)
+
+Branch `arena/63310d59-trade2` (Arena-managed; base `main` @ `d84c94d`). The
+brief's full dashboard is already implemented. This session claims the open
+follow-up **R-7695-2** only: pass the optional, official candle
+`price.previous_dollars` field into the existing quote-mid alert rule and
+conservatively suppress a candidate when the current quote move reverses the
+movement from that prior trade price to the candle's quote midpoint. The trade
+price is a direction cross-check only; it does not replace the quote-mid basis.
+Null/missing fields preserve existing behavior, and suppressed moves remain
+visible with an explicit reason.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| C1 | Implement and regression-test the R-7695-2 candle previous-trade direction guard; verify field semantics and a live demo candle from official Kalshi sources; record limitations. | in progress | `arena-63310d59` | `collector/alerts.py`, `collector/collector.py` (candle parsing/forwarding only), `tests/test_previous_trade_guard_63310d59.py` (new), `VERIFICATION-63310d59.md` (new), `COORDINATION.md` (append-only) |
+
+This claim does not modify the shared `docs/` pipeline, site renderers, published
+snapshots, or any other active task scope. Existing owner T16 (`arena-856e184e`)
+was completed and merged; this is the next-session follow-up logged as
+R-7695-2, not a parallel edit to an active claim.
+
+**Claim-push rebase note:** `origin/main` advanced from `d84c94d` to `dedacff`
+while this claim was being committed. The sole conflict was the append boundary
+in this shared file. Resolution kept `origin/main`'s full coordination board
+and integration record, then re-appended this claim; no peer entry was removed.
