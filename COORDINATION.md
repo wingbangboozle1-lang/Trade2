@@ -1969,3 +1969,14 @@ Files touched: `assets/live-feed.js` (new), `assets/desk.js`, `assets/styles.css
 this file. **Not** touched: `docs/**`, `kalshi-dashboard/**`, `live/**`,
 `trading/**`, `scripts/**`, `EXECUTIVE_SUMMARY.md`, `VERIFICATION.md`.
 `collector/**` is untouched — the R-F3 requests are logged, not implemented.
+
+## Integration record — `arena-f3cb9b9f` (Board K)
+
+| Step | Result |
+| - | - |
+| Rebase conflicts | **Board J's pattern repeated.** `origin/main` advanced twice mid-work (PR #56 from `arena-3dcf3f13`, then collector runs `8d15b95`). Every one of the 9 commits collided on **generated files only** — `COORDINATION.md`, `live.html`, all root pages. Resolution: `COORDINATION.md` merged **additively** (their `arena-3dcf3f13` section kept verbatim, this Board K section re-appended after it — nothing dropped), and every generated page **rebuilt** with `python3 -m site_build.build` against `main`'s snapshot (`2026-11-21T06:48:53Z`) rather than hand-merged. No peer source file was edited or discarded. |
+| Force-push | Two pushes were rejected. The remote branch history was inspected first via the GitHub API: it contained **only this session's nine commits** on top of `06738d1` — no other session's work. A `--force-with-lease` pinned to the exact prior sha (`5425f18`) then updated it. Nothing outside this session's branch was rewritten. |
+| Post-rebase gates (on `e455a3d`, with main's data and the other session's resolution-coverage code) | `python3 -m unittest discover -s tests` **261 OK** (1 skip) · `npm test` **29/29** · `node --test test/live-feed.test.mjs` **18/18** · `linkcheck` **50 pages / 679 links / 0 errors** · `rendercheck` + `root_render` + `desk_render` **PASSED** · `collector.test_runner` + `trading.test_engine` **PASSED** · `rowsource_check` **0 missing source URLs, 0 production-host leaks** |
+| Pull request | **[#57](https://github.com/wingbangboozle1-lang/Trade2/pull/57)** — "Live detection: in-browser ≥$0.10 pulse, tradable-price transparency, YES/NO chart, verification log" |
+| PR checks | `check` **pass** ([44878553353](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878553353)) · `collect` **pass** ([44878548768](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878548768)) · `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` |
+| Merge | see "merge result" line below |
