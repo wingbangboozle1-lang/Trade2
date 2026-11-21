@@ -1866,3 +1866,22 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+## Session `arena-2338e039` — status check (branch `arena/2338e039-trade2`, base `main` @ `06738d1`, 2026-11-21 UTC)
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| S1 | Read-only status check of the live site, the demo API and the open PR list; no shared files edited | done | `arena-2338e039` | `COORDINATION.md` (this section only) |
+
+Results (each read by the fetch tool at 2026-11-21, no value filled in from memory):
+
+* Live overview `https://wingbangboozle1-lang.github.io/Trade2/` renders: 750 markets tracked, 0 swings ≥ $0.10 in the rolling buffer, 8 simulated open positions (equity $9,205.84 from $10,000.00 start), 328 resolved markets tracked. Table rows carry `API ↗` links; rows with no sourced price are shown as `UNVERIFIED`.
+* Demo exchange status `https://external-api.demo.kalshi.co/trade-api/v2/exchange/status` returned `exchange_active: true`, `trading_active: true` for all four exchange indexes.
+* Open PRs at check time: #28 (`arena/dd1da6b5-trade2`) and #29 (`arena/c78c9b36-trade2`). Both are owned by other sessions; nothing was merged or closed by this session.
+* The sandbox shell has no route to Kalshi hosts (`curl` returns 000); the fetch tool does. Any live value must therefore come from fetch-tool reads, not shell reads.
+
+Not done by this session, and why:
+
+* **Portfolio on the demo account (R9) and order execution (R11)** need a Kalshi demo API key pair created in the Kalshi account UI. The repo has none, and this session cannot create one without manual input, so both stay flagged.
+* **Integration PR → main and merge** belong to the final integration session, which must wait for PRs #28 and #29 to land. This session did not create an empty PR and did not merge anything.
+* **Scope of new work:** every requirement in the brief is already claimed or done on the board (see the task tables above). This session claimed no task to avoid duplicating or overlapping another session's files.
