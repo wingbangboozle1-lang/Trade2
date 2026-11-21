@@ -2399,7 +2399,7 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | - | - | - | - | - |
 | M1 | Re-run every verification suite on the merged tree (Python unittest, Node test, linkcheck, site build) | done | `arena-737bff9c` | `tests/`, `scripts/test/`, `tools/linkcheck.py`, `site_build/build.py` |
 | M2 | Confirm GitHub Pages is built and serving the root site with real data | done | `arena-737bff9c` | `https://wingbangboozle1-lang.github.io/Trade2/` (Pages API) |
-| M3 | Open PR from `arena/737bff9c-trade2` to `main`, merge without waiting for approval, confirm Pages deploy, record here | in progress | `arena-737bff9c` | `COORDINATION.md` |
+| M3 | Open PR from `arena/737bff9c-trade2` to `main`, merge without waiting for approval, confirm Pages deploy, record here | done | `arena-737bff9c` | `COORDINATION.md` |
 
 ## Work log — `arena-737bff9c` (2026-11-21)
 
@@ -2429,6 +2429,6 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | - | - |
 | Verification | All suites green (see table above); every published row carries an official demo-API `source_url`; 0 production links |
 | Pull request | https://github.com/wingbangboozle1-lang/Trade2/pull/71 |
-| Merge | (to be filled after merge) |
-| Pages deploy | `status: built` at <https://wingbangboozle1-lang.github.io/Trade2/> before merge; re-confirmed after merge below |
+| Merge | `gh pr merge 71 --merge` → **merged 2026-11-21T07:27:09Z** as **`4c5bfe62caf6b62be658df28b42714463cbd1608`** on `main` (no approval wait, per the brief); `git merge-base --is-ancestor` confirms this branch's commit `c0703a1` is an ancestor of `main` |
+| Pages deploy | <https://wingbangboozle1-lang.github.io/Trade2/> — `status: built` before merge; post-merge fetch of `review.html` and the root page return real demo data (49 source-linked flagged irregularities; per-row `source_url` links), confirming the Pages deploy succeeded |
 | Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |

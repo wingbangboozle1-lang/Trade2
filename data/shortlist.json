@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T07:19:43Z",
- "generated_at_ts": 1795246102.718623,
+ "generated_at": "2026-11-21T07:27:10Z",
+ "generated_at_ts": 1795246257.575688,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -21,11 +21,19 @@
  "level_picks_count": 0,
  "verdicts": [],
  "verdicts_count": 0,
- "rejected_count": 31,
+ "rejected_count": 25,
  "rejection_summary": [
   {
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+   "count": 3
+  },
+  {
    "reason": "neither side can be bought inside the $0.01-$0.99 grid",
-   "count": 5
+   "count": 3
+  },
+  {
+   "reason": "the spread is $0.30, wider than $0.20, so the mid is not meaningful",
+   "count": 2
   },
   {
    "reason": "YES at 0.1000",
@@ -40,23 +48,7 @@
    "count": 1
   },
   {
-   "reason": "YES leaves $0.0117 after the $0.0100 taker fee; NO at 0.9850",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.2000",
-   "count": 1
-  },
-  {
    "reason": "YES at 0.2600",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.0100",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.1300",
    "count": 1
   },
   {
@@ -72,7 +64,7 @@
    "count": 1
   },
   {
-   "reason": "YES leaves $0.0072 after the $0.0200 taker fee; NO at 0.5900",
+   "reason": "YES at 0.4300",
    "count": 1
   },
   {
@@ -85,26 +77,6 @@
   },
   {
    "reason": "YES at 0.0880",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.0320",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.0500",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.0150",
-   "count": 1
-  },
-  {
-   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
-   "count": 1
-  },
-  {
-   "reason": "YES at 0.1700",
    "count": 1
   },
   {
@@ -126,18 +98,46 @@
  ],
  "rejected_sample": [
   {
-   "ticker": "KXPRESNOMD-28-BOBA",
-   "topic": "elections",
+   "ticker": "KXPGATOUR-THRC26-SSTE",
+   "topic": "golf",
+   "kind": "swing",
+   "book_move": 0.4965,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPGATOUR-THRC26-SSTE",
+   "topic": "golf",
    "kind": "level",
-   "book_move": 0.1602,
-   "reason": "the spread is $0.89, wider than $0.20, so the mid is not meaningful"
+   "book_move": 0.4965,
+   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTC15M-26NOV210230-30",
+   "topic": "crypto",
+   "kind": "swing",
+   "book_move": -0.395,
+   "reason": "the spread is $0.30, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXBTC15M-26NOV210230-30",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.395,
+   "reason": "the spread is $0.30, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXPGATOUR-THRC26-DMCC",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.1496,
+   "book_move": 0.136,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPRESNOMD-28-BOBA",
+   "topic": "elections",
+   "kind": "level",
+   "book_move": 0.1202,
+   "reason": "the spread is $0.89, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B97500",
@@ -147,27 +147,6 @@
    "reason": "YES has only 0 contracts resting"
   },
   {
-   "ticker": "KXLPGATOUR-CMEGTC26-ALIKIM",
-   "topic": "golf",
-   "kind": "level",
-   "book_move": 0.084,
-   "reason": "YES at 0.3100 leaves only -$0.0520 of edge before fees; NO leaves $0.0120 after the $0.0200 taker fee"
-  },
-  {
-   "ticker": "KXBTCMINY-27JAN01-55000.00",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": 0.0809,
-   "reason": "YES at 0.7000 leaves only -$0.0455 of edge before fees; NO leaves $0.0155 after the $0.0200 taker fee"
-  },
-  {
-   "ticker": "KXBTC50VS100-BTC-26DEC31",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": -0.0745,
-   "reason": "YES leaves $0.0072 after the $0.0200 taker fee; NO at 0.5900 leaves only -$0.0472 of edge before fees"
-  },
-  {
    "ticker": "KXPRESNOMD-28-AKLO",
    "topic": "elections",
    "kind": "level",
@@ -175,32 +154,32 @@
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
   },
   {
-   "ticker": "KXNGASMAX-26DEC31-P4.00",
-   "topic": "gas-prices",
+   "ticker": "KXLPGATOUR-CMEGTC26-ALIKIM",
+   "topic": "golf",
    "kind": "level",
-   "book_move": -0.0527,
-   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+   "book_move": 0.0631,
+   "reason": "YES at 0.3100 leaves only -$0.0416 of edge before fees; NO leaves $0.0016 after the $0.0200 taker fee"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-55000.00",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.06,
+   "reason": "YES at 0.7000 leaves only -$0.0350 of edge before fees; NO leaves $0.0050 after the $0.0200 taker fee"
+  },
+  {
+   "ticker": "KXBTC50VS100-BTC-26DEC31",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": -0.0559,
+   "reason": "YES at 0.4300 leaves only $0.0179 of edge before fees; NO at 0.5900 leaves only -$0.0379 of edge before fees"
   },
   {
    "ticker": "KXLPGATOUR-CMEGTC26-PAJANA",
    "topic": "golf",
    "kind": "level",
-   "book_move": -0.0498,
+   "book_move": -0.0453,
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
-  },
-  {
-   "ticker": "KXPRESNOMD-28-BORO",
-   "topic": "elections",
-   "kind": "level",
-   "book_move": -0.0449,
-   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
-  },
-  {
-   "ticker": "KXPRESNOMD-28-RKHA",
-   "topic": "elections",
-   "kind": "level",
-   "book_move": -0.0445,
-   "reason": "YES leaves $0.0117 after the $0.0100 taker fee; NO at 0.9850 leaves only -$0.0227 of edge before fees"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B87500",
@@ -210,137 +189,88 @@
    "reason": "YES at 0.0200 leaves only $0.0170 of edge before fees; NO at 0.9900 leaves only -$0.0270 of edge before fees"
   },
   {
-   "ticker": "KXBTCMINY-27JAN01-50000.00",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": 0.0427,
-   "reason": "YES at 0.3800 leaves only -$0.0263 of edge before fees; NO at 0.6300 leaves only $0.0163 of edge before fees"
-  },
-  {
-   "ticker": "KXNGASMAX-26DEC31-P4.50",
+   "ticker": "KXNGASMAX-26DEC31-P4.00",
    "topic": "gas-prices",
    "kind": "level",
-   "book_move": -0.0382,
+   "book_move": -0.0395,
    "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
-  },
-  {
-   "ticker": "KXPRESNOMD-28-HBID",
-   "topic": "elections",
-   "kind": "level",
-   "book_move": -0.0362,
-   "reason": "neither side can be bought inside the $0.01-$0.99 grid"
   },
   {
    "ticker": "KXPRESNOMD-28-JOSS",
    "topic": "elections",
    "kind": "level",
-   "book_move": -0.035,
-   "reason": "YES at 0.2600 leaves only $0.0170 of edge before fees; NO at 0.7410 leaves only -$0.0180 of edge before fees"
+   "book_move": -0.0344,
+   "reason": "YES at 0.2600 leaves only $0.0167 of edge before fees; NO at 0.7410 leaves only -$0.0177 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCMINY-27JAN01-50000.00",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.03,
+   "reason": "YES at 0.3800 leaves only -$0.0200 of edge before fees; NO at 0.6300 leaves only $0.0100 of edge before fees"
+  },
+  {
+   "ticker": "KXNGASMAX-26DEC31-P4.50",
+   "topic": "gas-prices",
+   "kind": "level",
+   "book_move": -0.0286,
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXPGATOUR-THRC26-MPEN",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.029,
-   "reason": "YES at 0.0880 leaves only -$0.0170 of edge before fees; NO at 0.9170 leaves only $0.0120 of edge before fees"
+   "book_move": 0.0218,
+   "reason": "YES at 0.0880 leaves only -$0.0134 of edge before fees; NO at 0.9170 leaves only $0.0084 of edge before fees"
   },
   {
    "ticker": "KXPGATOUR-THRC26-KMIT",
    "topic": "golf",
    "kind": "level",
-   "book_move": -0.0281,
+   "book_move": -0.0213,
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B67500",
    "topic": "crypto",
    "kind": "level",
-   "book_move": -0.0255,
-   "reason": "YES at 0.1100 leaves only $0.0077 of edge before fees; NO at 0.9000 leaves only -$0.0177 of edge before fees"
-  },
-  {
-   "ticker": "KXBTCY-27JAN0100-B42500",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": 0.02,
-   "reason": "YES at 0.1000 leaves only -$0.0200 of edge before fees; NO at 0.9200 leaves only $0.0000 of edge before fees"
+   "book_move": -0.0191,
+   "reason": "YES at 0.1100 leaves only $0.0045 of edge before fees; NO at 0.9000 leaves only -$0.0145 of edge before fees"
   },
   {
    "ticker": "KXLPGATOUR-CMEGTC26-HYECHO",
    "topic": "golf",
    "kind": "level",
-   "book_move": -0.0171,
-   "reason": "YES at 0.0280 leaves only $0.0031 of edge before fees; NO at 0.9830 leaves only -$0.0141 of edge before fees"
+   "book_move": -0.0155,
+   "reason": "YES at 0.0280 leaves only $0.0022 of edge before fees; NO at 0.9830 leaves only -$0.0132 of edge before fees"
+  },
+  {
+   "ticker": "KXBTCY-27JAN0100-B42500",
+   "topic": "crypto",
+   "kind": "level",
+   "book_move": 0.015,
+   "reason": "YES at 0.1000 leaves only -$0.0175 of edge before fees; NO at 0.9200 leaves only -$0.0025 of edge before fees"
   },
   {
    "ticker": "KXNGASMAX-26DEC31-P5.50",
    "topic": "gas-prices",
    "kind": "level",
-   "book_move": 0.0164,
+   "book_move": 0.0123,
    "reason": "the spread is $0.90, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B47500",
    "topic": "crypto",
    "kind": "level",
-   "book_move": 0.0145,
-   "reason": "YES at 0.1000 leaves only -$0.0123 of edge before fees; NO at 0.9100 leaves only $0.0023 of edge before fees"
+   "book_move": 0.0109,
+   "reason": "YES at 0.1000 leaves only -$0.0105 of edge before fees; NO at 0.9100 leaves only $0.0005 of edge before fees"
   },
   {
    "ticker": "KXAAAGASM-26NOV30-3.60",
    "topic": "gas-prices",
    "kind": "level",
-   "book_move": 0.0145,
-   "reason": "YES at 0.1800 leaves only -$0.0923 of edge before fees; NO at 0.9900 leaves only -$0.0777 of edge before fees"
-  },
-  {
-   "ticker": "KXPGATOUR-THRC26-MMCN",
-   "topic": "golf",
-   "kind": "level",
-   "book_move": -0.0128,
-   "reason": "YES at 0.0150 leaves only $0.0049 of edge before fees; NO at 0.9880 leaves only -$0.0079 of edge before fees"
-  },
-  {
-   "ticker": "KXBTCY-27JAN0100-B52500",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": 0.0118,
-   "reason": "YES at 0.1300 leaves only -$0.0109 of edge before fees; NO at 0.8800 leaves only $0.0009 of edge before fees"
-  },
-  {
-   "ticker": "KXPGATOUR-THRC26-MTHO",
-   "topic": "golf",
-   "kind": "level",
-   "book_move": 0.0118,
-   "reason": "YES at 0.1700 leaves only -$0.0109 of edge before fees; NO at 0.8400 leaves only $0.0009 of edge before fees"
-  },
-  {
-   "ticker": "KXBTCY-27JAN0100-B57500",
-   "topic": "crypto",
-   "kind": "level",
    "book_move": 0.0109,
-   "reason": "YES at 0.2000 leaves only -$0.0105 of edge before fees; NO at 0.8100 leaves only $0.0005 of edge before fees"
-  },
-  {
-   "ticker": "KXBTCY-27JAN0100-T20000.00",
-   "topic": "crypto",
-   "kind": "level",
-   "book_move": -0.0107,
-   "reason": "YES at 0.0100 leaves only $0.0003 of edge before fees"
-  },
-  {
-   "ticker": "KXPGATOUR-THRC26-LHOD",
-   "topic": "golf",
-   "kind": "level",
-   "book_move": 0.0103,
-   "reason": "YES at 0.0500 leaves only -$0.0056 of edge before fees; NO at 0.9510 leaves only $0.0046 of edge before fees"
-  },
-  {
-   "ticker": "KXPGATOUR-THRC26-ADUM",
-   "topic": "golf",
-   "kind": "level",
-   "book_move": 0.01,
-   "reason": "YES at 0.0320 leaves only -$0.0065 of edge before fees; NO at 0.9710 leaves only $0.0035 of edge before fees"
+   "reason": "YES at 0.1800 leaves only -$0.0905 of edge before fees; NO at 0.9900 leaves only -$0.0795 of edge before fees"
   }
  ],
  "alerts_seen": 0,
