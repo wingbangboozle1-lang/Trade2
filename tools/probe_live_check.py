@@ -178,9 +178,19 @@ def main() -> int:
         for p in problems:
             print(" - " + p, file=sys.stderr)
         if os.environ.get("GITHUB_ACTIONS") == "true":
-            for p in problems:
-                msg = p.replace("%", "%25").replace("\n", "%0A").replace("\r", "%0D")
+            # Annotations are the only channel guaranteed to survive a
+            # restricted client, so the whole verdict rides along with them.
+            summary = json.dumps({
+                "forms": {k: {"status": v.get("status"), "n": v.get("n")}
+                          for k, v in (report.get("forms") or {}).items()},
+                "orderbooks_forms_returning_both":
+                    report.get("orderbooks_forms_returning_both"),
+            })
+            for chunk in [problems[0]]:
+                msg = chunk.replace("%", "%25").replace("\n", "%0A").replace("\r", "%0D")
                 print(f"::error title=Probe live check::{msg}")
+            smsg = summary.replace("%", "%25").replace("\n", "%0A").replace("\r", "%0D")
+            print(f"::notice title=Tickers forms tested::{smsg[:6000]}")
         return 1
     print("\nprobe live check OK")
     return 0
