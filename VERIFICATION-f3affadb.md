@@ -118,7 +118,8 @@ official series records) stand unchanged.
 
 | Step | Result |
 | - | - |
-| Branch | `arena/f3affadb-trade2` @ `c264beb` == `origin/main` |
+| Branch | `arena/f3affadb-trade2`, rebased onto `d84c94d` (main had advanced via PRs #66/#67 and collector run `d84c94d`); the single commit collided on `COORDINATION.md` only and was resolved additively (other sessions' sections kept, Board L re-appended). |
 | Files changed | `VERIFICATION-f3affadb.md` (new), `COORDINATION.md` (append-only board section) |
-| PR | see `COORDINATION.md` — session section "arena-f3affadb" |
-| Merge / Pages | see `COORDINATION.md` |
+| PR | **[#69](https://github.com/wingbangboozle1-lang/Trade2/pull/69)** — `arena/f3affadb-trade2` → `main`, mergeable, merged without waiting for approval. |
+| Merge | Merged at `f227e2296f7f4921f1a8afb1659dbdafbebb6ab` on 2026-11-21T07:23:25Z; PR state `MERGED`. |
+| Pages deploy | Confirmed `status: built`, source `main`, path `/`, public, https enforced. Live site re-fetched post-merge and serves real refreshed demo data. |

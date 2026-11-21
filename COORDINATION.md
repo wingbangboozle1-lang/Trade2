@@ -2293,21 +2293,30 @@ absent → portfolio/orders SIMULATED and flagged; news attribution not
 invented; Kalshi-side template text in some series records — published on
 the Flagged page with official API links).
 
-## PR / merge record — `arena-f3affadb` (Board L)
+## PR / merge record — `arena-f3affadb` (Board L, complete)
 
 | Step | Result |
 | - | - |
-| Branch pushed | `arena/f3affadb-trade2` → origin |
-| PR | see below |
-| Merge | see below |
-| Pages deploy | see below |
+| Rebase | `origin/main` advanced during the session (PRs #66/#67 merged, collector run `d84c94d`). Rebased onto `d84c94d`; the single commit collided on **`COORDINATION.md` only** — an add/add board conflict. Resolved **additively**: the other sessions' sections kept verbatim, this Board L section re-appended after them (nothing dropped). No source file touched. |
+| Branch pushed | `arena/f3affadb-trade2` → origin via `--force-with-lease` (remote branch held only this session's own commit `9c01d15`; nothing else rewritten). |
+| Pull request | **[#69 — verify(integration): independent official-source re-verification of the merged tree — session arena-f3affadb](https://github.com/wingbangboozle1-lang/Trade2/pull/69)**, from `arena/f3affadb-trade2` → `main` |
+| Mergeable | `mergeable: MERGEABLE` |
+| Merge | Merged without waiting for approval at **`f227e2296f7f4921f1a8afb1659dbdafbebb6ab`** on 2026-11-21T07:23:25Z; PR state `MERGED`. |
+| Pages deploy | Confirmed: status **`built`**, source branch `main`, path `/`, public, https enforced. Live site re-fetched after the rebuild and serves real refreshed demo data (750 markets, 5 topics, 328 resolved, price-mix strip, per-row API links). |
+| PR link / merge result | https://github.com/wingbangboozle1-lang/Trade2/pull/69 — merged at `f227e2296f7f4921f1a8afb1659dbdafbebb6ab` |
+
+**Final record:** PR #69 merged into `main` at `f227e229`; GitHub Pages rebuilt and
+`status: built` at https://wingbangboozle1-lang.github.io/Trade2/. No new
+irregularities found by this session; all pre-existing flags stand on the
+site's Flagged for Review page.
+
 ### Integration record — `arena-7695ba1b` (complete)
 
 | Step | Result |
-| - | --- |
+| --- | --- |
 | Pre-push gates on the merged tree | `python3 -m unittest discover -s tests` **274 passed / 1 skipped** (`cryptography` not installed) · `npm test` **54 / 0** (was 29 before this session added the live-pulse suites) · `node --test test/live-feed*.test.mjs` **25 / 0** · `tools/linkcheck.py` **50 pages / 679 internal links / 0 errors** · `tools/rendercheck.mjs` 13 pages ok · `tools/root_pages_render.mjs` **ALL PASS — 13 root pages, 246 files** · `test/desk_render_dc732aa6.mjs` **PASSED** · `test/site_smoke.mjs docs/data` **ALL PASS** · `collector.test_runner` **PASSED** · `trading.test_engine` **ALL PASSED** · `tools/rowsource_check.py` 0 missing source / 0 production leaks · `tools/rootsource_check.py` **894 rows / 894 with a demo source link / 0 production links** |
 | Rebase conflicts | **Three rounds.** `main` advances every ~5 minutes because the scheduled collector commits a fresh snapshot, so the branch was rebased onto `main` three times. Every conflict on `COORDINATION.md` was resolved as a **union** (all fourteen peer board sections present verbatim, none dropped); every conflict on a generated page or a data file was resolved by taking `main`'s newer version and **rebuilding the pages from `main`'s own snapshot**, so the pull request carries this session's real changes and never a stale data rollback. No peer commit was discarded — the one stray commit that had been pushed onto this session's branch by another session was verified to be already present on `main` before the branch was force-updated (lease-protected). |
-| Pull request | **[#66](https://github.com/wingbangboozle1-lang/Trade2/pull/66)** — “fix(dashboard)+feat(site): final integration — live-pulse request shape, per-row source links, published row verification”, from `arena/7695ba1b-trade2` → `main` |
+| Pull request | **[#66](https://github.com/wingbangboozle1-lang/Trade2/pull/66)** — "fix(dashboard)+feat(site): final integration — live-pulse request shape, per-row source links, published row verification", from `arena/7695ba1b-trade2` → `main` |
 | PR checks | `Site check — generator, render, links` / `check` **SUCCESS** · `collector` / `collect` **SUCCESS**; `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` confirmed immediately before merging |
 | Merge | `gh pr merge 66 --merge` → **merged 2026-11-21T07:19:28Z** as **`bd3ae2df107e126952981486f300b8a9d6cafd1e`** on `main` (no approval wait, per the brief) |
 | Pages | `pages build and deployment` run [44879709922](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44879709922) → **success** (deploy 10 s, report-build-status 6 s). `GET /repos/…/pages` → `status: built`; `GET /repos/…/pages/builds/latest` → `status: built`, `error: {message: null}`, `commit: bd3ae2df…`. |
