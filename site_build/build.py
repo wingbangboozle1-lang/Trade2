@@ -164,6 +164,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
       </main>
     </div>
     <script src="{prefix}assets/alerts-view.js" defer></script>
+    <script src="{prefix}assets/live-feed.js" defer></script>
     <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
@@ -339,6 +340,111 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     )
 
 
+PRICE_BANDS = [
+    ("coin", "35 \u2013 65\u00a2", "a live two-sided market near even odds"),
+    ("shoulder", "5 \u2013 35\u00a2 or 65 \u2013 95\u00a2", "one side clearly favoured"),
+    ("tail", "under 5\u00a2 or over 95\u00a2", "effectively decided, or nearly worthless"),
+    ("none", "no quote", "Kalshi returned no two-sided price for the book"),
+]
+
+
+def price_band(mid: Any) -> str:
+    """Which band a published YES mid falls in.
+
+    Derived only from the mid the collector already published from Kalshi's own
+    book. ``none`` is the honest answer for a market with no two-sided quote —
+    it is never folded into 0 or 0.50 (see ``collector.alerts.observe``).
+    """
+    if mid is None:
+        return "none"
+    try:
+        m = float(mid)
+    except (TypeError, ValueError):
+        return "none"
+    if m < 0.05 or m > 0.95:
+        return "tail"
+    if m < 0.35 or m > 0.65:
+        return "shoulder"
+    return "coin"
+
+
+def price_chip(e: dict[str, Any]) -> str:
+    """A one-word state chip next to the quote cell.
+
+    Three states, each traceable to a published field:
+      * ``no book``  — no two-sided quote in Kalshi's book right now
+      * ``wide``     — a quote exists but the spread is at least $0.10
+      * ``decided``  — the mid sits outside 5c/95c
+    Nothing here is a recommendation; it describes the quote.
+    """
+    band = price_band(e.get("mid"))
+    bid, ask = e.get("yes_bid"), e.get("yes_ask")
+    spread = None
+    if isinstance(bid, (int, float)) and isinstance(ask, (int, float)):
+        spread = ask - bid
+    if band == "none":
+        return ('<span class="qchip q-none" title="Kalshi order book has no '
+                'two-sided quote for this market in the current snapshot, so no '
+                'price is published here.">no book</span>')
+    if spread is not None and spread >= 0.10:
+        return ('<span class="qchip q-wide" title="The quoted YES spread is at '
+                'least $0.10, so the midpoint is not an executable price.">wide</span>')
+    if band == "tail":
+        return ('<span class="qchip q-tail" title="The YES mid is outside 5c/95c: '
+                'the market is effectively decided or nearly worthless.">'
+                'decided</span>')
+    return ""
+
+
+def price_composition(events: list[dict[str, Any]]) -> dict[str, int]:
+    out = {key: 0 for key, _, _ in PRICE_BANDS}
+    for e in events:
+        out[price_band(e.get("mid"))] += 1
+    return out
+
+
+def build_price_strip(live: dict[str, Any]) -> str:
+    """How many of the ranked events a trader can actually act on right now.
+
+    The brief ranks by "highest dollar amount", which is open-interest value.
+    That is not the same question as "does this market have a price I could
+    trade", and in the demo a market can carry millions of dollars of open
+    interest with an empty order book. Saying so at the top of the table stops
+    a reader from assuming a blank cell is a rendering bug.
+    """
+    events = live.get("events") or []
+    total = len(events)
+    if not total:
+        return ""
+    counts = price_composition(events)
+    cards = []
+    for key, label, blurb in PRICE_BANDS:
+        n = counts[key]
+        share = (n / total * 100) if total else 0
+        cards.append(
+            f'<div class="band-card band-{key}">'
+            f'<div class="band-n">{count(n)}</div>'
+            f'<div class="band-label">{label}</div>'
+            f'<div class="band-share">{share:.0f}% of {count(total)}</div>'
+            f'<div class="band-blurb">{html.escape(blurb)}</div></div>')
+    actionable = total - counts["none"]
+    return f"""        <section class="panel band-panel">
+          <div class="panel-title">
+            <div><span class="section-icon green">\u25a6</span><div>
+              <h2>Can I trade it? Price mix of the tracked events</h2>
+              <p>{count(actionable)} of {count(total)} tracked markets carry a
+              two-sided YES quote in this snapshot; {count(counts["none"])} do
+              not, and those publish a blank price rather than a guessed one.</p></div></div>
+          </div>
+          <div class="band-row">{"".join(cards)}</div>
+          <div class="table-foot"><span>Band is decided from the YES mid the
+          collector published (Kalshi's own book; best bid = last level).</span>
+          <span>A blank price is never inferred — see
+          <a href="review.html">Flagged for review</a>.</span></div>
+        </section>
+"""
+
+
 def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     events = live.get("events", [])
@@ -370,7 +476,15 @@ def build_overview(live: dict[str, Any]) -> str:
                 f'<td><a href="{safe_url(e.get("market_url","")) or "#"}" target="_blank" '
                 f'rel="noreferrer">{esc(e.get("title"))}</a>'
                 f'<small class="ticker">{esc(e.get("ticker"))}</small></td>'
-                f"<td>{bid_cell}</td>"
+                # K2's quote cells (the official $-strings, including the ones an
+                # empty book really does return) beside the state chip this
+                # session's peers added. The chip explains why a *mid* is
+                # missing; the cells show the quote that exists. Where there is
+                # no two-sided mid at all the chip would only repeat what the
+                # cells already say, so it is dropped for that row — "wide" and
+                # "decided" still render.
+                f"<td>{bid_cell}"
+                f"{'' if price_band(e.get('mid')) == 'none' else ' ' + price_chip(e)}</td>"
                 f"<td>{ask_cell}</td>"
                 f"<td>{cents(last_price_of(e))}</td>"
                 f"<td>{num(e.get('open_interest_contracts'))}</td>"
@@ -398,6 +512,8 @@ def build_overview(live: dict[str, Any]) -> str:
         topic_blocks.append('<tbody><tr><td colspan="8" class="empty-state">'
                             "No snapshot yet — the collector has not completed "
                             "a run.</td></tr></tbody>")
+
+    price_strip = build_price_strip(live)
 
     topic_jump = " · ".join(
         f'<a href="categories/{slug}.html">{html.escape(extras.TOPIC_LABEL.get(slug, slug))}</a>'
@@ -495,6 +611,7 @@ def build_overview(live: dict[str, Any]) -> str:
           no order is ever sent. Every row links to the exact API response it
           came from.</p></div>
         </div>
+        {price_strip}
         <section class="panel">
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>
@@ -792,6 +909,10 @@ def build_live(live: dict[str, Any]) -> str:
                   <button data-window="minutes" class="selected">Minutes</button>
                   <button data-window="hours">Hours</button>
                 </div>
+                <div class="filter-tabs" id="sideTabs" aria-label="Contract side">
+                  <button data-side="yes" class="selected">YES</button>
+                  <button data-side="no">NO</button>
+                </div>
               </div>
             </div>
             <div class="chart-metrics">
@@ -799,12 +920,12 @@ def build_live(live: dict[str, Any]) -> str:
               <div><small>Change in window</small><strong id="chartChange">—</strong></div>
               <div><small>Best YES bid</small><strong id="chartBid">—</strong></div>
               <div><small>Implied YES ask</small><strong id="chartAsk">—</strong></div>
-              <div class="chart-legend"><i></i> YES price</div>
+              <div class="chart-legend"><i></i> <span id="sideLegend">YES price</span></div>
             </div>
             <div class="chart-frame"><canvas id="priceChart" role="img"
               aria-label="Contract price over time"></canvas></div>
             <div class="chart-notes" id="chartNotes" aria-live="polite"></div>
-            <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
+            <div class="chart-foot"><span>X: time · Y: <span id="sideAxis">YES</span> price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
           <article class="panel depth-panel">
@@ -829,6 +950,9 @@ def build_live(live: dict[str, Any]) -> str:
               <span class="count-badge" id="allCount">0</span>
             </div>
             <div class="chat-feed tall" id="feedAll" aria-live="polite">{feed_all}</div>
+            <div class="alert-note">The published rows above are measured by the
+            scheduled collector against Kalshi's own 1-minute candle quotes. The
+            <b>live pulse</b> below keeps measuring while this page is open.</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
@@ -842,6 +966,41 @@ def build_live(live: dict[str, Any]) -> str:
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
           </article>
+        </section>
+        <section class="panel live-pulse" id="livePulse">
+          <div class="panel-title">
+            <div><span class="section-icon green">⇅</span><div>
+              <h2>Live pulse — measured in this browser</h2>
+              <p>Every tracked market's order book, re-read from Kalshi's public
+              demo API while this page is open. A new row appears whenever a
+              contract's quote mid moves <b>≥ $0.10</b> either way since the last
+              reading. Same quote-integrity rule as the collector: a one-sided
+              or wide book is refused and the reason is shown.</p></div></div>
+            <span class="live-pill" id="pulseState"><i></i> <span>starting…</span></span>
+          </div>
+          <div class="pulse-meta">
+            <label class="pulse-toggle">
+              <input type="checkbox" id="pulseOn" checked />
+              <span>Poll the demo API from this browser</span>
+            </label>
+            <span class="pulse-stat" id="pulseStats">0 refreshes · 0 live swings</span>
+            <span class="pulse-stat" id="pulseSource"></span>
+          </div>
+          <div class="chat-feed" id="feedLive" aria-live="polite">
+            <div class="empty-state inline">Waiting for the first reading…</div>
+          </div>
+          <div class="pulse-refusals" id="pulseRefusals" hidden></div>
+          <div class="alert-note">Live rows are measured from
+            <a href="https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks"
+               target="_blank" rel="noreferrer">GET /markets/orderbooks ↗</a>
+            (one request per refresh, documented cap 100 markets) and use the
+            documented book semantics
+            (<a href="https://docs.kalshi.com/getting_started/orderbook_responses"
+                target="_blank" rel="noreferrer">best bid = last level, YES ask
+            = 1.00 − best NO bid</a>). They are <b>not</b> the collector's rows:
+            the collector compares Kalshi's 1-minute candle quotes, these compare
+            successive readings taken by this tab. Nothing is written back to the
+            site, and no cause is ever claimed for a move.</div>
         </section>
         <section class="panel">
           <div class="panel-title">

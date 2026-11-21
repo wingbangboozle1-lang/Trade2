@@ -1240,3 +1240,129 @@ table tr.topic-head th a { font-weight: 700; font-size: 13px; }
 .cause-label { color: var(--muted); font-size: 10.5px; }
 .cause-none { color: var(--muted); font-size: 10.5px; font-style: italic; }
 .cause-links .cause-none { border-bottom: none; }
+
+/* ------------------------------------------------------------------ */
+/* Live pulse — the in-browser ≥ $0.10 detector (assets/live-feed.js)  */
+/* ------------------------------------------------------------------ */
+
+/* The panel exists in the pre-rendered page and disappears if the module
+ * never loads, so a reader without JavaScript sees no dead control. */
+.live-pulse { border-color: #cfe9dd; }
+
+.pulse-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 12px;
+  font-size: 12px;
+  color: var(--muted, #6b7a76);
+}
+
+.pulse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pulse-toggle input { accent-color: var(--green, #0f8060); }
+
+.pulse-stat {
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f0f6f3;
+  color: #4b5b57;
+}
+
+#feedLive { max-height: 380px; overflow-y: auto; }
+
+.chat-row.live { border-left: 3px solid var(--green, #0f8060); }
+
+.tag-live {
+  background: #e2f6ec;
+  color: #0a6a4e;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.pulse-refusals {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fdf6e9;
+  border: 1px solid #f0dcae;
+  font-size: 12.5px;
+}
+
+.pulse-refusal-head { display: flex; align-items: center; gap: 10px; }
+
+.pulse-refusals ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.pulse-refusals li { margin-bottom: 4px; line-height: 1.45; }
+
+.pulse-refusals code { font-size: 11.5px; }
+
+/* The pulse controls are meaningless without JavaScript. */
+html.no-js .pulse-meta { display: none; }
+
+/* ------------------------------------------------------------------ */
+/* Price-mix strip — can a trader act on the ranked events right now?  */
+/* ------------------------------------------------------------------ */
+
+.band-panel .band-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 6px 0 12px;
+}
+
+.band-card {
+  border: 1px solid #e3ebe7;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: #fbfdfc;
+  border-left: 4px solid #cdd8d3;
+}
+
+.band-card.band-coin { border-left-color: #16a67a; background: #f4fbf8; }
+.band-card.band-shoulder { border-left-color: #4b8bd8; }
+.band-card.band-tail { border-left-color: #d4a017; background: #fffdf5; }
+.band-card.band-none { border-left-color: #b4bfba; background: #f7f9f8; }
+
+.band-n {
+  font-size: 26px;
+  font-weight: 650;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: #1d2b27;
+}
+
+.band-label { font-size: 12.5px; font-weight: 600; color: #33443f; margin-top: 2px; }
+.band-share { font-size: 11.5px; color: #6b7a76; margin-top: 2px; }
+.band-blurb { font-size: 11.5px; color: #7c8a86; margin-top: 6px; line-height: 1.4; }
+
+/* Per-row quote state chip. */
+.qchip {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: 1px;
+  white-space: nowrap;
+}
+
+.q-none { background: #eef2f0; color: #74817c; }
+.q-wide { background: #fdf0e6; color: #a35c15; }
+.q-tail { background: #f4f0e3; color: #7d6a2c; }

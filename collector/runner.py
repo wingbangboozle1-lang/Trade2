@@ -513,50 +513,98 @@ def detect_alerts(candles: Dict[str, Any], rows: List[Dict], threshold: float, w
     return alerts
 
 
-def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict], meta: Dict, max_series: int = 24) -> List[Dict]:
+# Settled-market scan window (documented GET /markets filter min_settled_ts) and the
+# per-topic retention of resolutions.json. Rotation step = one 15-minute window,
+# matching the scheduled collector cadence.
+RESOLUTION_LOOKBACK_S = 30 * 86400
+RESOLUTION_KEEP_PER_TOPIC = 60
+RESOLUTION_WINDOW_S = 900
+
+
+def _resolution_row(m: Dict[str, Any], topic_key: str) -> Dict[str, Any]:
+    return {
+        "ticker": m.get("ticker"),
+        "event_ticker": m.get("event_ticker"),
+        "title": m.get("title"),
+        "topic": topic_key,
+        "result": m.get("result"),
+        "settlement_value": fnum(m.get("settlement_value_dollars")),
+        "settlement_ts": m.get("settlement_ts"),
+        "volume_fp": fnum(m.get("volume_fp")),
+        "source_url": api_link(f"/markets/{m.get('ticker')}"),
+        "docs_url": "https://docs.kalshi.com/getting_started/market_settlement",
+        "verified": True,
+    }
+
+
+def collect_resolutions(client: KalshiClient, series_by_ticker: Dict[str, Dict], meta: Dict,
+                        max_series: int = 24, prior_rows: Optional[List[Dict[str, Any]]] = None,
+                        now_ts: Optional[float] = None) -> List[Dict]:
     """Settled markets -> YES/NO outcome rows (used for strategy grading).
 
-    `max_series` caps how many series are scanned per run to keep the run inside
-    rate limits; scanned series rotate by sort order across runs.
+    Coverage rules (fixed 2026-11-21, session arena-3dcf3f13 / X1):
+
+    * Every topic is scanned. The earlier version took the first ``max_series // topics``
+      series per topic in ticker order on every run and then kept the global newest 300,
+      so one busy topic (crypto, which settles many times a day) filled the whole file and
+      the other four topics never appeared.
+    * Series rotate per topic: run N scans the slice starting at ``N * per_cap`` (mod the
+      topic's series count), so each tracked series is visited within
+      ``ceil(series / per_cap)`` windows. ``max_series`` still bounds the request count.
+    * The scan asks Kalshi only for markets that settled in the last
+      ``RESOLUTION_LOOKBACK_S`` seconds (documented ``min_settled_ts`` filter).
+    * Rows from the previous ``resolutions.json`` are merged by ticker, so outcomes
+      accumulate across runs instead of being overwritten. Newly scanned rows win.
+    * Retention is per topic: the newest ``RESOLUTION_KEEP_PER_TOPIC`` rows per topic.
     """
-    out: List[Dict] = []
+    now = time.time() if now_ts is None else float(now_ts)
     per_topic: Dict[str, List[str]] = {}
     for ticker, s in sorted(series_by_ticker.items()):
         per_topic.setdefault(s["topic"], []).append(ticker)
     per_cap = max(1, max_series // max(len(per_topic), 1))
+    window = int(now // RESOLUTION_WINDOW_S)
+    since = int(now - RESOLUTION_LOOKBACK_S)
+
+    fresh: Dict[str, Dict[str, Any]] = {}
+    stop = False
     for topic_key in sorted(per_topic):
-        for ticker in per_topic[topic_key][:per_cap]:
+        tickers = per_topic[topic_key]
+        n = len(tickers)
+        start = (window * per_cap) % n
+        chosen = [tickers[(start + i) % n] for i in range(min(per_cap, n))]
+        for ticker in chosen:
             if getattr(client, "budget", None) is not None and client.budget <= 0:
                 meta["errors"].append({"step": "settled", "error": "request budget exhausted — stopped settlement scan (partial run, flagged)"})
-                return out
-            s = series_by_ticker[ticker]
+                stop = True
+                break
             try:
-                settled = client.markets(status="settled", series_ticker=ticker, limit=200, max_pages=2)
+                settled = client.markets(status="settled", series_ticker=ticker, min_settled_ts=since,
+                                         limit=200, max_pages=2)
             except Exception as exc:
                 meta["errors"].append({"step": "settled", "series": ticker, "error": str(exc)})
                 continue
             for m in settled:
-                result = m.get("result")
-                if result not in ("yes", "no"):
+                if m.get("result") not in ("yes", "no") or not m.get("ticker"):
                     continue
-                out.append(
-                    {
-                        "ticker": m.get("ticker"),
-                        "event_ticker": m.get("event_ticker"),
-                        "title": m.get("title"),
-                        "topic": topic_key,
-                        "result": result,
-                        "settlement_value": fnum(m.get("settlement_value_dollars")),
-                        "settlement_ts": m.get("settlement_ts"),
-                        "volume_fp": fnum(m.get("volume_fp")),
-                        "source_url": api_link(f"/markets/{m.get('ticker')}"),
-                        "docs_url": "https://docs.kalshi.com/getting_started/market_settlement",
-                        "verified": True,
-                    }
-                )
-    # keep the most recent settlements only (file size + relevance)
-    out.sort(key=lambda r: r.get("settlement_ts") or 0, reverse=True)
-    return out[:300]
+                fresh[m["ticker"]] = _resolution_row(m, topic_key)
+        if stop:
+            break
+
+    merged: Dict[str, Dict[str, Any]] = {}
+    for r in prior_rows or []:
+        if r.get("ticker") and r.get("result") in ("yes", "no") and r.get("topic") in per_topic:
+            merged[r["ticker"]] = r
+    merged.update(fresh)
+
+    by_topic: Dict[str, List[Dict[str, Any]]] = {}
+    for r in merged.values():
+        by_topic.setdefault(r["topic"], []).append(r)
+    out: List[Dict[str, Any]] = []
+    for topic_key in sorted(by_topic):
+        rows = sorted(by_topic[topic_key], key=lambda r: r.get("settlement_ts") or "", reverse=True)
+        out.extend(rows[:RESOLUTION_KEEP_PER_TOPIC])
+    out.sort(key=lambda r: r.get("settlement_ts") or "", reverse=True)
+    return out
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -614,7 +662,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     alerts = detect_alerts(candles, row_list, args.threshold, with_news=args.news)
     progress(f"  {len(alerts)} alerts >= {args.threshold}")
-    resolutions = collect_resolutions(client, series_map, meta)
+    # previous snapshot: outcomes accumulate across runs (see collect_resolutions)
+    prior_resolutions = []
+    try:
+        with open(os.path.join(DATA_DIR, "resolutions.json"), encoding="utf-8") as fh:
+            prior_resolutions = json.load(fh).get("rows") or []
+    except (OSError, ValueError):
+        prior_resolutions = []
+    resolutions = collect_resolutions(client, series_map, meta, prior_rows=prior_resolutions)
     progress(f"  {len(resolutions)} resolved markets")
 
     # series -> topic evidence table (each row carries the exact API URL used)
