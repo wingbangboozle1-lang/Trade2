@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T08:04:39Z",
+ "generated_at": "2026-11-21T08:06:50Z",
  "parameters": {
   "swing_threshold": 0.1,
   "hold_bars": 12,
@@ -22,20 +22,20 @@
   {
    "book": "docs-sim book",
    "book_generated_at": "2026-11-21T07:43:32.379678+00:00",
-   "hours_before_this_analysis": 0.35
+   "hours_before_this_analysis": 0.39
   },
   {
    "book": "root book",
-   "book_generated_at": "2026-11-21T07:54:38Z",
-   "hours_before_this_analysis": 0.17
+   "book_generated_at": "2026-11-21T08:02:40Z",
+   "hours_before_this_analysis": 0.07
   },
   {
    "book": "kalshi-dashboard book",
    "book_generated_at": "2026-11-21T07:45:49.301Z",
-   "hours_before_this_analysis": 0.31
+   "hours_before_this_analysis": 0.35
   }
  ],
- "max_book_age_hours": 0.35,
+ "max_book_age_hours": 0.39,
  "candle_series": [
   {
    "ticker": "KXAAAGASW-26NOV23-3.6200",
