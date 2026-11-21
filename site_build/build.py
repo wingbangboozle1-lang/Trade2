@@ -974,9 +974,11 @@ def build_live(live: dict[str, Any]) -> str:
             f"<td>{money(e.get('open_interest_notional'))}</td>"
             f"<td>{side_cell}</td>"
             f"<td>{roi_cell}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{API}/markets/{html.escape(e.get("ticker", ""))}">API ↗</a></td>'
             "</tr>")
     if not desk_rows:
-        desk_rows.append('<tr><td colspan="9" class="empty-state">No market '
+        desk_rows.append('<tr><td colspan="10" class="empty-state">No market '
                          "rows in this snapshot.</td></tr>")
 
     return f"""{topbar("Live desk", generated, "", live.get("generated_at_ts"))}
@@ -1107,7 +1109,7 @@ def build_live(live: dict[str, Any]) -> str:
             <table>
               <thead><tr><th>Market</th><th>Topic</th><th>YES bid</th><th>YES ask</th>
                 <th>Spread</th><th>Bid depth</th><th>OI value</th><th>Model side</th>
-                <th>Net ROI</th></tr></thead>
+                <th>Net ROI</th><th>Source</th></tr></thead>
               <tbody id="deskRows">{''.join(desk_rows)}</tbody>
             </table>
           </div>
@@ -1247,9 +1249,11 @@ def build_performance_section(live: dict[str, Any]) -> str:
             f"<td>{cents(pos.get('entry_price'))}</td>"
             f"<td>{result_chip(pos.get('result'))}</td>"
             f"<td class=\"{'pos' if (pos.get('realized') or 0) >= 0 else 'neg'}\">"
-            f"{money(pos.get('realized'))}</td></tr>")
+            f"{money(pos.get('realized'))}</td>"
+            f"<td><a class=\"source-link\" target=\"_blank\" rel=\"noreferrer\" "
+            f"href=\"{API}/markets/{html.escape(pos.get('ticker', ''))}\">API ↗</a></td></tr>")
     if not settled_rows:
-        settled_rows.append('<tr><td colspan="6" class="empty-state">No simulated '
+        settled_rows.append('<tr><td colspan="7" class="empty-state">No simulated '
                             "position has resolved yet. The ledger fills as tracked "
                             "markets settle.</td></tr>")
     overall = p.get("overall", {})
@@ -1309,7 +1313,7 @@ def build_performance_section(live: dict[str, Any]) -> str:
           </div>
           <div class="table-wrap">
             <table><thead><tr><th>Market</th><th>Strategy</th><th>Side</th>
-              <th>Entry</th><th>Result</th><th>P&amp;L</th></tr></thead>
+              <th>Entry</th><th>Result</th><th>P&amp;L</th><th>Source</th></tr></thead>
               <tbody>{''.join(settled_rows)}</tbody>
             </table>
           </div>

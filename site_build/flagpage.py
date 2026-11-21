@@ -14,12 +14,21 @@ Two kinds of items appear here, and they are generated, not hand-written:
 from __future__ import annotations
 
 import html
+import json
+import os
 from collections import Counter
 from typing import Any
 
 from collector.alerts import QUOTE_BASES
 
 API = "https://external-api.demo.kalshi.co/trade-api/v2"
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Evidence written by tools/verify_rows_479.py, which re-opens the exact rows
+# this site publishes and compares them with the official demo API. The file is
+# committed by the `verify-479` workflow, so what the site shows is the last
+# run's own record, not a hand-written claim.
+VERIFY_PATH = os.path.join(ROOT, "audit", "verify-479.json")
 
 # Phrases that appear in Kalshi's own records where a value should be but the
 # record still holds an unfilled template. Matching is literal — no fuzzy
@@ -519,6 +528,53 @@ STANDING = [
 ]
 
 
+def verification_rows() -> tuple[list[str], str]:
+    """The last automated re-check of the published rows against the demo API.
+
+    Returns (table rows, one-line summary). Both are empty when no verification
+    run has been recorded yet — the panel then says so rather than inventing a
+    result.
+    """
+    try:
+        with open(VERIFY_PATH, encoding="utf-8") as fh:
+            doc = json.load(fh)
+    except (OSError, ValueError):
+        return [], ""
+    if not isinstance(doc, dict):
+        return [], ""
+    summary = doc.get("summary") or {}
+    if not summary:
+        return [], ""
+    rows: list[str] = []
+    for subject in (doc.get("subjects") or []):
+        for check in (subject.get("checks") or []):
+            verdict = str(check.get("verdict") or "").upper()
+            badge = {"EXACT": "tag-yes", "DRIFT": "tag-purple",
+                     "UNVERIFIED": "tag-grey"}.get(verdict, "tag-grey")
+            url = str(check.get("source_url") or "")
+            link = (f'<a class="source-link" target="_blank" rel="noreferrer" '
+                    f'href="{esc(url)}">official API ↗</a>') if url else "—"
+            rows.append(
+                "<tr>"
+                f'<td><span class="tag {badge}">{esc(verdict or "—")}</span></td>'
+                f"<td>{esc(subject.get('topic'))}</td>"
+                f"<td><code>{esc(subject.get('market_ticker'))}</code></td>"
+                f"<td>{esc(check.get('field'))}</td>"
+                f"<td>{esc(check.get('published'))}</td>"
+                f"<td>{esc(check.get('fresh'))}</td>"
+                f"<td>{link}</td>"
+                "</tr>")
+    note = (f"Last run {esc(doc.get('verified_at') or 'n/a')} against the snapshot "
+            f"from {esc(doc.get('snapshot_generated_at') or 'n/a')}: "
+            f"{esc(summary.get('EXACT', 0))} exact, "
+            f"{esc(summary.get('DRIFT', 0))} drift (the live market moved after "
+            f"the snapshot), "
+            f"{esc(summary.get('UNVERIFIED', 0))} unverified (the response could "
+            f"not be read on that run). Drift is a fact about the market, not an "
+            f"error in this site.")
+    return rows, note
+
+
 def render(live: dict[str, Any]) -> str:
     issues = detect_data_issues(live) if live else []
     from .extras import age_label
@@ -605,6 +661,14 @@ def render(live: dict[str, Any]) -> str:
         f"{alert_stats.get('distinct_moves', '—')} distinct moves"
         if alert_stats else "no alert statistics in this snapshot yet")
 
+    verify_rows, verify_note = verification_rows()
+    if not verify_rows:
+        verify_rows = ['<tr><td colspan="7" class="empty-state">No automated '
+                       "re-check has been recorded yet. The verification workflow "
+                       "re-opens every published row against the official demo "
+                       "API and publishes the result here.</td></tr>"]
+        verify_note = "No verification run has been recorded yet."
+
     return f"""        <header class="topbar">
           <div class="breadcrumb">Research <span>/</span> Flagged for review</div>
           <div class="top-actions">
@@ -638,6 +702,29 @@ def render(live: dict[str, Any]) -> str:
           </div>
           <div class="table-foot"><span>Blank or absent values are never inferred</span>
           <span>Recomputed on every collector run</span></div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">✓</span><div>
+              <h2 id="verified">Published rows re-checked against the official API</h2>
+              <p>The top event of every topic, its market row and its order book,
+              re-opened from the official demo endpoints and compared field by
+              field with what this site publishes. {verify_note}</p></div></div>
+            <a class="source-link" target="_blank" rel="noreferrer"
+               href="https://docs.kalshi.com/api-reference/market/get-markets">Get
+               Markets ↗</a>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Result</th><th>Topic</th><th>Market</th>
+                <th>Field</th><th>Published here</th><th>Official response</th>
+                <th>Source</th></tr></thead>
+              <tbody>{''.join(verify_rows)}</tbody>
+            </table>
+          </div>
+          <div class="table-foot"><span>Produced by tools/verify_rows_479.py</span>
+          <span>Drift means the market moved after the snapshot — both values are
+          shown, never equalised</span></div>
         </section>
         <section class="panel">
           <div class="panel-title">

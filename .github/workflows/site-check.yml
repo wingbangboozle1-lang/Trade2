@@ -51,6 +51,12 @@ jobs:
       - name: Front-end syntax
         run: node --check assets/desk.js
 
+      # The browser live pulse had no CI coverage before session
+      # arena-7695ba1b (see VERIFICATION-7695ba1b.md §2). These suites are
+      # pure Node (no jsdom, no network) and gate every pull request.
+      - name: Browser live-pulse unit tests
+        run: node --test test/live-feed.test.mjs test/live-feed-url.test.mjs
+
       - name: Render every generated page offline (jsdom)
         run: node tools/root_pages_render.mjs
 

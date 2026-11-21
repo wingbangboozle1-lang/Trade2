@@ -129,6 +129,36 @@
     return new Date(ts * 1000).toISOString().replace(/\.\d{3}Z$/, "Z");
   }
 
+  /* Build the batch order-book URL.
+   *
+   * `GET /markets/orderbooks` declares `tickers` as a **string[]** query
+   * parameter — "List of market tickers to fetch orderbooks for", "Required
+   * array length: 1 - 100 elements"
+   * (https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks).
+   * The exchange reads one value per occurrence of the parameter, so a
+   * comma-joined value is read as ONE ticker whose name literally contains
+   * the commas — and the answer is a single empty book.
+   *
+   * Verified live against the demo exchange on 2026-11-21 (07:20Z):
+   *   ?tickers=KXPRESNOMD-28-RW,KXAAAGASM-26NOV30-4.70
+   *     -> {"orderbooks":[{"ticker":"KXPRESNOMD-28-RW,KXAAAGASM-26NOV30-4.70",
+   *          "orderbook_fp":{"yes_dollars":[],"no_dollars":[]}}]}
+   *   ?tickers=KXPRESNOMD-28-RW&tickers=KXAAAGASM-26NOV30-4.70
+   *     -> two entries, each carrying its real book.
+   * The comma form therefore silently starves the pulse; this helper exists
+   * so that mistake cannot be made twice.
+   */
+  function batchOrderbookUrl(base, tickers) {
+    var clean = [];
+    (tickers || []).forEach(function (t) {
+      var s = String(t === null || t === undefined ? "" : t).trim();
+      if (s) clean.push(s);
+    });
+    if (!clean.length) return null;
+    return base + (String(base).indexOf("?") === -1 ? "?" : "&") +
+      clean.map(function (t) { return "tickers=" + encodeURIComponent(t); }).join("&");
+  }
+
   /**
    * newDetector() -> stateful detector.
    *
@@ -330,6 +360,7 @@
     quotesOk: quotesOk,
     bestBid: bestBid,
     isoOf: isoOf,
+    batchOrderbookUrl: batchOrderbookUrl,
     SWING: SWING,
     ALERT_MAX_SPREAD: ALERT_MAX_SPREAD,
     COOLDOWN_MS: COOLDOWN_MS,
