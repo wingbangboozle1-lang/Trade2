@@ -47,7 +47,7 @@
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot 2026-11-21T07:33:23Z</time>
-            <span class="snap-age" id="snapshotAge" data-generated-ts="1795246403.5553012">1 min old</span>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795246403.5553012">7 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -113,7 +113,7 @@
                 <h2>All events</h2><p>Every swing ≥ $0.10, newest first</p></div></div>
               <span class="count-badge" id="allCount">0</span>
             </div>
-            <div class="chat-feed tall" id="feedAll" aria-live="polite"><div class="empty-state inline">No ≥ $0.10 move observed yet. The feed fills as successive snapshots are compared.</div></div>
+            <div class="chat-feed tall" id="feedAll" aria-live="polite"><div class="empty-state inline"><b>No alert row in this snapshot.</b> 5 midpoint moves cleared $0.10 but the quote rule refused them — each with its reason on <a href="review.html#refused">Flagged for review</a>. <span class="empty-basis">Measured: 750 markets measured this snapshot. Every row is quote mid to quote mid against one of two bases — <code>candle_quote_mid</code> when Kalshi published a candle, <code>previous_snapshot_mid</code> otherwise.</span></div></div>
             <div class="alert-note">The published rows above are measured by the
             scheduled collector against Kalshi's own 1-minute candle quotes. The
             <b>live pulse</b> below keeps measuring while this page is open.</div>

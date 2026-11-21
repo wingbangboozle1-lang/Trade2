@@ -911,6 +911,57 @@ def build_topic(slug: str, live: dict[str, Any],
 # Live desk
 # ---------------------------------------------------------------------------
 
+def empty_all_feed(live: dict[str, Any]) -> str:
+    """The pre-rendered "All events" chat when this snapshot has no alert row.
+
+    An empty chat is only honest if it says what was measured. Before session
+    arena-27de8294 this said "No ≥ $0.10 move observed yet", which reads as
+    "nothing happened" — while 652 of 750 tracked markets had no candle
+    reference in the 2026-11-21T07:19Z snapshot and the previous-snapshot
+    fallback was silently dead (`live.get("observations")` was never written).
+
+    Every number here comes from the snapshot's own counters; nothing is
+    inferred. `assets/desk.js::emptyAllFeedHtml` renders the same facts after
+    the polled view replaces this block, and the two are kept in step by
+    `tests/test_snapshot_fallback_27de.py`.
+    """
+    refused = live.get("suppressed_alerts") or []
+    fb = live.get("snapshot_fallback") or {}
+    measured = fb.get("measured_rows", live.get("observation_count"))
+    bits = []
+    if measured is not None:
+        bits.append(f"{count(measured)} markets measured this snapshot")
+    if fb.get("candle_reference_rows") is not None:
+        bits.append(f"{count(fb['candle_reference_rows'])} had an official "
+                    "1-minute candle reference")
+    if fb.get("previous_rows") is not None:
+        prior = int(fb["previous_rows"] or 0)
+        bits.append(f"{count(prior)} earlier rows available for the "
+                    "previous-snapshot fallback" if prior else
+                    "no earlier rows yet, so the previous-snapshot fallback "
+                    "had nothing to compare")
+    if refused:
+        plural = len(refused) != 1
+        tail = (f"{count(len(refused))} midpoint move"
+                + ("s" if plural else "")
+                + " cleared $0.10 but the quote rule refused "
+                + ("them" if plural else "it")
+                + ' — each with its reason on <a href="review.html#refused">'
+                "Flagged for review</a>.")
+    else:
+        tail = "No row cleared $0.10 on a two-sided book in this snapshot."
+    basis = ""
+    if bits:
+        basis = (' <span class="empty-basis">Measured: ' + esc(" · ".join(bits))
+                 + ". Every row is quote mid to quote mid against one of two bases "
+                 "— <code>candle_quote_mid</code> when Kalshi published a candle, "
+                 "<code>previous_snapshot_mid</code> otherwise.</span>")
+    # ``tail`` is either a literal sentence or the sentence plus a fixed anchor
+    # built above; neither interpolates untrusted text.
+    return ('<div class="empty-state inline"><b>No alert row in this snapshot.</b> '
+            + tail + basis + "</div>")
+
+
 def build_live(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     portfolio = live.get("portfolio", {})
@@ -922,9 +973,7 @@ def build_live(live: dict[str, Any]) -> str:
     signals = {s.get("ticker"): s for s in (live.get("signals") or [])
                if s.get("ticker")}
     alerts = extras.group_alerts(live.get("alerts") or [])
-    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or (
-        '<div class="empty-state inline">No ≥ $0.10 move observed yet. The '
-        "feed fills as successive snapshots are compared.</div>")
+    feed_all = "".join(alert_chat_row(a) for a in alerts[:40]) or empty_all_feed(live)
     model_rows = []
     shortlist = {a.get("ticker"): a for a in model_shortlist(live)}
     for a in alerts:

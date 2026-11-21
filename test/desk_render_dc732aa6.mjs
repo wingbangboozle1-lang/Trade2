@@ -230,9 +230,17 @@ if (chartBtn) {
   check("market row click drives the chart selector (no alerts to click)", !!row,
         `selected ${sel2?.value}`);
 }
-check("an empty all-events feed explains itself",
+/* Session arena-27de8294: a chat with no row must still say what was measured.
+ * The old wording ("No ... 0.10 swing") read as "nothing happened" even when
+ * most tracked markets had no candle reference and the previous-snapshot
+ * fallback had nothing to compare against. Assert the stronger contract. */
+const emptyAllText = doc.querySelector("#feedAll").textContent;
+check("an empty all-events feed states what was measured",
       alerts.length > 0 ||
-      /No .*0\.10 swing/.test(doc.querySelector("#feedAll").textContent));
+      (/markets measured this snapshot/.test(emptyAllText) &&
+       /candle_quote_mid/.test(emptyAllText) &&
+       /previous_snapshot_mid/.test(emptyAllText)),
+      emptyAllText.slice(0, 160));
 
 check("the chart drew price lines and swing markers", drawn.strokes > 0 && drawn.texts > 0,
       JSON.stringify(drawn));

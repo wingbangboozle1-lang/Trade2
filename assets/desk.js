@@ -380,6 +380,43 @@
     return rows;
   }
 
+  /* What an empty "All events" chat actually means.
+   *
+   * An empty chat is the honest answer only when it also says what was measured.
+   * Before session arena-27de8294 it said nothing had been observed yet, which
+   * a trader reads as "nothing happened" — even though 652 of the 750 tracked
+   * markets had no candle reference in that snapshot and the previous-snapshot
+   * fallback was silently dead (see tests/test_snapshot_fallback_27de.py).
+   * The panel now states the measured row count, the candle-reference count and
+   * how many earlier rows the comparison could use. Every number comes from the
+   * snapshot; nothing is inferred.
+   */
+  function emptyAllFeedHtml(s) {
+    var refusedN = (s.suppressed_alerts || []).length;
+    var fb = s.snapshot_fallback || {};
+    var measured = fb.measured_rows != null ? fb.measured_rows : s.observation_count;
+    var candle = fb.candle_reference_rows;
+    var prior = fb.previous_rows;
+    var bits = [];
+    if (measured != null) bits.push(num(measured) + " markets measured this snapshot");
+    if (candle != null) bits.push(num(candle) + " had an official 1-minute candle reference");
+    if (prior != null) {
+      bits.push(prior
+        ? num(prior) + " earlier rows available for the previous-snapshot fallback"
+        : "no earlier rows yet, so the previous-snapshot fallback had nothing to compare");
+    }
+    var tail = refusedN
+      ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
+        " cleared $0.10 but the quote rule refused " + (refusedN === 1 ? "it" : "them") +
+        ' — each with its reason on <a href="review.html#refused">Flagged for review</a>.'
+      : "No row cleared $0.10 on a two-sided book in this snapshot.";
+    return '<div class="empty-state inline"><b>No alert row in this snapshot.</b> ' +
+      tail + (bits.length ? " <span class=\"empty-basis\">Measured: " +
+        bits.join(" · ") + ". Every row is quote mid to quote mid against one of two " +
+        "bases — <code>candle_quote_mid</code> when Kalshi published a candle, " +
+        "<code>previous_snapshot_mid</code> otherwise.</span>" : "") + "</div>";
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
@@ -433,15 +470,7 @@
     if (feedAll) {
       feedAll.innerHTML = "";
       if (!all.length) {
-        var refusedN = (s.suppressed_alerts || []).length;
-        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
-          "two-sided book in the current buffer. " +
-          (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
-            " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
-            ' listed with the reason on <a href="review.html#refused">Flagged for ' +
-            "review</a>. " :
-            "The feed fills as the collector compares successive snapshots. ") +
-          "</div>";
+        feedAll.innerHTML = emptyAllFeedHtml(s);
       } else if (raw.length > all.length) {
         feedAll.appendChild(feedNote(all, raw));
       }
