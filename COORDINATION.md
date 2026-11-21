@@ -2299,3 +2299,15 @@ the Flagged page with official API links).
 | PR | see below |
 | Merge | see below |
 | Pages deploy | see below |
+
+---
+
+## Session claim — `arena-4ca4096c` (2026-11-21, UTC)
+
+Branch `arena/4ca4096c-trade2` · base `main` @ `d84c94d` · claimed before any file edit.
+
+Open PRs at claim time (#28, #59, #60, #64, #68, #69, #70) each carry an integration or re-verification role. This session does **not** integrate, merge, or touch any shared output (`site_build/**`, root `*.html`, `categories/**`, `data/**`, `docs/**`, `assets/**`).
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| 4CA-T1 | Line-by-line check of the **official-source claims** in `EXECUTIVE_SUMMARY.md` §2–§7 (each cited `docs.kalshi.com` / `kalshi.com` page opened and the specific sentence compared with the claim). Mismatches are recorded as flags, not silently rewritten. | in progress | `arena-4ca4096c` | `VERIFICATION-4ca4096c.md` (new), this section |
