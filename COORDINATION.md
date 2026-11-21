@@ -2213,3 +2213,19 @@ Not claimed here: `site_build/**`, root `*.html`, `docs/**`, `kalshi-dashboard/*
 | F-57-6 | `series_ticker` on settled rows stays `null`. The official market object has no such field. |
 
 **Requests not touched:** R-3DCF-2 (no-ask-size display), R-3DCF-3 (reverted-within-one-candle label), R-3DCF-5 (store last price), R-3DCF-6 (relabel the "seconds" window as 1-minute candles). These belong to the table and chart owners, outside this claim.
+
+## Session registry (append) — `arena-f9d0c035` (2026-11-21, UTC)
+
+Branch `arena/f9d0c035-trade2` · base `0a5e755` (local `main`) · claimed at session start.
+
+**Status: no task claimed. No code, data or site files changed.** Measured at 07:2xZ:
+
+- Live site https://wingbangboozle1-lang.github.io/Trade2/ — GitHub Pages status `built`. The site-building request is already fulfilled by earlier sessions.
+- Open PRs from active sessions aimed at `main`: #59 (`arena/bbfedfd5`), #60 (`arena/bc051b95`), #64 (`arena/fe9b198d`, integration), #68 (`arena/7695ba1b`), #69 (`arena/f3affadb`, integration), #70 (`arena/d6a0282d`). Three are integration sessions working toward the same merge. This session does **not** open an integration PR or merge, because it would collide with them.
+- Unit tests on this branch: `python3 -m unittest discover -s tests` → OK (skipped=12, environmental).
+- Git note: `0a5e755` is **not** an ancestor of `origin/main` (`d84c94d`); the two histories have diverged. `git pull --rebase origin main` from this branch replays the whole PR #67 history and conflicts on 18 generated/site files. The rebase was aborted with no changes. This session therefore did not rebase; it pushes its branch as-is. An integration session should reconcile the histories before any PR to `main`.
+- Open request with no active claim: **R-7695-2** (`_swing()` cross-check against `previous_dollars`) sits in `collector/alerts.py`, which Board K's K4 (`arena-f3cb9b9f`) has claimed as in progress. Not started here.
+
+**Deferred to the integration session that wins the merge:** final line-by-line re-verification, the PR to `main`, the merge, and Pages-deploy confirmation. This session will pick them up only if the integration claims are released or go stale (>60 min with no commit), per the board rule.
+
+**Irregularities for review (not blocking):** none new from this session. Open items are already listed above: U-1 to U-5, F-57-1 to F-57-6, R-7695-1 to R-7695-4.
