@@ -3,11 +3,11 @@
 // follow the official SDK models (kalshi-typescript@3.36.0).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assertDemoBase, main, resolveTopicSeries } from '../collect.mjs';
+import { assertDemoBase, main, resolveTopicSeries, rotateScanSeries, pruneResolved, RESOLUTION_WINDOW_S } from '../collect.mjs';
 import { DEMO_BASE, PRODUCTION_BASE } from '../kalshi.mjs';
 import { takerFeeCents } from '../fees.mjs';
 import { readFileSync } from 'node:fs';
@@ -75,8 +75,13 @@ function makeMockApi(script) {
     if (p.endsWith('/orderbook')) {
       return ok({ orderbook_fp: { yes_dollars: [['0.4000', '120.00'], ['0.3900', '40.00']], no_dollars: [['0.5800', '90.00']] } });
     }
+    if (p === '/markets') {
+      // settled-market scan (documented GET /markets filters; F642-T1)
+      return ok({ markets: (script.settledList && script.settledList[params.series_ticker]) || [], cursor: '' });
+    }
     if (p === '/markets/GAS-E1-A') {
-      return ok({ market: mkMarket({ ticker: 'GAS-E1-A', status: script.gasSettled ? 'determined' : 'closed', result: script.gasSettled ? 'yes' : '', settlement_ts: script.gasSettled ? '2026-11-20T10:00:00Z' : null }) });
+      const res = script.gasResult !== undefined ? script.gasResult : (script.gasSettled ? 'yes' : '');
+      return ok({ market: mkMarket({ ticker: 'GAS-E1-A', status: script.gasSettled ? 'determined' : 'closed', result: res, settlement_ts: script.gasSettled ? '2026-11-20T10:00:00Z' : null }) });
     }
     if (p === '/markets/GAS-E1-B') return ok({ market: mkMarket({ ticker: 'GAS-E1-B', status: 'closed' }) });
     throw new Error(`unexpected mock call ${p}`);
@@ -164,4 +169,120 @@ test('capSeries keeps curated series first, then highest-volume keyword matches,
   const out = capSeries(m, 2);
   assert.deepEqual([...out.keys()], ['CUR1', 'KW_HIGH']);
   assert.equal(capSeries(m, 10), m, 'no change when under the cap');
+});
+
+// ---------- resolution tracking (F642-T1 / R-4f92-4) ----------
+
+function settledFixture(ticker, over = {}) {
+  return mkMarket({
+    ticker, status: 'finalized', result: 'yes', close_time: '2026-11-20T10:00:00Z',
+    settlement_ts: '2026-11-20T10:05:00Z', settlement_value_dollars: '1.0000', ...over,
+  });
+}
+
+test('settled-scan records official results with per-row source links (documented GET /markets filters)', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-scan-'));
+  const r = makeMockApi({
+    settledList: {
+      KXAAAGASM: [settledFixture('GAS-E1-S', { result: 'no', settlement_value_dollars: '0.0000', yes_sub_title: 'Yes outcome' })],
+      KXBTCY: [settledFixture('BTC-E1-S')],
+    },
+  });
+  await main({
+    base: BASE, stateDir: path.join(dir, 's'), outDir: path.join(dir, 'o'),
+    configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r.fn,
+    nowMs: Date.parse('2026-11-20T12:00:00Z'), maxScanSeries: 60, // scan every mapped series this run
+  });
+  const out = JSON.parse(await readFile(path.join(dir, 'o', 'resolved.json'), 'utf8'));
+  const by = Object.fromEntries(out.resolved.map((x) => [x.ticker, x]));
+  assert.equal(by['GAS-E1-S'].result, 'no', 'official result copied verbatim');
+  assert.equal(by['GAS-E1-S'].topic, 'gas');
+  assert.equal(by['GAS-E1-S'].via, 'settled-scan');
+  assert.equal(by['GAS-E1-S'].source_url, `${BASE}/markets/GAS-E1-S`);
+  assert.equal(by['GAS-E1-S'].settlement_ts, '2026-11-20T10:05:00Z');
+  assert.equal(by['BTC-E1-S'].result, 'yes');
+  assert.equal(by['BTC-E1-S'].topic, 'crypto');
+  const status = JSON.parse(await readFile(path.join(dir, 'o', 'status.json'), 'utf8'));
+  assert.equal(status.counts.resolved_added_this_run, 2);
+  assert.equal(status.counts.settled_scan_series >= 2, true, 'rotating scan visited the fixture series');
+  // the scan request used the documented filters (seen by the mock as params)
+  assert.equal(r.calls.filter((p) => p === '/markets').length >= 2, true);
+});
+
+test('resolution history survives a state-cache wipe via the published snapshot', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-dur-'));
+  const stateDir = path.join(dir, 's');
+  const outDir = path.join(dir, 'o');
+  const t0 = Date.parse('2026-11-20T12:00:00Z');
+  const r1 = makeMockApi({ settledList: { KXAAAGASM: [settledFixture('GAS-E1-S')] } });
+  await main({ base: BASE, stateDir, outDir, configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r1.fn, nowMs: t0, maxScanSeries: 60 });
+  // Actions state cache evicted: wipe the state dir, keep the published snapshot
+  await rm(stateDir, { recursive: true, force: true });
+  const r2 = makeMockApi({ settledList: {} });
+  await main({ base: BASE, stateDir, outDir, configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r2.fn, nowMs: t0 + 30 * 60e3, maxScanSeries: 60 });
+  const out = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+  assert.equal(out.resolved.length, 1, 'prior published row merged back after the state reset');
+  assert.equal(out.resolved[0].ticker, 'GAS-E1-S');
+  assert.equal(out.resolved[0].via, 'settled-scan');
+  const status = JSON.parse(await readFile(path.join(outDir, 'status.json'), 'utf8'));
+  assert.equal(status.counts.resolved_total, 1);
+});
+
+test('pending rows survive a state wipe, are re-checked each run, then resolve yes', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-pend-'));
+  const stateDir = path.join(dir, 's');
+  const outDir = path.join(dir, 'o');
+  const cfgPath = path.join(here, '..', '..', 'config', 'topics.json');
+  const t0 = Date.parse('2026-11-20T12:00:00Z');
+  // run A: GAS-E1-A active -> tracked into state.meta
+  await main({ base: BASE, stateDir, outDir, configPath: cfgPath, getFn: makeMockApi({}).fn, nowMs: t0 });
+  // run B: market leaves the active set, no result yet -> pending
+  await main({ base: BASE, stateDir, outDir, configPath: cfgPath, getFn: makeMockApi({ gasSettled: true, gasResult: '' }).fn, nowMs: t0 + 30 * 60e3 });
+  let out = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+  assert.equal(out.pending.length, 1);
+  assert.equal(out.pending[0].ticker, 'GAS-E1-A');
+  // state-cache wipe, then run C: pending must survive via the published snapshot and be re-checked
+  await rm(stateDir, { recursive: true, force: true });
+  await main({ base: BASE, stateDir, outDir, configPath: cfgPath, getFn: makeMockApi({ gasSettled: true, gasResult: '' }).fn, nowMs: t0 + 60 * 60e3 });
+  out = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+  assert.equal(out.pending.length, 1, 'pending row survived the state reset');
+  let status = JSON.parse(await readFile(path.join(outDir, 'status.json'), 'utf8'));
+  assert.equal(status.counts.resolution_checks_this_run >= 1, true, 'pending tickers are re-checked');
+  // run D: official result appears -> resolved, pending cleared
+  await main({ base: BASE, stateDir, outDir, configPath: cfgPath, getFn: makeMockApi({ gasSettled: true }).fn, nowMs: t0 + 90 * 60e3 });
+  out = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+  assert.equal(out.pending.length, 0);
+  assert.equal(out.resolved.length, 1);
+  assert.equal(out.resolved[0].result, 'yes');
+  assert.equal(out.resolved[0].via, 'watch');
+  status = JSON.parse(await readFile(path.join(outDir, 'status.json'), 'utf8'));
+  assert.equal(status.counts.resolved_added_this_run, 1);
+});
+
+test('rotateScanSeries covers every series across consecutive windows', () => {
+  const m = new Map();
+  for (let i = 0; i < 5; i++) m.set(`G-${i}`, { topic: 'gas', series: {} });
+  for (let i = 0; i < 5; i++) m.set(`C-${i}`, { topic: 'crypto', series: {} });
+  const seen = new Set();
+  for (let w = 0; w < 3; w++) {
+    const nowMs = (w * RESOLUTION_WINDOW_S + 1) * 1000;
+    for (const { ticker, topic } of rotateScanSeries(m, nowMs, 4)) {
+      assert.equal(topic === 'gas' ? ticker.startsWith('G-') : ticker.startsWith('C-'), true);
+      seen.add(ticker);
+    }
+  }
+  assert.equal(seen.size, 10, 'all 10 series visited within ceil(n/perCap) windows');
+});
+
+test('pruneResolved keeps the newest per topic and never drops protected tickers', () => {
+  const state = { resolved: {} };
+  for (let i = 0; i < 6; i++) {
+    state.resolved[`OLD-${i}`] = { ticker: `OLD-${i}`, topic: 'gas', detected_at: `2026-11-1${i}T00:00:00Z`, result: 'yes' };
+  }
+  state.resolved['KEEP-ME'] = { ticker: 'KEEP-ME', topic: 'gas', detected_at: '2026-11-01T00:00:00Z', result: 'no' };
+  state.resolved['NEW-1'] = { ticker: 'NEW-1', topic: 'crypto', detected_at: '2026-11-20T00:00:00Z', result: 'yes' };
+  pruneResolved(state, 3, new Set(['KEEP-ME']));
+  const gasRows = Object.values(state.resolved).filter((r) => r.topic === 'gas').map((r) => r.ticker).sort();
+  assert.deepEqual(gasRows, ['KEEP-ME', 'OLD-5', 'OLD-4', 'OLD-3'].sort(), 'newest 3 kept + protected old row');
+  assert.equal(!!state.resolved['NEW-1'], true);
 });
