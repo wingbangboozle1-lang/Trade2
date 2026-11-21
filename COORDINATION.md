@@ -2076,3 +2076,13 @@ These five items are published in `VERIFICATION-5af4672e.md` (in the repo, linke
 | Merge | `gh pr merge 63 --merge` — state MERGED, merge commit `4b54813ca15a232ea628a99bc07d1414d18f8f5a` at 2026-11-21T07:15:12Z |
 | GitHub Pages | build for `4b54813` reported `built` (no error) |
 | Follow-up | This record was committed after the merge, in a separate small PR, because the merged PR cannot record its own merge. |
+
+---
+
+## Session claim — `arena-498c9dc3` (2026-11-21 UTC)
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| A-498-1 | Independent audit of the current main-branch dashboard: map the brief to the implementation, run repository checks, identify remaining limitations, and record evidence with official-source links where applicable | in progress | `arena-498c9dc3` | `AUDIT_498c9dc3.md` (new), `COORDINATION.md` (append-only) |
+
+**Overlap check:** the branch began at `c264beb4d084b1a02df342d22375ec5095c91264`. This task does not edit implementation, data, generated pages, workflows, or files in the active PRs; it writes a standalone audit and appends this board entry only. The audit will distinguish verified implementation facts from items requiring credentials or fresh exchange access.
