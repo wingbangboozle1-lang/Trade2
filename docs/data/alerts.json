@@ -1,7 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794971823&end_ts=1795231023&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794975887&end_ts=1795235087&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -37,11 +37,11 @@
      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
     },
     {
-     "published": "2026-11-20T07:44:22+00:00",
-     "source": "wehotimes.com",
+     "published": "2026-11-20T02:16:43+00:00",
+     "source": "Comic Book Resources",
      "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Movie Review: A Hangout Sequel Nobody Needed Turns Out to Be a Blast - wehotimes.com",
-     "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNWjFKVm1YT0ZVVmh3Z21zOFduZDhLSGxzU0UzR1dRVUNMT0l0aDg5OG9OZHBKYm05b2oySExwQ1VuTlUxSl9UdWVnNTB2cURnNGR2bi1QQ21kWHVOaUNYejk1bEhDQ2xpQmo1V3VPWGtqOW0wVGN3dE5IYzFXajVHeC05NzRNbDJNcTVSQ1lVb0hzNXJLY2E5UXBqSXNueE45ZC1Oa1ZNd01qTjZzS0dqWXN3Rk1uSUVlOElQYW50N0o0OWNuMk1xdndQOUk?oc=5"
+     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
     }
    ],
    "news_status": "ok",
@@ -56,7 +56,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794971823&end_ts=1795231023&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794975887&end_ts=1795235087&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -83,7 +83,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794971823&end_ts=1795231023&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794975887&end_ts=1795235087&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -104,7 +104,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794971823&end_ts=1795231023&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794975887&end_ts=1795235087&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -131,7 +131,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794971823&end_ts=1795231023&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794975887&end_ts=1795235087&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -151,6 +151,13 @@
      "status": "verified-fetch",
      "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
+    },
+    {
+     "published": "2026-11-19T03:29:34+00:00",
+     "source": "Power Line",
+     "status": "verified-fetch",
+     "title": "Gas prices are falling, along with the sky - Power Line",
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOUG8zOG1LVHY1VjFYT0xCckMtWS1JdEl0eUoyenJGWkJ2NjRYZUN2ZHo2MWliMzZONmdmVnhRQ08za0N2OFBRWHRBNEZqdG40WHZ1UXN2MWFMbTRzejZsT2JUdG4xYW1yaWxpVUdaV08tM1hWM1JJLUpvaGV5OVFkN0lyTlh5MVZRcDYzRTNQRmR0Zzd3YW1J?oc=5"
     }
    ],
    "news_status": "ok",
@@ -165,7 +172,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T03:17:37.032719+00:00",
+ "generated_at": "2026-11-21T04:25:23.627720+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
