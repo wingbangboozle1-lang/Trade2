@@ -449,6 +449,29 @@ Verified: dispatch run `44769581312` on `main` → **success**, data commit
 
 ---
 
+## Session E — current Arena branch `arena/dd1da6b5-trade2`
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| --- | --- | --- | --- | --- |
+| `arena-dd1da6b5` | `arena/dd1da6b5-trade2` (base `main` @ `1bc32b7`) | Root-site integration: model shortlist, swing news links, formatting, site organisation, line-by-line verification, PR + merge + Pages deploy | 2026-11-20 | active |
+
+Scope is non-overlapping with the sessions active at the time of this claim:
+
+| Session | Owns | My session does not touch |
+| --- | --- | --- |
+| `arena-e4e8f4e1` | `COORDINATION.md`, `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` (T14), `docs/summary.html` (T15), `tools/rendercheck.mjs` (T16) | those files |
+| `arena-0b2d2a2a` | `COORDINATION.md`, `AUDIT_ADDENDUM.md` | those files |
+| `arena-856e184e` | `collector/alerts.py`, `collector/collector.py`, `tests/test_alerts_basis.py`, `scripts/collect.mjs`, `VERIFICATION_856e184e.md` | those files |
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T20 | Coordination claim, scope, and session registry | done | `arena-dd1da6b5` | `COORDINATION.md` (this section only) |
+| T21 | Root-site number formatting (integer counters) + UNVERIFIED legend | in progress | `arena-dd1da6b5` | `site_build/build.py` |
+| T22 | "Model shortlist" second chat: basis-consistent book-mid model, ranked, gated | in progress | `arena-dd1da6b5` | `collector/shortlist.py` (new), `site_build/build.py`, `assets/desk.js`, `tests/test_shortlist.py` (new) |
+| T23 | News links attached to >= $0.10 swings | in progress | `arena-dd1da6b5` | `collector/news.py`, `site_build/build.py`, `.github/workflows/kalshi-dashboard.yml` |
+| T24 | Site organisation: canonical root, site map, cross-links between the three published views | in progress | `arena-dd1da6b5` | `site_build/build.py`, `assets/*.js`, `assets/styles.css`, root `*.html` (generated) |
+| T25 | Line-by-line verification pass against the official demo API + irregularity log | in progress | `arena-dd1da6b5` | `VERIFICATION.md`, `site_build/flagpage.py`, `data/shortlist.json`, `data/news.json` |
+| T26 | Integration: PR `arena/dd1da6b5-trade2` -> `main`, merge, confirm GitHub Pages deploy | unclaimed | `arena-dd1da6b5` | `COORDINATION.md` (this section only) |
 ## Session claim — `arena-856e184e` (2026-11-20)
 
 Branch `arena/856e184e-trade2` (base `main` @ `1bc32b7`). Scope is non-overlapping with the active audit session `arena-e4e8f4e1` (T13–T15, which own `AUDIT_2026-11-20.md`, `EXECUTIVE_SUMMARY.md` and `docs/summary.html`). This session does not edit those files.
@@ -951,12 +974,9 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 - Rebased T14 successively onto PR #21's merge (`be3bcfc`), PR #27's coordination/Pages-deployment record (`7bdff2f`), and the latest collector refresh (`9f93a6a`). The current main snapshot was collected at `2026-11-20T19:25:15Z` and committed at 19:27:39Z; it contains zero alert rows. Preserved the refreshed `data/live.json`, `assets/live.json`, portfolio state, resolutions store, and upstream pages/tests.
 - Retained the merged overview grouping, dual chats, cause/search links, resolutions/trades/suggestions pages, shared formatters and extras, desk scripts, and offline root-render test. T14 uses exact Decimal integrality checks for counts, keeps fractional count-like values at two decimals, and leaves quantity/price/money formatters separate. Culture topic discovery links both official Culture and Entertainment queries. Actual repeated tickers become review findings with orderbook links; alerts remain detections, not fills.
 - Rebuilt generated root pages from the latest main snapshot and kept the standing no-fill caution. No dynamic repeated-alert finding is fabricated for the current zero-row snapshot; stale "29 raw alert rows" copy is absent.
-HEAD
 - Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
 - PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
 - Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
-HEAD
-- Local verification on the integrated code: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed. Fresh PR CI on this latest head, merge, and this PR's Pages build remain pending.
 ## Board E — session `arena-5bec0ea3` (current Arena branch `arena/5bec0ea3-trade2`)
 
 Session ID `arena-5bec0ea3` · branch `arena/5bec0ea3-trade2` · base `main` @ `1bc32b74` (rebased onto `d6aaca4`, 2026-11-20). Claimed 2026-11-20T19:20Z. Scope chosen to be disjoint from every active claim above (`arena-e4e8f4e1`, `arena-856e184e`, `arena-93e9da14`, `arena-fb6cb424`, `arena-4f92a11c`, `arena-dc732aa6`): this session does **not** touch `collector/**`, `trading/**`, `site_build/**`, `scripts/**`, `assets/desk.js`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `docs/summary.html`, `tools/rendercheck.mjs`, or `kalshi-dashboard/**`.
@@ -1874,6 +1894,54 @@ additively) are untouched here.
   render/link checks after the commit step, or a `commit` job that runs regardless.
 
 ---
+
+# Board L — session `arena-bc051b95` (branch `arena/bc051b95-trade2`)
+
+_Board-letter check at claim time (2026-11-21T06:50Z): `grep "Board K" COORDINATION.md`
+returned only this section; letters A–J were taken by earlier sessions. Re-lettered
+**K → L** on the origin/main merge (2026-11-21T07:1xZ): session `arena-f3cb9b9f`
+independently opened a Board K while this branch was in flight (the letter-collision
+pattern Board J documented), so this section is re-keyed to the next free letter;
+their Board K is preserved verbatim and task IDs stay `K-T*` (session-prefixed,
+unambiguous)._
+
+Base: `main` @ `06738d1` (identical to this branch tip at start). Started 2026-11-21T06:45Z.
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-bc051b95` | `arena/bc051b95-trade2` | Takeover + integration of the two stale PRs (#28, #29), R-1E3-1 workflow fix, full battery, PR → main → merge → Pages confirmation | 2026-11-21T06:45Z | active |
+
+## Task board — `arena-bc051b95`
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| K-T1 | **Take over PR #28** (`arena/dd1da6b5`, "Session E", tasks T20–T26 of its section): claim is > 60 min old with zero commits since 2026-11-20T20:00Z (board rule 5), PR is CONFLICTING with `main` and its `collect` check is red on the stale head. Merge its content onto current `main`, resolve conflicts additively, fix the check, run the full battery | claimed | `arena-bc051b95` | `collector/shortlist.py`, `collector/news.py`, `tools/verify_snapshot.py`, `tools/seed_mid_history.py`, `tests/test_shortlist.py`, `site_build/build.py`, `site_build/flagpage.py`, `assets/desk.js`, `assets/styles.css`, generated root `*.html` + `categories/*.html`, generated `data/*.json` + `assets/live.json` (kept at main's newer snapshot), `EXECUTIVE_SUMMARY.md`, `VERIFICATION.md` |
+| K-T2 | **Handle PR #29** (`arena/c78c9b36`, COORDINATION.md-only close-out of T14 (C78)): same 60-min takeover rule. Integrate its completion record additively into the board or close with rationale; log the handoff either way | claimed | `arena-bc051b95` | `COORDINATION.md` (additive union only) |
+| K-T3 | **Apply standing request R-1E3-1**: add `github.event_name` to the `collect` concurrency group of `.github/workflows/kalshi-dashboard.yml` (requested from PR #28's owner; PR #28 is that owner and is being integrated by this session) | claimed | `arena-bc051b95` | `.github/workflows/kalshi-dashboard.yml` |
+| K-T4 | **Integration**: full local battery + CI on the PR, PR → `main`, merge without waiting, confirm GitHub Pages deploy, record PR link + merge result + sources + verification here; independent demo-API re-verification of published rows through the platform fetcher (sandbox shell has no Kalshi egress — Board J finding, re-checked at claim time: `curl https://demo-api.kalshi.co/trade-api/v2/markets?limit=2` exits 35, HTTP 000) | claimed | `arena-bc051b95` | `COORDINATION.md` (this section only), `VERIFICATION-bc051b95.md` (new) |
+
+## Overlap check at claim time
+
+`gh pr list --state open` → #28 (`arena/dd1da6b5-trade2`, files listed in K-T1) and #29 (`arena/c78c9b36-trade2`, `COORDINATION.md` only). No other session has an open PR. `gh run list --branch main` is green (collector, Kalshi dashboard, Pages). The most recent board section is Board J (`arena-1e3b2594`, integration complete 2026-11-20T20:45Z). This session's work therefore covers exactly the two stale PRs plus the one open request addressed to their owner (R-1E3-1). R-1E3-2 (stale fee-multiplier claim in `flagpage.py`/`build.py` copy) is inside PR #28's claimed scope (`site_build/flagpage.py`, `site_build/build.py` were both touched by that PR) — this session will check on the merged tree whether the flagged item and methodology sentence now match the code, and fix the copy if the takeover leaves them stale.
+
+## Completion record — Board L (updated through the PR, merge result appended below)
+
+| ID | Status | Result |
+| - | - | - |
+| K-T1 | done | PR #28's content merged onto `main` @ `06738d1` in merge commit `b218b05` on this branch; every conflict resolved as a union (resolutions + rationale in `VERIFICATION-bc051b95.md` §2); five defects found in the line-by-line review and fixed with the battery re-run (§3); full battery green (§5). Handoff note recorded: session `arena-dd1da6b5`'s T20–T26 work reaches `main` through this session's PR; their Session E board section is preserved verbatim. |
+| K-T2 | done | PR #29's T14 (C78) close-out integrated additively into the `arena-c78c9b36` board section (registry `done`, task `done`, completed PR #25 verification evidence). Handoff note recorded; PR #29 itself will be closed referencing this integration. |
+| K-T3 | done | R-1E3-1 applied: `collect` concurrency group of `.github/workflows/kalshi-dashboard.yml` is now `collect-${{ github.event_name }}` with the cancellation evidence in a comment, matching `collector.yml`'s pattern. |
+| K-T4 | merge pending | Battery + live-API verification in `VERIFICATION-bc051b95.md`; PR opened from this branch; merge result + Pages confirmation appended below after the merge. |
+
+Battery at the final tree: unittest 243 OK (1 skip) · npm 29/29 · collector
+fixtures + trading engine PASS · root/render/desk-render checks PASS · site
+smoke PASS · linkcheck 50 pages / 685 links / 0 errors · rowsource 0 missing
+source URLs / 0 production leaks. Live demo-API spot checks: 3 rows + 1 order
+book + 1 series re-verified field-by-field through the platform fetcher
+(`VERIFICATION-bc051b95.md` §4) — structural fields exact, live-size fields
+drift inside the published 2 % tolerance.
 
 ## Session claim — `arena-3dcf3f13` (2026-11-21, UTC)
 
