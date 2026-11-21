@@ -2724,3 +2724,31 @@ run because that run had no prior rows to compare. The first run that *can* use 
 fallback is the one that reads the 07:48Z snapshot. No row in any published snapshot
 has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
 otherwise — the mechanism is proven by the end-to-end test, not by a live row.
+
+### Live confirmation of the previously-dead code path (2026-11-21T07:54:38Z run)
+
+The `2026-11-21T07:54:38Z` snapshot on `main` is the first one produced by a run that
+**had** prior rows to compare (`snapshot_fallback.previous_rows = 750`). In that run,
+`suppressed_alerts` contains a row whose reason is
+
+> `previous snapshot is one-sided or too wide to be a valid reference`
+
+That string is produced only by `collector/alerts.py` line 424, inside the
+`elif previous is not None:` branch — the branch that could not be reached while
+`previous_obs` was always empty (N1). It is **absent** from every earlier committed
+snapshot, checked directly:
+
+```
+$ for c in dc4c036 7908fc7 80d2a7b; do git show $c:data/live.json | grep -c "previous snapshot is one-sided"; done
+0
+0
+0
+```
+
+So the fallback path is now exercised by the scheduled collector in production, not
+only by the unit and end-to-end tests. What remains true: no published row has yet
+**fired** an alert on the `previous_snapshot_mid` basis (`compared_against_previous_snapshot = 0`),
+because every market with a ≥ $0.10 midpoint move in these runs failed the quote-integrity
+rule first — 8 for a missing/wide candle reference and 1 for a one-sided previous
+snapshot. That is the rule working as documented, and the reason is published rather
+than the row being dropped.
