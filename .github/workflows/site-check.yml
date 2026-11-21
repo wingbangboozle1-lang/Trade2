@@ -65,6 +65,11 @@ jobs:
       - name: Live probe reaches the chat (jsdom)
         run: node test/desk_live_probe_dc.mjs
 
+      - name: Live probe asks each endpoint the way it accepts
+        # Pure assertions over a synthetic report; the real-API measurement runs
+        # in probe-live.yml, which needs network.
+        run: python3 -m unittest tests.test_probe_live_check -v
+
       - name: Render every generated page offline (jsdom)
         run: node tools/root_pages_render.mjs
 
