@@ -28,7 +28,7 @@ from typing import Any
 
 from .format import (API, count, cents, esc, kalshi_event_url,
                      kalshi_market_url, money, news_search_url, num, pct,
-                     result_chip)
+                     result_chip, safe_url)
 
 TOPIC_ORDER = ["gas-prices", "elections", "culture", "crypto", "golf"]
 TOPIC_LABEL = {
@@ -70,16 +70,30 @@ def resolution_topic(rec: dict[str, Any], series_map: dict[str, str]) -> str | N
 
     ``GET /markets`` returns market objects with **no** ``series_ticker``
     field, so the collector's own per-topic resolution buckets stayed empty.
-    The series ticker is recoverable from the market ticker prefix, which is
-    the documented Kalshi naming convention. The API value is preferred when
-    it is present; the prefix is the fallback.
+    Three sources are tried, most authoritative first:
+
+    1. ``rec["topic"]`` — tagged by the collector's ``migrate_resolutions()``
+       (integration fix, session arena-5bbd15fd) from the *event* ticker,
+       which is delimiter-anchored and therefore also right for series whose
+       own ticker contains ``-``;
+    2. the API's ``series_ticker`` when present;
+    3. the market-ticker prefix, which is Kalshi's naming convention — with a
+       leading ``KX`` stripped as well, because series ``AAAGASD`` publishes
+       its events as ``KXAAAGASD-26NOV20`` while the map holds the bare
+       series ticker (without this, every gas resolution was dropped here).
     """
+    topic = rec.get("topic")
+    if topic in TOPIC_ORDER:
+        return topic
     declared = rec.get("series_ticker")
     if declared and declared in series_map:
         return series_map[declared]
     ticker = rec.get("ticker") or ""
     prefix = ticker.split("-")[0] if "-" in ticker else ticker
-    return series_map.get(prefix)
+    slug = series_map.get(prefix)
+    if slug is None and prefix.startswith("KX"):
+        slug = series_map.get(prefix[2:])
+    return slug
 
 
 #: Same threshold as the alert engine: a swing of >= $0.10 in either
@@ -302,14 +316,14 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
             ticker = rec.get("ticker") or ""
             body.append(
                 "<tr>"
-                f'<td><a href="{html.escape(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker")))}" '
+                f'<td><a href="{safe_url(kalshi_market_url(ticker, rec.get("series_ticker"), rec.get("event_ticker"))) or "#"}" '
                 f'target="_blank" rel="noreferrer">{esc(rec.get("title"))}</a>'
                 f'<small class="ticker">{esc(ticker)}</small></td>'
                 f"<td>{result_chip(rec.get('result'))}</td>"
                 f"<td>{cents(rec.get('settlement_value_dollars'))}</td>"
                 f"<td>{esc((rec.get('settlement_ts') or '')[:19].replace('T', ' '))}</td>"
                 f'<td><a class="source-link" target="_blank" rel="noreferrer" '
-                f'href="{html.escape(rec.get("source_url") or API + "/markets/" + ticker)}">API ↗</a></td>'
+                f'href="{safe_url(rec.get("source_url") or API + "/markets/" + ticker) or "#"}">API ↗</a></td>'
                 "</tr>")
         if not body:
             body.append('<tr><td colspan="5" class="empty-state">'
@@ -334,7 +348,14 @@ def build_resolutions(live: dict[str, Any], resolutions: dict[str, Any],
           </div>
         </section>""")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Resolved", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">SETTLEMENT TRACKING · KALSHI DEMO</div>
           <h1>Resolved events</h1>
@@ -412,7 +433,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         trade_rows.append(
             "<tr>"
             f"<td>{esc(time.strftime('%Y-%m-%d %H:%M', time.gmtime(t.get('ts') or 0)))}</td>"
-            f'<td><a href="{html.escape(kalshi_market_url(ticker))}" target="_blank" '
+            f'<td><a href="{safe_url(kalshi_market_url(ticker)) or "#"}" target="_blank" '
             f'rel="noreferrer">{esc(ticker)}</a></td>'
             f"<td>{esc(t.get('strategy'))}</td>"
             f"<td>{esc((t.get('side') or '').upper())}</td>"
@@ -434,7 +455,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         ticker = p.get("ticker") or ""
         open_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(p.get("market_url") or kalshi_market_url(ticker))}" '
+            f'<td><a href="{safe_url(p.get("market_url") or kalshi_market_url(ticker)) or "#"}" '
             f'target="_blank" rel="noreferrer">{esc(p.get("title"))}</a>'
             f'<small class="ticker">{esc(ticker)}</small></td>'
             f"<td>{esc(p.get('topic'))}</td>"
@@ -454,7 +475,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         ticker = p.get("ticker") or ""
         settled_rows.append(
             "<tr>"
-            f'<td><a href="{html.escape(p.get("market_url") or kalshi_market_url(ticker))}" '
+            f'<td><a href="{safe_url(p.get("market_url") or kalshi_market_url(ticker)) or "#"}" '
             f'target="_blank" rel="noreferrer">{esc(p.get("title"))}</a>'
             f'<small class="ticker">{esc(ticker)}</small></td>'
             f"<td>{esc(p.get('strategy'))}</td>"
@@ -495,7 +516,14 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
         category_rows.append('<tr><td colspan="4" class="empty-state">No '
                              "settled trade yet.</td></tr>")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Trades and strategies", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">SIMULATED EXECUTION · PAPER LEDGER</div>
           <h1>Trades and strategies</h1>
@@ -884,7 +912,14 @@ def build_suggestions(live: dict[str, Any]) -> str:
           <div class="sug-grid">{''.join(cards)}</div>
         </section>""")
 
-    return f"""
+    # These three pages are built here rather than in build.py, so the
+    # shared header has to be added explicitly: without it the page carries
+    # no breadcrumb, no snapshot-age marker and no #livePill for desk.js to
+    # switch to LIVE when a poll or stream lands.
+    from .build import topbar  # local import: build.py imports this module
+
+    return f"""{topbar("Suggestions", live.get("generated_at", ""),
+                       generated_at_ts=live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">ROADMAP · MAKING THE DESK LIVE</div>
           <h1>Suggestions</h1>

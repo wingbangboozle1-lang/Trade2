@@ -84,48 +84,47 @@ OPEN_MARKETS = {
          "title": "The RSM Classic: Brian Harman wins", "series_ticker": "KXPGATOUR",
          "status": "open", "yes_bid_dollars": "0.0700", "yes_ask_dollars": "0.1100",
          "last_price_dollars": "0.0800", "volume_fp": "13635.00", "open_interest_fp": "5000.00",
-         "expected_expiration_ts": 1795354800, "fee_type": "quadratic", "fee_multiplier": 1,
-         "price_level_structure": "tapered_deci_cent"},
+         "expected_expiration_time": "2026-11-22T13:40:00Z", "price_level_structure": "tapered_deci_cent"},
     ],
     "KXSOLE": [
         {"ticker": "KXSOLE-26NOV20-H31", "event_ticker": "KXSOLE-26NOV20",
          "title": "Solana up or down hour 31", "series_ticker": "KXSOLE",
          "status": "open", "yes_bid_dollars": "0.4500", "yes_ask_dollars": "0.4900",
          "last_price_dollars": "0.4700", "volume_fp": "9200.00", "open_interest_fp": "1200.00",
-         "expected_expiration_ts": 1795184400, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-11-20T14:20:00Z"},
         {"ticker": "KXSOLE-26NOV20-H32", "event_ticker": "KXSOLE-26NOV20",
          "title": "Solana up or down hour 32", "series_ticker": "KXSOLE",
          "status": "open", "yes_bid_dollars": None, "yes_ask_dollars": None,
          "last_price_dollars": None, "volume_fp": None, "open_interest_fp": None,
-         "expected_expiration_ts": 1795188000, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-11-20T15:20:00Z"},
         # regression: real API objects have NO series_ticker field and report
         # status "active" (not "open") — both must normalize correctly
         {"ticker": "KXSOLE-26NOV20-H33", "event_ticker": "KXSOLE-26NOV20",
          "title": "Solana up or down hour 33",
          "status": "active", "yes_bid_dollars": "0.4000", "yes_ask_dollars": "0.4400",
          "last_price_dollars": "0.4200", "volume_fp": "600.00", "open_interest_fp": "100.00",
-         "expected_expiration_ts": 1795191600, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-11-20T16:20:00Z"},
     ],
     "KXXBANNEDGROK": [
         {"ticker": "KXXBANNEDGROK-26DEC31", "event_ticker": "KXXBANNEDGROK",
          "title": "Grok banned by end of year", "series_ticker": "KXXBANNEDGROK",
          "status": "open", "yes_bid_dollars": "0.2200", "yes_ask_dollars": "0.2500",
          "last_price_dollars": "0.2300", "volume_fp": "4100.00", "open_interest_fp": "900.00",
-         "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-12-31T17:00:00Z"},
     ],
     "KXAAAGASDDE": [
         {"ticker": "KXAAAGASDDE-26NOV20", "event_ticker": "KXAAAGASDDE-26NOV20",
          "title": "Delaware avg gas price above $3.00 on Nov 20", "series_ticker": "KXAAAGASDDE",
          "status": "open", "yes_bid_dollars": "0.6100", "yes_ask_dollars": "0.6400",
          "last_price_dollars": "0.6200", "volume_fp": "2300.00", "open_interest_fp": "800.00",
-         "expected_expiration_ts": 1795267200, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-11-21T13:20:00Z"},
     ],
     "KXELONMARS": [
         {"ticker": "KXELONMARS-99", "event_ticker": "KXELONMARS",
          "title": "Elon Musk on Mars", "series_ticker": "KXELONMARS",
          "status": "open", "yes_bid_dollars": "0.0100", "yes_ask_dollars": "0.0200",
          "last_price_dollars": "0.0100", "volume_fp": "78000.00", "open_interest_fp": "20000.00",
-         "expected_expiration_ts": 1830297600, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2028-01-01T00:00:00Z"},
     ],
     # these two series exist ONLY to prove the matchers exclude them (see assertions)
     "KXATPGAME": [
@@ -133,21 +132,21 @@ OPEN_MARKETS = {
          "title": "ATP Tennis Match", "series_ticker": "KXATPGAME",
          "status": "open", "yes_bid_dollars": "0.5000", "yes_ask_dollars": "0.5200",
          "last_price_dollars": "0.5100", "volume_fp": "5000.00", "open_interest_fp": "1000.00",
-         "expected_expiration_ts": 1795267200, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-11-21T13:20:00Z"},
     ],
     "KXSPRMAX": [
         {"ticker": "KXSPRMAX-26DEC31", "event_ticker": "KXSPRMAX",
          "title": "WTI Crude Oil Max Price", "series_ticker": "KXSPRMAX",
          "status": "open", "yes_bid_dollars": "0.3000", "yes_ask_dollars": "0.3300",
          "last_price_dollars": "0.3100", "volume_fp": "9000.00", "open_interest_fp": "2000.00",
-         "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-12-31T17:00:00Z"},
     ],
     "KXMCMMEN": [
         {"ticker": "KXMCMMEN-26", "event_ticker": "KXMCMMEN",
          "title": "ATP Monte-Carlo Masters Winner", "series_ticker": "KXMCMMEN",
          "status": "open", "yes_bid_dollars": "0.2000", "yes_ask_dollars": "0.2300",
          "last_price_dollars": "0.2100", "volume_fp": "4000.00", "open_interest_fp": "800.00",
-         "expected_expiration_ts": 1798736400, "fee_type": "quadratic", "fee_multiplier": 1},
+         "expected_expiration_time": "2026-12-31T17:00:00Z"},
     ],
 }
 
@@ -284,6 +283,19 @@ def main() -> int:
             if m["ticker"] == "KXSOLE-26NOV20-H33":
                 assert m["series_ticker"] == "KXSOLE", m          # derived from ticker prefix
                 assert m["status"] == "open", m                   # "active" normalized to "open"
+            # Field-name regression (session arena-1e3b2594, 2026-11-20): the
+            # market object's key is `expected_expiration_time`, an ISO string.
+            # Reading any other name returns nothing, and 40/40 published rows
+            # went blank while the value was available all along. The row must
+            # carry the API's string verbatim — no conversion, no inference.
+            if m["ticker"] == "KXPGATOUR-THRC26-BHAA":
+                assert m["expected_expiration"] == "2026-11-22T13:40:00Z", m
+            if m["ticker"] == "KXSOLE-26NOV20-H31":
+                assert m["expected_expiration"] == "2026-11-20T14:20:00Z", m
+            # `fee_type` is a *series* field; it is legitimately absent from a
+            # market response, so the published column stays blank (flagged),
+            # never guessed. Pinned so nobody "fixes" it by inventing a value.
+            assert "fee_type" in m and m["fee_type"] is None, m
         # orderbooks with depth for top markets
         books = load("orderbooks.json")["books"]
         assert books, "no orderbooks"

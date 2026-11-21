@@ -46,8 +46,8 @@
           <div class="breadcrumb">Workspace <span>/</span> Methodology</div>
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
-            <time id="updatedAt">Snapshot 2026-11-20T19:25:15Z</time>
-            <span class="snap-age" id="snapshotAge" data-generated-ts="1795202715.7196808">4 min old</span>
+            <time id="updatedAt">Snapshot 2026-11-21T06:28:00Z</time>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795242480.3907638">1 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -101,8 +101,13 @@
           <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank"
           rel="noreferrer">official fee schedule</a>. All 42 published rows of that
           table are reproduced exactly by the implementation and are asserted in
-          <code>tests/test_engine.py</code>. Fee-free series (multiplier 0) are
-          respected via each series' own <code>fee_multiplier</code>.</p>
+          <code>tests/test_engine.py</code>. The <code>trading/</code> engine
+          respects each series' own <code>fee_multiplier</code>; the collector's
+          simulated ledger, which is what <code>trades.html</code> publishes,
+          applies a multiplier of 1 to every series because it calls
+          <code>kalshi_fee(price, contracts)</code> without one — that difference
+          is listed on <a href="review.html">Flagged for review</a> rather than
+          left implicit.</p>
           <h2>The high-ROI filter</h2>
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
@@ -111,8 +116,10 @@
           threshold and the spread is tight. This is a screen, not a forecast; the
           performance table shows realised results including every loss.</p>
           <h2>Settlement</h2>
-          <p>Positions settle from the market's official <code>result</code> field:
-          YES pays $1.00 per contract, NO pays nothing, as documented in
+          <p>Positions settle from the market's official <code>result</code> field.
+          On a <b>Yes</b> outcome, Yes contract holders receive $1.00 per contract;
+          on a <b>No</b> outcome, No contract holders receive $1.00 per contract —
+          the losing side pays nothing. Only net positions are settled. Source:
           <a href="https://docs.kalshi.com/getting_started/market_settlement"
           target="_blank" rel="noreferrer">Market Settlement</a>.</p>
           <h2>What is deliberately not claimed</h2>

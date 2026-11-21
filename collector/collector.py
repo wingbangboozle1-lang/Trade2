@@ -25,7 +25,7 @@ import os
 import time
 from typing import Any
 
-from . import alerts
+from . import alerts, news
 from . import topics as topic_mod
 from .engine import (Portfolio, LiveDemoBroker, STRATEGIES, exit_signals as select_exits,
                      select_trades)
@@ -38,8 +38,14 @@ HISTORY_PATH = os.path.join(DATA_DIR, "history.json")
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
 VERIFIED_PATH = os.path.join(DATA_DIR, "verified_results.json")
 
-ALERTS_VERSION = 2       # bump to discard alerts written by an older rule set
+ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
+# v3 (session arena-dc732aa6): alerts carry a stable per-bar key, an explicit
+# price basis and an executability verdict, and the rolling buffer folds repeats
+# instead of appending them (29 buffered rows / 8 distinct moves in the
+# 2026-11-20T18:41Z snapshot). Stored rows are also re-checked against the
+# quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
+MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -51,6 +57,109 @@ DISCOVERY_SHARE = 0.55
 def iso(ts: float | None = None) -> str:
     ts = ts if ts is not None else time.time()
     return dt.datetime.fromtimestamp(ts, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def resolution_topic(event_ticker: str | None, registry: dict[str, dict[str, Any]],
+                     memo: dict[str, str | None] | None = None) -> str | None:
+    """Map a settled market's event ticker onto one of the five tracked topics.
+
+    Kalshi market objects returned by ``GET /markets`` carry **no**
+    ``series_ticker`` field — every record written by the old code has
+    ``series_ticker: null`` (same live finding session c0205283 logged for
+    market objects), so keying the topic lookup on it matched nothing and every
+    per-topic resolution list on the site stayed empty. The event ticker
+    embeds the series ticker as its head:
+
+        ``KXAAAGASD-26NOV20``   -> series ``AAAGASD``   (events sometimes add a
+                                                              ``KX`` prefix)
+        ``KXPRESNOMD-28-RW``    -> series ``KXPRESNOMD``
+        ``KXBTCY-27JAN0100``    -> series ``KXBTCY``
+
+    Each head is tried as-is first, then with a leading ``KX`` removed, and
+    only whole ``-``-delimited heads are considered, so one series can never
+    swallow a longer sibling (``AAAGAS`` does not match ``KXAAAGASD-…``).
+    Returns the topic slug, or None when the event belongs to none of the
+    tracked series (e.g. the soccer markets the settled scan also sees).
+    """
+    if memo is not None and event_ticker in memo:
+        return memo[event_ticker]
+    if not event_ticker or not registry:
+        return None
+    found: str | None = None
+    # Candidate heads: every "-"-delimited prefix of the ticker (longest last).
+    parts = event_ticker.split("-")
+    for i in range(1, len(parts) + 1):
+        head = "-".join(parts[:i])
+        row = registry.get(head)
+        if row is None and head.startswith("KX"):
+            row = registry.get(head[2:])
+        if row is not None and row.get("topic"):
+            found = row["topic"]
+            break
+    if memo is not None:
+        memo[event_ticker] = found
+    return found
+
+
+def series_row_for_event(event_ticker: str | None,
+                         registry: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """The ``GET /series`` row that owns an event ticker, or None.
+
+    Same head scan as :func:`resolution_topic` and for the same reason: a market
+    object from ``GET /markets`` has no ``series_ticker`` field
+    (https://docs.kalshi.com/api-reference/market/get-markets), so the only way
+    back to the series — and therefore to the series' own ``fee_multiplier`` /
+    ``fee_type`` (https://docs.kalshi.com/api-reference/series/get-series) — is
+    the ticker prefix. Returns the whole registry row so callers can read any
+    documented series field, not just the topic.
+    """
+    if not event_ticker or not registry:
+        return None
+    parts = event_ticker.split("-")
+    for i in range(1, len(parts) + 1):
+        head = "-".join(parts[:i])
+        row = registry.get(head)
+        if row is None and head.startswith("KX"):
+            row = registry.get(head[2:])
+        if row is not None:
+            return row
+    return None
+
+
+def migrate_resolutions(store: dict[str, Any],
+                        registry: dict[str, dict[str, Any]]) -> int:
+    """Re-tag every stored resolution with its topic and drop out-of-scope ones.
+
+    The settled scan sees the whole exchange (soccer, quicksettle, …); those
+    records are outside the brief's five topics and — because the store is
+    bounded to the newest ``MAX_RESOLUTIONS`` — they crowd out the tracked
+    topics' own YES/NO history. Called once per run after discovery, with the
+    full series registry, so records written by the old series_ticker-keyed
+    code are re-classified instead of silently kept unviewable. Returns the
+    number of records kept.
+    """
+    res_map = store.get("resolutions") or {}
+    if not registry:
+        # Discovery failed this run: an empty registry would classify nothing
+        # and wipe the store. Keep everything and retry next run.
+        return len(res_map)
+    memo: dict[str, str | None] = {}
+    kept: dict[str, dict[str, Any]] = {}
+    for ticker, rec in res_map.items():
+        if not isinstance(rec, dict):
+            continue
+        topic = rec.get("topic") or resolution_topic(
+            rec.get("event_ticker") or rec.get("ticker"), registry, memo)
+        if topic:
+            rec["topic"] = topic
+            kept[ticker] = rec
+    if len(kept) > MAX_RESOLUTIONS:
+        ordered = sorted(kept.items(),
+                         key=lambda kv: kv[1].get("settlement_ts") or "",
+                         reverse=True)
+        kept = dict(ordered[:MAX_RESOLUTIONS])
+    store["resolutions"] = kept
+    return len(kept)
 
 
 def load_json(path: str, default: Any):
@@ -152,9 +261,15 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     ask = _candle_close(chosen, "yes_ask")
     if bid is None or ask is None or not (0.0 <= bid <= ask <= 1.0):
         return None
+    # ``trade_close`` is published next to the quote mid for transparency only
+    # (the chart legend and the methodology page); it is never the basis of a
+    # swing alert, which is the point of 856e184e's quote rule.
     return {"mid": round((bid + ask) / 2.0, 4),
             "ts": float(chosen["end_period_ts"]),
-            "spread": round(ask - bid, 4)}
+            "spread": round(ask - bid, 4),
+            "yes_bid": bid, "yes_ask": ask,
+            "trade_close": _candle_close(chosen, "price"),
+            "period_interval_minutes": 1}
 
 
 def _candle_close(candle: dict[str, Any], side: str) -> float | None:
@@ -164,6 +279,64 @@ def _candle_close(candle: dict[str, Any], side: str) -> float | None:
         return float(block.get("close_dollars"))
     except (TypeError, ValueError):
         return None
+
+
+NEWS_MAX_PER_RUN = 6      # headline lookups per run (each one is a single GET)
+NEWS_TIMEOUT_SECONDS = 6.0
+NEWS_WINDOW_HOURS = 6
+
+
+def _brief(alert: dict[str, Any]) -> dict[str, Any]:
+    """The subset of an alert a reviewer needs to audit a refusal."""
+    keys = ("ticker", "event_ticker", "series_ticker", "topic", "title",
+            "abs_delta", "direction", "yes_bid", "yes_ask", "spread",
+            "market_url", "ts", "iso", "threshold")
+    out = {k: alert.get(k) for k in keys}
+    out["kind"] = "indicative-move" if alert.get("quality") == "indicative" \
+        else "midpoint-move"
+    return out
+
+
+def attach_news(new_alerts: list[dict[str, Any]],
+                deadline: float | None = None) -> dict[str, Any]:
+    """Attach candidate headlines to freshly emitted swing alerts.
+
+    The brief asks for "events and website links that may have caused a sharp
+    jump". No official source maps news to Kalshi prices, so this is a
+    best-effort keyword lookup against Google News RSS, published as a
+    *candidate* with its own publication timestamp and never as a confirmed
+    cause. When the lookup fails — blocked network, timeout, no headline in the
+    window — the field stays empty and the reason is recorded, instead of a
+    plausible-looking guess.
+
+    Only rows that are new or materially bigger are looked up, because the chat
+    folds repeats: an ongoing move does not get re-searched on every run.
+    """
+    stats = {"looked_up": 0, "with_headlines": 0, "skipped": 0, "reason": "",
+             "source": "https://news.google.com/rss/search"}
+    for alert in new_alerts:
+        alert.setdefault("news", [])
+        alert.setdefault("news_status", "not looked up this run")
+    if not new_alerts:
+        return stats
+    for alert in new_alerts[:NEWS_MAX_PER_RUN]:
+        if deadline is not None and time.time() > deadline - NEWS_TIMEOUT_SECONDS:
+            stats["reason"] = "run budget exhausted before the news lookup"
+            break
+        try:
+            when = dt.datetime.fromtimestamp(alert["ts"], dt.timezone.utc)
+            found = news.market_news(alert["ticker"], alert.get("title") or "",
+                                      when, window_hours=NEWS_WINDOW_HOURS)
+        except Exception as exc:                     # never fail a run on news
+            stats["reason"] = f"news lookup error ({type(exc).__name__})"
+            break
+        stats["looked_up"] += 1
+        alert["news"] = found
+        alert["news_status"] = "matched" if found else "no headline in window"
+        if found:
+            stats["with_headlines"] += 1
+    stats["skipped"] = len(new_alerts) - stats["looked_up"]
+    return stats
 
 
 def collect(market_cap: int = 150, orderbook_cap: int = 300,
@@ -213,6 +386,9 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 if p.get("status") == "open"}
 
     observations: list[alerts.Observation] = []
+    # Two documented endpoints can disagree on the same market; publish the
+    # largest gaps instead of silently preferring one of them.
+    gaps: list[dict[str, Any]] = []
     liquidity: dict[str, dict[str, Any]] = {}
     per_topic: dict[str, Any] = {}
     series_registry: dict[str, dict[str, Any]] = {}
@@ -294,9 +470,18 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 continue
             book = books.get(ticker)
             book_payload = {"orderbook_fp": book} if book is not None else None
-            obs = alerts.observe(market, book_payload, topic.slug, ts=now)
+            # The series row carries this series' own official fee parameters,
+            # which the market object does not (see series_row_for_event).
+            obs = alerts.observe(market, book_payload, topic.slug, ts=now,
+                                 series=series_row_for_event(
+                                     market.get("event_ticker") or ticker,
+                                     series_registry))
             if book:
                 liquidity[ticker] = alerts.analyse_liquidity(book_payload)
+                gap = alerts.book_record_divergence(market, book_payload)
+                if gap:
+                    gap["topic"] = topic.slug
+                    gaps.append(gap)
             observations.append(obs)
         t_mark = lap(f"books:{topic.slug}", t_mark)
 
@@ -331,7 +516,18 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     t_mark = lap("reference_bars", t_mark)
 
     # -- swaps ------------------------------------------------------------
+    # Attach each market's bar reference to its observation so the alert (and
+    # therefore the page) can state which Kalshi-published numbers it used.
+    for obs in observations:
+        ref = references.get(obs.ticker)
+        if ref:
+            obs.ref_ts = ref.get("ts")
+            obs.ref_yes_bid = ref.get("yes_bid")
+            obs.ref_yes_ask = ref.get("yes_ask")
+            obs.ref_trade_close = ref.get("trade_close")
+
     new_alerts: list[dict[str, Any]] = []
+    suppressed: list[dict[str, Any]] = []
     for obs in observations:
         prev_row = previous_obs.get(obs.ticker)
         prev = None
@@ -347,22 +543,33 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 open_interest=prev_row.get("open_interest"),
                 series_ticker=prev_row.get("series_ticker", ""),
             )
-        ref = references.get(obs.ticker)
-        alert = alerts.detect_swing(
-            prev, obs,
-            reference=(ref or {}).get("mid"),
-            reference_ts=(ref or {}).get("ts"),
-            reference_spread=(ref or {}).get("spread"),
-        )
+        ref = references.get(obs.ticker) or {}
+        kwargs = dict(reference=ref.get("mid"), reference_ts=ref.get("ts"),
+                      reference_spread=ref.get("spread"), bar_seconds=BAR_SECONDS)
+        alert = alerts.detect_swing(prev, obs, **kwargs)
         if alert:
-            new_alerts.append(alert)
+            # An alert only means something if there is size at the level you
+            # would actually trade. Keep such rows in the chat, but publish the
+            # reason they are not actionable instead of hiding them.
+            if alert.get("quality") == "indicative":
+                alert["news"] = []
+                alert["news_status"] = "not looked up: not executable"
+                suppressed.append({**_brief(alert),
+                                   "reason": alert["quality_reason"]})
+            else:
+                new_alerts.append(alert)
+        else:
+            rejection = alerts.swing_rejection(prev, obs, **kwargs)
+            if rejection:
+                suppressed.append(rejection)
 
-    existing = alerts_store.get("alerts", [])
-    merged = new_alerts + [a for a in existing
-                           if a.get("id") not in {n["id"] for n in new_alerts}]
-    # Drop stored alerts that fail the current quote rule (written before it).
-    merged = [a for a in merged if alerts.alert_record_valid(a)]
-    merged = merged[:MAX_ALERTS]
+    # Candidate catalysts for the rows that will actually appear in the chat.
+    news_stats = attach_news(new_alerts, deadline)
+
+    existing = [a for a in alerts_store.get("alerts", [])
+                if alerts.alert_record_valid(a)]
+    fold = alerts.fold_alerts(new_alerts, existing, max_alerts=MAX_ALERTS)
+    merged = fold["alerts"]
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
@@ -396,15 +603,32 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             errors.append(f"settled scan failed ({exc})")
 
     lap("settled_scan", t_settle)
+    resolution_memo: dict[str, str | None] = {}
     for market in settled_markets:
         ticker = market.get("ticker")
         result = (market.get("result") or "").lower()
         if not ticker or result not in ("yes", "no"):
             continue
+        # Settle the simulated book first: a held position must be graded even
+        # if its record would fall outside the stored (displayed) scope.
+        closed = portfolio.settle(ticker, result)
+        if closed:
+            settled_updates.append(closed.as_dict())
+            history.setdefault("series", {}).setdefault(ticker, []).append(
+                {"ts": now, "result": result, "price": closed.exit_price})
+        # Store only resolutions inside the five tracked topics. Market objects
+        # carry no series_ticker, so the topic comes from the event ticker
+        # (see resolution_topic()); everything else is out of scope and would
+        # only crowd the bounded store.
+        topic = resolution_topic(
+            market.get("event_ticker") or ticker, series_registry, resolution_memo)
+        if not topic:
+            continue
         resolutions["resolutions"][ticker] = {
             "ticker": ticker,
             "event_ticker": market.get("event_ticker"),
             "series_ticker": market.get("series_ticker"),
+            "topic": topic,
             "title": market.get("yes_sub_title") or market.get("title"),
             "result": result,
             "settlement_value_dollars": market.get("settlement_value_dollars"),
@@ -414,11 +638,6 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "human_url": f"https://kalshi.com/markets/{market.get('event_ticker','')}",
             "verified_at": iso(now),
         }
-        closed = portfolio.settle(ticker, result)
-        if closed:
-            settled_updates.append(closed.as_dict())
-            history.setdefault("series", {}).setdefault(ticker, []).append(
-                {"ts": now, "result": result, "price": closed.exit_price})
 
     # Manage open simulated positions: bank favourable swings, cut adverse ones.
     obs_by_ticker = {o.ticker: o for o in observations}
@@ -450,25 +669,24 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             (o.__dict__ for o in observations if o.ticker == row["ticker"]), None)
 
     # Highest-dollar events per topic, plus resolved feed per topic.
+    # First migrate the store: re-tag every record from its event ticker
+    # (market objects carry no series_ticker — see resolution_topic()) and
+    # drop out-of-scope settlements so the bounded store tracks the five
+    # topics the brief asks for.
+    migrate_resolutions(resolutions, series_registry)
     resolved_by_topic: dict[str, list[dict[str, Any]]] = {t.slug: [] for t in topic_mod.TOPICS}
     series_to_topic = {r["ticker"]: r["topic"] for r in series_registry.values()}
     for ticker, rec in resolutions["resolutions"].items():
-        topic_slug = series_to_topic.get(rec.get("series_ticker") or "")
+        topic_slug = (rec.get("topic")
+                      or series_to_topic.get(rec.get("series_ticker") or "")
+                      or resolution_topic(rec.get("event_ticker") or ticker,
+                                          series_registry))
         if topic_slug:
             resolved_by_topic.setdefault(topic_slug, []).append(rec)
     for slug in resolved_by_topic:
         resolved_by_topic[slug] = sorted(
             resolved_by_topic[slug],
             key=lambda r: r.get("settlement_ts") or "", reverse=True)[:40]
-
-    # Keep the resolutions store bounded. Open-interest-free sports markets
-    # settle constantly, and an unbounded map grew the file past 8 MB in the
-    # first hour. Newest 2,000 are kept; older entries drop out.
-    res_map = resolutions.get("resolutions", {})
-    if len(res_map) > 2000:
-        ordered = sorted(res_map.items(),
-                         key=lambda kv: kv[1].get("settlement_ts") or "", reverse=True)
-        resolutions["resolutions"] = dict(ordered[:2000])
 
     # Keep the published snapshot lean: full series metadata (settlement source
     # URLs, contract terms) is valuable on the topic pages up to a point, but
@@ -492,9 +710,10 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "topics": per_topic,
         "events": ranked_events,
         "alerts": merged,
-        "high_roi_alerts": [a for a in merged
-                            if any(s["ticker"] == a["ticker"] and s["score"] >= 0.10
-                                   for s in signal_dicts)],
+        "high_roi_alerts": alerts.high_roi_alerts(merged, signal_dicts),
+        "model_gate": {"min_net_roi": alerts.MODEL_MIN_NET_ROI,
+                       "require_executable": True,
+                       "source": "https://docs.kalshi.com/getting_started/orderbook_responses.md"},
         "signals": signal_dicts,
         "liquidity": liquidity,
         "portfolio": analytics,
@@ -506,6 +725,22 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         "observation_count": len(observations),
         "reference_bar_seconds": BAR_SECONDS,
         "reference_bars_used": len(references),
+        "alert_stats": {
+            "fired_this_run": len(new_alerts),
+            "added": fold["added"],
+            "escalated": fold["escalated"],
+            "folded_duplicates": fold["folded"],
+            "buffer": len(merged),
+            "distinct_moves": len({a.get("key") for a in merged}),
+            "executable": sum(1 for a in merged if a.get("quality") == "executable"),
+            "indicative": sum(1 for a in merged if a.get("quality") == "indicative"),
+            "suppressed_this_run": len(suppressed),
+        },
+        "suppressed_alerts": suppressed[:40],
+        "book_record_gaps": sorted(gaps, key=lambda g: g["abs_gap"],
+                                    reverse=True)[:40],
+        "book_record_gap_count": len(gaps),
+        "news_stats": news_stats,
         "run_seconds": round(time.time() - started, 1),
         "timings": timings,
         "budget_seconds": budget_seconds,

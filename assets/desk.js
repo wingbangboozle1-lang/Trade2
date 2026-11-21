@@ -69,6 +69,14 @@
     });
   }
 
+  /* Third-party URLs (a news headline link comes from outside Kalshi) must not
+   * reach an href as javascript: or data:. The generator applies the same rule
+   * in site_build/format.py:safe_url, so both renderers agree. */
+  function safeUrl(value) {
+    var text = String(value === null || value === undefined ? "" : value).trim();
+    return /^https?:\/\//i.test(text) ? esc(text) : "";
+  }
+
   /* ------------------------------------------------------------------ */
   /* snapshot                                                            */
   /* ------------------------------------------------------------------ */
@@ -167,7 +175,10 @@
     renderFeeds();
     renderDesk();
     fillMarketSelect();
-    if (state.market) refreshMarketNow(state.market);
+    if (state.market) {
+      renderChartNotes();
+      refreshMarketNow(state.market);
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -195,6 +206,18 @@
   function alertRow(a, isModel) {
     var up = a.direction === "up";
     var when = (a.iso || "").slice(11, 19) || hhmmss(a.ts);
+    var basis = a.basis || "mid";
+    var badge = "";
+    if (a.thin_book || (basis && basis !== "mid")) {
+      var label = basis === "quote" ? "one-sided book" : "thin book";
+      badge = '<span class="tag tag-warn" title="Move measured on ' + label +
+        " basis — the midpoint of a wide spread is not an executable price. " +
+        'See Methodology.">' + label + "</span>";
+    }
+    var q = encodeURIComponent(a.title || a.ticker || "");
+    var context = '<a class="source-link" target="_blank" rel="noreferrer" ' +
+      'href="https://news.google.com/search?q=' + q + '" title="Research link ' +
+      '— possible context only; causality unverified">context ↗</a>';
     var row = document.createElement("div");
     row.className = "chat-row" + (up ? " up" : " down");
     var badges = "";
@@ -208,18 +231,59 @@
         " / ask " + money(a.yes_ask) + " — the spread is at least $0.10, so " +
         'this midpoint is not an executable price.">wide spread · not executable</span> ';
     }
+    /* The collector stamps a verdict on every row it writes; a row without one
+     * predates the rule and says so instead of being assumed executable. */
+    if (a.quality === "executable") {
+      badges += '<span class="tag tag-yes" title="Both sides quoted, and the YES ' +
+        "spread is tighter than the $0.10 threshold, so the midpoint sits inside " +
+        'a range a trader could transact in.">executable</span> ';
+    } else if (a.quality === "indicative") {
+      badges += '<span class="flag-badge" title="' + esc(a.quality_reason || "") +
+        '">indicative · not executable</span> ';
+    } else if (a.quality === undefined || a.quality === null) {
+      badges += '<span class="tag tag-grey" title="Written before the collector ' +
+        "stated a price basis per row; no executability claim is made either " +
+        'way.">pre-rule row</span> ';
+    }
+    /* What the two subtracted numbers are, and whether anything was resting at
+     * the level when the move printed. */
+    var extra = a.reference_basis ? " · " + esc(a.reference_basis) : "";
+    if (a.spread !== null && a.spread !== undefined) {
+      extra += " · YES spread " + money(a.spread, 4) +
+        (a.size_at_top !== null && a.size_at_top !== undefined
+          ? " · " + num(a.size_at_top) + " contracts at the level"
+          : " · no resting size at the level");
+    }
+    /* Headlines the collector found within six hours either side of the move:
+     * candidates, never a claimed cause. */
+    var heads = [], newsList = a.news || [];
+    for (var hi = 0; hi < newsList.length && hi < 2; hi++) {
+      var href = safeUrl(newsList[hi].url);
+      var label = String(newsList[hi].title || "").trim();
+      if (href && label) {
+        heads.push('<a href="' + href + '" target="_blank" rel="noreferrer noopener">' +
+          esc(label) + " ↗</a>");
+      }
+    }
+    var newsWhy = String(a.news_status || "no news lookup recorded for this row");
+    var newsHtml = heads.length
+      ? '<span class="cause-links"><span class="cause-label">candidate headline, ' +
+        'not confirmed:</span>' + heads.join(" ") + "</span>"
+      : '<span class="cause-links"><span class="cause-none" title="' + esc(newsWhy) +
+        '">no verified news link · ' + esc(newsWhy) + "</span></span>";
     row.innerHTML =
       "<time>" + esc(when) + "</time>" +
       '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
       (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
       '<span class="chat-body">' +
-      '<a href="' + esc(a.market_url || "#") + '" target="_blank" rel="noreferrer">' +
+      '<a href="' + (safeUrl(a.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
       esc(a.title || a.ticker) + "</a>" +
       "<small>" + money(a.previous) + " → " + money(a.current) +
       " · " + esc(a.topic) +
       (isModel ? " · net ROI " + pct(a.model_net_roi) : "") +
-      "</small>" +
+      extra + "</small>" +
       (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
+      newsHtml +
       '<span class="cause-links">' +
       '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
       '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
@@ -227,6 +291,29 @@
       "</span>" +
       '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
       'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
+    return row;
+  }
+
+  /* A model signal rendered as a chat row. The shortlist shows these when no
+   * >= $0.10 swing matches the signal: a swing usually leaves little modelled
+   * edge behind it, so intersecting the two feeds made the shortlist
+   * structurally empty. Mirrors the signal-picks fallback in
+   * site_build.build_overview. */
+  function signalRow(sig, seriesByTicker) {
+    var row = document.createElement("div");
+    row.className = "chat-row up";
+    row.innerHTML =
+      "<time>" + esc(hhmmss(sig.ts)) + "</time>" +
+      '<span class="chat-delta pos">★ ' + pct(sig.net_roi) + "</span>" +
+      '<span class="chat-body">' +
+      '<a href="' + esc(sig.market_url || "#") + '" target="_blank" rel="noreferrer">' +
+      esc(sig.title || sig.ticker) + "</a>" +
+      "<small>" + esc(String(sig.side || "").toUpperCase()) + " at " +
+      money(sig.executable_price) + " · " + esc(sig.topic) +
+      " · no ≥ $0.10 swing yet</small></span>" +
+      '<button class="ghost-link" data-chart="' + esc(sig.ticker) + '" ' +
+      'data-series="' + esc((seriesByTicker || {})[sig.ticker] || "") +
+      '">chart</button>';
     return row;
   }
 
@@ -240,30 +327,56 @@
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
 
-    // Model shortlist: alerts on markets the model scored as high ROI.
-    var scoreByTicker = {};
-    (s.signals || []).forEach(function (sig) {
-      scoreByTicker[sig.ticker] = sig;
-    });
-    var rawModel = raw
-      .filter(function (a) {
-        var sig = scoreByTicker[a.ticker];
-        return sig && sig.net_roi >= 0.05;
-      })
-      .map(function (a) {
-        var out = Object.assign({}, a);
-        out.model_net_roi = scoreByTicker[a.ticker].net_roi;
-        return out;
+    /* Model shortlist: the collector publishes it through one gate
+     * (high_roi_alerts, >= MODEL_MIN_NET_ROI and executable), so the polled
+     * view and the pre-rendered view cannot disagree about which rows belong
+     * in it. The first fallback exists for snapshots written before that
+     * field shipped and reads the published threshold rather than inventing
+     * a second one; when no swing matches a signal at all — the common case,
+     * since a swing usually leaves little modelled edge behind it — the
+     * chat shows the model's current top signals, exactly like the
+     * server-rendered chat in build_overview. */
+    var model = s.high_roi_alerts;
+    if (!Array.isArray(model) || !model.length) {
+      var gate = (s.model_gate && s.model_gate.min_net_roi != null)
+        ? Number(s.model_gate.min_net_roi) : 0.05;
+      var scoreByTicker = {};
+      (s.signals || []).forEach(function (sig) {
+        if (sig && sig.net_roi !== null && sig.net_roi !== undefined &&
+            Number(sig.net_roi) >= gate) scoreByTicker[sig.ticker] = sig;
       });
-    var model = V ? V.dedupeAlerts(rawModel) : rawModel;
+      var rawModel = raw
+        .filter(function (a) { return !!scoreByTicker[a.ticker]; })
+        .map(function (a) {
+          var out = Object.assign({}, a);
+          out.model_net_roi = scoreByTicker[a.ticker].net_roi;
+          return out;
+        });
+      model = rawModel;
+    }
+    if (V) model = V.dedupeAlerts(model);
+    var signalRows = model.length
+      ? []
+      : (s.signals || []).filter(Boolean).slice(0, 8);
+    var seriesByTicker = {};
+    (s.events || []).forEach(function (e) {
+      if (e && e.ticker && e.series_ticker) seriesByTicker[e.ticker] = e.series_ticker;
+    });
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
     if (feedAll) {
       feedAll.innerHTML = "";
       if (!all.length) {
-        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move observed ' +
-          "yet. The feed fills as successive snapshots are compared.</div>";
+        var refusedN = (s.suppressed_alerts || []).length;
+        feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
+          "two-sided book in the current buffer. " +
+          (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
+            " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
+            ' listed with the reason on <a href="review.html#refused">Flagged for ' +
+            "review</a>. " :
+            "The feed fills as the collector compares successive snapshots. ") +
+          "</div>";
       } else if (raw.length > all.length) {
         feedAll.appendChild(feedNote(all, raw));
       }
@@ -271,17 +384,20 @@
     }
     if (feedModel) {
       feedModel.innerHTML = "";
-      if (!model.length) {
+      if (!model.length && !signalRows.length) {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
           "model's net-ROI gate right now. This is normal — an empty feed is an " +
           "honest answer.</div>";
       }
       model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
+      signalRows.slice(0, 200).forEach(function (sig) {
+        feedModel.appendChild(signalRow(sig, seriesByTicker));
+      });
     }
     var ac = document.getElementById("allCount");
     if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
-    if (mc) mc.textContent = model.length;
+    if (mc) mc.textContent = model.length + signalRows.length;
   }
 
   /* One-line explainer shown above the "all events" feed whenever grouping
@@ -354,7 +470,7 @@
       var tr = document.createElement("tr");
       tr.className = "clickable";
       tr.innerHTML =
-        '<td><a href="' + esc(e.market_url) + '" target="_blank" rel="noreferrer">' +
+        '<td><a href="' + (safeUrl(e.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
         esc(e.title) + '</a><small class="ticker">' + esc(e.ticker) + "</small></td>" +
         "<td>" + esc(e.topic) + "</td>" +
         "<td>" + money(e.yes_bid) + "</td>" +
@@ -395,10 +511,43 @@
     var label = document.getElementById("chartWindowLabel");
     if (label) label.textContent = WINDOWS[state.windowKey].label;
 
+    renderChartNotes();
     loadSeries(ticker, series || (found && found.series_ticker) || "").then(function () {
       drawChart();
     });
     pollBook(ticker);
+  }
+
+  /* Swing annotations under the chart: every >= $0.10 move observed on the
+   * selected market, with the market link and a clearly labelled research
+   * link. Cause is never asserted (R-D-01 / suggestions rows 1 and 4). */
+  function renderChartNotes() {
+    var el = document.getElementById("chartNotes");
+    if (!el) return;
+    var t = state.market;
+    var V = window.AlertsView;
+    var raw = (state.snapshot && state.snapshot.alerts) || [];
+    var rows = (V ? V.dedupeAlerts(raw) : raw)
+      .filter(function (a) { return a.ticker === t; });
+    if (!rows.length) {
+      el.innerHTML = '<span class="muted">No ≥ $0.10 swing recorded for this ' +
+        "market in the snapshot. The chart still plots every observation.</span>";
+      return;
+    }
+    el.innerHTML = '<b>Jump annotations</b> — swings ≥ $0.10 on this market' +
+      rows.map(function (a) {
+        var q = encodeURIComponent(a.title || a.ticker || "");
+        return '<div class="chart-note-row"><time>' +
+          esc((a.iso || "").slice(11, 19) || hhmmss(a.ts)) + "</time>" +
+          '<span class="chat-delta ' + (a.direction === "up" ? "pos" : "neg") + '">' +
+          (a.direction === "up" ? "▲ +" : "▼ −") +
+          Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
+          '<a href="' + esc(a.market_url || "#") + '" target="_blank" ' +
+          'rel="noreferrer">event ↗</a>' +
+          '<a class="source-link" target="_blank" rel="noreferrer" href="https://news.google.com/search?q=' +
+          q + '" title="Research link — possible context only; causality ' +
+          'unverified">context ↗</a></div>';
+      }).join("");
   }
 
   function loadSeries(ticker, seriesTicker) {
@@ -509,7 +658,14 @@
     canvas.height = h * dpr();
     canvas.style.width = w + "px";
     canvas.style.height = h + "px";
-    var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext && canvas.getContext("2d");
+    if (!ctx) {
+      /* No 2D context (hardened browser, or canvas blocked by policy): the
+       * numbers under the chart are still worth showing, and the chat feeds
+       * must not go down with the picture. */
+      chartMetrics(points);
+      return;
+    }
     ctx.setTransform(dpr(), 0, 0, dpr(), 0, 0);
     ctx.clearRect(0, 0, w, h);
 
@@ -534,8 +690,7 @@
       ctx.textAlign = "center";
       ctx.font = "13px system-ui, sans-serif";
       ctx.fillText("No price observations in this window yet", w / 2, h / 2);
-      var p0 = document.getElementById("chartPrice");
-      if (p0) p0.textContent = "—";
+      chartMetrics([]);
       return;
     }
 
@@ -578,9 +733,22 @@
     ctx.textAlign = "right";
     ctx.fillText(new Date(t1 * 1000).toLocaleTimeString(), pad.l + plotW, h - 8);
 
+    chartMetrics(points);
+  }
+
+  /* The numbers under the chart, rendered whether or not the picture could be
+   * drawn: a browser without a 2D context still gets the price, the change and
+   * the depth line. */
+  function chartMetrics(points) {
     var priceEl = document.getElementById("chartPrice");
-    if (priceEl) priceEl.textContent = money(last.mid);
     var changeEl = document.getElementById("chartChange");
+    if (!points || !points.length) {
+      if (priceEl) priceEl.textContent = "—";
+      if (changeEl) { changeEl.textContent = "—"; changeEl.className = ""; }
+      return;
+    }
+    var last = points[points.length - 1];
+    if (priceEl) priceEl.textContent = money(last.mid);
     if (changeEl) {
       var delta = last.mid - points[0].mid;
       changeEl.textContent = (delta >= 0 ? "+" : "−") + Math.abs(delta).toFixed(4);
@@ -654,6 +822,23 @@
     fetchSnapshot().then(function (payload) {
       if (payload) applySnapshot(payload, "poll");
     });
+
+    // Snapshot age: computed in the visitor's browser from the topbar
+    // timestamp, so a stale snapshot is visible at a glance (R-D-01).
+    function updateAge() {
+      var el = document.getElementById("snapshotAge");
+      var t = document.getElementById("updatedAt");
+      if (!el || !t) return;
+      var raw = (t.textContent || "").replace(/^Snapshot\s+/, "").trim();
+      if (!raw) { el.textContent = ""; return; }
+      var when = Date.parse(/(zZ|[+\-]\d\d:?\d\d)$/.test(raw) ? raw : raw + "Z");
+      if (isNaN(when)) { el.textContent = ""; return; }
+      var mins = Math.max(0, Math.round((Date.now() - when) / 60000));
+      el.textContent = mins < 1 ? "· age < 1 min" : "· age " + mins + " min";
+      el.className = "snapshot-age" + (mins >= 15 ? " stale" : "");
+    }
+    updateAge();
+    setInterval(updateAge, 30000);
 
     $all("#windowTabs button").forEach(function (btn) {
       btn.addEventListener("click", function () {

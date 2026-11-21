@@ -14,8 +14,22 @@ Why simulated rather than live:
 Fee model: Kalshi's published taker fee, quadratic 0.07 * M * C * P * (1-P),
 rounded up to the cent, from https://kalshi.com/docs/kalshi-fee-schedule.pdf
 (as referenced by fee_type in https://docs.kalshi.com/api-reference/market/get-series-list.md).
+``M`` is not assumed here: it is read from the market's own series row
+(``fee_multiplier`` / ``fee_type``, both required fields of ``Series``) through
+``alerts.fee_params``, so a fee-free series is charged 0 and a combo series is
+charged its own multiplier. The schedule and the live demo API disagree for
+some series — the PDF lists KXBTCY at maker 0 / taker 0 while
+``GET https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY`` returns
+``fee_multiplier: 1`` (checked 2026-11-20; the PDF is "last updated and
+effective: July 7, 2026" and defers to https://kalshi.com/fee-schedule for later
+changes). This ledger follows the API field, because it is the value Kalshi's
+own matching engine reports for the environment being simulated, and publishes
+the basis on every row. Positions opened before the field existed stay charged
+at M=1, which is what they were actually charged — no historical P&L is
+restated.
 Settlement: YES pays $1 per contract if result == "yes", NO pays $1 if
-"no", per https://docs.kalshi.com/getting_started/market_settlement.md.
+"no", per https://docs.kalshi.com/getting_started/market_settlement.md, and the
+schedule charges no settlement fee, so ``settle()`` charges none either.
 """
 
 from __future__ import annotations
@@ -97,6 +111,13 @@ class Position:
     reason: str = ""
     market_url: str = ""
     bankroll_at_entry: float = 0.0
+    # The fee parameters this position was charged under, carried from the signal
+    # so an exit (possibly in a later run) uses the same official multiplier as
+    # the entry instead of an assumed one. 1.0 is also the default for positions
+    # written before this field existed, which is correct: every one of them was
+    # charged M=1, so no historical P&L is restated by this field appearing.
+    fee_multiplier: float = 1.0
+    fee_basis: str = ""
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -194,7 +215,13 @@ class Portfolio:
         if contracts < 1:
             return None
         cost = round(contracts * signal.executable_price, 4)
-        fee = kalshi_fee(signal.executable_price, contracts)
+        # Same official multiplier the signal was screened with (GET /series
+        # fee_multiplier / fee_type — see alerts.fee_params). Falls back to the
+        # schedule's default M=1 for a signal that carries no fee basis, which
+        # is exactly what every earlier trade in this ledger used.
+        fee_mult = getattr(signal, "fee_multiplier", None)
+        fee_mult = 1.0 if fee_mult is None else float(fee_mult)
+        fee = kalshi_fee(signal.executable_price, contracts, fee_mult)
         if cost + fee > self.bankroll:
             return None
         self.bankroll = round(self.bankroll - cost - fee, 4)
@@ -207,6 +234,8 @@ class Portfolio:
             entry_fee=fee, current_price=signal.executable_price,
             reason=reason or signal.reason, market_url=signal.market_url,
             bankroll_at_entry=self.bankroll,
+            fee_multiplier=fee_mult,
+            fee_basis=getattr(signal, "fee_basis", "") or "",
         )
         self.positions[pos.position_id] = pos
         self.open_tickers.add(pos.ticker)
@@ -247,7 +276,9 @@ class Portfolio:
                 if not (0.0 < side_price < 1.0):
                     return None
                 proceeds = round(pos.contracts * side_price, 4)
-                fee = kalshi_fee(side_price, pos.contracts)
+                pos_mult = getattr(pos, "fee_multiplier", None)
+                fee = kalshi_fee(side_price, pos.contracts,
+                                 1.0 if pos_mult is None else float(pos_mult))
                 self.bankroll = round(self.bankroll + proceeds - fee, 4)
                 pos.exit_price = side_price
                 pos.exit_ts = ts or time.time()
