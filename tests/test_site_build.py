@@ -38,10 +38,20 @@ class CountRenderingTests(unittest.TestCase):
             }
         )
         self.assertIn("<strong>1,250</strong>", html)
-        self.assertIn("<strong>2</strong>", html)
         self.assertIn("<strong>1</strong>", html)
         self.assertIn("<strong>2,000</strong>", html)
         self.assertNotIn("<strong>1,250.00</strong>", html)
+        # The swings KPI counts what the all-events chat shows, not the raw
+        # buffer: two identical midpoint detections fold into one row, which is
+        # the same grouping rule tests/test_chat_rows.py pins. Its sub-line
+        # breaks the count out by measurement basis, because the two bases are
+        # different claims (live order-book mid vs published candlestick close)
+        # and the model chat only accepts the first.
+        # (Contract changed 2026-11-21 by session arena-d6a0282d; before that the
+        # headline was ``len(live["alerts"])``, i.e. 2 for this fixture.)
+        self.assertIn('<span>Swings ≥ $0.10</span>\n            <strong>1</strong>'
+                      "\n            <small>2 live mid ·\n              0 candle "
+                      "close</small>", html)
 
     def test_topic_kpis_and_footer_format_counts_as_counts(self):
         html = build_topic(

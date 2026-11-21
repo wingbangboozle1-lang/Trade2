@@ -196,6 +196,28 @@
       encodeURIComponent(a.event_ticker || "");
   }
 
+  /* Per-row source links, so every number in a chat row can be checked where it
+   * came from: the market's own REST response, plus the candlestick series for a
+   * row measured on published closes. Mirrors site_build._source_links. */
+  function sourceLinks(a) {
+    var out = "";
+    if (a.ticker) {
+      var api = safeUrl(a.source_url ||
+        (REST + "/markets/" + encodeURIComponent(a.ticker)));
+      if (api) {
+        out += '<a class="source-link" href="' + api +
+          '" target="_blank" rel="noreferrer">API row ↗</a>';
+      }
+    }
+    var candle = safeUrl(a.candle_source_url);
+    if (candle) {
+      out += '<a class="source-link" href="' + candle +
+        '" target="_blank" rel="noreferrer" title="The official Kalshi candlestick ' +
+        'series the two closes were read from.">candle series ↗</a>';
+    }
+    return out;
+  }
+
   function newsUrl(a) {
     var label = String(a.topic || "").replace(/-/g, " ");
     var q = (a.title || a.ticker || "") + " " + label + " Kalshi";
@@ -237,6 +259,12 @@
       badges += '<span class="tag tag-yes" title="Both sides quoted, and the YES ' +
         "spread is tighter than the $0.10 threshold, so the midpoint sits inside " +
         'a range a trader could transact in.">executable</span> ';
+    } else if (a.quality === "candle-close") {
+      /* From the candlestick-close feed (site_build/swingfeed.py): a published
+       * move between two official closes, not a price anyone could have traded.
+       * Added to this feed only — the model shortlist stays executable-only. */
+      badges += '<span class="flag-badge" title="' + esc(a.quality_reason || "") +
+        '">candlestick close · not a live mid</span> ';
     } else if (a.quality === "indicative") {
       badges += '<span class="flag-badge" title="' + esc(a.quality_reason || "") +
         '">indicative · not executable</span> ';
@@ -285,7 +313,10 @@
       (badges ? '<span class="chat-badges">' + badges + "</span>" : "") +
       newsHtml +
       '<span class="cause-links">' +
-      '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
+      sourceLinks(a) +
+      (a.event_ticker
+        ? '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>'
+        : "") +
       '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
       "</span>" +
       "</span>" +
@@ -365,22 +396,43 @@
 
     var feedAll = document.getElementById("feedAll");
     var feedModel = document.getElementById("feedModel");
+    /* Candlestick-close rows join the all-events feed only. The model shortlist
+     * keeps its executability gate: a published historical close is not a price
+     * anyone could have traded, so it never earns a place next to a net-ROI
+     * claim. site_build/swingfeed.py deduped them against `all` at build time. */
+    var candle = Array.isArray(s.candle_alerts) ? s.candle_alerts : [];
+    var feed = all.concat(candle);
+    feed.sort(function (x, y) { return (Number(y.ts) || 0) - (Number(x.ts) || 0); });
     if (feedAll) {
       feedAll.innerHTML = "";
-      if (!all.length) {
+      if (!feed.length) {
         var refusedN = (s.suppressed_alerts || []).length;
         feedAll.innerHTML = '<div class="empty-state inline">No ≥ $0.10 swing on a ' +
-          "two-sided book in the current buffer. " +
+          "two-sided book in the current buffer, and no candlestick-close move in " +
+          "the window. " +
           (refusedN ? refusedN + " midpoint move" + (refusedN === 1 ? "" : "s") +
             " the quote rule refused " + (refusedN === 1 ? "is" : "are") +
             ' listed with the reason on <a href="review.html#refused">Flagged for ' +
             "review</a>. " :
             "The feed fills as the collector compares successive snapshots. ") +
           "</div>";
-      } else if (raw.length > all.length) {
-        feedAll.appendChild(feedNote(all, raw));
+      } else {
+        if (candle.length) {
+          var when = String((s.candle_feed_stats || {}).source_generated_at || "")
+            .replace("T", " ").slice(0, 16);
+          var note = document.createElement("div");
+          note.className = "chat-note";
+          note.innerHTML = "<b>" + candle.length + " row(s) measured on Kalshi's " +
+            "published candlestick closes</b> rather than a live order-book mid; " +
+            "each row links the candlestick series behind its two numbers" +
+            (when ? " — that feed is the " + esc(when) + "Z collector run" : "") +
+            ". The model chat does not show them.";
+          feedAll.appendChild(note);
+        } else if (raw.length > all.length) {
+          feedAll.appendChild(feedNote(all, raw));
+        }
       }
-      all.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
+      feed.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
     }
     if (feedModel) {
       feedModel.innerHTML = "";
@@ -395,7 +447,11 @@
       });
     }
     var ac = document.getElementById("allCount");
-    if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
+    if (ac) {
+      ac.textContent = feed.length + (raw.length > all.length ? " of " + raw.length : "");
+      ac.title = all.length + " live midpoint move(s) + " + candle.length +
+        " candlestick-close move(s)";
+    }
     var mc = document.getElementById("modelCount");
     if (mc) mc.textContent = model.length + signalRows.length;
   }
@@ -458,6 +514,36 @@
     }
   }
 
+  /* Bid/ask cell. The collector nulls the alert basis for an empty book so no
+   * phantom $0.50 mid can fire a swing, but the market response still carries
+   * the quote, and a trader is entitled to see it — with the reason it is not a
+   * price. Mirrors site_build.format.bid_ask_cells. */
+  var EMPTY_BOOK_HINT =
+    "The market record quotes $0.0000 bid against $1.0000 ask with no resting " +
+    "size at either side: that is Kalshi's empty-book value, not a price you " +
+    "could trade. It is never used as the basis of a swing alert. Source: " +
+    "https://docs.kalshi.com/getting_started/orderbook_responses";
+
+  function quoteCell(e, side) {
+    var v = e[side === "bid" ? "yes_bid" : "yes_ask"];
+    if (v === null || v === undefined || v === "") {
+      v = e[side === "bid" ? "quote_bid" : "quote_ask"];
+    }
+    var text = money(v);
+    if (text === "—") return text;
+    if (e.book_state === "empty") {
+      return text + '<br><span class="flag-badge" title="' + esc(EMPTY_BOOK_HINT) +
+        '">empty book · nothing resting</span>';
+    }
+    return text;
+  }
+
+  function lastCell(e) {
+    var v = e.last_price;
+    if (v === null || v === undefined) v = (e.observation || {}).last_price;
+    return money(v);
+  }
+
   function renderDesk() {
     var tbody = document.getElementById("deskRows");
     if (!tbody || !state.snapshot) return;
@@ -473,8 +559,9 @@
         '<td><a href="' + (safeUrl(e.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
         esc(e.title) + '</a><small class="ticker">' + esc(e.ticker) + "</small></td>" +
         "<td>" + esc(e.topic) + "</td>" +
-        "<td>" + money(e.yes_bid) + "</td>" +
-        "<td>" + money(e.yes_ask) + "</td>" +
+        "<td>" + quoteCell(e, "bid") + "</td>" +
+        "<td>" + quoteCell(e, "ask") + "</td>" +
+        "<td>" + lastCell(e) + "</td>" +
         "<td>" + money(liq.spread) + "</td>" +
         "<td>" + num(liq.yes_bid_contracts) + "</td>" +
         "<td>$" + num(e.open_interest_notional) + "</td>" +

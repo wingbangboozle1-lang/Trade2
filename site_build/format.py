@@ -53,6 +53,67 @@ def money(value: Any, places: int = 2) -> str:
     return f"{sign}${abs(number):,.{places}f}"
 
 
+#: Shown next to a quote that the API returned but that nobody is resting
+#: behind. An empty book on Kalshi quotes the whole range — $0.0000 bid against
+#: $1.0000 ask — which is a statement about the absence of liquidity, not a
+#: price. It is also *not* an unverifiable value: ``GET /markets/<ticker>``
+#: returns both numbers, so hiding them behind UNVERIFIED would be a false
+#: caveat. Source: https://docs.kalshi.com/getting_started/orderbook_responses
+EMPTY_BOOK_HINT = (
+    "The market record quotes $0.0000 bid against $1.0000 ask with no resting "
+    "size at either side: that is Kalshi's empty-book value, not a price you "
+    "could trade. It is never used as the basis of a swing alert. Source: "
+    "https://docs.kalshi.com/getting_started/orderbook_responses")
+
+
+def quote_cell(value: Any, book_state: Any) -> str:
+    """A bid or ask cell, with the empty-book caveat when the book has no size."""
+    text = cents(value)
+    if value is None or value == "":
+        return text
+    if str(book_state or "") == "empty":
+        return (f'{text}<br><span class="flag-badge" title="{esc(EMPTY_BOOK_HINT)}">'
+                f'empty book · nothing resting</span>')
+    return text
+
+
+def bid_ask_cells(e: Any) -> tuple[str, str]:
+    """YES bid / YES ask cells for one ranked event.
+
+    Prefers the collector's alert-basis quote (both sides of a real book); falls
+    back to the raw quote the market record carries so a trader sees the number
+    the cited endpoint returned instead of a blank. A row written before the
+    collector started carrying ``quote_bid``/``quote_ask`` still renders as it
+    did — UNVERIFIED, not a guess.
+    """
+    state = e.get("book_state")
+    bid = e.get("yes_bid")
+    if bid is None:
+        bid = e.get("quote_bid")
+    ask = e.get("yes_ask")
+    if ask is None:
+        ask = e.get("quote_ask")
+    return quote_cell(bid, state), quote_cell(ask, state)
+
+
+def last_price_of(e: Any) -> float | None:
+    """The market's own ``last_price_dollars``, from either row shape.
+
+    ``rank_events`` now publishes it at the top level; the observation block it
+    was taken from is still read so the current published snapshot renders the
+    real number instead of a blank.
+    """
+    value = e.get("last_price")
+    if value is None:
+        value = (e.get("observation") or {}).get("last_price")
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def cents(value: Any) -> str:
     """A contract price in dollars, to the cent."""
     if value is None or value == "":

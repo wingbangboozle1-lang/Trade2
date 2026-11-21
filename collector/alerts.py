@@ -110,6 +110,20 @@ class Observation:
     fee_multiplier: float | None = None
     fee_type: str | None = None
     fee_basis: str = ""
+    # Display-only mirror of the quote the cited market record actually carries.
+    # ``yes_bid``/``yes_ask`` above are the *alert basis*: an empty book
+    # (0.0000 bid / 1.0000 ask) is nulled there so a phantom $0.50 mid can never
+    # fire a swing. That null used to leak into the tables, where the site then
+    # printed UNVERIFIED for a number ``GET /markets/<ticker>`` does return — an
+    # under-report, which is as much a verification failure as an over-report.
+    # ``quote_bid``/``quote_ask`` keep the official values and ``book_state``
+    # says which case the row is in, so the table can show the quote *and* say
+    # plainly that nothing is resting behind it.
+    # Sources: https://docs.kalshi.com/api-reference/market/get-market
+    #          https://docs.kalshi.com/getting_started/orderbook_responses
+    quote_bid: float | None = None
+    quote_ask: float | None = None
+    book_state: str = ""       # "empty" | "two-sided" | "one-sided" | "none"
 
     @property
     def market_url(self) -> str:
@@ -194,6 +208,19 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
     # Averaging that pair produces a phantom 0.50 mid, which is how a golf
     # outlier with no book would appear to "jump" to exactly $0.50 and back.
     # A full 0-to-1 spread is not a price: treat it as no quote.
+    # The *display* fields below still carry what the API returned, so the
+    # tables can say "quoted $0.0000 / $1.0000, nothing resting" instead of
+    # claiming the quote is unverifiable (see Observation.quote_bid).
+    quote_bid, quote_ask = yes_bid, yes_ask
+    if quote_bid is not None and quote_ask is not None:
+        if quote_bid <= 0.0 and quote_ask >= 1.0:
+            book_state = "empty"
+        else:
+            book_state = "two-sided"
+    elif quote_bid is not None or quote_ask is not None:
+        book_state = "one-sided"
+    else:
+        book_state = "none"
     if (yes_bid is not None and yes_ask is not None
             and yes_bid <= 0.0 and yes_ask >= 1.0):
         yes_bid, yes_ask = None, None
@@ -226,6 +253,9 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         fee_multiplier=fee_params(series)[0] if series is not None else None,
         fee_type=(series or {}).get("fee_type"),
         fee_basis=fee_params(series)[1],
+        quote_bid=quote_bid,
+        quote_ask=quote_ask,
+        book_state=book_state,
     )
 
 
@@ -852,6 +882,12 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "mid": obs.mid,
             "yes_bid": obs.yes_bid,
             "yes_ask": obs.yes_ask,
+            # Display-only: what the cited market record quotes, even when the
+            # alert basis is nulled for an empty book. See Observation.quote_bid.
+            "quote_bid": getattr(obs, "quote_bid", None),
+            "quote_ask": getattr(obs, "quote_ask", None),
+            "book_state": getattr(obs, "book_state", ""),
+            "last_price": obs.last_price,
             "volume_contracts": vol,
             "open_interest_contracts": oi,
             "notional_per_contract": notional,

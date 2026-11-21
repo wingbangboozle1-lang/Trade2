@@ -102,6 +102,14 @@ await new Promise((r) => setTimeout(r, 300));
 
 const doc = win.document;
 const alerts = snapshot.alerts || [];
+/* The all-events feed also carries the candlestick-close moves the site folds in
+ * from the second collector (site_build/swingfeed.py, added 2026-11-21 by session
+ * arena-d6a0282d) so the chat and the alert history cannot disagree. They are
+ * appended by desk.js from `candle_alerts`, never re-derived client-side, and
+ * they are excluded from the model chat — a published historical close is not an
+ * executable price, so it must not sit next to a net-ROI claim. */
+const candleAlerts = snapshot.candle_alerts || [];
+const expectedFeedRows = Math.min(200, alerts.length + candleAlerts.length);
 const rows = doc.querySelectorAll("#feedAll .chat-row");
 const modelRows = doc.querySelectorAll("#feedModel .chat-row");
 const deskRows = doc.querySelectorAll("#deskRows tr");
@@ -124,9 +132,9 @@ const expectedModelRows = gatedShortlist.length
 
 check("desk.js ran without a thrown error", consoleErrors.length === 0,
       consoleErrors.slice(0, 2).join(" | "));
-check("all-events chat renders every buffered alert",
-      rows.length === Math.min(200, alerts.length),
-      `expected ${Math.min(200, alerts.length)}, got ${rows.length}`);
+check("all-events chat renders every buffered alert and candle-close move",
+      rows.length === expectedFeedRows,
+      `expected ${expectedFeedRows}, got ${rows.length}`);
 check("model chat uses the published shortlist, not a client-side re-gate",
       modelRows.length === expectedModelRows,
       `expected ${expectedModelRows}, got ${modelRows.length}`);
@@ -142,8 +150,15 @@ check("market table renders from the snapshot", deskRows.length > 0,
       `${deskRows.length} rows`);
 check("each chat row states a price basis or is labelled pre-rule",
       rows.length === 0 || Array.from(rows).every((r) =>
-        /quote mid|previous-snapshot mid|pre-rule row/.test(r.textContent)),
+        /quote mid|previous-snapshot mid|candlestick close|pre-rule row/
+          .test(r.textContent)),
       `${rows.length} rows`);
+
+/* The gate this session must not be able to regress quietly: a candle-close row
+ * can appear in the all-events chat, never in the model shortlist. */
+check("the model chat is never fed a candlestick-close row",
+      !Array.from(modelRows).some((r) => /candlestick close/.test(r.textContent)),
+      `${modelRows.length} model rows`);
 check("each chat row carries a news line (link or an explicit absence)",
       rows.length === 0 || Array.from(rows).every((r) =>
         r.querySelector(".cause-links") !== null));
@@ -190,7 +205,7 @@ if (chartBtn) {
         `selected ${sel2?.value}`);
 }
 check("an empty all-events feed explains itself",
-      alerts.length > 0 ||
+      expectedFeedRows > 0 ||
       /No .*0\.10 swing/.test(doc.querySelector("#feedAll").textContent));
 
 check("the chart drew price lines and swing markers", drawn.strokes > 0 && drawn.texts > 0,
@@ -205,7 +220,7 @@ noCanvas.window.eval(script);
 await new Promise((r) => setTimeout(r, 300));
 check("a missing canvas does not take the chats down with it",
       noCanvas.window.document.querySelectorAll("#feedAll .chat-row").length ===
-      Math.min(200, alerts.length),
+      expectedFeedRows,
       `${noCanvas.window.document.querySelectorAll("#feedAll .chat-row").length} rows`);
 
 /* ---------------------------------------------------------------------------
@@ -264,6 +279,26 @@ const fixture = {
       previous: 0.3, current: 0.41, iso: "2026-11-20T18:55:00Z",
       ts: Math.floor(Date.now() / 1000) - 400 },
   ],
+  /* The candlestick-close feed the site publishes for the all-events chat
+   * (site_build/swingfeed.py). A distinct ticker: it must reach #feedAll with
+   * its basis labelled, and must never reach #feedModel, whose 2 rows are
+   * pinned below - a published historical close is not an executable price. */
+  candle_alerts: [{
+    ticker: "KXGOLF-2", event_ticker: "", series_ticker: "", topic: "golf",
+    title: "RSM Classic winner", direction: "up", abs_delta: 0.22,
+    previous: 0.17, current: 0.39, iso: "2026-11-21T06:12:00Z",
+    ts: Math.floor(Date.now() / 1000) - 120, basis: "candle-close",
+    quality: "candle-close",
+    reference_basis: "candlestick close -> candlestick close",
+    quality_reason: "two consecutive official candlestick closes, not live mids",
+    news_status: "ok", news: [{ title: "Round 2 highlights",
+                                url: "https://example.test/candle-news" }],
+    source_url: "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXGOLF-2",
+    candle_source_url: "https://external-api.demo.kalshi.co/trade-api/v2/series/KXGOLF" +
+      "/markets/KXGOLF-2/candlesticks?start_ts=1&end_ts=2&period_interval=1",
+  }],
+  candle_feed_stats: { added: 1, read: 1, source_generated_at: "2026-11-21T06:24:58Z",
+                       source_path: "docs/data/alerts.json" },
   events: (snapshot.events || []).slice(0, 5),
   portfolio: snapshot.portfolio || {},
 };
@@ -286,8 +321,10 @@ await new Promise((r) => setTimeout(r, 350));
 const fdoc = fx.window.document;
 const frows = fdoc.querySelectorAll("#feedAll .chat-row");
 
-check("fixture: every buffered alert is on the all-events feed",
-      frows.length === fixture.alerts.length, `${frows.length} rows`);
+check("fixture: every buffered alert and every candle-close move is on the " +
+      "all-events feed",
+      frows.length === fixture.alerts.length + fixture.candle_alerts.length,
+      `${frows.length} rows`);
 const exec = frows[0] || { textContent: "", innerHTML: "" };
 check("fixture: an executable row states the basis, the depth and the fold count",
       /quote mid vs quote mid/.test(exec.textContent) &&
@@ -311,7 +348,22 @@ check("fixture: no headline is invented — the reason is printed instead",
 check("fixture: a non-http href from the payload never reaches the markup",
       !/javascript:/i.test(fdoc.querySelector("#feedAll").innerHTML) &&
       indic.innerHTML.includes('href="#"'), "safeUrl allowlist");
-const legacy = frows[2] || { textContent: "" };
+const candleRow = Array.from(frows).find(
+  (r) => /RSM Classic winner/.test(r.textContent)) || { textContent: "", innerHTML: "" };
+check("fixture: a candle-close row states its basis and links the series behind it",
+      /candlestick close/.test(candleRow.textContent) &&
+      candleRow.innerHTML.includes("candlesticks?start_ts=1") &&
+      candleRow.innerHTML.includes("KXGOLF-2") &&
+      /candlestick close -> candlestick close/.test(candleRow.textContent),
+      candleRow.textContent.replace(/\s+/g, " ").slice(0, 160));
+check("fixture: a candle-close row claims no executability and invents no event link",
+      !/class="tag tag-yes"[^>]*>executable/.test(candleRow.innerHTML) &&
+      !/Event page/.test(candleRow.textContent),
+      "no executable claim, no fabricated event URL");
+/* Selected by content, not index: the feed is sorted newest-first and a
+ * candle-close row can now land between two buffered alerts. */
+const legacy = Array.from(frows).find(
+  (r) => /The Masters winner/.test(r.textContent)) || { textContent: "" };
 check("fixture: a row without a verdict is labelled pre-rule, not guessed",
       /pre-rule row/.test(legacy.textContent) && !/executable/.test(legacy.textContent));
 /* Counting rows alone could not tell "rendered the published shortlist" from
@@ -386,7 +438,7 @@ fxNoCanvas.window.eval(script);
 await new Promise((r) => setTimeout(r, 350));
 check("fixture: a missing canvas keeps the chats and the chart numbers alive",
       fxNoCanvas.window.document.querySelectorAll("#feedAll .chat-row").length ===
-        fixture.alerts.length &&
+        fixture.alerts.length + fixture.candle_alerts.length &&
       /^\$\d/.test(fxNoCanvas.window.document.querySelector("#chartPrice").textContent),
       fxNoCanvas.window.document.querySelector("#chartPrice").textContent);
 
