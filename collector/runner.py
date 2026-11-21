@@ -222,6 +222,24 @@ def pick_markets(
     return rows
 
 
+def market_notional_basis(m: Dict) -> "tuple[float | None, str | None]":
+    """(price, basis) that :func:`market_notional` multiplies volume by.
+
+    ``basis`` names the official field(s) the price was read from, so the derived
+    ``notional_usd`` figure can be re-checked against the source response
+    (request R-3DCF-5, session arena-f642a30a). Returns ``(None, None)`` when the
+    response carries no price at all.
+    """
+    price = fnum(m.get("last_price_dollars"))
+    if price is not None:
+        return price, "last_price_dollars"
+    bid = fnum(m.get("yes_bid_dollars"))
+    ask = fnum(m.get("yes_ask_dollars"))
+    if bid is not None and ask is not None:
+        return (bid + ask) / 2, "mid(yes_bid_dollars,yes_ask_dollars)"
+    return None, None
+
+
 def market_notional(m: Dict) -> float | None:
     """Dollar volume proxy = (24h volume if present, else total volume) x last price.
 
@@ -237,11 +255,7 @@ def market_notional(m: Dict) -> float | None:
     vol24 = fnum(m.get("volume_24h_fp")) or 0.0
     vol = fnum(m.get("volume_fp")) or 0.0
     vol = vol24 if vol24 > 0 else vol
-    price = fnum(m.get("last_price_dollars"))
-    if price is None:
-        bid = fnum(m.get("yes_bid_dollars"))
-        ask = fnum(m.get("yes_ask_dollars"))
-        price = (bid + ask) / 2 if bid is not None and ask is not None else None
+    price, _basis = market_notional_basis(m)
     if price is None:
         return None
     return vol * price
@@ -257,6 +271,7 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         flags.append("price-unverified:no last/bid/ask returned")
     volume = fnum(m.get("volume_fp"))
     notional = market_notional(m)   # None when the response carries no price at all
+    notional_basis_price, notional_basis = market_notional_basis(m)  # R-3DCF-5: basis kept so the derived figure is re-checkable
     if volume is None:
         flags.append("volume-unverified:not returned")
     elif notional is None:
@@ -284,6 +299,10 @@ def market_row(m: Dict, source_url: str) -> Dict[str, Any]:
         "volume_fp": volume,
         "volume_24h_fp": fnum(m.get("volume_24h_fp")),
         "notional_usd": round(notional, 2) if (notional is not None and volume is not None) else None,
+        # R-3DCF-5 (arena-f642a30a): the exact price behind notional_usd and the official
+        # field(s) it came from, so the derived product can be recomputed from the source.
+        "notional_basis_price": notional_basis_price,
+        "notional_basis": notional_basis,
         "open_interest_fp": fnum(m.get("open_interest_fp")),
         # The market object's own field is `expected_expiration_time` (an ISO
         # string) — verified against six live GET /markets/{ticker} responses on
