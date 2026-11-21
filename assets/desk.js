@@ -22,9 +22,13 @@
 
   var REST = "https://external-api.demo.kalshi.co/trade-api/v2";
   var WINDOWS = {
-    seconds: { label: "Last 90 seconds", ms: 90 * 1000, tick: 2000 },
-    minutes: { label: "Last 60 minutes", ms: 60 * 60 * 1000, tick: 15000 },
-    hours: { label: "Last 12 hours", ms: 12 * 60 * 60 * 1000, tick: 60000 },
+    // Labels state what the data in each window IS, not just its length:
+    // Kalshi's smallest candle period is 1 minute (docs /api-reference/market/
+    // get-market-candlesticks), so the seconds window can only ever show live
+    // polled book quotes, never second-based candles.
+    seconds: { label: "Last 90 seconds · live book quotes", ms: 90 * 1000, tick: 2000 },
+    minutes: { label: "Last 60 minutes · 1-minute candles + live quotes", ms: 60 * 60 * 1000, tick: 15000 },
+    hours: { label: "Last 12 hours · 1-minute candles + live quotes", ms: 12 * 60 * 60 * 1000, tick: 60000 },
   };
   var SWING = 0.1;
 
@@ -255,14 +259,30 @@
         "stated a price basis per row; no executability claim is made either " +
         'way.">pre-rule row</span> ';
     }
+    if (a.reverted_within_candle) {
+      badges += '<span class="tag tag-grey" title="The first completed candle ' +
+        "after this move closed back within $0.10 of the alert's previous " +
+        "level (official 1-minute candlestick trade close at " +
+        esc(String(a.reverted_within_candle.candle_end_ts || "")) + ').">' +
+        "reverted within one candle</span> ";
+    }
     /* What the two subtracted numbers are, and whether anything was resting at
      * the level when the move printed. */
     var extra = a.reference_basis ? " · " + esc(a.reference_basis) : "";
     if (a.spread !== null && a.spread !== undefined) {
       extra += " · YES spread " + money(a.spread, 4) +
-        (a.size_at_top !== null && a.size_at_top !== undefined
-          ? " · " + num(a.size_at_top) + " contracts at the level"
-          : " · no resting size at the level");
+        (a.size_at_top === null || a.size_at_top === undefined
+          ? " · no resting size at the level"
+          : (a.size_at_top === 0
+            ? " · no ask size: 0 contracts resting at the level"
+            : " · " + num(a.size_at_top) + " contracts at the level"));
+    }
+    /* Tick size (price_ranges[0].step, official market schema): state how many
+     * ticks the $0.10 threshold represents. Omitted when the market published
+     * no step — never inferred. */
+    if (a.threshold_ticks) {
+      extra += " · $" + (Number(a.threshold) || 0.1).toFixed(2) + " ≈ " +
+        num(a.threshold_ticks) + " ticks of " + money(a.tick_size, 4);
     }
     /* Headlines the collector found within six hours either side of the move:
      * candidates, never a claimed cause. */
@@ -1140,7 +1160,9 @@
       " · YES spread " + money(a.spread, 4) +
       (a.size_at_top === null || a.size_at_top === undefined
         ? " · no resting size at the level"
-        : " · " + num(a.size_at_top) + " contracts at the level") +
+        : (a.size_at_top === 0
+          ? " · no ask size: 0 contracts resting at the level"
+          : " · " + num(a.size_at_top) + " contracts at the level")) +
       "</small>" +
       '<span class="chat-badges">' + badges + "</span>" +
       '<span class="cause-links"><span class="cause-none">no news link: a live ' +
