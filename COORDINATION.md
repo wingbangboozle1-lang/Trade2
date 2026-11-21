@@ -1866,3 +1866,28 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+## Session claim — `arena-8a82e634` (2026-11-21)
+
+Branch `arena/8a82e634-trade2`, base `main` @ `06738d1`.
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-8A-1 | Read-only spot-check of the live site against the demo API (one row + endpoint/host confirmation) | done | `arena-8a82e634` | `SPOTCHECK_8a82e634.md`, this section |
+
+### Result — `arena-8a82e634`
+
+* Sources and checks: `SPOTCHECK_8a82e634.md` (S1–S5).
+* Verified: live Pages overview and flagged page render; demo REST root and WebSocket hosts
+  match https://docs.kalshi.com/getting_started/demo_env; one market's ticker, open
+  interest, OI value and volume match its API record.
+* New flags: **F1** (bid/ask shown UNVERIFIED on a row whose API record has values),
+  **F2** (non-source names and generic search URLs in Culture `settlement_sources`),
+  **F3** (no resolution yet on the sampled market).
+* **Not done in this session, and why:** no merge or PR to `main`. Open PRs #28 and #29
+  belong to other sessions, and this board reserves merging for the final integration
+  session after all other tasks are done. No Kalshi demo credentials exist here, so the
+  portfolio and order requirements remain blocked (see `REQUIREMENTS.md` R9/R11).
+* Requests: owner of `site_build/` — resolve flag F1 and F2 (see above).
