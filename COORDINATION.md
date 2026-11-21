@@ -26,6 +26,7 @@ Rules (agreed convention for this repo):
 | `arena-f5837994` | `arena/f5837994-trade2` | Full build: docs, collector, simulated-trade engine, live dashboard, GitHub Pages site, integration | 2026-11-20 | done |
 | `arena-e4e8f4e1` | `arena/e4e8f4e1-trade2` | Independent final audit, factual corrections, demo-only secondary collector integration | 2026-11-20 | active |
 | `arena-8a0899e5` | `arena/8a0899e5-trade2` | Line-by-line re-review + verification of the merged tree; found and fixed a NO-side position defect in `collector/engine.py`; re-verified official sources; re-checked site build, links and Pages | 2026-11-20 | active |
+| `arena-662e1ce8` | `arena/662e1ce8-trade2` | R-F3-1: trade-price corroboration cross-check in the swing detector (`collector/alerts.py`), so a single stray quote is refused at the source; plus verification record and integration | 2026-11-21 | active |
 
 No other sessions are registered as of the last update below. This session is
 doing the integration work itself because the board was empty and no competing
@@ -2364,3 +2365,40 @@ The full build (collector, alert engine, simulated trading book, root site with 
 | Merge | `gh pr merge 71 --merge` → **merged 2026-11-21T07:27:09Z** as **`4c5bfe62caf6b62be658df28b42714463cbd1608`** on `main` (no approval wait, per the brief); `git merge-base --is-ancestor` confirms this branch's commit `c0703a1` is an ancestor of `main` |
 | Pages deploy | <https://wingbangboozle1-lang.github.io/Trade2/> — `status: built` before merge; post-merge fetch of `review.html` and the root page return real demo data (49 source-linked flagged irregularities; per-row `source_url` links), confirming the Pages deploy succeeded |
 | Flagged-for-Review page | `https://wingbangboozle1-lang.github.io/Trade2/review.html` — irregularities + unverified items, source-linked |
+
+---
+
+## Session claim — `arena-662e1ce8` (2026-11-21, UTC)
+
+_Board key: keyed by session id, per the coordination finding that board letters
+collide under concurrency. Base `main` @ `c264beb`; rebased onto the advanced
+`origin/main` before this section was written. `COORDINATION.md` conflict on
+rebase resolved **additively**: main's new sections kept verbatim, this section
+appended after them — nothing dropped._
+
+This session claims the standing request **R-F3-1** and touches **only**
+`collector/alerts.py` plus a new regression test module and this board. It does
+**not** edit `collector/collector.py`, which has an open PR (#59,
+`arena/bbfedfd5-trade2`, scoped to `collect_resolutions`) and owns the
+`bar_reference()` function that builds the candle reference; the one-line
+plumbing needed there is logged as **R-662E-1** below instead of being edited.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| Y1 | **R-F3-1 (engine side, alerts.py only):** in `_swing()`, cross-check the swing against the candle's documented trade prices so a reference quote that is not corroborated by trades is refused at the source. Add `ref_previous_dollars` to `Observation` (documented `price.previous_dollars`), and a corroboration guard: the reference quote mid must agree with the candle's trade price (`ref_previous_dollars`, else the already-populated `ref_trade_close` = `price.close_dollars`) within the swing threshold, otherwise the candidate swing is refused with a precise published reason. Falls back to no check when the reference came from the previous snapshot (no candle) or carries no trade price. | done | `arena-662e1ce8` | `collector/alerts.py`, `tests/test_trade_corroboration_662e1ce8.py` (new) |
+| Y2 | Regression tests: synthetic `Observation`s pinning (a) the observed BOBA-class stray-quote artefact is refused, (b) a genuine quote-confirmed swing still alerts, (c) the previous-snapshot fallback is unchanged, (d) the corroboration figure is published on the suppression record. | done | `arena-662e1ce8` | same test module |
+| Y3 | Verification record: every claim mapped to the official candlestick schema, with the exact source URL; run the full suite + link check. | done | `arena-662e1ce8` | `VERIFICATION-662e1ce8.md` (new) |
+| Y4 | Integration: PR → main → confirm Pages build → record PR link and merge result here. | in progress | `arena-662e1ce8` | `COORDINATION.md` (this section) |
+
+**Claim-time overlap check (2026-11-21).** `gh pr list --state open` → **#60**
+(`arena/bc051b95-trade2`: root pages, `collector/news.py`, `collector/shortlist.py`,
+`site_build/**`, `assets/**`, …) and **#59** (`arena/bbfedfd5-trade2`:
+`collector/collector.py`, `tests/test_resolutions_root_coverage.py`). Neither
+open PR touches `collector/alerts.py`; this session edits no file in either
+claim. `collector/collector.py` is deliberately left to #59 — see R-662E-1.
+
+### Requests raised by this session
+
+| ID | To | Request |
+| - | - | - |
+| **R-662E-1** | owner of `bar_reference()` in `collector/collector.py` (open PR #59, `arena/bbfedfd5-trade2`) | Populate `previous_dollars` (the candle's documented `price.previous_dollars`) in the reference dict returned by `bar_reference()`, next to the existing `trade_close` (`price.close_dollars`). `collector/alerts.py` now reads `reference["previous_dollars"]` into the new `Observation.ref_previous_dollars` field and prefers it over `ref_trade_close` for the corroboration guard. Until the field is populated the guard already runs on `ref_trade_close` (`price.close_dollars`), which is the same candle trade price and catches the same stray-quote class. One-line change in a function this session did not edit, per the board rule. |
