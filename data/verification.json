@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-11-21T08:36:31Z",
+ "generated_at": "2026-11-21T09:26:26Z",
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
- "snapshot_generated_at": "2026-11-21T08:34:07Z",
+ "snapshot_generated_at": "2026-11-21T09:23:58Z",
  "markets_checked": 15,
  "series_checked": 5,
  "checks": [
@@ -54,8 +54,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
    "field": "volume_fp",
-   "published": 414933896.54,
-   "official": "414933913.63",
+   "published": 414934196.75,
+   "official": "414934209.80",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -126,8 +126,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
    "field": "open_interest_fp",
-   "published": 169502402.95,
-   "official": "169502416.99",
+   "published": 169502676.92,
+   "official": "169502685.40",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -135,8 +135,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
    "field": "volume_fp",
-   "published": 432112401.83,
-   "official": "432112415.87",
+   "published": 432112675.8,
+   "official": "432112684.28",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -207,8 +207,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
    "field": "open_interest_fp",
-   "published": 162255005.26,
-   "official": "162255005.26",
+   "published": 162255051.82,
+   "official": "162255053.01",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -216,8 +216,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
    "field": "volume_fp",
-   "published": 358764965.07,
-   "official": "358764976.08",
+   "published": 358765158.01,
+   "official": "358765170.91",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -234,18 +234,18 @@
    "check": "order book",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
    "field": "best_yes_bid",
-   "published": 0.002,
+   "published": null,
    "official": 0.002,
-   "result": "match",
+   "result": "drift",
    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
   },
   {
    "check": "order book",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
    "field": "best_yes_ask",
-   "published": 0.003,
+   "published": null,
    "official": 0.003,
-   "result": "match",
+   "result": "drift",
    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
   },
   {
@@ -288,8 +288,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
    "field": "open_interest_fp",
-   "published": 39647819.17,
-   "official": "39647819.17",
+   "published": 39647866.48,
+   "official": "39647866.48",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -297,8 +297,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
    "field": "volume_fp",
-   "published": 83477321.21,
-   "official": "83477326.20",
+   "published": 83477540.35,
+   "official": "83477544.81",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -324,9 +324,9 @@
    "check": "order book",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
    "field": "best_yes_ask",
-   "published": null,
+   "published": 0.01,
    "official": 0.01,
-   "result": "drift",
+   "result": "match",
    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
   },
   {
@@ -378,8 +378,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
    "field": "volume_fp",
-   "published": 134096245.01,
-   "official": "134096252.53",
+   "published": 134096587.79,
+   "official": "134096601.72",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -450,8 +450,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
    "field": "open_interest_fp",
-   "published": 26579266.67,
-   "official": "26579278.09",
+   "published": 26579583.98,
+   "official": "26579593.43",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -459,8 +459,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
    "field": "volume_fp",
-   "published": 80203761.92,
-   "official": "80203773.34",
+   "published": 80204079.23,
+   "official": "80204088.68",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -531,8 +531,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
    "field": "open_interest_fp",
-   "published": 1157168.59,
-   "official": "1157179.99",
+   "published": 1157497.0,
+   "official": "1157507.15",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -540,8 +540,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
    "field": "volume_fp",
-   "published": 1162657.48,
-   "official": "1162668.88",
+   "published": 1162985.89,
+   "official": "1162996.04",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -702,8 +702,8 @@
    "check": "market record",
    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
    "field": "volume_fp",
-   "published": 766522.49,
-   "official": "766534.99",
+   "published": 766848.9,
+   "official": "766863.49",
    "result": "match",
    "detail": "relative tolerance 2%"
   },
@@ -1312,8 +1312,8 @@
   }
  ],
  "counts": {
-  "match": 144,
-  "drift": 1,
+  "match": 143,
+  "drift": 2,
   "mismatch": 0,
   "unverified": 0
  },
