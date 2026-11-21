@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T07:54:38Z",
- "generated_at_ts": 1795247904.4349952,
+ "generated_at": "2026-11-21T08:02:40Z",
+ "generated_at_ts": 1795248274.212932,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -41,7 +41,7 @@
    "ticker": "KXPGATOUR-THRC26-SSTE",
    "topic": "golf",
    "kind": "level",
-   "book_move": 0.2708,
+   "book_move": 0.2257,
    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
   },
   {
@@ -62,7 +62,7 @@
    "ticker": "KXLPGATOUR-CMEGTC26-JIIM",
    "topic": "golf",
    "kind": "level",
-   "book_move": -0.045,
+   "book_move": -0.0451,
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
   }
  ],
