@@ -1,0 +1,53 @@
+# TEMPORARY verification workflow (session arena-67bd954a, R2). Added on the working branch
+# only, to run one live collector pass with its own concurrency group (the shared "collect"
+# group was cancelling dispatched runs). It commits nothing; it uploads the output as an
+# artifact. This file is deleted before the PR is opened.
+name: verify-67bd954a (temporary)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-67bd954a
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests
+      - name: Live collector pass (root pipeline, same command as kalshi-dashboard.yml)
+        run: |
+          set -o pipefail
+          python3 -u -m collector.collector --market-cap 150 --orderbook-cap 300 2>&1 | tee /tmp/collector.log
+      - name: Summaries
+        run: |
+          python3 - <<'PY'
+          import json, collections
+          d = json.load(open("data/resolutions.json"))
+          rows = d["resolutions"].values()
+          print("meta:", json.dumps(d.get("meta", {}), indent=1))
+          c = collections.Counter((r.get("topic"), r.get("result")) for r in rows)
+          print("store rows:", len(d["resolutions"]), sorted(c.items()))
+          live = json.load(open("data/live.json"))
+          print("live resolutions_count:", live.get("resolutions_count"), "errors:", live.get("errors"))
+          print("settled_this_run:", [s.get("ticker") for s in live.get("settled_this_run", [])])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verify-67bd954a
+          path: |
+            data/resolutions.json
+            data/live.json
+            data/portfolio_state.json
+            /tmp/collector.log
+          retention-days: 7
