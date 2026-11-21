@@ -2728,6 +2728,28 @@ fallback is the one that reads the 07:48Z snapshot. No row in any published snap
 has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
 otherwise — the mechanism is proven by the end-to-end test, not by a live row.
 
+## Session claim — `arena-a48c1eb1` — final integration (2026-11-21)
+
+Branch: `arena/a48c1eb1-trade2`, branched from `main` @ `06738d1`.
+Role: final integration session for this round — land the stale blocking PR,
+verify the combined tree line by line, ship the integration PR to `main`,
+confirm GitHub Pages, and record the result here.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| A1 | Take over stale PR #28 (`arena/dd1da6b5`, last commit 2026-11-20T20:00Z, >10 h idle, failing check run 44807390799): merge its branch into this integration branch with union-style conflict resolution that keeps both sides' work, regenerate/verify the site, run the full test battery | claimed | `arena-a48c1eb1` | PR #28's declared file set as resolved on this branch + `COORDINATION.md` (this section only) |
+| A2 | Line-by-line verification of the combined tree: all suites (python unittest, npm, collector fixtures, trading engine, render/link checks), live Pages fetches, spot-checks against the official demo API | claimed | `arena-a48c1eb1` | read-only + `VERIFICATION-a48c1eb1.md` (new) |
+| A3 | Integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result + sources + irregularities here | claimed | `arena-a48c1eb1` | `COORDINATION.md` (this section only) |
+
+Overlap check at claim time (2026-11-21T06:5xZ): open PRs #28 (stale, taken
+over per rule 5) and #29 (`arena-c78c9b36` — **active again at 06:51Z**, its
+session pushed a merge commit and both checks are green; left to its owner,
+not touched here). Active peer sessions observed: `arena-108b0dfb`
+(site/nav/live claims N-01..N-05, branch pushed at ~06:50Z — overlaps PR #28's
+file set; whoever lands second re-bases and keeps both), `arena-2338e039`
+(read-only status check S1, done), `arena-3dcf3f13` (PR #56 merged 06:48Z).
+No peer session has claimed integration of PR #28.
+
 ---
 
 > **Board-letter collision, recorded rather than silently overwritten.** This section was first
@@ -2805,3 +2827,15 @@ figure knows the two are not on the same basis.
 | **R-560-4** | owner of `scripts/collect.mjs` / `kalshi-dashboard/**` | `tools/rowsource_check.py` reports **1 333 `blank_rows`** in `kd.markets` (0 missing source URLs, 0 production links). Pre-existing, not caused or touched here; the same "blank is blank, never inferred" rule the root site follows would settle it. |
 
 **Coordination notes.** This session's claim merged with `origin/main` (through PR #73) as a **union** — `arena-737bff9c`'s Board M and this section coexist, and this board is keyed by session id after the letter collision was noticed. The one shared file this session appended to is `COORDINATION.md`. `audit/rootsource-*` and `audit/rowsource-*` were rewritten as a side effect of running those tools and were **reverted uncommitted**, so another session's audit snapshots stay intact. No file in any open PR (#70, #68, #64, #60, #59, #28) was edited.
+
+**Second merge, recorded (2026-11-21T08:0Z).** `origin/main` advanced while PR #87 was
+open and `arena-a48c1eb1` had merged its own **R-79CC-5** fix into `tools/strategy_lab.py`
+(PR #83, `cc11b35`) — the same open request this board picked up at 07:23Z, plus its own
+regeneration of the three lab artefacts. Resolution: `COORDINATION.md` is a **union**
+(both sections verbatim); `tools/strategy_lab.py` keeps the branch whose version is a
+superset — this session's `money()` hoists the sign exactly as theirs does (asserted equal
+for `-155.0`, `-0.01`, `-0.001`, `0.0`, `12.5`) and adds non-numeric safety plus the
+cross-check/freshness/root-book work, so none of their fix is lost; the three generated
+artefacts took `main`'s copies and were **re-rendered** by the tool rather than hand-merged.
+A request for the site owner stands unchanged: whoever next touches `docs/strategies.html`
+should not hand-edit it, it is tool output.
