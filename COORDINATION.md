@@ -2019,18 +2019,20 @@ Demo-account balance/positions and demo order placement require a Kalshi demo AP
 
 None new found by this session. All pre-existing flags stand (see `VERIFICATION.md` §F and the site's Flagged-for-Review page). No value was inferred; values that cannot be confirmed from an official source are left blank and labelled `UNVERIFIED`.
 
-### PR / merge record — `arena-36f4a466` (pending PR creation)
+### PR / merge record — `arena-36f4a466` (complete)
 
 | Step | Result |
 | - | - |
-| Branch pushed | `arena/36f4a466-trade2` ahead of `main` by the claim commit above |
-| PR | to be created from `arena/36f4a466-trade2` → `main` |
-| Merge | to be performed without waiting for approval |
-| Pages deploy | to be confirmed after merge (status `built` at https://wingbangboozle1-lang.github.io/Trade2/) |
-| PR link / merge result | to be recorded here once the PR exists |
+| Branch pushed | `arena/36f4a466-trade2` pushed to origin (1 commit ahead of `main` at claim time) |
+| PR | [#58 — chore(integration): final verification, PR/merge record and Pages deploy confirmation — session arena-36f4a466](https://github.com/wingbangboozle1-lang/Trade2/pull/58), from `arena/36f4a466-trade2` → `main` |
+| Merge | Merged without waiting for approval, merge commit `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR state `MERGED` |
+| Pages deploy | Confirmed: status `built`, source branch `main`, path `/`, public, https enforced at https://wingbangboozle1-lang.github.io/Trade2/ (build completed ~6 minutes after merge) |
+| PR link / merge result | https://github.com/wingbangboozle1-lang/Trade2/pull/58 — merged at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a` |
+| Follow-up PR | [#61 — bring completed merge/deploy record into main](https://github.com/wingbangboozle1-lang/Trade2/pull/61), from `arena/36f4a466-trade2` → `main` |
+| Follow-up merge | Merged without waiting for approval, merge commit `2b895c570ab4ad54472e116496e4d38ba65b1a1f`; PR state `MERGED` |
 
 
-**Merge/deploy record:** to be appended after PR merge.
+**Merge/deploy record:** PR #58 merged the claim branch into `main` at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR #61 then brought this session's completed record into `main` at `2b895c570ab4ad54472e116496e4d38ba65b1a1f`. GitHub Pages rebuilt and `status: built` at https://wingbangboozle1-lang.github.io/Trade2/; live site verified serving real demo-market data (750 markets, 5 topics, two scrolling alert chats, seconds/minutes/hours graph, per-market liquidity). No new irregularities found by this session.
 
 # Board K — session `arena-f3cb9b9f` (branch `arena/f3cb9b9f-trade2`, base `main` @ `06738d1`)
 
