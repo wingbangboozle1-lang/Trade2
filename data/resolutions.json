@@ -4605,7 +4605,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-FEB",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTCMAX100-26-MAR": {
    "ticker": "KXBTCMAX100-26-MAR",
@@ -4619,7 +4619,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-MAR",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTCMAX100-26-APR": {
    "ticker": "KXBTCMAX100-26-APR",
@@ -4633,7 +4633,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-APR",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTCMAX100-26-AUG": {
    "ticker": "KXBTCMAX100-26-AUG",
@@ -4647,7 +4647,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-AUG",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXAAAGASMAXCA-26DEC31-6.20": {
    "ticker": "KXAAAGASMAXCA-26DEC31-6.20",
@@ -4661,7 +4661,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.20",
    "human_url": "https://kalshi.com/markets/KXAAAGASMAXCA-26DEC31",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTCMAX100-26-SEP": {
    "ticker": "KXBTCMAX100-26-SEP",
@@ -4675,7 +4675,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-SEP",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXAAAGASMAXCA-26DEC31-6.40": {
    "ticker": "KXAAAGASMAXCA-26DEC31-6.40",
@@ -4689,7 +4689,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.40",
    "human_url": "https://kalshi.com/markets/KXAAAGASMAXCA-26DEC31",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTCMAX100-26-OCT": {
    "ticker": "KXBTCMAX100-26-OCT",
@@ -4703,7 +4703,7 @@
    "status": "finalized",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-OCT",
    "human_url": "https://kalshi.com/markets/KXBTCMAX100-26",
-   "verified_at": "2026-11-21T07:33:23Z"
+   "verified_at": "2026-11-21T07:43:19Z"
   },
   "KXBTC15M-26NOV210230-30": {
    "ticker": "KXBTC15M-26NOV210230-30",
@@ -12880,6 +12880,61 @@
    "title": "Target Price: $58,068.16",
    "close_time": "2026-11-21T07:45:00Z",
    "first_seen": "2026-11-21T07:33:23Z",
+   "last_checked": null,
+   "lookups": 0
+  },
+  "KXBTCD-26NOV2103-T58299.99": {
+   "ticker": "KXBTCD-26NOV2103-T58299.99",
+   "event_ticker": "KXBTCD-26NOV2103",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$58,300 or above",
+   "close_time": "2026-11-21T08:00:00Z",
+   "first_seen": "2026-11-21T07:43:19Z",
+   "last_checked": null,
+   "lookups": 0
+  },
+  "KXBTCD-26NOV2103-T58599.99": {
+   "ticker": "KXBTCD-26NOV2103-T58599.99",
+   "event_ticker": "KXBTCD-26NOV2103",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$58,600 or above",
+   "close_time": "2026-11-21T08:00:00Z",
+   "first_seen": "2026-11-21T07:43:19Z",
+   "last_checked": null,
+   "lookups": 0
+  },
+  "KXBTCD-26NOV2103-T58199.99": {
+   "ticker": "KXBTCD-26NOV2103-T58199.99",
+   "event_ticker": "KXBTCD-26NOV2103",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$58,200 or above",
+   "close_time": "2026-11-21T08:00:00Z",
+   "first_seen": "2026-11-21T07:43:19Z",
+   "last_checked": null,
+   "lookups": 0
+  },
+  "KXBTCD-26NOV2103-T58399.99": {
+   "ticker": "KXBTCD-26NOV2103-T58399.99",
+   "event_ticker": "KXBTCD-26NOV2103",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$58,400 or above",
+   "close_time": "2026-11-21T08:00:00Z",
+   "first_seen": "2026-11-21T07:43:19Z",
+   "last_checked": null,
+   "lookups": 0
+  },
+  "KXBTCD-26NOV2103-T57999.99": {
+   "ticker": "KXBTCD-26NOV2103-T57999.99",
+   "event_ticker": "KXBTCD-26NOV2103",
+   "series_ticker": "KXBTCD",
+   "topic": "crypto",
+   "title": "$58,000 or above",
+   "close_time": "2026-11-21T08:00:00Z",
+   "first_seen": "2026-11-21T07:43:19Z",
    "last_checked": null,
    "lookups": 0
   }
