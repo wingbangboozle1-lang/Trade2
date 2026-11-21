@@ -131,6 +131,72 @@
               exception is logged in <code>COORDINATION.md</code>.</td>
             <td><code>COORDINATION.md</code></td>
           </tr>
+          <tr>
+            <td class="mono">FL-10</td>
+            <td><span class="badge unv">fixed in code — applies at next scheduled run</span></td>
+            <td><b>Resolutions covered one topic and no “yes” outcomes</b> (session arena-3dcf3f13, X1). The published snapshot had 300 rows: all crypto (DOGE), all <code>no</code>, last ~3 hours. Golf, culture, elections and gas had none. Causes: the same first series per topic every run, a global newest-300 cut that let crypto fill the file, and no accumulation across runs. The fix rotates series per topic, scans the last 30 days (documented <code>min_settled_ts</code>), keeps 60 newest per topic and merges prior rows. The published file changes only when the scheduled collector runs after this merge.</td>
+            <td>Settled examples checked live: <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDPWORLDTOUR-DPWTC26-THAT" target="_blank" rel="noopener">golf yes ↗</a> · <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDOGE-26NOV2100-T0.2349999" target="_blank" rel="noopener">DOGE no ↗</a> · <a href="https://docs.kalshi.com/getting_started/market_settlement" target="_blank" rel="noopener">settlement docs ↗</a> · <a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">get-markets (min_settled_ts) ↗</a> · <code>VERIFICATION-3dcf3f13.md</code> C4–C5, C13</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-11</td>
+            <td><span class="badge unv">open — request R-3DCF-1</span></td>
+            <td><b>Root-site resolutions cover only two topics:</b> <code>data/resolutions.json</code> has 268 gas-prices and 60 crypto rows, and zero elections, culture or golf rows. Its settlement scan is exchange-wide (<code>collector/collector.py</code>), so it is not per topic.</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&series_ticker=KXBIGBROTHER&limit=5" target="_blank" rel="noopener">culture settled example ↗</a> · <code>VERIFICATION-3dcf3f13.md</code> C10</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-12</td>
+            <td><span class="badge unv">open — request R-3DCF-4</span></td>
+            <td><b>Three simulated-equity figures and two resolved counts across the published pipelines.</b> Root: equity 9,205.84 and 328 resolved (<code>data/live.json</code>, generated 06:28Z). Docs: equity 11,549.01 and 300 resolved (<code>docs/data/portfolio.json</code>, <code>docs/data/resolutions.json</code>). Also <code>data/portfolio_state.json</code> bankroll 8,277.59. All are simulated; none is an exchange balance. The sites do not say which pipeline a number comes from.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/portfolio/get-balance" target="_blank" rel="noopener">balance endpoint (exchange balance, needs keys) ↗</a> · <code>VERIFICATION-3dcf3f13.md</code> C8–C9</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-13</td>
+            <td><span class="badge unv">open — request R-3DCF-3</span></td>
+            <td><b>Swing alert records the spike but not the reversion.</b> <code>KXPGATOUR-THRC26-MTHO</code> alert: 0.17 → 0.39 at 06:12Z (+0.22). The API confirms the 1-minute candle at 06:12Z reached 0.39 on 10.98 contracts. The next minute closed back at 0.17. The alert does not show that the move lasted one minute.</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795238665&end_ts=1795242265&period_interval=1" target="_blank" rel="noopener">candlesticks (live) ↗</a> · <a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">candlestick docs ↗</a> · C6</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-14</td>
+            <td><span class="badge unv">open — request R-3DCF-2</span></td>
+            <td><b>Quote-only ask shown as a price.</b> <code>KXAAAGASW-26NOV23-3.6600</code> shows YES ask 1.00 next to last 0.02. The API reports <code>yes_ask_size_fp 0.00</code>, so no contracts rest at that ask. The table shows the 1.00 with no flag.</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6600" target="_blank" rel="noopener">market (live) ↗</a> · <a href="https://docs.kalshi.com/api-reference/market/get-market" target="_blank" rel="noopener">get-market docs ↗</a> · C2</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-15</td>
+            <td><span class="badge unv">open — request R-3DCF-5</span></td>
+            <td><b>Dollar-volume figure cannot be reproduced from the published file.</b> <code>notional_usd</code> is derived from the last price at snapshot time, and that price is not stored. Sample: published 54.11; recomputed from current API values 51.40. The figure is labelled as a derived proxy but has no stored input.</td>
+            <td><a href="https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6600" target="_blank" rel="noopener">market (live) ↗</a> · C3</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-16</td>
+            <td><span class="badge unv">open — request R-3DCF-6</span></td>
+            <td><b>The “seconds” chart window is not seconds.</b> The window shows 1-minute candles. Kalshi's candlestick periods are 1 minute, 1 hour or 1 day.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noopener">candlestick docs: “Valid values: 1 (1 minute), 60 (1 hour), 1440 (1 day)” ↗</a> · C11</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-17</td>
+            <td><span class="badge unv">open, disclosed</span></td>
+            <td><b>Settled-market list order is not documented.</b> It appears newest-first for several series, but the docs do not say so. Each series is read as at most 400 settled markets per run. A high-frequency series such as DOGE can settle more than 400 in 30 days, so some older rows may be missed in one run. Merging across runs reduces this and does not remove it.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/market/get-markets" target="_blank" rel="noopener">get-markets docs ↗</a> · <a href="https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&series_ticker=KXDOGE&limit=3" target="_blank" rel="noopener">observed order (live) ↗</a> · C13 / I-8</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-18</td>
+            <td><span class="badge unv">open — blocker B-1 (extends FL-01)</span></td>
+            <td><b>The Kalshi demo-account portfolio cannot be shown.</b> Balance and portfolio endpoints require <code>KALSHI-ACCESS-KEY</code>, <code>KALSHI-ACCESS-SIGNATURE</code> and <code>KALSHI-ACCESS-TIMESTAMP</code> headers and return 401 without them. This sandbox has no key pair, and creating one needs a person at kalshi.com. Every portfolio figure on the site is simulated.</td>
+            <td><a href="https://docs.kalshi.com/api-reference/portfolio/get-balance" target="_blank" rel="noopener">get-balance docs ↗</a> · C12</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-19</td>
+            <td><span class="badge unv">open — self-reported by the pipeline</span></td>
+            <td><b>Strategy-lab fee cross-check still disagrees with itself:</b> published fees 51.52 vs recomputed 65.24 for the same book. The pipeline reports this in <code>crosscheck_issues</code>. It has not been re-derived in this session.</td>
+            <td><code>docs/data/strategy_lab.json</code> · <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank" rel="noopener">fee schedule PDF ↗</a> · I-9</td>
+          </tr>
+          <tr>
+            <td class="mono">FL-20</td>
+            <td><span class="badge unv">open — recommendation</span></td>
+            <td><b>Four site generators in one repository.</b> <code>site_build/</code> writes the root pages, <code>docs/</code> holds hand-written pages, <code>site/</code> is a second builder, and <code>kalshi-dashboard/</code> is a third output. They publish different numbers (FL-12). Recommend consolidating to one generator and one data pipeline.</td>
+            <td><code>COORDINATION.md</code> · <code>VERIFICATION-3dcf3f13.md</code> I-10</td>
+          </tr>
         </tbody>
       </table>
     </div>
