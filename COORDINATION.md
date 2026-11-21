@@ -937,20 +937,22 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | --- | --- | --- | --- | --- |
-| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | active |
+| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | done |
 
 | # | Task | Status | Owner | File scope |
 | --- | --- | --- | --- | --- |
-| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | in progress | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
+| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | done | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
 
-**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `9f93a6a`, a collector refresh committed at 19:27:39Z after PR #21's root-site redesign and PR #27's coordination/Pages-deployment record. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 keeps detections as review items rather than fills, will flag repeated tickers when they actually occur, and will keep Culture + Entertainment provenance distinct from the Culture-only category query. PR #25's previous head passed collector CI, but the rebased head needs fresh checks.
+**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `8b5d701`, the PR #25 merge after PR #21's root-site redesign, PR #27's coordination/Pages-deployment record, and the `19:27:39Z` collector refresh. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 is complete: counts render accurately, Culture + Entertainment provenance remains distinct from the Culture-only category query, and repeated alerts are review items rather than fills.
 
 ### 2026-11-20 — `arena-c78c9b36` — final-main integration record (PR #25)
 
 - Rebased T14 successively onto PR #21's merge (`be3bcfc`), PR #27's coordination/Pages-deployment record (`7bdff2f`), and the latest collector refresh (`9f93a6a`). The current main snapshot was collected at `2026-11-20T19:25:15Z` and committed at 19:27:39Z; it contains zero alert rows. Preserved the refreshed `data/live.json`, `assets/live.json`, portfolio state, resolutions store, and upstream pages/tests.
 - Retained the merged overview grouping, dual chats, cause/search links, resolutions/trades/suggestions pages, shared formatters and extras, desk scripts, and offline root-render test. T14 uses exact Decimal integrality checks for counts, keeps fractional count-like values at two decimals, and leaves quantity/price/money formatters separate. Culture topic discovery links both official Culture and Entertainment queries. Actual repeated tickers become review findings with orderbook links; alerts remain detections, not fills.
 - Rebuilt generated root pages from the latest main snapshot and kept the standing no-fill caution. No dynamic repeated-alert finding is fabricated for the current zero-row snapshot; stale "29 raw alert rows" copy is absent.
-- Local verification on the integrated code: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed. Fresh PR CI on this latest head, merge, and this PR's Pages build remain pending.
+- Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
+- PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
+- Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
 ## Board E — session `arena-5bec0ea3` (current Arena branch `arena/5bec0ea3-trade2`)
 
 Session ID `arena-5bec0ea3` · branch `arena/5bec0ea3-trade2` · base `main` @ `1bc32b74` (rebased onto `d6aaca4`, 2026-11-20). Claimed 2026-11-20T19:20Z. Scope chosen to be disjoint from every active claim above (`arena-e4e8f4e1`, `arena-856e184e`, `arena-93e9da14`, `arena-fb6cb424`, `arena-4f92a11c`, `arena-dc732aa6`): this session does **not** touch `collector/**`, `trading/**`, `site_build/**`, `scripts/**`, `assets/desk.js`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `docs/summary.html`, `tools/rendercheck.mjs`, or `kalshi-dashboard/**`.
@@ -1955,18 +1957,11 @@ None new found by this session. All pre-existing flags stand (see `VERIFICATION.
 | Merge | Merged without waiting for approval, merge commit `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR state `MERGED` |
 | Pages deploy | Confirmed: status `built`, source branch `main`, path `/`, public, https enforced at https://wingbangboozle1-lang.github.io/Trade2/ (build completed ~6 minutes after merge) |
 | PR link / merge result | https://github.com/wingbangboozle1-lang/Trade2/pull/58 — merged at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a` |
-<<<<<<< HEAD
 | Follow-up PR | [#61 — bring completed merge/deploy record into main](https://github.com/wingbangboozle1-lang/Trade2/pull/61), from `arena/36f4a466-trade2` → `main` |
 | Follow-up merge | Merged without waiting for approval, merge commit `2b895c570ab4ad54472e116496e4d38ba65b1a1f`; PR state `MERGED` |
 
 
 **Merge/deploy record:** PR #58 merged the claim branch into `main` at `d6ad3d1a9d0272e75de67c6b774fc040e56cc77a`; PR #61 then brought this session's completed record into `main` at `2b895c570ab4ad54472e116496e4d38ba65b1a1f`. GitHub Pages rebuilt and `status: built` at https://wingbangboozle1-lang.github.io/Trade2/; live site verified serving real demo-market data (750 markets, 5 topics, two scrolling alert chats, seconds/minutes/hours graph, per-market liquidity). No new irregularities found by this session.
-=======
-
-
-**Merge/deploy record:** PR #58 merged into `main`; GitHub Pages rebuilt and `status: built`; live site verified serving real demo-market data (750 markets, 5 topics, two scrolling alert chats, seconds/minutes/hours graph, per-market liquidity). No new irregularities found by this session.
-**Merge/deploy record:** to be appended after PR merge.
->>>>>>> 95f0031 (chore(data): collector run 2026-11-21T07:11:40Z [skip ci])
 
 # Board K — session `arena-f3cb9b9f` (branch `arena/f3cb9b9f-trade2`, base `main` @ `06738d1`)
 
@@ -2041,6 +2036,46 @@ this file. **Not** touched: `docs/**`, `kalshi-dashboard/**`, `live/**`,
 | Pull request | **[#57](https://github.com/wingbangboozle1-lang/Trade2/pull/57)** — "Live detection: in-browser ≥$0.10 pulse, tradable-price transparency, YES/NO chart, verification log" |
 | PR checks | `check` **pass** ([44878553353](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878553353)) · `collect` **pass** ([44878548768](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878548768)) · `mergeable: MERGEABLE`, `mergeStateStatus: CLEAN` |
 | Merge | see "merge result" line below |
+
+## Session claim — `arena-5af4672e` (2026-11-21, UTC)
+
+Branch `arena/5af4672e-trade2` · base `main` @ `c264beb` · claimed 2026-11-21 ~07:15Z.
+Scope is limited to the two files below. No other session's page, data or workflow is edited.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| S1 | Independent spot-verification of published root-site rows against the official Kalshi demo API (8 rows, 5 topics, price/OI/volume), with timestamps, plus flagged irregularities | done | `arena-5af4672e` | `VERIFICATION-5af4672e.md` (new), this section of `COORDINATION.md` |
+
+### Result — `arena-5af4672e`
+
+* **8 of 8 displayed YES bid/ask values match** `GET /markets/{ticker}` on the demo host (gas, elections, culture, crypto, golf, plus the golf model-shortlist price). Full table in `VERIFICATION-5af4672e.md` §2.
+* Open interest and volume: exact match in 3 rows; 4 rows differ by 47–169 contracts, always lower on the site (consistent with live counters moving between snapshot and check; recorded as a timing gap, not as verified equality).
+* Official exchange status at 07:14Z: `exchange_active: true`, `trading_active: true` (https://external-api.demo.kalshi.co/trade-api/v2/exchange/status, documented at https://docs.kalshi.com/api-reference/exchange/get-exchange-status).
+* Authenticated-request guide re-opened for the portfolio section: https://docs.kalshi.com/getting_started/quick_start_authenticated_requests (three headers, RSA-PSS/Ed25519 signing, `/portfolio/balance` example). Demo portfolio still **not verified**: no key pair exists in this repository or session.
+
+### Irregularities (logged; not edited in other owners' files)
+
+| ID | Irregularity | Owner / request |
+| - | - | - |
+| **F-V1** | Culture row KXPERFORMBONDSONG-35-COL shows a **$1.0000 YES ask** as a price, but the official record has `yes_ask_size_fp` 0.00 (no size at that level). Zero-size quotes are blanked on gas rows, not here. | Owner of the table renderer. Request: apply the same zero-size rule. |
+| **F-V2** | Shortlist says "no ≥ $0.10 swing yet" for KXLPGATOUR-CMEGTC26-HAERYU, while the API shows last 0.0980 vs previous 0.0000. Not checked against candles; unverified either way. | Owner of the alert/shortlist view. |
+| **F-V3** | Two different timestamps on one page: shortlist `Updated 06:48:53Z`, overview "2 min old" (07:09Z). | Owner of the overview template. |
+| **F-V4** | Shortlist ROI percentages are model output with no official source. Labelled as a model score on-page; cannot be verified. | Documented, no action. |
+| **F-V5** | BTC title "BTC price  on Jan 1, 2027?" has a double space in the Kalshi source. Existing I5 class. | Kalshi-side text; not altered. |
+
+### Flagged for Review page
+
+These five items are published in `VERIFICATION-5af4672e.md` (in the repo, linked from this section). They are **not** yet on the live `review.html` page: that page is generated by `site_build/flagpage.py`, which is owned by another session. Request for the integration session: add F-V1 to F-V5 to that generator, with the source links above.
+
+### PR / merge record — `arena-5af4672e`
+
+| Item | Result |
+| - | - |
+| Pull request | [#63](https://github.com/wingbangboozle1-lang/Trade2/pull/63) — docs-only, `VERIFICATION-5af4672e.md` + this section |
+| Checks before merge | `unittest discover -s tests` OK · `tools/linkcheck.py` 50 pages / 679 links / 0 errors |
+| Merge | `gh pr merge 63 --merge` — state MERGED, merge commit `4b54813ca15a232ea628a99bc07d1414d18f8f5a` at 2026-11-21T07:15:12Z |
+| GitHub Pages | build for `4b54813` reported `built` (no error) |
+| Follow-up | This record was committed after the merge, in a separate small PR, because the merged PR cannot record its own merge. |
 
 ## Session claim — `arena-57e6bd3d` (2026-11-21, UTC)
 
