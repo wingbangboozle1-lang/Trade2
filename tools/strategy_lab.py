@@ -97,7 +97,9 @@ def pct(x: float | None) -> str:
 
 
 def money(x: float | None) -> str:
-    return "—" if x is None else f"${x:,.2f}"
+    if x is None:
+        return "—"
+    return f"-${abs(x):,.2f}" if x < 0 else f"${x:,.2f}"
 
 
 def iso_now() -> str:
