@@ -389,6 +389,18 @@ class TestReconciliationAndEndToEnd(unittest.TestCase):
             # positions included), while `stats.fees` is the two legs of each CLOSED
             # round trip — which is what the strategy-lab cross-check compares.
             self.assertEqual(second["account"]["fees_paid"], rec["fees_implied_by_trade_log"])
+            # The published file is the next run's state: everything Engine.__init__
+            # needs has to be IN the payload main() wrote, not just in memory.
+            acct = second["account"]
+            for key in ("cash", "fees_paid", "realized_pnl", "day_key", "day_realized",
+                        "day_start_equity", "blocked_today", "starting_cash"):
+                self.assertIn(key, acct, f"main() stopped persisting {key}")
+            next_run = Engine(second)
+            self.assertEqual(next_run.cash, acct["cash"])
+            self.assertEqual(next_run.fees_paid, acct["fees_paid"])
+            self.assertEqual(next_run.realized_pnl, acct["realized_pnl"])
+            self.assertEqual(next_run.day_realized, acct["day_realized"])
+            self.assertEqual(next_run.blocked_today, acct["blocked_today"])
             closed_rows = [r for r in second["trades"] if r["action"] == "close"]
             self.assertEqual(second["stats"]["all"]["fees"],
                              round(sum(float(r["fee"] or 0) + float(r["entry_fee"] or 0)
