@@ -1,6 +1,6 @@
 {
  "gas-prices": {
-  "resolved_at": 1795206412.9017816,
+  "resolved_at": 1795228767.1365364,
   "series": [
    {
     "ticker": "AAAGASD",
@@ -1832,7 +1832,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/AAAGAS.pdf",
     "exchange_index": 0,
-    "volume_fp": "5013322.00",
+    "volume_fp": "5013364.00",
     "topic": "gas-prices",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASD"
    },
@@ -3292,7 +3292,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/AAAGAS.pdf",
     "exchange_index": 0,
-    "volume_fp": "74918232.00",
+    "volume_fp": "74918420.00",
     "topic": "gas-prices",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASM"
    },
@@ -3666,7 +3666,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/AAAGAS.pdf",
     "exchange_index": 0,
-    "volume_fp": "94716028.00",
+    "volume_fp": "94718977.00",
     "topic": "gas-prices",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW"
    },
@@ -4400,7 +4400,7 @@
   ]
  },
  "elections": {
-  "resolved_at": 1795206421.5161097,
+  "resolved_at": 1795228775.3482988,
   "series": [
    {
     "ticker": "CONTROLS",
@@ -12423,6 +12423,33 @@
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXCHIHUAHUAGOV"
    },
    {
+    "ticker": "KXCHIJOHNSONBALLOT",
+    "title": "Will Brandon Johnson qualify for Chicago's mayoral ballot?",
+    "category": "Elections",
+    "categories": [
+     "Elections"
+    ],
+    "tags": [
+     "Mayors & local",
+     "US Elections"
+    ],
+    "frequency": "one_off",
+    "fee_type": "quadratic",
+    "fee_multiplier": 1,
+    "settlement_sources": [
+     {
+      "name": "Chicago Board of Election Commissioners",
+      "url": "https://chicagoelections.gov/getting-ballot/candidates"
+     }
+    ],
+    "contract_terms_url": "https://assets.kalshi.com/contract_terms/BALLOT.pdf",
+    "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/BALLOT.pdf",
+    "exchange_index": 0,
+    "volume_fp": "0.00",
+    "topic": "elections",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXCHIJOHNSONBALLOT"
+   },
+   {
     "ticker": "KXCHILEROUNDONESECOND",
     "title": "2nd place Chile presidential election",
     "category": "Elections",
@@ -17833,7 +17860,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/FRENCHPRES.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/FRENCHPRES.pdf",
     "exchange_index": 0,
-    "volume_fp": "9225546.00",
+    "volume_fp": "9612198.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXFRENCHPRES"
    },
@@ -22399,7 +22426,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/POLITICALSTAT.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/POLITICALSTAT.pdf",
     "exchange_index": 0,
-    "volume_fp": "5550876.00",
+    "volume_fp": "5550878.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXHOUSEPOPVOTEMARGIN"
    },
@@ -38438,7 +38465,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/PRESNOM.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/PRESNOM.pdf",
     "exchange_index": 0,
-    "volume_fp": "7983008270.00",
+    "volume_fp": "7983619777.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD"
    },
@@ -38531,7 +38558,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/PRESNOM.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/PRESNOM.pdf",
     "exchange_index": 0,
-    "volume_fp": "1027464170.00",
+    "volume_fp": "1027839447.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMR"
    },
@@ -42506,7 +42533,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/ELECTION.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/ELECTION.pdf",
     "exchange_index": 0,
-    "volume_fp": "2007232.00",
+    "volume_fp": "2044238.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSENATEDEMLEAD"
    },
@@ -44097,7 +44124,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/USELECTION.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/USELECTION.pdf",
     "exchange_index": 0,
-    "volume_fp": "429404.00",
+    "volume_fp": "434181.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSENMAJ"
    },
@@ -47712,7 +47739,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/ELECTION.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/ELECTION.pdf",
     "exchange_index": 0,
-    "volume_fp": "2933.00",
+    "volume_fp": "2946.00",
     "topic": "elections",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXTAIPEIMAYOR"
    },
@@ -56524,7 +56551,7 @@
   ]
  },
  "culture": {
-  "resolved_at": 1795206429.4759698,
+  "resolved_at": 1795228783.474041,
   "series": [
    {
     "ticker": "1SONG-DRAKE",
@@ -68363,7 +68390,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/METACRITIC.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/METACRITIC.pdf",
     "exchange_index": 0,
-    "volume_fp": "37133.00",
+    "volume_fp": "56589.00",
     "topic": "culture",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXMC"
    },
@@ -70204,7 +70231,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/OSCARS.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/OSCARS.pdf",
     "exchange_index": 0,
-    "volume_fp": "24397222.00",
+    "volume_fp": "24397223.00",
     "topic": "culture",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXOSCARACTO"
    },
@@ -71066,7 +71093,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/PERFORMSONG.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/PERFORMSONG.pdf",
     "exchange_index": 0,
-    "volume_fp": "229944.00",
+    "volume_fp": "229945.00",
     "topic": "culture",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPERFORMBONDSONG"
    },
@@ -72980,7 +73007,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/SONGRELEASE.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/SONGRELEASE.pdf",
     "exchange_index": 0,
-    "volume_fp": "37.00",
+    "volume_fp": "38.00",
     "topic": "culture",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSONGRELEASE"
    },
@@ -80883,7 +80910,7 @@
   ]
  },
  "crypto": {
-  "resolved_at": 1795206439.647154,
+  "resolved_at": 1795228793.157594,
   "series": [
    {
     "ticker": "BITCOINMAXY",
@@ -81572,7 +81599,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/BTC.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/BTC.pdf",
     "exchange_index": 2,
-    "volume_fp": "117384322.00",
+    "volume_fp": "117396355.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTC"
    },
@@ -81623,7 +81650,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/CRYPTO15M.pdf",
     "exchange_index": 2,
-    "volume_fp": "8016843.00",
+    "volume_fp": "8114725.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTC15M"
    },
@@ -81822,7 +81849,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTOHIT.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/CRYPTOHIT.pdf",
     "exchange_index": 2,
-    "volume_fp": "3438001.00",
+    "volume_fp": "3440170.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTC50VS100"
    },
@@ -82114,7 +82141,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/BTC.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/BTC.pdf",
     "exchange_index": 2,
-    "volume_fp": "5726407761.00",
+    "volume_fp": "5726439098.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCD"
    },
@@ -82886,7 +82913,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTOMINMAX.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/CRYPTOMINMAX.pdf",
     "exchange_index": 2,
-    "volume_fp": "11312357.00",
+    "volume_fp": "11312510.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINMON"
    },
@@ -82913,7 +82940,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/BTCMINMAX.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/BTCMINMAX.pdf",
     "exchange_index": 2,
-    "volume_fp": "19474448.00",
+    "volume_fp": "19480246.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCMINY"
    },
@@ -83176,7 +83203,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/CRYPTO.pdf",
     "exchange_index": 2,
-    "volume_fp": "1973086672.00",
+    "volume_fp": "1973463778.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY"
    },
@@ -83660,7 +83687,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/CRYPTO15M.pdf",
     "exchange_index": 2,
-    "volume_fp": "1276138.00",
+    "volume_fp": "1276410.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETH15M"
    },
@@ -83793,7 +83820,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/ETH.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/ETH.pdf",
     "exchange_index": 2,
-    "volume_fp": "142618433.00",
+    "volume_fp": "142618816.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD"
    },
@@ -84438,7 +84465,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/CRYPTO15M.pdf",
     "exchange_index": 2,
-    "volume_fp": "320657.00",
+    "volume_fp": "320798.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSOL15M"
    },
@@ -84675,7 +84702,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/CRYPTO.pdf",
     "exchange_index": 2,
-    "volume_fp": "128100.00",
+    "volume_fp": "128150.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSOLD"
    },
@@ -84757,7 +84784,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/CRYPTO.pdf",
     "exchange_index": 2,
-    "volume_fp": "1343.00",
+    "volume_fp": "1346.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXSOLE"
    },
@@ -85239,7 +85266,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO15M.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/CRYPTO15M.pdf",
     "exchange_index": 2,
-    "volume_fp": "275470.00",
+    "volume_fp": "275629.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXXRP15M"
    },
@@ -85290,7 +85317,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/CRYPTO.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/CRYPTO.pdf",
     "exchange_index": 2,
-    "volume_fp": "43270695.00",
+    "volume_fp": "43270698.00",
     "topic": "crypto",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXXRPD"
    },
@@ -85499,7 +85526,7 @@
   ]
  },
  "golf": {
-  "resolved_at": 1795206448.8428617,
+  "resolved_at": 1795228803.9326696,
   "series": [
    {
     "ticker": "KXBDSHOLEINONE",
@@ -86270,7 +86297,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/PGATOUR.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/PGATOUR.pdf",
     "exchange_index": 0,
-    "volume_fp": "871767991.00",
+    "volume_fp": "872229454.00",
     "topic": "golf",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXLPGATOUR"
    },
@@ -87596,7 +87623,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/ACHIEVEMENTS.pdf",
     "contract_url": "https://assets.kalshi.com/regulatory/product-certifications/ACHIEVEMENTS.pdf",
     "exchange_index": 0,
-    "volume_fp": "54940901.00",
+    "volume_fp": "54947113.00",
     "topic": "golf",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGAR2LEAD"
    },
@@ -88552,7 +88579,7 @@
     "contract_terms_url": "https://assets.kalshi.com/contract_terms/PGATOUR.pdf",
     "contract_url": "https://kalshi-public-docs-staging.s3.us-east-1.amazonaws.com/regulatory/product-certifications/PGATOUR.pdf",
     "exchange_index": 0,
-    "volume_fp": "42199825273.00",
+    "volume_fp": "42199961093.00",
     "topic": "golf",
     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR"
    },
