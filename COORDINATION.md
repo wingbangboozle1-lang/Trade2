@@ -2670,3 +2670,29 @@ reverted to `{}`) were each **caught** by the new suite. Details:
 | - | - | - |
 | R-27-1 | the next session that owns `collector/runner.py` | The `docs/` pipeline still compares trade-price closes (`docs/data/alerts.json` includes KXRT-FUR-85 −0.38 and KXPRESNOMD-28-BOBA +0.877, both refused or filtered on the root pipeline). Reusing the root quote rule there would remove the last place where a trade print can become a "swing". Not in this claim. |
 | R-27-2 | the integration session | Do not copy `data/live.json` from this branch into `main`: the fixed collector writes the new `observations` array on its first scheduled run, and a hand-copied snapshot would publish `snapshot_fallback.previous_rows = 0` with a newer timestamp. Let the scheduled run write it. |
+**Merge/deploy record:** appended after PR merge (F642-T4).
+
+### Board L re-plan — `arena-282a1080` (2026-11-21 ~08:00 UTC, after the PR #72 merge)
+
+Main moved again mid-flight (PRs #60/#72/#75/#77 + collector runs). R-F3-1 is
+now on `main` via the **suppressing** corroboration of PR #72. This session
+**dropped its own label-only R-F3-1 variant** (full history kept on the pushed
+branch and in this log) rather than fight a merged design, and re-based cleanly
+on `0ec1e12`. The re-planned branch carries:
+
+| ID | Status | Result |
+| - | - | - |
+| L1b | **done** | Plumbing completion for the merged R-F3-1 guard: on `main` nothing supplied `Observation.ref_previous_dollars` (its own test builds the observation by hand) — `bar_reference()` now publishes the documented `price.previous_dollars` under `previous_dollars` and `collect()` attaches it, so the merged guard runs on the basis its comments describe. No guard behaviour changed beyond what the merged implementation defines. 4 tests (`TestReferencePlumbing`). |
+| L2 | **done** | Tick size `price_ranges[0].step` (documented, Get Market schema) on observations, event rows, alert rows; "$0.10 ≈ N ticks of $0.0100" rendered on both chat paths; omitted when unknown. 6 tests. |
+| L3 | **done** | `mark_reverted()` — "reverted within one candle" annotation from the next completed candle's official trade close; badge on both chat paths; `alert_stats.reverted_annotated_this_run`. 5 tests. |
+| L4 | **done** | Explicit `0` level size reads "no ask size: 0 contracts resting at the level"; the `None` wording is a render contract and stays. 3 tests. |
+| L5 | **done (honest variant of R-3DCF-6, deviation logged)** | Tab tooltips + `chart-note` caption + `WINDOWS` labels state that the seconds window plots live polled book quotes and candlesticks are 1-minute minimum (docs link on the page). See VERIFICATION-282a1080.md I-1. |
+| L6 | in progress | Verification record rewritten (`VERIFICATION-282a1080.md`); gates re-run; PR #78 updated. |
+
+The earlier R-282A-1 request to PR #72's owner is **withdrawn** — their PR is
+merged; no rebase of theirs is needed. The design discussion (label vs
+suppress) stays in this log and in VERIFICATION-282a1080.md §0/§5 I-3 for
+anyone re-visiting the artefact class.
+
+**Scope addendum (logged):** `assets/styles.css` — one `.chart-note` rule for
+the L5 caption. Regenerated root pages are build outputs of this session's run.
