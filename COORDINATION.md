@@ -1902,3 +1902,36 @@ Explicitly **not** touched (other owners / open PRs): `.github/workflows/kalshi-
 
 This session is the integration session for the above; it will re-verify the
 combined data, confirm the site builds with no broken links, open a PR and merge it.
+
+### 2026-11-21 — completion record `arena-108b0dfb`
+
+Session claimed N-01…N-05 at the top of its section. Status:
+
+| ID | Status | Result |
+| - | - | - |
+| N-01 | **done** | One canonical sidebar in `site_build/build.py`; `summary.html` (hand-maintained) aligned. `tools/navcheck.py` + `tests/test_nav_canonical.py` gate it. 13 pages, 13 destinations, 0 problems. |
+| N-02 | **done** | `assets/live-probe.js` runs the ≥ $0.10 rule in the visitor's browser against the public demo order books (CORS verified in `data/_cors.txt`). Rows are merged into both chats at render time and tagged LIVE; they never enter the served snapshot. 25 JS checks + a jsdom end-to-end test on the shipped page. Two of this session's own bugs were caught by those tests and fixed pre-commit (float rounding at exactly $0.10; total network failure reported as a healthy poll). |
+| N-03 | **logged, not edited** | The `docs/` collector's `KXPRESNOMD-28-BOBA` $0.877 row is a one-sided quote (0.0010 / 0.8860). Published on the Flagged page with both source links. That pipeline has a different owner; editing its data was out of scope. |
+| N-04 | **done** | `assets/nav.js` no longer builds a 404 cross-link from `/Trade2/docs/`. |
+| N-05 | **logged** | PR #28 and #29 remain `DIRTY` and stale; #28's features are on `main` except three files (`collector/shortlist.py`, `tests/test_shortlist.py`, `tools/verify_snapshot.py`). Recommendation recorded in `AUDIT_108b0dfb.md` §2; not acted on because the PRs belong to other sessions. |
+
+Additional fixes made while verifying, each with a test or a gate:
+
+* `resolutions.html` capped each topic at 40 rows, so "268 resolved" sat above a
+  40-row table and three topics read "0" with no explanation. The full 328-row
+  list is now published in a collapsed table built by the same row function.
+* `tools/navcheck.py`, `test/live-probe.test.mjs` and
+  `test/desk_live_probe_dc.mjs` now run in **both** `site-check.yml` and the
+  publishing workflow `kalshi-dashboard.yml`, so a template change cannot publish
+  an inconsistent menu and a probe regression cannot deploy.
+* `README.md` said `python3 site_build/build.py`, which fails with
+  `ModuleNotFoundError: collector`; it now documents `python3 -m site_build.build`
+  (verified both ways).
+
+Verification: `python3 -m unittest discover -s tests` 243 ok / 1 skipped (was 230);
+`node test/live-probe.test.mjs` 25/25; `node tools/root_pages_render.mjs` all
+pass; `tools/linkcheck.py` 50 pages / 672 links / 0 errors; `tools/navcheck.py`
+clean; all 13 pages also verified over HTTP through `server/app.py` with jsdom.
+
+Sources: see `AUDIT_108b0dfb.md` §5 (S1–S8), all official Kalshi documentation
+or the live demo API response itself.
