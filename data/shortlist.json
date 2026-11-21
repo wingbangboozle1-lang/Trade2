@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-11-21T09:23:58Z",
- "generated_at_ts": 1795253177.565985,
+ "generated_at": "2026-11-21T10:15:04Z",
+ "generated_at_ts": 1795256217.5788207,
  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
  "threshold_dollars": 0.1,
  "min_edge_dollars": 0.02,
@@ -21,10 +21,10 @@
  "level_picks_count": 0,
  "verdicts": [],
  "verdicts_count": 0,
- "rejected_count": 5,
+ "rejected_count": 6,
  "rejection_summary": [
   {
-   "reason": "the spread is $0.78, wider than $0.20, so the mid is not meaningful",
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful",
    "count": 2
   },
   {
@@ -32,11 +32,15 @@
    "count": 1
   },
   {
-   "reason": "YES",
+   "reason": "YES at 0.0400",
    "count": 1
   },
   {
-   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+   "reason": "the spread is $0.78, wider than $0.20, so the mid is not meaningful",
+   "count": 1
+  },
+  {
+   "reason": "YES",
    "count": 1
   }
  ],
@@ -44,16 +48,23 @@
   {
    "ticker": "KXBTCY-27JAN0100-B62500",
    "topic": "crypto",
-   "kind": "swing",
-   "book_move": 0.375,
+   "kind": "level",
+   "book_move": 0.3409,
    "reason": "the spread is $0.78, wider than $0.20, so the mid is not meaningful"
   },
   {
-   "ticker": "KXBTCY-27JAN0100-B62500",
-   "topic": "crypto",
+   "ticker": "KXPGATOP20-THRC26-PCOO",
+   "topic": "golf",
+   "kind": "swing",
+   "book_move": 0.285,
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+  },
+  {
+   "ticker": "KXPGATOP20-THRC26-PCOO",
+   "topic": "golf",
    "kind": "level",
-   "book_move": 0.375,
-   "reason": "the spread is $0.78, wider than $0.20, so the mid is not meaningful"
+   "book_move": 0.285,
+   "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
   },
   {
    "ticker": "KXBTCY-27JAN0100-B97500",
@@ -70,11 +81,11 @@
    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
   },
   {
-   "ticker": "KXPGATOUR-THRC26-SSTE",
-   "topic": "golf",
+   "ticker": "KXBTCY-27JAN0100-T20000.00",
+   "topic": "crypto",
    "kind": "level",
-   "book_move": 0.0451,
-   "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+   "book_move": 0.0109,
+   "reason": "YES at 0.0400 leaves only -$0.0254 of edge before fees"
   }
  ],
  "alerts_seen": 0,
