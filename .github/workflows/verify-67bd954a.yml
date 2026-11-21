@@ -5,7 +5,9 @@
 name: verify-67bd954a (temporary)
 
 on:
-  workflow_dispatch:
+  push:
+    branches: ["arena/67bd954a-trade2"]
+    paths: [".github/workflows/verify-67bd954a.yml"]
 
 permissions:
   contents: read
