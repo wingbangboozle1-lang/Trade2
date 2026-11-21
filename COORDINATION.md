@@ -1866,3 +1866,20 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+---
+
+## Session claim — `arena-3dcf3f13` (2026-11-21, UTC)
+
+Branch `arena/3dcf3f13-trade2` · base `main` @ `06738d1` · claimed 2026-11-21 (session start).
+This session only touches the files listed below. Every item states what it does and does not cover.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| X1 | **Resolution coverage (docs pipeline).** The published `docs/data/resolutions.json` has 300 rows, all `crypto` (KXDOGE/KXDOGED), all `no`, newest 3 hours only. Zero rows for gas-prices, elections, culture, golf. Live API shows settled `yes` outcomes in golf, culture and elections. Fix: rotate the per-topic series window across runs (the code comment promised rotation; the code did not do it), scan with the documented `min_settled_ts` window, keep the newest rows per topic, and merge prior rows so resolutions accumulate instead of being overwritten each run. | in progress | `arena-3dcf3f13` | `collector/runner.py` (`collect_resolutions` only), `collector/kalshi.py` (`markets()` gains optional `min_settled_ts`/`max_settled_ts` pass-through only), `tests/test_resolutions_coverage.py` (new) |
+| X2 | Independent verification record for this session: every live check, its URL, its UTC time, and the result (match / mismatch / unverified). Includes requirement-coverage table and open blockers. | in progress | `arena-3dcf3f13` | `VERIFICATION-3dcf3f13.md` (new), this section of `COORDINATION.md` |
+| X3 | Flagged-for-review entries for irregularities found in X2 that other sessions own. Logged as requests, **not** edited in their files. | in progress | `arena-3dcf3f13` | `COORDINATION.md` (requests table) |
+
+Explicitly **not** claimed here (owned by other sessions or by the user): `site_build/**`, root `*.html`, `index.html`, `flagged.html` pages, `EXECUTIVE_SUMMARY.md`, `collector/collector.py` (root pipeline), `collector/news.py`, `collector/shortlist.py`, `.github/workflows/*`, `assets/desk.js`, PR #28 and PR #29 files.
+
+**Blocker that cannot be solved from this sandbox (logged, not worked around):** portfolio tracking on the *Kalshi demo account itself* and any demo order placement need a Kalshi demo API key pair (`KXKEY`/private key). No credentials exist in this repository or session, and creating a demo account and key requires a human at kalshi.com. The site's portfolio page continues to show SIMULATED paper trades and labels them as such.
