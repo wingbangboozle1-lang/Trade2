@@ -46,6 +46,12 @@ ALERTS_VERSION = 3       # bump to discard alerts written by an older rule set
 # quote rule by alerts.alert_record_valid, as introduced in 856e184e.
 MAX_ALERTS = 400          # rolling chat buffer
 MAX_RESOLUTIONS = 2000    # newest in-scope YES/NO records kept in the store
+# Per-topic settled scan (added 2026-11-21, claim T-BB-1 / R-3DCF-1). The exchange-wide
+# settled scan is newest-first and crowded out every topic except gas-prices and crypto.
+RESOLUTION_SERIES_PER_RUN = 30     # series asked for per run, shared across topics
+RESOLUTION_WINDOW_S = 300          # rotation window = one collector run (5 minutes)
+RESOLUTION_LOOKBACK_S = 30 * 86400  # documented min_settled_ts window
+RESOLUTION_PAGE_LIMIT = 200        # markets per series request (single page)
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -154,12 +160,86 @@ def migrate_resolutions(store: dict[str, Any],
             rec["topic"] = topic
             kept[ticker] = rec
     if len(kept) > MAX_RESOLUTIONS:
-        ordered = sorted(kept.items(),
-                         key=lambda kv: kv[1].get("settlement_ts") or "",
-                         reverse=True)
-        kept = dict(ordered[:MAX_RESOLUTIONS])
+        kept = balanced_trim(kept, MAX_RESOLUTIONS)
     store["resolutions"] = kept
     return len(kept)
+
+
+def balanced_trim(records: dict[str, dict[str, Any]], limit: int) -> dict[str, dict[str, Any]]:
+    """Trim to ``limit`` records without letting one topic evict the others.
+
+    Water-filling: find the largest per-topic cap ``c`` with sum(min(n_topic, c)) <= limit,
+    keep the newest ``c`` records of each topic, then hand any leftover slots to topics that
+    still have older records (one each, in topic order). A single-topic store therefore keeps
+    exactly its newest ``limit`` records, as before.
+    """
+    by_topic: dict[str, list[tuple[str, dict[str, Any]]]] = {}
+    for ticker, rec in records.items():
+        by_topic.setdefault(rec.get("topic") or "", []).append((ticker, rec))
+    for rows in by_topic.values():
+        rows.sort(key=lambda kv: kv[1].get("settlement_ts") or "", reverse=True)
+    lo, hi = 0, limit
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if sum(min(len(rows), mid) for rows in by_topic.values()) <= limit:
+            lo = mid
+        else:
+            hi = mid - 1
+    cap = lo
+    slack = limit - sum(min(len(rows), cap) for rows in by_topic.values())
+    kept: dict[str, dict[str, Any]] = {}
+    for topic in sorted(by_topic):
+        rows = by_topic[topic]
+        take = min(len(rows), cap)
+        if slack > 0 and len(rows) > cap:
+            take += 1
+            slack -= 1
+        for ticker, rec in rows[:take]:
+            kept[ticker] = rec
+    return kept
+
+
+def scan_settled_by_series(client: KalshiClient, registry: dict[str, dict[str, Any]],
+                           now: float, errors: list[str],
+                           deadline: float) -> list[tuple[dict[str, Any], str]]:
+    """Settled markets for a rotating slice of each topic's series.
+
+    Uses only documented GET /markets filters (``status``, ``series_ticker``,
+    ``min_settled_ts``; https://docs.kalshi.com/api-reference/market/get-markets).
+    Each run takes ``RESOLUTION_SERIES_PER_RUN // topics`` series per topic, starting at
+    ``window * per_cap`` (mod the topic's series count), so every registered series is
+    visited within ``ceil(series / per_cap)`` runs. Returns ``(market, topic_slug)`` pairs.
+    """
+    per_topic: dict[str, set[str]] = {}
+    for row in registry.values():
+        topic = row.get("topic")
+        ticker = row.get("ticker")
+        if topic and ticker:
+            per_topic.setdefault(topic, set()).add(ticker)
+    if not per_topic:
+        return []
+    per_cap = max(1, RESOLUTION_SERIES_PER_RUN // len(per_topic))
+    window = int(now // RESOLUTION_WINDOW_S)
+    since = int(now - RESOLUTION_LOOKBACK_S)
+    out: list[tuple[dict[str, Any], str]] = []
+    for slug in sorted(per_topic):
+        tickers = sorted(per_topic[slug])
+        n = len(tickers)
+        start = (window * per_cap) % n
+        for i in range(min(per_cap, n)):
+            if time.time() > deadline:
+                errors.append("settled series scan stopped at the time budget (partial run)")
+                return out
+            series = tickers[(start + i) % n]
+            try:
+                markets = client.markets(status="settled", series_ticker=series,
+                                         min_settled_ts=since,
+                                         limit=RESOLUTION_PAGE_LIMIT, max_pages=1)
+            except KalshiHTTPError as exc:
+                errors.append(f"settled series {series} failed ({exc})")
+                continue
+            out.extend((m, slug) for m in markets)
+    return out
 
 
 def load_json(path: str, default: Any):
@@ -603,8 +683,15 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             errors.append(f"settled scan failed ({exc})")
 
     lap("settled_scan", t_settle)
+    # Per-topic rotation (T-BB-1): the exchange-wide scan above is newest-first and
+    # dominated by gas-prices and crypto, so the rest of the topics are scanned by series.
+    t_series = time.time()
+    series_settled = scan_settled_by_series(client, series_registry, now, errors, deadline)
+    lap("settled_series_scan", t_series)
     resolution_memo: dict[str, str | None] = {}
-    for market in settled_markets:
+    candidates: list[tuple[dict[str, Any], str | None]] = [(m, None) for m in settled_markets]
+    candidates.extend(series_settled)
+    for market, scan_topic in candidates:
         ticker = market.get("ticker")
         result = (market.get("result") or "").lower()
         if not ticker or result not in ("yes", "no"):
@@ -620,7 +707,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         # carry no series_ticker, so the topic comes from the event ticker
         # (see resolution_topic()); everything else is out of scope and would
         # only crowd the bounded store.
-        topic = resolution_topic(
+        topic = scan_topic or resolution_topic(
             market.get("event_ticker") or ticker, series_registry, resolution_memo)
         if not topic:
             continue

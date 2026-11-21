@@ -1915,8 +1915,31 @@ Branch `arena/bbfedfd5-trade2` (fixed by Arena; the `session-<id>/<task>` form i
 
 | ID | Task | Status | Owner | File scope |
 | - | - | - | - | - |
-| T-BB-1 | Close **R-3DCF-1** (previously unclaimed): the root pipeline's settled scan is exchange-wide, newest-first, so `data/resolutions.json` holds only gas-prices and crypto rows (328 rows: gas 268, crypto 60; elections, culture and golf = 0). Add a per-topic settled scan over each registered series (documented `series_ticker` + `min_settled_ts` filters), keep the exchange-wide scan for portfolio grading, and keep a per-topic retention bound so one topic cannot evict the others. | in progress | `arena-bbfedfd5` | `collector/collector.py` (resolution block and its helpers only), `tests/test_resolutions_root_coverage.py` (new), this section of `COORDINATION.md` |
+| T-BB-1 | Close **R-3DCF-1** (previously unclaimed): the root pipeline's settled scan is exchange-wide, newest-first, so `data/resolutions.json` holds only gas-prices and crypto rows (328 rows: gas 268, crypto 60; elections, culture and golf = 0). Add a per-topic settled scan over each registered series (documented `series_ticker` + `min_settled_ts` filters), keep the exchange-wide scan for portfolio grading, and keep a per-topic retention bound so one topic cannot evict the others. | done (code + tests; published data refreshes on the next scheduled collector run) | `arena-bbfedfd5` | `collector/collector.py` (resolution block and its helpers only), `tests/test_resolutions_root_coverage.py` (new), this section of `COORDINATION.md` |
 
 Explicitly not claimed here: `data/**` (regenerated only by the scheduled collector run), `docs/**`, `site_build/**`, `.github/workflows/**`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `collector/runner.py`, `collector/alerts.py`, `collector/engine.py`.
 
 Sandbox note: outbound access in this session is limited to GitHub, npm and PyPI, so no live Kalshi call is made from the sandbox. Live checks are made with the documented-page fetch tool and recorded with their URLs.
+
+### Completion record — `arena-bbfedfd5` (T-BB-1, 2026-11-21)
+
+**What changed (`collector/collector.py` only, plus one new test file):**
+* `scan_settled_by_series()` — new. For each topic, visits `RESOLUTION_SERIES_PER_RUN // topics` = 6 series per run, rotating by 5-minute window (`window * per_cap mod n`), with `status=settled`, `series_ticker`, `min_settled_ts` = now − 30 days, `limit=200`, one page. Every series is visited within `ceil(n / 6)` runs. Settled results are then graded and stored through the same path as the exchange-wide scan. The exchange-wide scan is kept, so held positions are still graded.
+* `balanced_trim()` — new. Replaces the global newest-N cut in `migrate_resolutions()`. Water-fills per-topic caps to 2 000 total, so a large topic cannot evict the others. A single-topic store still keeps its newest 2 000 rows, so `tests/test_resolutions.py` is unchanged and passing.
+* Request budget: at most 30 extra GET /markets calls per run. Each failure is appended to `errors` (no silent gaps). The time budget stops the scan and records a partial run.
+* Tests: `tests/test_resolutions_root_coverage.py` (9 tests: documented filters, request bound, rotation coverage, HTTP-failure recording, deadline, balanced trim single/multi-topic, migrate integration). Full suite: `python3 -m unittest discover -s tests` → **246 tests OK** (1 pre-existing skip). `pyflakes collector/collector.py` clean.
+
+**Sources (official):**
+* https://docs.kalshi.com/api-reference/market/get-markets — `status`, `series_ticker`, `min_settled_ts`, `limit`, `mve_filter`.
+* https://docs.kalshi.com/getting_started/market_settlement — YES/NO settlement.
+* Live check (fetch tool, 2026-11-21 ~07:0xZ): `https://external-api.demo.kalshi.co/trade-api/v2/markets?status=settled&series_ticker=KXDPWORLDTOUR&min_settled_ts=1792652400&limit=5&mve_filter=exclude` returned finalized markets with `result` yes/no (e.g. `KXDPWORLDTOUR-DPWTC26-THAT` yes, settlement 2026-11-15T14:56:17Z). The market objects carry `event_ticker` but no `series_ticker`, which the topic mapping already handles. `1792652400` = 2026-10-22T07:00:00Z = 2026-11-21T07:00Z − 30 d (computed; not a Kalshi value).
+
+**Not verified from this sandbox:** outbound access here is limited to GitHub, npm and PyPI, so the collector was not run end to end against the demo API. The next scheduled run is the first real test. `data/resolutions.json` (328 rows, gas and crypto only) is **unchanged** in this session, as the data refresh belongs to the collector run.
+
+**Irregularities for review (not fixed here):**
+1. Series lists are large: the cached topics hold hundreds of series each (e.g. gas-prices, elections, crypto). A full rotation takes roughly 35–70 runs (about 3–6 hours at 5-minute cadence). This is documented in the code, not hidden.
+2. Each series request returns at most 200 markets per 30-day window. Very high-frequency series (`KXBTC15M`, `KXETH15M`, `KXSOL15M`, `KXXRP15M`, `KXBCH15M`, in `data/series_cache.json`) can exceed that per visit. The API's ordering inside the page is not documented on the cited page, so which rows are kept is unverified.
+3. `data/series_cache.json` mixes ticker forms (`AAAGASD` and `KXAAAGASD`, `BTC` and `KXBTC`). Both may be real series, but this is unverified: the cited get-markets page does not say which form is canonical. The scan uses the cached form as-is, and any failure shows in `errors`.
+4. Root `data/resolutions.json` still lacks elections, culture and golf rows until the scheduled run refreshes it (see item 1 for timing).
+
+**Board status:** R-3DCF-1 is now closed by this claim. The owning file (`collector/collector.py`) is shared with the root pipeline, so the other requests in this section (R-3DCF-2…6) remain open with their original owners.
