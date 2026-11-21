@@ -169,7 +169,7 @@ Flagged-for-Review page rather than glossed over.
 
 ## 7b. Update 2026-11-21 — what was wrong, and what changed
 
-Four defects were reproduced before anything was edited, and each now has a
+Six defects were reproduced before anything was edited, and each now has a
 test that fails if it returns.
 
 | # | Defect found on `main` | Evidence | Fix |
@@ -178,6 +178,8 @@ test that fails if it returns.
 | N-02 | The published desk showed **0** swings ≥ $0.10 and an empty chat, because alerts could only be produced by a scheduled CI job diffing successive snapshots. | `data/alerts.json` = `[]`; live page fetch | `assets/live-probe.js` polls the public order books from the visitor's browser (demo API is CORS-open), applies the same rule, tags rows **LIVE**; 25 JS checks + a jsdom end-to-end test |
 | N-03 | A second published dashboard reports a **$0.877** swing on `KXPRESNOMD-28-BOBA`; the official record at that time was `yes_bid 0.0010` / `yes_ask 0.8860`, i.e. no two-sided market. | [market record](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA) | logged on Flagged for Review with the source; that pipeline has another owner |
 | N-04 | The site never used the demo API's permissive CORS policy, although CI had captured proof of it. | `data/_cors.txt`, `data/capabilities.json` | the basis for the N-02 fix |
+| N-06 | `resolutions.html` showed "268 resolved" above a 40-row table, so a reader saw 428 claimed and 40 shown. | the rendered page | full 328-row list in a collapsed table, same row function |
+| N-07 | The browser detector asked both endpoints for tickers the same way. The live host accepts **comma-joined** for `/markets` and **repeated** for `/markets/orderbooks`; the wrong form fails *silently* as an empty result. | [run 44878937002](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878937002) (pass) vs the same check on the uncorrected branch (400) | per-endpoint serialiser + an hourly live check that fails if the host flips |
 
 Two defects were also found **in this session's own new code** by its tests and
 fixed before shipping: an exact 10-cent move measured as 9.999999999999998 cents
@@ -190,6 +192,15 @@ and a total network failure that was reported as a healthy poll with 0 markets.
   `GET /markets?tickers=…` and `GET /markets/orderbooks?tickers=…`
   ([Get Markets](https://docs.kalshi.com/api-reference/market/get-markets),
   [order books](https://docs.kalshi.com/getting_started/orderbook_responses)).
+* The two do **not** take the same `tickers` syntax, and the documentation does
+  not say so. Measured on the demo host: `GET /markets?tickers=A,B` → 200 with
+  both records, while `?tickers=A&tickers=B` → **400** `multiple values for
+  single value parameter 'tickers'`; `GET /markets/orderbooks?tickers=A,B` → 200
+  with **one** entry whose ticker is `A,B` and an empty book, while repeating
+  the parameter returns one entry per ticker in request order. A shared helper
+  would therefore have produced either an error or a permanently empty chat,
+  which is why the serialiser is per-endpoint and why a scheduled workflow
+  re-measures the host every hour rather than trusting the schema.
 * It contains no `POST`, no `Authorization` header and no portfolio path; a
   test strips comments and asserts the absence of all three.
 * A swing only counts on a **two-sided** book with a spread under $0.10, so a

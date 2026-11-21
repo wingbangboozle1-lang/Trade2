@@ -87,6 +87,54 @@ three of its files are **not** on `main`: `collector/shortlist.py`,
 note that their code landed via the follow-on merges, after lifting the three
 missing files if anyone wants the tighter snapshot verifier.
 
+### N-06 — the resolutions page looked like it had lost data
+
+Each topic panel on `resolutions.html` was capped at 40 rows while its heading
+said "268 resolved". Three topics showed "0" with no explanation, so a reader saw
+428 settled markets claimed and 40 shown. Fixed by rendering the full 328-row
+list in a collapsed table built by the same row function as the panels.
+
+### N-07 — the browser swing detector was asking for the wrong thing
+
+Found by the check written to verify it, which is the point of writing it.
+
+The probe batches both endpoints in one poll. The documentation describes
+`tickers` as a list for each of them, which makes `?tickers=A&tickers=B` look
+right — and it is right for one of them and wrong for the other. Measured on the
+live demo host:
+
+| Request | Result |
+| - | - |
+| `GET /markets?tickers=A,B` | 200, one record per ticker |
+| `GET /markets?tickers=A&tickers=B` | **400** `multiple values for single value parameter 'tickers'` |
+| `GET /markets/orderbooks?tickers=A,B` | 200, **one** entry, ticker `"A,B"`, empty book |
+| `GET /markets/orderbooks?tickers=A&tickers=B` | 200, one entry per ticker, in request order |
+
+The probe originally comma-joined both. That produced a total failure on the
+listing endpoint and a silent empty book on the order-book endpoint — the exact
+kind of "success" that would show a trader an empty alert chat on a volatile
+afternoon while the page still said LIVE. Fixed with a per-endpoint serialiser,
+and the check now fails if the host flips which form it accepts:
+
+* `assets/live-probe.js` — `tickersQuery(tickers, style)`; `/markets` gets
+  `"comma"`, `/markets/orderbooks` gets `"repeated"`.
+* `test/live-probe.test.mjs` — 27 checks, including one asserting the two
+  endpoints receive different shapes, so a future "tidy-up" to a shared helper
+  fails loudly.
+* `tools/probe_live_check.py` — builds the URLs with the shipped module (not by
+  hand) and measures all four serialisations plus four candidate paths against
+  the real API.
+* `tools/probe_shape_assert.py` — pure assertion layer on that report, 8 unit
+  tests, including "the host no longer accepts the form the probe uses" and
+  "the forms have become equivalent, so re-measure".
+* `.github/workflows/probe-live.yml` — runs both hourly and on any change to the
+  probe, because this is a fact about a live API and a live API can change.
+
+Verification: [run 44878937002](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44878937002)
+passed all six substantive steps against the demo host, and the same run on the
+uncorrected branch failed with the 400 above — so the gate is demonstrably able
+to fail.
+
 ## 3. Prompt items that cannot be satisfied, and why
 
 | Prompt line | Why not | What is published instead |
@@ -98,8 +146,9 @@ missing files if anyone wants the tighter snapshot verifier.
 ## 4. Verification performed on the changed tree
 
 ```
-python3 -m unittest discover -s tests     243 tests, OK (1 skipped)   (was 230)
-node test/live-probe.test.mjs             25 checks passed
+python3 -m unittest discover -s tests     251 tests, OK (1 skipped)   (was 230)
+node test/live-probe.test.mjs             27 checks passed
+python3 tools/probe_live_check.py         live demo API, run 44878937002 (CI)
 node test/desk_live_probe_dc.mjs          all PASS (shipped page, real script)
 python3 tools/navcheck.py                 13 pages, 0 problems
 python3 tools/linkcheck.py                50 pages, 672 links, 0 errors

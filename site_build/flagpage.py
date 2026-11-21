@@ -188,6 +188,23 @@ STANDING = [
                    "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-HBID/orderbook"),
     },
     {
+        "title": "The batch order-book endpoint and the market list disagree on how to ask for several tickers",
+        "body": ("Documented as a list for both, but the two endpoints on the demo host do "
+                 "not accept the same syntax, and a wrong choice fails silently rather than "
+                 "erroring. Measured on 2026-11-21: GET /markets?tickers=AB,CD returns both "
+                 "markets, while GET /markets?tickers=AB&tickers=CD is a 400 ('multiple "
+                 "values for single value parameter tickers'); GET /markets/orderbooks is "
+                 "the other way round, returning one empty entry for the comma form and one "
+                 "entry per ticker for repeated parameters. The in-page detector therefore "
+                 "serialises each endpoint its own way, and a scheduled check re-measures "
+                 "the live host hourly so the page cannot quietly go back to showing an "
+                 "empty chat on a volatile day. Anyone building against this API should "
+                 "read the run log rather than the schema alone."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks",
+                   "https://docs.kalshi.com/api-reference/market/get-markets",
+                   "https://github.com/wingbangboozle1-lang/Trade2/actions/workflows/probe-live.yml"),
+    },
+    {
         "title": "The model shortlist and the generator now share one gate",
         "body": ("The page filtered the shortlist on net ROI >= 0.05 while the collector "
                  "published it on model score >= 0.10, so the same feed had two "
