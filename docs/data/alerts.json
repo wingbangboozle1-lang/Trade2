@@ -1,7 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795194945&end_ts=1795216545&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795197793&end_ts=1795219393&period_interval=60",
    "delta": -0.73,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -42,7 +42,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795194945&end_ts=1795216545&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795197793&end_ts=1795219393&period_interval=60",
    "delta": 0.858,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -69,7 +69,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -91,25 +91,25 @@
      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPY0hhUWxNcGNONU1TRjF3SE9wZFJrSEJoMWt4Q0xCMHpiZThKVkh2aWdjMkhXQVh0NGRvRFozVEZBOGZYRkxENlgyUHZvYlRkdndtcWFEWDlMX0dhRkQzV00tUVhhdng1VW45MWluR0ZaRTl0cG9mUF9IRTdoVF9GQWhGdGxucmVYSTV3TU4xbDJFSFhYeTlsQzZCaC0waHhackhpSl9mYkJReXRJS1YyNFk4c0RkOHBT?oc=5"
     },
     {
-     "published": "2026-11-20T09:50:28+00:00",
-     "source": "IMDb",
-     "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Draws Backlash Over Alleged Generative AI in Key Scenes - IMDb",
-     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFAtTTZMMUN1SHZESW1uX1BieXBpX0ZmWXkzVGluNS1Lb0ZVVHJ0SlhGeVdlMzE1cnhmT0ZmMjRueFpCeFFBM1BhWVJjUU5RVG02WllLWWJhREV3M2lBQ294T3kySU16TUE?oc=5"
-    },
-    {
-     "published": "2026-11-20T08:21:33+00:00",
-     "source": "IMDb",
-     "status": "verified-fetch",
-     "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Goes Certified Fresh as Critics Embrace Brad Pitt\u2019s Return - IMDb",
-     "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9rOG53bERCSXlNMnFSY042NWxMTWdfanBoR3ZTM0hkczlCblVrbEo4Q3h1ZEllYkg3Tnhlb0JEZG5lNTNudTRPSVpIal9HdmNxMDNIeENRSVlyWTlJdWRudzh5ZnFZZFU?oc=5"
-    },
-    {
      "published": "2026-11-20T05:44:18+00:00",
      "source": "Geeks of Color",
      "status": "verified-fetch",
      "title": "\u2018The Further Mis-Adventures of Cliff Booth\u2019 Is a Fun Spin-Off \u2013 Review - Geeks of Color",
      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR1hhVW56SXpXMFhvVE0zSkNoaVdOazhSeHQ1QXdSOUVYUTRiRFJhSEg0OGhRQXdfbnMwV1dUVHpYOC1jWDBXYjIzanc4LXoyYlhSUUx0bnZ6ZWRTMm94Mm5yVGhJTDNZSzFjQjNkUUhpUDlJVGRobXVra0kzT0JTWm9TTU9tOWs?oc=5"
+    },
+    {
+     "published": "2026-11-19T23:00:11+00:00",
+     "source": "Comic Book Resources",
+     "status": "verified-fetch",
+     "title": "The Further Mis-Adventures of Cliff Booth Review: Brad Pitt Sequel Is Both Shaggy And Intoxicating - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9jTDFrU2lERlFNNGI1RzVjWVUzTlVyT1lrT1ZKd3dBQ1VBSUdlY1VIMENoYlRVNGtDbzJlT25aMFFhWk5wSFdpaUtxalJUQkswbUpKclBwdE5peHQ4ZnFOLVFTWkh0V0RpckI4MGQwdjlKWkNVYUtV?oc=5"
+    },
+    {
+     "published": "2026-11-20T02:16:43+00:00",
+     "source": "Comic Book Resources",
+     "status": "verified-fetch",
+     "title": "Quentin Tarantino's First-Ever Sequel Is Officially a Rotten Tomatoes Hit - Comic Book Resources",
+     "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxORWhCREo4SEZIOFNXaFJReXBZM0E5QWVNZW41eld3bkRGRnZYWVBxakRteXBzTVVWMHh0QmNKT1dfUjFhQUhlQ0sxeHU0RV9UdzFvaWZaZUJHTzBpMFRDQjdBMi1ZemIyM1RSMDhxUkV3bGhlY3ExZnBZa2R5U0xvVHF3V3ZZWDloT3VkWQ?oc=5"
     }
    ],
    "news_status": "ok",
@@ -124,7 +124,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -151,7 +151,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -172,7 +172,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -199,7 +199,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794957345&end_ts=1795216545&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794960193&end_ts=1795219393&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -240,7 +240,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-20T23:16:19.907939+00:00",
+ "generated_at": "2026-11-21T00:03:47.211895+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }

@@ -2,14 +2,14 @@
  "base_url": "https://external-api.demo.kalshi.co/trade-api/v2",
  "counts": {
   "alerts": 7,
-  "candle_markets": 11,
+  "candle_markets": 10,
   "errors": 0,
   "markets": 40,
   "orderbooks": 10,
   "resolutions": 300,
   "series": 59
  },
- "duration_s": 79.3,
+ "duration_s": 76.5,
  "environment": "github-actions",
  "errors": [],
  "exchange": {
@@ -46,11 +46,11 @@
   "source_url": "https://docs.kalshi.com/api-reference/exchange/get-exchange-status",
   "trading_active": true
  },
- "finished_at": "2026-11-20T23:16:19.911360+00:00",
+ "finished_at": "2026-11-21T00:03:47.215914+00:00",
  "series_matched": {
   "crypto": 238,
   "culture": 2493,
-  "elections": 2592,
+  "elections": 2593,
   "gas-prices": 218,
   "golf": 100
  },
@@ -61,7 +61,7 @@
   "gas-prices": 12,
   "golf": 12
  },
- "started_at": "2026-11-20T23:15:00.602157+00:00",
+ "started_at": "2026-11-21T00:02:30.728719+00:00",
  "threshold": 0.1,
  "topics": [
   "gas-prices",

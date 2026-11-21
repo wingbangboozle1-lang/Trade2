@@ -4,11 +4,11 @@
    "best_no_bid": 0.97,
    "best_yes_bid": 0.02,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216543,
+   "fetched_at": 1795219391,
    "flags": [],
    "implied_yes_ask": 0.03,
-   "no_depth_contracts": 16740.24,
-   "no_depth_usd": 15823.44,
+   "no_depth_contracts": 16435.15,
+   "no_depth_usd": 15527.5,
    "no_levels": [
     [
      "0.1600",
@@ -36,7 +36,7 @@
     ],
     [
      "0.9700",
-     "4703.99"
+     "4398.90"
     ]
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6400/orderbook",
@@ -58,7 +58,7 @@
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216540,
+   "fetched_at": 1795219389,
    "flags": [
     "orderbook-empty"
    ],
@@ -76,7 +76,7 @@
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216544,
+   "fetched_at": 1795219393,
    "flags": [
     "orderbook-empty"
    ],
@@ -94,7 +94,7 @@
    "best_no_bid": null,
    "best_yes_bid": null,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216542,
+   "fetched_at": 1795219390,
    "flags": [
     "orderbook-empty"
    ],
@@ -112,11 +112,11 @@
    "best_no_bid": 0.912,
    "best_yes_bid": 0.083,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216545,
+   "fetched_at": 1795219393,
    "flags": [],
    "implied_yes_ask": 0.088,
-   "no_depth_contracts": 32857.56,
-   "no_depth_usd": 29932.64,
+   "no_depth_contracts": 32525.03,
+   "no_depth_usd": 29629.37,
    "no_levels": [
     [
      "0.9100",
@@ -128,17 +128,17 @@
     ],
     [
      "0.9120",
-     "10510.56"
+     "10178.03"
     ]
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MPEN/orderbook",
    "ticker": "KXPGATOUR-THRC26-MPEN",
-   "yes_depth_contracts": 36628.96,
-   "yes_depth_usd": 3000.04,
+   "yes_depth_contracts": 36608.96,
+   "yes_depth_usd": 3000.02,
    "yes_levels": [
     [
      "0.0010",
-     "40.00"
+     "20.00"
     ],
     [
      "0.0810",
@@ -158,11 +158,11 @@
    "best_no_bid": 0.83,
    "best_yes_bid": 0.15,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216542,
+   "fetched_at": 1795219391,
    "flags": [],
    "implied_yes_ask": 0.17,
-   "no_depth_contracts": 4984.14,
-   "no_depth_usd": 4005.43,
+   "no_depth_contracts": 4628.34,
+   "no_depth_usd": 3710.12,
    "no_levels": [
     [
      "0.4300",
@@ -182,7 +182,7 @@
     ],
     [
      "0.8300",
-     "1134.52"
+     "778.72"
     ]
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO/orderbook",
@@ -208,15 +208,137 @@
     ]
    ]
   },
+  "KXPRESNOMD-28-BOBA": {
+   "best_no_bid": 0.129,
+   "best_yes_bid": 0.001,
+   "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
+   "fetched_at": 1795219392,
+   "flags": [],
+   "implied_yes_ask": 0.871,
+   "no_depth_contracts": 4574.75,
+   "no_depth_usd": 531.84,
+   "no_levels": [
+    [
+     "0.1050",
+     "181.00"
+    ],
+    [
+     "0.1060",
+     "191.00"
+    ],
+    [
+     "0.1070",
+     "78.00"
+    ],
+    [
+     "0.1080",
+     "232.00"
+    ],
+    [
+     "0.1090",
+     "210.00"
+    ],
+    [
+     "0.1100",
+     "262.00"
+    ],
+    [
+     "0.1110",
+     "268.00"
+    ],
+    [
+     "0.1120",
+     "236.00"
+    ],
+    [
+     "0.1130",
+     "181.00"
+    ],
+    [
+     "0.1140",
+     "250.00"
+    ],
+    [
+     "0.1150",
+     "180.00"
+    ],
+    [
+     "0.1160",
+     "163.00"
+    ],
+    [
+     "0.1170",
+     "150.00"
+    ],
+    [
+     "0.1180",
+     "179.00"
+    ],
+    [
+     "0.1190",
+     "186.00"
+    ],
+    [
+     "0.1200",
+     "155.00"
+    ],
+    [
+     "0.1210",
+     "243.00"
+    ],
+    [
+     "0.1220",
+     "134.00"
+    ],
+    [
+     "0.1230",
+     "180.00"
+    ],
+    [
+     "0.1240",
+     "192.00"
+    ],
+    [
+     "0.1250",
+     "196.00"
+    ],
+    [
+     "0.1260",
+     "138.00"
+    ],
+    [
+     "0.1270",
+     "174.00"
+    ],
+    [
+     "0.1280",
+     "189.00"
+    ],
+    [
+     "0.1290",
+     "26.75"
+    ]
+   ],
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA/orderbook",
+   "ticker": "KXPRESNOMD-28-BOBA",
+   "yes_depth_contracts": 40.0,
+   "yes_depth_usd": 0.04,
+   "yes_levels": [
+    [
+     "0.0010",
+     "40.00"
+    ]
+   ]
+  },
   "KXPRESNOMD-28-JOSS": {
    "best_no_bid": 0.74,
    "best_yes_bid": 0.259,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216543,
+   "fetched_at": 1795219389,
    "flags": [],
    "implied_yes_ask": 0.26,
-   "no_depth_contracts": 5453.6,
-   "no_depth_usd": 3636.49,
+   "no_depth_contracts": 5143.49,
+   "no_depth_usd": 3407.01,
    "no_levels": [
     [
      "0.0100",
@@ -232,18 +354,14 @@
     ],
     [
      "0.7400",
-     "1090.57"
+     "780.46"
     ]
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JOSS/orderbook",
    "ticker": "KXPRESNOMD-28-JOSS",
-   "yes_depth_contracts": 22672.51,
-   "yes_depth_usd": 2368.8,
+   "yes_depth_contracts": 22652.51,
+   "yes_depth_usd": 2368.78,
    "yes_levels": [
-    [
-     "0.0010",
-     "20.00"
-    ],
     [
      "0.0100",
      "2798.33"
@@ -298,157 +416,11 @@
     ]
    ]
   },
-  "KXPRESNOMD-28-JTAL": {
-   "best_no_bid": 0.984,
-   "best_yes_bid": 0.015,
-   "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216541,
-   "flags": [],
-   "implied_yes_ask": 0.016,
-   "no_depth_contracts": 323126.24,
-   "no_depth_usd": 199409.4,
-   "no_levels": [
-    [
-     "0.1830",
-     "8439.00"
-    ],
-    [
-     "0.1840",
-     "8139.00"
-    ],
-    [
-     "0.1850",
-     "8457.00"
-    ],
-    [
-     "0.1860",
-     "8872.00"
-    ],
-    [
-     "0.1870",
-     "8700.00"
-    ],
-    [
-     "0.1880",
-     "8157.00"
-    ],
-    [
-     "0.1890",
-     "8768.00"
-    ],
-    [
-     "0.1900",
-     "9141.00"
-    ],
-    [
-     "0.1910",
-     "8656.00"
-    ],
-    [
-     "0.1920",
-     "8454.00"
-    ],
-    [
-     "0.1930",
-     "8662.00"
-    ],
-    [
-     "0.1940",
-     "8331.00"
-    ],
-    [
-     "0.1950",
-     "7887.12"
-    ],
-    [
-     "0.1960",
-     "8193.00"
-    ],
-    [
-     "0.1970",
-     "8059.00"
-    ],
-    [
-     "0.1980",
-     "8501.00"
-    ],
-    [
-     "0.1990",
-     "7980.00"
-    ],
-    [
-     "0.2000",
-     "5550.77"
-    ],
-    [
-     "0.9780",
-     "15151.50"
-    ],
-    [
-     "0.9790",
-     "15873.00"
-    ],
-    [
-     "0.9800",
-     "33333.32"
-    ],
-    [
-     "0.9810",
-     "17543.84"
-    ],
-    [
-     "0.9820",
-     "42847.54"
-    ],
-    [
-     "0.9830",
-     "29411.76"
-    ],
-    [
-     "0.9840",
-     "20018.39"
-    ]
-   ],
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-JTAL/orderbook",
-   "ticker": "KXPRESNOMD-28-JTAL",
-   "yes_depth_contracts": 190425.38,
-   "yes_depth_usd": 2577.3,
-   "yes_levels": [
-    [
-     "0.0010",
-     "80.00"
-    ],
-    [
-     "0.0100",
-     "20620.80"
-    ],
-    [
-     "0.0110",
-     "8908.00"
-    ],
-    [
-     "0.0120",
-     "8863.00"
-    ],
-    [
-     "0.0130",
-     "38461.53"
-    ],
-    [
-     "0.0140",
-     "35714.28"
-    ],
-    [
-     "0.0150",
-     "77777.77"
-    ]
-   ]
-  },
   "KXRT-FUR-75": {
    "best_no_bid": 0.06,
    "best_yes_bid": 0.93,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216544,
+   "fetched_at": 1795219392,
    "flags": [],
    "implied_yes_ask": 0.94,
    "no_depth_contracts": 1167.08,
@@ -473,12 +445,12 @@
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-75/orderbook",
    "ticker": "KXRT-FUR-75",
-   "yes_depth_contracts": 1507.43,
-   "yes_depth_usd": 1335.56,
+   "yes_depth_contracts": 1487.43,
+   "yes_depth_usd": 1335.36,
    "yes_levels": [
     [
      "0.0100",
-     "40.00"
+     "20.00"
     ],
     [
      "0.8900",
@@ -506,7 +478,7 @@
    "best_no_bid": 0.92,
    "best_yes_bid": 0.06,
    "docs_url": "https://docs.kalshi.com/getting_started/orderbook_responses",
-   "fetched_at": 1795216541,
+   "fetched_at": 1795219390,
    "flags": [],
    "implied_yes_ask": 0.08,
    "no_depth_contracts": 5607.84,
@@ -527,12 +499,12 @@
    ],
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXRT-FUR-85/orderbook",
    "ticker": "KXRT-FUR-85",
-   "yes_depth_contracts": 71408.84,
-   "yes_depth_usd": 1500.2,
+   "yes_depth_contracts": 71428.84,
+   "yes_depth_usd": 1500.4,
    "yes_levels": [
     [
      "0.0100",
-     "33353.32"
+     "33373.32"
     ],
     [
      "0.0200",
@@ -557,6 +529,6 @@
    ]
   }
  },
- "generated_at": "2026-11-20T23:16:19.902490+00:00",
+ "generated_at": "2026-11-21T00:03:47.206039+00:00",
  "source_docs": "https://docs.kalshi.com/getting_started/orderbook_responses"
 }
