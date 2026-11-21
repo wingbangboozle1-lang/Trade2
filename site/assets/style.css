@@ -44,6 +44,8 @@ tr.event-row td { background: #fbfcfe; font-weight: 600; color: #26364d; }
 .down { color: var(--down); font-weight: 600; }
 .chip { display: inline-block; background: var(--chip); color: #33405a; border-radius: 999px; padding: 1px 9px; font-size: 12px; margin-right: 4px; white-space: nowrap; }
 .chip.hi { background: #dff5ea; color: #0b5c40; }
+/* "connected / measured" state of a card, kept visually distinct from .card.flag (a warning) */
+.card.ok { border-color: #b7e3d0; background: #f2fbf7; }
 .chip.yes { background: #dff5ea; color: #0b5c40; }
 .chip.no { background: #fde6e4; color: #8a1c14; }
 .chip.warn { background: var(--warn-bg); color: var(--warn); }
