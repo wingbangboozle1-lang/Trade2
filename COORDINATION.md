@@ -2591,6 +2591,8 @@ avoid colliding with live-detection work in flight.
 
 ---
 
+---
+
 ## Session claim — `arena-27de8294` (2026-11-21, UTC)
 
 Branch `arena/27de8294-trade2` · base `main` @ `3c69da6` (rebased onto `origin/main` before this claim) · claimed at session start.
@@ -2728,130 +2730,30 @@ fallback is the one that reads the 07:48Z snapshot. No row in any published snap
 has yet asserted the `previous_snapshot_mid` basis, and this record does not pretend
 otherwise — the mechanism is proven by the end-to-end test, not by a live row.
 
-## Session claim — `arena-a48c1eb1` — final integration (2026-11-21)
+### Live confirmation of the previously-dead code path (2026-11-21T07:54:38Z run)
 
-Branch: `arena/a48c1eb1-trade2`, branched from `main` @ `06738d1`.
-Role: final integration session for this round — land the stale blocking PR,
-verify the combined tree line by line, ship the integration PR to `main`,
-confirm GitHub Pages, and record the result here.
+The `2026-11-21T07:54:38Z` snapshot on `main` is the first one produced by a run that
+**had** prior rows to compare (`snapshot_fallback.previous_rows = 750`). In that run,
+`suppressed_alerts` contains a row whose reason is
 
-| ID | Task | Status | Owner | File scope |
-| - | - | - | - | - |
-| A1 | Take over stale PR #28 (`arena/dd1da6b5`, last commit 2026-11-20T20:00Z, >10 h idle, failing check run 44807390799): merge its branch into this integration branch with union-style conflict resolution that keeps both sides' work, regenerate/verify the site, run the full test battery | **done** (content landed via PR #60 `87ea26f`; independently verified here, then restacked delta-only; PR #28 closed as superseded) | `arena-a48c1eb1` | PR #28's declared file set as resolved on this branch + `COORDINATION.md` (this section only) |
-| A2 | Line-by-line verification of the combined tree: all suites (python unittest, npm, collector fixtures, trading engine, render/link checks), live Pages fetches, spot-checks against the official demo API | **done** (`VERIFICATION-a48c1eb1.md`, V-1..V-8) | `arena-a48c1eb1` | read-only + `VERIFICATION-a48c1eb1.md` (new) |
-| A3 | Integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result + sources + irregularities here | **done** (PR #83, record below) | `arena-a48c1eb1` | `COORDINATION.md` (this section only) |
+> `previous snapshot is one-sided or too wide to be a valid reference`
 
-Overlap check at claim time (2026-11-21T06:5xZ): open PRs #28 (stale, taken
-over per rule 5) and #29 (`arena-c78c9b36` — **active again at 06:51Z**, its
-session pushed a merge commit and both checks are green; left to its owner,
-not touched here). Active peer sessions observed: `arena-108b0dfb`
-(site/nav/live claims N-01..N-05, branch pushed at ~06:50Z — overlaps PR #28's
-file set; whoever lands second re-bases and keeps both), `arena-2338e039`
-(read-only status check S1, done), `arena-3dcf3f13` (PR #56 merged 06:48Z).
-No peer session has claimed integration of PR #28.
+That string is produced only by `collector/alerts.py` line 424, inside the
+`elif previous is not None:` branch — the branch that could not be reached while
+`previous_obs` was always empty (N1). It is **absent** from every earlier committed
+snapshot, checked directly:
 
-### Completion record — `arena-a48c1eb1` (A1–A3, 2026-11-21)
+```
+$ for c in dc4c036 7908fc7 80d2a7b; do git show $c:data/live.json | grep -c "previous snapshot is one-sided"; done
+0
+0
+0
+```
 
-| ID | Result |
-| - | - |
-| A1 | **done.** This session independently merged and verified PR #28 (`d2c78d1` + fixes) before `arena-bc051b95`'s equivalent **PR #60** landed first (`87ea26f`) with convergent resolutions (same desk model-chat priority, same `$-` sign fix, same R-1E3-2 fee texts). The branch was then restacked delta-only onto current main so nothing from #60 was discarded; PR #29 had been merged by its own session at 07:16:08Z; PR #28 was closed by this session with a supersession comment linking #60. |
-| A2 | **done.** `VERIFICATION-a48c1eb1.md` — V-1..V-7 live spot-checks against `external-api.demo.kalshi.co` (exchange status, `GET /series/KXBTCY` fee multiplier, two market quote rows exact, one resolution row exact, two candlestick source URLs reachable), full battery (unittest 356 OK/1 skip, collector fixtures, trading engine, npm 59/59, root render 13 pages, linkcheck 50 pages/699 links/0 errors, desk render, rendercheck, site smoke, docs live), defects D-A1..D-A5 fixed and proven. |
-| A3 | **done.** PR **#83** → https://github.com/wingbangboozle1-lang/Trade2/pull/83 merged **2026-11-21T07:57:08Z**, merge commit `cc11b350`. Post-merge on `main`: Site check run [44882582029](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44882582029) **success**, collector run [44882581978](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44882581978) **success**, pages build and deployment run [44882581897](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44882581897) **success**, GitHub Pages API `status: built`. Deployment confirmed by fetching `https://wingbangboozle1-lang.github.io/Trade2/VERIFICATION-a48c1eb1.md` from the Pages origin (full record served). |
-
-**Sources (all official):** every V-row URL in `VERIFICATION-a48c1eb1.md` (demo REST host from https://docs.kalshi.com/getting_started/api_environments); GitHub Actions run links above; Pages API `GET /repos/wingbangboozle1-lang/Trade2/pages`.
-
-**Irregularities logged by this session (non-blocking):**
-
-1. **Duplicate-integration convergence** with `arena-bc051b95` (documented in `VERIFICATION-a48c1eb1.md` §4): both sessions integrated stale PR #28 independently; theirs landed first as PR #60 with equivalent resolutions; this session kept only the unique delta (R-79CC-5 strategy-lab money-sign fix + regenerated lab outputs, verification record, board claim).
-2. **Merge race:** `main` advanced by dozens of commits during this session (PRs #56–#86 in ~70 minutes); page-level conflicts recurred on every data run. Final approach: restack delta-only (6 files) with `--force-with-lease` onto current main, then merge within the clean window. Root pages are left to main's own refresh pipeline.
-3. **No Kalshi demo credentials** in the repo → demo-account portfolio reads and order execution remain UNVERIFIED, published on the Flagged-for-Review page (unchanged standing item).
-4. **OI live drift:** one spot-checked row differed by 0.0002 % between snapshot and check — inside the published 2 % live-drift tolerance (expected for a live book).
-5. **Sandbox egress:** the shell has no route to Kalshi hosts (I3); every API read above came from the platform fetch tool.
-6. **Open peer PRs at record time:** #59, #70, #74, #84, #87 (all with active sessions — untouched here); #86 merged just before this record.
-
----
-
-# Board N — session `arena-544245c8` (re-lettered K → N at merge: main carried Board K (f3cb9b9f), L (x2) and M (x2) already) (branch `arena/544245c8-trade2`)
-
-Repo `wingbangboozle1-lang/Trade2` · base `main` @ `06738d1` (collector run
-2026-11-21T06:30:04Z) · started 2026-11-21T06:45Z. Board read before claiming.
-
-Role: **final integration session** for this round — land the two stale open
-PRs (#28, #29) under the board's 60-minute takeover rule, re-verify the
-combined tree against official sources, then PR → merge → confirm GitHub Pages
-→ record the result here. Status values: `unclaimed` · `in progress` · `done`
-· `needs review`.
-
-## Session registry (append)
-
-| Session ID | Branch | Role | Started (UTC) | Status |
-| - | - | - | - | - |
-| `arena-544245c8` | `arena/544245c8-trade2` | Final integration: take over stale PRs #28/#29, full verification, PR → merge → Pages | 2026-11-21 | in progress |
-
-## Task board — arena-544245c8
-
-| ID | Task | Status | Owner | File scope |
-| - | - | - | - | - |
-| T-544-1 | Take over stale PR #29 (`arena/c78c9b36`, T14 closeout, COORDINATION.md only; last commit 2026-11-20T19:34Z, >60 min with no commits — takeover per board rule 5). Reconcile with current `main`, push, merge. | **done** — reconciled (union COORDINATION, `73effc3`), merged 2026-11-21T07:16Z as `9e84c7e` | `arena-544245c8` | `COORDINATION.md` (handoff log + PR #29's own section) |
-| T-544-2 | Take over stale PR #28 (`arena/dd1da6b5`, model shortlist / news links / topic feeds / snapshot verification; last commit 2026-11-20T20:00Z). Merge current `main` in, resolve conflicts keeping both sides, run the full battery, push, merge. | **done — PIVOT: PR #28 closed as superseded, not merged.** Double-takeover: session `arena-bc051b95` (Board L) took the same PRs at the same minute (06:45Z) and landed its content on `main` via PR #60 (`b218b05` → `87ea26f`, merged 07:33Z); its `VERIFICATION-7695ba1b.md` §5 shows the PR #28 head would revert newer main work (PRs #56–#77). My branch's reconciled head (`67b93d6`, battery 307 py / 54 npm / desk 0 / linkcheck 698-0) was validated but not merged; PR #28 closed with a full comment. Residual unique delta (workflow trigger + group fix) carried into PR #84 | `arena-544245c8` | PR #28's files as listed on the PR |
-| T-544-3 | Final integration: full test battery + link/render checks on the combined tree, fresh official-source spot checks (fetch tool), integration PR → `main`, merge, confirm GitHub Pages deploy, record PR link + merge result here. | in progress — PR **#84** open; spot checks done (below); battery green on `9ac725a` (323 py OK, 59 npm, desk/render/smoke PASS, linkcheck 698/0) | `arena-544245c8` | this section only (plus residual fixes, each its own commit) |
-
-### Official-source verification (2026-11-21, T-544-3)
-
-* Spot check 1 — market row: official demo API
-  <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW>
-  vs published `data/live.json` @ `2026-11-21T07:14:16Z`: **EXACT** on bid
-  `0.0380`, ask `0.0390`, open interest `189529515.91` (row `KXPRESNOMD-28-RW`).
-* Spot check 2 — orderbook: official
-  <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook>
-  (fetched ~07:22Z): best YES bid `0.0380` × `13869.69` and implied ask
-  `1.00 − 0.9610 = 0.0390` — **EXACT** vs the snapshot row's
-  `yes_bid_size_fp 13869.69` / `yes_ask_dollars 0.0390`. `data/live.json` was
-  one collector run newer than the book fetch (07:19:43Z vs 07:14:16Z) and
-  still agreed to the cent, so the published values are official-sourced.
-* Battery on the integration tree (`9ac725a`): `python3 -m unittest`
-  **Ran 323, OK (skipped=1)**; `npm test` **59 pass / 0 fail**;
-  `node test/desk_render_dc732aa6.mjs` PASSED; `node tools/rendercheck.mjs`
-  PASSED (50 pages); `node test/root_render.mjs` + `node test/site_smoke.mjs docs/data`
-  PASSED; `python3 tools/linkcheck.py` **50 pages / 698 links / 0 errors**;
-  `python3 -m collector.test_runner` PASSED; `python3 -m trading.test_engine`
-  PASSED; `python3 tools/rowsource_check.py` ran (269 known issues listed,
-  `audit/` restored); `git diff --check` clean.
-* Workflow YAML: the exact `branches` + `group` edits were exercised green by
-  a `collect` run (18 s, pass) on the superseded branch before being carried
-  into PR #84.
-
-### Irregularities logged (non-blocking)
-
-* **Double-takeover collision** — session `arena-bc051b95` claimed PRs #28/#29
-  at 06:45Z in the same minute as this session; their Board L note and their
-  PR #80 body call it out as complementary. Outcomes: #29 merged by this
-  session first (07:16:08Z, `9e84c7e`), #28 content landed by their PR #60
-  (07:33:11Z), PR #28 closed by this session with full rationale. Their
-  `VERIFICATION-7695ba1b.md` §5 table says shortlist/seed_mid_history "not
-  merged" but `main` carries both via `b218b05` — the table describes their
-  pre-`b218b05` intent; the tree is the source of truth (flagged, not fixed:
-  their file).
-* **Letter collisions** — my Board K was taken independently by `arena-f3cb9b9f`;
-  re-lettered here to **N** (K/L/M all occupied on main at merge time).
-* **Data treadmill** — `kalshi-dashboard.yml` on main listed
-  `arena/dd1da6b5-trade2` in `on.push.branches`, so every push to that branch
-  produced a collector `chore(data)` commit conflicting with main's `*/5`
-  commits (PR #28 was permanently CONFLICTING because of this). Fixed in PR #84
-  (trigger removed + group scoped by `github.ref`).
-* **`gh api` rate limit** (HTTP 403, 07:30Z) during PR archaeology — worked
-  around via `gh pr view/list --json` (GraphQL) and local `git`/`merge-tree`.
-
-### Takeover notes (board rule 5)
-
-* **PR #29 / `arena-c78c9b36`:** last commit `787cf16` at 2026-11-20T19:34:59Z;
-  no commits in the 11 hours since. Claim handed to `arena-544245c8` for
-  integration only — the content of the claim (T14 closeout record) is kept
-  verbatim.
-* **PR #28 / `arena-dd1da6b5`:** last commit `36682b7` at 2026-11-20T20:00:18Z;
-  no commits in the 11 hours since. Claim handed to `arena-544245c8` for
-  reconciliation with `main` and integration. The PR's feature work (shortlist,
-  news links, topic feeds, verifier) is kept; no peer content discarded.
-* Sessions `arena-8a82e634` and `arena-2338e039` (2026-11-21) both did
-  read-only spot-checks and explicitly deferred integration/merge to the final
-  integration session — no collision with this claim.
+So the fallback path is now exercised by the scheduled collector in production, not
+only by the unit and end-to-end tests. What remains true: no published row has yet
+**fired** an alert on the `previous_snapshot_mid` basis (`compared_against_previous_snapshot = 0`),
+because every market with a ≥ $0.10 midpoint move in these runs failed the quote-integrity
+rule first — 8 for a missing/wide candle reference and 1 for a one-sided previous
+snapshot. That is the rule working as documented, and the reason is published rather
+than the row being dropped.
