@@ -31,6 +31,7 @@
   var state = {
     snapshot: null,
     windowKey: "minutes",
+    side: "yes",        // which contract is charted; NO = 1 - YES, same book
     market: null,
     series: {}, // ticker -> [{t, mid}]
     books: {},
@@ -651,6 +652,16 @@
     var canvas = document.getElementById("priceChart");
     if (!canvas || !state.market) return;
     var points = sliceWindow(state.series[state.market] || []);
+
+    /* The NO contract is the other side of the same binary market. Its price
+     * is 1 - YES for any two-sided quote: buying NO at (1 - YES bid) and
+     * selling NO at (1 - YES ask) is the identical order read from the other
+     * side of the book, so no new data is invented — every NO value is derived
+     * from a YES value Kalshi published, and the axis says so. */
+    if (state.side === "no") points = points.map(function (p) {
+      return { t: p.t, mid: 1 - p.mid, src: p.src };
+    });
+
     var box = canvas.getBoundingClientRect();
     var w = Math.max(320, box.width || canvas.parentNode.clientWidth || 640);
     var h = Math.max(200, box.height || 260);
@@ -699,6 +710,7 @@
     if (t1 === t0) t1 = t0 + 1;
     function xOf(t) { return pad.l + ((t - t0) / (t1 - t0)) * plotW; }
     function yOf(p) { return pad.t + (1 - p) * plotH; }
+
 
     // Threshold annotation: highlight segments that moved >= $0.10.
     ctx.strokeStyle = "#16a67a";
@@ -801,7 +813,11 @@
 
     var stamp = document.getElementById("depthStamp");
     if (stamp) stamp.textContent = "as of " + new Date().toLocaleTimeString();
-    host.innerHTML = block("YES bids", yes, "yes") + block("NO bids", no, "no");
+    /* Both ladders are BIDS (Kalshi's book endpoint returns bids only). The
+     * implied YES ask is 1.00 - best NO bid, so a NO bid at 0.96 is a YES ask
+     * at 0.04 — reading the NO ladder top-down is reading the YES ask side. */
+    host.innerHTML = block("YES bid ladder", yes, "yes") +
+      block("NO bid ladder (= YES asks as 1.00 − price)", no, "no");
   }
 
   /* ------------------------------------------------------------------ */
@@ -851,6 +867,21 @@
       });
     });
 
+    /* YES / NO — the same market seen from either contract. */
+    $all("#sideTabs button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        $all("#sideTabs button").forEach(function (b) { b.classList.remove("selected"); });
+        btn.classList.add("selected");
+        state.side = btn.getAttribute("data-side") || "yes";
+        var legend = document.getElementById("sideLegend");
+        var axis = document.getElementById("sideAxis");
+        var name = state.side === "no" ? "NO" : "YES";
+        if (legend) legend.textContent = name + " price";
+        if (axis) axis.textContent = name;
+        drawChart();
+      });
+    });
+
     var sel = document.getElementById("chartMarket");
     if (sel) {
       sel.addEventListener("change", function () {
@@ -868,6 +899,259 @@
 
     // Keep the visible snapshot age current (R-D-01).
     setInterval(tickAge, 5000);
+
+    // Live pulse: measure the tracked books from this browser (see the block
+    // above startLivePulse()). Off when the page has no pulse panel.
+    startLivePulse();
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* live pulse — a rolling >= $0.10 detector measured in this browser   */
+  /* ------------------------------------------------------------------ */
+
+  /* Why: the published snapshot is rebuilt every 5-15 minutes by a scheduled
+   * Actions run, so between runs nothing re-measures a price and both chats go
+   * quiet even while a market moves. Kalshi's documented batch order-book
+   * endpoint returns up to 100 books in ONE anonymous request, so a polite
+   * per-refresh poll measures the whole tracked set without a credential and
+   * without a WebSocket (the WS `ticker` channel needs KALSHI-ACCESS-*
+   * handshake headers a browser cannot set — see review.html).
+   *
+   * The detector itself is assets/live-feed.js: pure, unit-tested, and it
+   * mirrors the collector's quote-integrity rule instead of relaxing it. This
+   * block is only I/O + rendering. */
+  var pulse = {
+    detector: null,
+    timer: null,
+    on: true,
+    inflight: false,
+    tickers: [],
+    meta: {},
+    refreshes: 0,
+    error: "",
+  };
+  var PULSE_EVERY_MS = 45000;   // polite: one request per refresh
+  var PULSE_CAP = 100;          // documented cap of GET /markets/orderbooks
+
+  /* The cadence is a panel attribute so an operator can slow the desk down
+   * without a code change; the default is one request every 45 s. */
+  function pulseInterval() {
+    var host = pulseEl("livePulse");
+    var raw = host && host.getAttribute("data-pulse-interval-ms");
+    var ms = raw ? Number(raw) : NaN;
+    return (isFinite(ms) && ms >= 2000) ? ms : PULSE_EVERY_MS;
+  }
+
+  function pulseMeta() {
+    var s = state.snapshot || {};
+    var out = {};
+    (s.events || []).forEach(function (e) {
+      if (!e || !e.ticker) return;
+      out[e.ticker] = {
+        ticker: e.ticker,
+        title: e.title || e.ticker,
+        topic: e.topic || "",
+        series_ticker: e.series_ticker || "",
+        event_ticker: e.event_ticker || "",
+        market_url: e.market_url || "",
+      };
+    });
+    return out;
+  }
+
+  function pulseEl(id) { return document.getElementById(id); }
+
+  function pulseBanner(text, kind) {
+    var pill = pulseEl("pulseState");
+    if (!pill) return;
+    pill.className = "live-pill " + (kind || "");
+    var span = pill.querySelector("span");
+    if (span) span.textContent = text; else pill.textContent = text;
+  }
+
+  function pulseStats() {
+    var el = pulseEl("pulseStats");
+    if (!el || !pulse.detector) return;
+    var ev = pulse.detector.events();
+    var ex = ev.filter(function (a) { return a.quality === "executable"; }).length;
+    el.textContent = pulse.refreshes + " refresh" + (pulse.refreshes === 1 ? "" : "es") +
+      " · " + ev.length + " live swing" + (ev.length === 1 ? "" : "s") +
+      " (" + ex + " executable, " + (ev.length - ex) + " indicative)";
+    var src = pulseEl("pulseSource");
+    if (src) {
+      src.textContent = pulse.error
+        ? "last error: " + pulse.error
+        : "source: GET /markets/orderbooks (demo)";
+    }
+  }
+
+  /* A live row is deliberately NOT the same object shape the collector
+   * publishes, and it says so on its face: its reference_basis and news_status
+   * differ, and it carries a LIVE tag. Reusing alertRow() would have implied
+   * the collector produced it. */
+  function liveRow(a) {
+    var up = a.direction === "up";
+    var row = document.createElement("div");
+    row.className = "chat-row live " + (up ? "up" : "down");
+    var badges = '<span class="tag tag-live" title="Measured by this browser ' +
+      'between collector runs, not by the scheduled collector.">live</span> ';
+    if (a.live_repeat) {
+      badges += '<span class="tag tag-purple" title="The same market stepped ' +
+        '&ge; $0.10 again in the same direction inside two minutes.">repeat step</span> ';
+    }
+    if (a.quality === "indicative") {
+      badges += '<span class="flag-badge" title="' + esc(a.quality_reason || "") +
+        '">indicative · not executable</span> ';
+    } else {
+      badges += '<span class="tag tag-yes" title="Two-sided book tighter than ' +
+        'the $0.10 threshold with size resting at the level.">executable</span> ';
+    }
+    var q = encodeURIComponent(a.title || a.ticker || "");
+    row.innerHTML =
+      "<time>" + esc((a.iso || "").slice(11, 19)) + "</time>" +
+      '<span class="chat-delta ' + (up ? "pos" : "neg") + '">' +
+      (up ? "▲ +" : "▼ −") + Math.abs(Number(a.abs_delta) || 0).toFixed(4) + "</span>" +
+      '<span class="chat-body">' +
+      '<a href="' + (safeUrl(a.market_url) || "#") + '" target="_blank" rel="noreferrer">' +
+      esc(a.title || a.ticker) + "</a>" +
+      "<small>" + money(a.previous) + " → " + money(a.current) + " · " +
+      esc(a.topic) + " · quote mid to quote mid (live polls)" +
+      " · YES spread " + money(a.spread, 4) +
+      (a.size_at_top === null || a.size_at_top === undefined
+        ? " · no resting size at the level"
+        : " · " + num(a.size_at_top) + " contracts at the level") +
+      "</small>" +
+      '<span class="chat-badges">' + badges + "</span>" +
+      '<span class="cause-links"><span class="cause-none">no news link: a live ' +
+      "row is not compared against a headline, and no cause is claimed</span></span>" +
+      '<span class="cause-links">' +
+      '<a href="' + esc(eventUrl(a)) + '" target="_blank" rel="noreferrer">Event page ↗</a>' +
+      '<a href="' + esc(newsUrl(a)) + '" target="_blank" rel="noreferrer">News search ↗</a>' +
+      "</span></span>" +
+      '<button class="ghost-link" data-chart="' + esc(a.ticker) + '" ' +
+      'data-series="' + esc(a.series_ticker || "") + '">chart</button>';
+    return row;
+  }
+
+  function renderPulse(delta) {
+    var feed = pulseEl("feedLive");
+    if (!feed || !pulse.detector) return;
+    var rows = pulse.detector.events();
+    if (!rows.length) {
+      if (!feed.querySelector(".empty-state")) {
+        feed.innerHTML = '<div class="empty-state inline">No ≥ $0.10 move ' +
+          "measured between two of this tab's readings yet. " +
+          (pulse.refreshes < 2 ? "One reading so far — the second one is what " +
+            "can produce a move." : "The books are quiet at this cadence. " +
+            "Each row will show the two quotes it compared.") + "</div>";
+      }
+    } else {
+      var empty = feed.querySelector(".empty-state");
+      if (empty) empty.remove();
+      var added = (delta && delta.fired) || [];
+      added.slice().reverse().forEach(function (a) {
+        feed.insertBefore(liveRow(a), feed.firstChild);
+      });
+      /* Bounded: the detector caps its own buffer, but the DOM must not grow
+       * without bound in a tab left open for a day. */
+      while (feed.children.length > 120) feed.removeChild(feed.lastChild);
+    }
+    var box = pulseEl("pulseRefusals");
+    if (box) {
+      var refused = pulse.detector.suppressed();
+      box.hidden = !refused.length;
+      if (refused.length) {
+        box.innerHTML = '<div class="pulse-refusal-head"><b>' + refused.length +
+          " move" + (refused.length === 1 ? "" : "s") + " refused by the quote " +
+          'rule since this tab opened</b> <button class="ghost-link" id="pulseRefusalToggle">' +
+          'show</button></div><ul id="pulseRefusalList" hidden>' +
+          refused.slice(0, 40).map(function (r) {
+            return "<li><code>" + esc(r.ticker) + "</code> " +
+              (r.abs_delta !== undefined ? "$" + Number(r.abs_delta).toFixed(4) + " " +
+                esc(r.direction) + " · " : "") + esc(r.reason) +
+              " · " + esc((r.iso || "").slice(11, 19)) + "</li>";
+          }).join("") + "</ul>";
+        var toggle = pulseEl("pulseRefusalToggle");
+        if (toggle) toggle.addEventListener("click", function () {
+          var list = pulseEl("pulseRefusalList");
+          if (!list) return;
+          list.hidden = !list.hidden;
+          toggle.textContent = list.hidden ? "show" : "hide";
+        });
+      }
+    }
+    pulseStats();
+  }
+
+  function pulseRefresh() {
+    if (!pulse.on || pulse.inflight || !pulse.detector) return Promise.resolve(null);
+    if (!pulse.tickers.length) return Promise.resolve(null);
+    pulse.inflight = true;
+    var url = "https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks?tickers=" +
+      pulse.tickers.map(encodeURIComponent).join(",");
+    var started = Date.now();
+    return fetch(url, { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        var books = {};
+        ((data && data.orderbooks) || []).forEach(function (entry) {
+          if (entry && entry.ticker) books[entry.ticker] = entry.orderbook_fp || {};
+        });
+        if (!Object.keys(books).length) throw new Error("empty response");
+        var quotes = {};
+        Object.keys(books).forEach(function (t) {
+          if (!pulse.meta[t]) return;
+          quotes[t] = { meta: pulse.meta[t], quote: LiveFeed.quoteFromBook(books[t]) };
+        });
+        var out = pulse.detector.ingest(quotes, started);
+        pulse.refreshes += 1;
+        pulse.error = "";
+        pulseBanner("LIVE PULSE · " + pulse.refreshes + " reading" +
+          (pulse.refreshes === 1 ? "" : "s"), "live");
+        renderPulse(out);
+        return out;
+      })
+      .catch(function (err) {
+        pulse.error = String((err && err.message) || err);
+        pulseBanner("PULSE OFFLINE", "");
+        pulseStats();
+        return null;
+      })
+      .then(function (out) { pulse.inflight = false; return out; });
+  }
+
+  function startLivePulse() {
+    var host = pulseEl("livePulse");
+    if (!host || host.getAttribute("data-pulse-started")) return;
+    host.setAttribute("data-pulse-started", "1");
+    if (!window.LiveFeed) {
+      pulseBanner("PULSE UNAVAILABLE", "");
+      return;
+    }
+    pulse.detector = LiveFeed.newDetector();
+    pulse.meta = pulseMeta();
+    pulse.tickers = Object.keys(pulse.meta).slice(0, PULSE_CAP);
+    var toggle = pulseEl("pulseOn");
+    if (toggle) {
+      toggle.addEventListener("change", function () {
+        pulse.on = !!toggle.checked;
+        if (pulse.on) { pulseRefresh(); }
+        else {
+          pulseBanner("PULSE PAUSED", "");
+        }
+      });
+    }
+    if (!pulse.tickers.length) {
+      pulseBanner("NO MARKETS", "");
+      return;
+    }
+    pulseBanner("READING…", "");
+    pulseRefresh();
+    pulse.timer = setInterval(pulseRefresh, pulseInterval());
+    state.timers.push(function () { clearInterval(pulse.timer); });
   }
 
   if (document.readyState === "loading") {

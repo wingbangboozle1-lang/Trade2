@@ -1240,3 +1240,76 @@ table tr.topic-head th a { font-weight: 700; font-size: 13px; }
 .cause-label { color: var(--muted); font-size: 10.5px; }
 .cause-none { color: var(--muted); font-size: 10.5px; font-style: italic; }
 .cause-links .cause-none { border-bottom: none; }
+
+/* ------------------------------------------------------------------ */
+/* Live pulse — the in-browser ≥ $0.10 detector (assets/live-feed.js)  */
+/* ------------------------------------------------------------------ */
+
+/* The panel exists in the pre-rendered page and disappears if the module
+ * never loads, so a reader without JavaScript sees no dead control. */
+.live-pulse { border-color: #cfe9dd; }
+
+.pulse-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin: 4px 0 12px;
+  font-size: 12px;
+  color: var(--muted, #6b7a76);
+}
+
+.pulse-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pulse-toggle input { accent-color: var(--green, #0f8060); }
+
+.pulse-stat {
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f0f6f3;
+  color: #4b5b57;
+}
+
+#feedLive { max-height: 380px; overflow-y: auto; }
+
+.chat-row.live { border-left: 3px solid var(--green, #0f8060); }
+
+.tag-live {
+  background: #e2f6ec;
+  color: #0a6a4e;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.pulse-refusals {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fdf6e9;
+  border: 1px solid #f0dcae;
+  font-size: 12.5px;
+}
+
+.pulse-refusal-head { display: flex; align-items: center; gap: 10px; }
+
+.pulse-refusals ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.pulse-refusals li { margin-bottom: 4px; line-height: 1.45; }
+
+.pulse-refusals code { font-size: 11.5px; }
+
+/* The pulse controls are meaningless without JavaScript. */
+html.no-js .pulse-meta { display: none; }

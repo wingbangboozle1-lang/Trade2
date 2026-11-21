@@ -120,6 +120,7 @@ def page(title: str, active: str, body: str, prefix: str = "",
       </main>
     </div>
     <script src="{prefix}assets/alerts-view.js" defer></script>
+    <script src="{prefix}assets/live-feed.js" defer></script>
     <script src="{prefix}assets/nav.js" defer></script>
     <script src="{prefix}assets/desk.js" defer></script>
   </body>
@@ -694,6 +695,10 @@ def build_live(live: dict[str, Any]) -> str:
                   <button data-window="minutes" class="selected">Minutes</button>
                   <button data-window="hours">Hours</button>
                 </div>
+                <div class="filter-tabs" id="sideTabs" aria-label="Contract side">
+                  <button data-side="yes" class="selected">YES</button>
+                  <button data-side="no">NO</button>
+                </div>
               </div>
             </div>
             <div class="chart-metrics">
@@ -701,12 +706,12 @@ def build_live(live: dict[str, Any]) -> str:
               <div><small>Change in window</small><strong id="chartChange">—</strong></div>
               <div><small>Best YES bid</small><strong id="chartBid">—</strong></div>
               <div><small>Implied YES ask</small><strong id="chartAsk">—</strong></div>
-              <div class="chart-legend"><i></i> YES price</div>
+              <div class="chart-legend"><i></i> <span id="sideLegend">YES price</span></div>
             </div>
             <div class="chart-frame"><canvas id="priceChart" role="img"
               aria-label="Contract price over time"></canvas></div>
             <div class="chart-notes" id="chartNotes" aria-live="polite"></div>
-            <div class="chart-foot"><span>X: time · Y: YES price in dollars</span>
+            <div class="chart-foot"><span>X: time · Y: <span id="sideAxis">YES</span> price in dollars</span>
             <span id="chartWindowLabel">Last 60 minutes</span></div>
           </article>
           <article class="panel depth-panel">
@@ -730,6 +735,9 @@ def build_live(live: dict[str, Any]) -> str:
               <span class="count-badge" id="allCount">0</span>
             </div>
             <div class="chat-feed tall" id="feedAll" aria-live="polite">{feed_all}</div>
+            <div class="alert-note">The published rows above are measured by the
+            scheduled collector against Kalshi's own 1-minute candle quotes. The
+            <b>live pulse</b> below keeps measuring while this page is open.</div>
           </article>
           <article class="panel chat-panel model-chat">
             <div class="panel-title">
@@ -743,6 +751,41 @@ def build_live(live: dict[str, Any]) -> str:
             fee. Not a prediction of profit — outcomes are scored on the
             <a href="summary.html#performance">performance table</a>.</div>
           </article>
+        </section>
+        <section class="panel live-pulse" id="livePulse">
+          <div class="panel-title">
+            <div><span class="section-icon green">⇅</span><div>
+              <h2>Live pulse — measured in this browser</h2>
+              <p>Every tracked market's order book, re-read from Kalshi's public
+              demo API while this page is open. A new row appears whenever a
+              contract's quote mid moves <b>≥ $0.10</b> either way since the last
+              reading. Same quote-integrity rule as the collector: a one-sided
+              or wide book is refused and the reason is shown.</p></div></div>
+            <span class="live-pill" id="pulseState"><i></i> <span>starting…</span></span>
+          </div>
+          <div class="pulse-meta">
+            <label class="pulse-toggle">
+              <input type="checkbox" id="pulseOn" checked />
+              <span>Poll the demo API from this browser</span>
+            </label>
+            <span class="pulse-stat" id="pulseStats">0 refreshes · 0 live swings</span>
+            <span class="pulse-stat" id="pulseSource"></span>
+          </div>
+          <div class="chat-feed" id="feedLive" aria-live="polite">
+            <div class="empty-state inline">Waiting for the first reading…</div>
+          </div>
+          <div class="pulse-refusals" id="pulseRefusals" hidden></div>
+          <div class="alert-note">Live rows are measured from
+            <a href="https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks"
+               target="_blank" rel="noreferrer">GET /markets/orderbooks ↗</a>
+            (one request per refresh, documented cap 100 markets) and use the
+            documented book semantics
+            (<a href="https://docs.kalshi.com/getting_started/orderbook_responses"
+                target="_blank" rel="noreferrer">best bid = last level, YES ask
+            = 1.00 − best NO bid</a>). They are <b>not</b> the collector's rows:
+            the collector compares Kalshi's 1-minute candle quotes, these compare
+            successive readings taken by this tab. Nothing is written back to the
+            site, and no cause is ever claimed for a move.</div>
         </section>
         <section class="panel">
           <div class="panel-title">
