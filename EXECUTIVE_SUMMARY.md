@@ -2,7 +2,8 @@
 
 **Project:** `wingbangboozle1-lang/Trade2` · **Live site:** <https://wingbangboozle1-lang.github.io/Trade2/>
 **Environment:** Kalshi **demo** only (`https://external-api.demo.kalshi.co/trade-api/v2`)
-**Prepared:** 2026-11-20 · Every claim below links to the official source it came from.
+**Prepared:** 2026-11-20 · **Updated:** 2026-11-21 (session `arena-108b0dfb`) ·
+Every claim below links to the official source it came from.
 
 ---
 
@@ -156,6 +157,47 @@ and is excluded by an explicit per-topic rule set in `collector/topics.py`.
 * **Throttle the chat instead of the data.** Keep every alert in the JSON store
   but collapse bursts visually, so a fast market does not flood the reader.
 
+The first item used to read "WebSocket instead of polling". That is still the
+right answer for latency, but it is **blocked on credentials, not effort**: the
+official connection page states that authentication is required to establish a
+WebSocket connection, so a public page cannot use it. The shipped compromise is
+a browser-side REST poll of the public order books (`assets/live-probe.js`),
+which is live only while the page is open. The trade-off is stated on the
+Flagged-for-Review page rather than glossed over.
+
+---
+
+## 7b. Update 2026-11-21 — what was wrong, and what changed
+
+Four defects were reproduced before anything was edited, and each now has a
+test that fails if it returns.
+
+| # | Defect found on `main` | Evidence | Fix |
+| - | - | - | - |
+| N-01 | Every page rendered "Overview" **twice** in the sidebar, and the menu order changed from page to page because the active link was dropped instead of marked. | parsed all 13 generated pages | one canonical nav in `site_build/build.py`; `tools/navcheck.py` + 7 tests |
+| N-02 | The published desk showed **0** swings ≥ $0.10 and an empty chat, because alerts could only be produced by a scheduled CI job diffing successive snapshots. | `data/alerts.json` = `[]`; live page fetch | `assets/live-probe.js` polls the public order books from the visitor's browser (demo API is CORS-open), applies the same rule, tags rows **LIVE**; 25 JS checks + a jsdom end-to-end test |
+| N-03 | A second published dashboard reports a **$0.877** swing on `KXPRESNOMD-28-BOBA`; the official record at that time was `yes_bid 0.0010` / `yes_ask 0.8860`, i.e. no two-sided market. | [market record](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA) | logged on Flagged for Review with the source; that pipeline has another owner |
+| N-04 | The site never used the demo API's permissive CORS policy, although CI had captured proof of it. | `data/_cors.txt`, `data/capabilities.json` | the basis for the N-02 fix |
+
+Two defects were also found **in this session's own new code** by its tests and
+fixed before shipping: an exact 10-cent move measured as 9.999999999999998 cents
+in binary floating point (prices are now rounded to the quote grid at capture),
+and a total network failure that was reported as a healthy poll with 0 markets.
+
+### Why the browser poll is safe
+
+* It builds only two URLs, both documented unauthenticated GETs:
+  `GET /markets?tickers=…` and `GET /markets/orderbooks?tickers=…`
+  ([Get Markets](https://docs.kalshi.com/api-reference/market/get-markets),
+  [order books](https://docs.kalshi.com/getting_started/orderbook_responses)).
+* It contains no `POST`, no `Authorization` header and no portfolio path; a
+  test strips comments and asserts the absence of all three.
+* A swing only counts on a **two-sided** book with a spread under $0.10, so a
+  stale one-sided quote cannot fake a move (that is exactly N-03).
+* It backs off exponentially (5s → 60s) on any failure and stops entirely when
+  the tab is hidden, per the documented advice to back off on `429`
+  ([rate limits](https://docs.kalshi.com/getting_started/rate_limits)).
+
 ---
 
 ## 8. Source index
@@ -177,6 +219,8 @@ and is excluded by an explicit per-topic rule set in `collector/topics.py`.
 | S13 | <https://kalshi.com/docs/kalshi-fee-schedule.pdf> | Fee formula + the 42-row oracle table |
 | S14 | <https://docs.kalshi.com/getting_started/quick_start_websockets.md> | WS auth, channels, keep-alive |
 | S15 | <https://external-api.demo.kalshi.co/trade-api/v2/exchange/status> | Live status at build time |
+| S16 | <https://docs.kalshi.com/websockets/websocket-connection> | WebSocket requires API-key auth (why the public page polls instead) |
+| S17 | <https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA> | The one-sided record behind the published phantom swing (N-03) |
 
 ---
 

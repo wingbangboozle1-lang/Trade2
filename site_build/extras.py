@@ -679,19 +679,42 @@ SUGGESTIONS: list[dict[str, Any]] = [
                 "source_label": "Candlestick endpoint (official)",
             },
             {
+                "title": "Measure the >= $0.10 rule in the browser, not only in CI",
+                "what": "The demo REST API answers with a permissive "
+                        "<code>access-control-allow-origin</code> header, so "
+                        "<code>assets/live-probe.js</code> polls the public "
+                        "order books from the visitor's tab every five seconds "
+                        "and applies the same swing rule there. Rows it measures "
+                        "are tagged <b>LIVE</b> and kept separate from the "
+                        "collector's buffer.",
+                "why": "The brief asks for a live alerting system. A static page "
+                       "whose buffer only changes when a scheduled job runs "
+                       "cannot alert while someone is watching it — on "
+                       "2026-11-21 the published desk showed 0 swings for that "
+                       "reason.",
+                "effort": "Low",
+                "status": "shipped",
+                "status_label": "Shipped",
+                "source": "https://docs.kalshi.com/getting_started/orderbook_responses",
+                "source_label": "Order book responses (official)",
+            },
+            {
                 "title": "Subscribe to the Kalshi WebSocket feed instead of polling",
-                "what": "Replace the REST poll with the documented "
-                        "WebSocket channel at "
-                        "<code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code> "
-                        "and push every tick straight into the page.",
-                "why": "Ticks arrive immediately instead of up to 30 seconds "
-                       "late, and the chart stops depending on a GitHub Pages "
-                       "rebuild to show a fresh price.",
-                "effort": "Medium",
-                "status": "next",
-                "status_label": "Next",
-                "source": "https://docs.kalshi.com/getting_started/quick_start_websockets",
-                "source_label": "WebSocket quick start (official)",
+                "what": "Replace the REST poll with the documented WebSocket "
+                        "channel at "
+                        "<code>wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2</code>, "
+                        "which delivers order-book deltas as they happen.",
+                "why": "Ticks would arrive immediately instead of up to five "
+                       "seconds late, and the chart would stop depending on "
+                       "polled snapshots. It is blocked on credentials, not on "
+                       "effort: the official connection page states that "
+                       "authentication is required to establish a WebSocket "
+                       "connection, and a public page must not carry a key.",
+                "effort": "Medium (needs demo API credentials)",
+                "status": "credentials",
+                "status_label": "Needs demo credentials",
+                "source": "https://docs.kalshi.com/websockets/websocket-connection",
+                "source_label": "WebSocket connection (official)",
             },
             {
                 "title": "Run the collector on a schedule that is not GitHub's",

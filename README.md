@@ -10,7 +10,7 @@ topics only — gas prices, elections, culture, crypto and golf.
 | Capability | Status |
 | - | - |
 | Highest-dollar open events per topic, ranked by official open-interest value | live |
-| Alert on any price swing ≥ **$0.10** either way, as two scrolling chats (all events, model shortlist) | live |
+| Alert on any price swing ≥ **$0.10** either way, as two scrolling chats (all events, model shortlist) | live in the collector **and in the browser**: `assets/live-probe.js` polls the public demo order books every 5 s while the page is open and tags what it measures **LIVE** |
 | Price graph with seconds / minutes / hours windows and live order-book depth (contracts at each price) | live |
 | Event tracked until it resolves, with the official YES/NO result and settlement value | live |
 | Automated simulated trading with four named strategies, scored by strategy, topic and outcome | simulated |
@@ -24,7 +24,14 @@ python3 -m site_build.build         # regenerate every page from that snapshot
 python3 server/app.py               # local dashboard on :8000 (serves the site + SSE)
 python3 -m unittest discover -s tests -v
 python3 tools/linkcheck.py          # fail on a broken internal link
+python3 tools/navcheck.py           # fail if any page's sidebar differs
+node test/live-probe.test.mjs       # the browser swing rule (25 checks)
+node test/desk_live_probe_dc.mjs    # shipped page + real probe + stubbed API (jsdom)
 ```
+
+> **Use `python3 -m site_build.build`, not `python3 site_build/build.py`.** The
+> package form puts the repository root on `sys.path`; the file form does not,
+> and fails with `ModuleNotFoundError: collector`.
 
 The Python collector, site builder, and Python unit tests have no third-party
 requirements; `cryptography` is needed only for signed requests. `npm test`
