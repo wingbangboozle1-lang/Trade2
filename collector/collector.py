@@ -311,6 +311,20 @@ def save_json(path: str, payload: Any) -> None:
 _series_volume: dict[str, float] = {}
 
 
+# Market statuses that mean the contract has already resolved. Kalshi can keep a parent
+# event listed as open while one of its markets is finalized: KXBTCMAX100-26-APR was
+# published as a live crypto event with 694,493 contracts of open interest and no quote,
+# although the official record shows status "finalized", result "no", settled 2026-05-02
+# (https://docs.kalshi.com/api-reference/market/get-markets). Such markets are not live.
+TERMINAL_MARKET_STATUSES = frozenset({"finalized", "settled", "determined"})
+
+
+def is_live_market(market: dict[str, Any]) -> bool:
+    """False for a market whose own status is terminal. Grading still happens through the
+    settlement path (scan_settled / the resolution watchlist), not through the live table."""
+    return (market.get("status") or "").lower() not in TERMINAL_MARKET_STATUSES
+
+
 def fetch_events_for_topic(client: KalshiClient, topic: topic_mod.Topic,
                            series_tickers: set[str],
                            max_series: int = 40,
@@ -557,6 +571,8 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
         markets: list[dict[str, Any]] = []
         for event in events:
             for market in event.get("markets") or []:
+                if not is_live_market(market):
+                    continue
                 market = {**market,
                           "event_ticker": event.get("event_ticker"),
                           "series_ticker": event.get("series_ticker")}

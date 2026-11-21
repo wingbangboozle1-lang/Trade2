@@ -145,6 +145,19 @@ class WatchlistRules(unittest.TestCase):
                          root.WATCH_BATCH * root.WATCH_MAX_CALLS)
 
 
+class LiveMarketRule(unittest.TestCase):
+    """Finalized markets must not be published as live events (KXBTCMAX100-26-APR case)."""
+
+    def test_terminal_statuses_are_not_live(self) -> None:
+        for status in ("finalized", "settled", "determined", "FINALIZED"):
+            self.assertFalse(root.is_live_market({"ticker": "X", "status": status}), status)
+
+    def test_active_and_missing_status_stay_live(self) -> None:
+        self.assertTrue(root.is_live_market({"ticker": "X", "status": "active"}))
+        self.assertTrue(root.is_live_market({"ticker": "X", "status": "closed"}))
+        self.assertTrue(root.is_live_market({"ticker": "X"}))
+
+
 class HeldPositionLookup(unittest.TestCase):
     def test_uses_tickers_filter_in_batches(self) -> None:
         client = FakeRequestClient()
