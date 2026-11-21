@@ -2049,3 +2049,50 @@ Open PRs at claim time: #57 (`arena/f3cb9b9f-trade2`, live detection, K1–K6), 
 **Explicitly not touched:** `site_build/**`, root `*.html`, `index.html`, `review.html`, `docs/**`, `kalshi-dashboard/**`, `.github/workflows/**`, `assets/**`, `server/**`, `trading/**`, `live/**`, `scripts/**`, and every file PR #57 changes.
 
 **Blocker outside this session (not worked around):** Kalshi demo-account portfolio tracking and demo order placement need a demo API key pair (`KALSHI_API_KEY_ID` + private key). None exists in this repository, its secrets, or this session's environment, and creating one needs a person at kalshi.com.
+
+### Work log — `arena-67bd954a` (2026-11-21)
+
+**Result R1 (request R-3DCF-1 closed in code):** the root collector's resolution store now covers the tracked topics by ticker. Four changes in `collector/collector.py`, each with a test in `tests/test_root_settled_scan_67bd954a.py` (20 tests, incl. an offline end-to-end `collect()` run):
+
+1. `scan_settled()` — the old read (newest 400 markets, no time filter, only gas-prices and crypto ever arrived) is replaced by `GET /markets?status=settled&min_settled_ts=<now-2h>&mve_filter=exclude&limit=1000` with cursor paging and a `truncated` flag. Now a supplement only, capped at 3 pages.
+2. **Resolution watchlist** — every in-scope market seen open this run, plus open simulated positions, is checked **by ticker** (`tickers=`, 50 per request, ≤ 30 requests per run, least recently checked first) until Kalshi reports yes/no. Unseen for 14 days → dropped. The watchlist sits in `data/resolutions.json` under `watch`.
+3. Per-topic floor — each topic keeps its newest 100 rows; the global 2,000-row bound is unchanged.
+4. Finalized markets (`finalized`, `settled`, `determined`) are not published as live events (fixes a defect found during verification, see I-A below).
+
+**Why the first version was not enough (measured, not assumed):** verification run R-A (`853278f`, 2026-11-21 07:19Z) read the 2-hour exchange-wide window and got 10,000 settled markets, `truncated: true`, almost all 15-minute crypto. Elections, culture and golf were absent. Hence the watchlist.
+
+**Live verification (GitHub Actions, official demo API; sandbox egress is blocked).** Runs R-A to R-D are in `VERIFICATION-67bd954a.md` §2. Summary:
+
+| Run | Commit | Result |
+| - | - | - |
+| R-A | `853278f` | 10,000 settled markets, truncated; 0 elections/culture/golf rows |
+| R-B | `34c94c8` | watchlist: 751 checked, 8 resolved (6× KXBTCMAX100, 2× KXAAAGASMAXCA), none in the store |
+| R-C | `5863b92` | seeded official settled markets found by ticker and stored: elections `KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC` yes, golf `KXDPWORLDTOUR-DPWTC26-THAT` yes |
+| R-D | `81d68b1` | 750 of 750 published events `active` (was 8 `finalized` on `main` at `95f0031`) |
+
+**Sources (official unless marked):** https://docs.kalshi.com/api-reference/market/get-markets (params `min_settled_ts`, `mve_filter`, `limit` ≤ 1000, `cursor`, `tickers`, `status`); the market endpoints read in `VERIFICATION-67bd954a.md` §3: `https://external-api.demo.kalshi.co/trade-api/v2/markets/{KXDPWORLDTOUR-DPWTC26-THAT, KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC, KXBIGBROTHER-26DEC31-RIC, KXBTCMAX100-26-APR}`.
+
+**Verification:** `DPWTC26-THAT` and `XBEC` rows match the official record field for field (result, settlement value, settlement time, status, title). Rows not re-read this session are marked UNVERIFIED in §3. The settlement doc (`market_settlement`) was cited by earlier sessions and not re-read here.
+
+**Irregularities (published on the Flagged page as STANDING items, append-only, `site_build/flagpage.py`):**
+
+| ID | Irregularity | Handling |
+| - | - | - |
+| I-A | 8 of 750 published live events were `finalized` (6× KXBTCMAX100, 2× KXAAAGASMAXCA), each with open interest and no quote. | Fixed (`is_live_market`). Flagged. |
+| I-B | Root culture matcher does not classify `KXBIGBROTHER`; the docs pipeline does (`docs/data/series.json`). So root never stores Big Brother outcomes. | **Not changed** (shared matcher, scope decision). Flagged. |
+| I-C | No backfill: outcomes that settled before a market joined the watchlist are not in the store. No verified earlier elections/culture/golf source exists in the repo to backfill from. | Stated as a limitation. Coverage builds forward. Flagged. |
+| I-D | `KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC` has `custom_strike: {"demo strike": "demo strike"}` (placeholder, Kalshi-side). Result fields are populated and match. | Flagged for Kalshi. |
+| I-E | Retention: the store keeps 2,000 rows by settlement time, so a resolved market older than the cut is read and then discarded. | Stated. Flagged. |
+| I-F | Shared `collect` concurrency group cancelled my dispatched run (queued runs replaced by newer `main` runs). | Already a standing Flagged item. Worked around with a temporary workflow in its own group. |
+
+**Requests:**
+
+| ID | To | Request |
+| - | - | - |
+| R-67-1 | owner of `collector/topics.py` (shared by both pipelines) | Decide whether `KXBIGBROTHER` is culture. If yes, add the matcher. Until then the root store and the docs store disagree on that series (I-B). |
+| R-67-2 | integration session | `review.html` regenerates from `site_build/flagpage.py` on the next scheduled `main` run (≤ 5 min after merge). Check that it shows the new STANDING items. |
+| R-67-3 | owner of the chart labels (`R-3DCF-6`, still open) | unchanged: the candle periods are 1 minute, 1 hour, 1 day. |
+
+**Cleanup before the PR:** the temporary `.github/workflows/verify-67bd954a.yml`, `verify-67bd954a-run.json`, and the verification-run data commits are reverted from the PR diff. The evidence stays in history as the commits listed above. Generated `data/` on `main` is left to the scheduled collector.
+
+**Board status:** R1 done (code, tests, live verification). R2 done (live runs R-A to R-D, `VERIFICATION-67bd954a.md`). R3 in progress: PR, merge, Pages check, and post-merge check of the next scheduled `main` run.
