@@ -42,6 +42,9 @@ DATA_DIR = os.path.join(ROOT, "data")
 RESOLUTIONS_PATH = os.path.join(DATA_DIR, "resolutions.json")
 SERIES_CACHE_PATH = os.path.join(DATA_DIR, "series_cache.json")
 PORTFOLIO_STATE_PATH = os.path.join(DATA_DIR, "portfolio_state.json")
+SHORTLIST_PATH = os.path.join(DATA_DIR, "shortlist.json")
+NEWS_PATH = os.path.join(DATA_DIR, "news.json")
+VERIFICATION_PATH = os.path.join(DATA_DIR, "verification.json")
 
 
 def nav(active: str, prefix: str = "") -> str:
@@ -264,6 +267,129 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     )
 
 
+
+def news_links(alert: dict[str, Any], news: dict[str, Any]) -> str:
+    """Candidate headline links for one alert, or an empty string.
+
+    Headlines come from Google News RSS by keyword and publish time. They are
+    labelled as candidates because temporal proximity is not causation; the
+    official Kalshi market link is always shown next to them.
+    """
+    ticker = alert.get("ticker") or ""
+    items = (news.get("headlines") or {}).get(ticker) or []
+    links = []
+    for item in items[:2]:
+        title = (item.get("title") or "").strip()
+        url = (item.get("url") or "").strip()
+        source = (item.get("source") or "").strip()
+        if not title or not url:
+            continue
+        links.append(
+            f'<a class="headline-link" href="{html.escape(url)}" target="_blank" '
+            f'rel="noreferrer nofollow" title="Candidate headline - published '
+            f'near this move, not a confirmed cause">↗ {html.escape(title[:110])}'
+            f'{(" · " + html.escape(source)) if source else ""}</a>'
+        )
+    if not links:
+        return ""
+    return ('<span class="headlines"><b>Possible catalyst:</b> '
+            + " · ".join(links) + "</span>")
+
+
+def model_chat_rows(shortlist: dict[str, Any],
+                    topic: str | None = None) -> list[str]:
+    """Rows for the order-book model chat: picks first, then verdicts.
+
+    ``topic`` restricts the rows to one topic page. Every row links to the
+    official market response it was priced from.
+    """
+    rows: list[str] = []
+    for pick in (shortlist.get("picks") or []):
+        if topic and pick.get("topic") != topic:
+            continue
+        ts = pick.get("ts")
+        rows.append(
+            '<div class="chat-row model-pick"><time>'
+            f'{html.escape(time.strftime("%H:%M:%S", time.gmtime(ts)) if ts else "")}</time>'
+            f'<span class="chat-delta up">★ {pct(pick.get("net_roi"))}</span>'
+            f'<span class="chat-body"><a href="{safe_url(pick.get("market_url") or "") or "#"}" '
+            f'target="_blank" rel="noreferrer">{esc(pick.get("title"))}</a> '
+            f'<small>{esc((pick.get("side") or "yes").upper())} · fair '
+            f'{cents(pick.get("fair_value"))} · edge after fee '
+            f'{cents(pick.get("edge_after_fee"))} · {esc(pick.get("kind") or "")}</small>'
+            f'<small><a class="source-link" href="{API}/markets/'
+            f'{html.escape(pick.get("ticker") or "")}" target="_blank" '
+            f'rel="noreferrer">API ↗</a></small></span></div>'
+        )
+        if len(rows) >= 12:
+            return rows
+    for verdict in (shortlist.get("verdicts") or []):
+        if topic and verdict.get("topic") != topic:
+            continue
+        picked = verdict.get("verdict") == "picked"
+        rows.append(
+            f'<div class="chat-row model-verdict {"picked" if picked else "passed"}">'
+            f'<span class="chat-delta {"up" if picked else "flat"}">'
+            f'{"★ picked" if picked else "— passed"}</span>'
+            f'<span class="chat-body"><a href="{safe_url(verdict.get("market_url") or "") or "#"}" '
+            f'target="_blank" rel="noreferrer">{esc(verdict.get("title"))}</a> '
+            f'<small>{html.escape(verdict.get("reason") or "")}</small>'
+            f'<small><a class="source-link" href="{API}/markets/'
+            f'{html.escape(verdict.get("ticker") or "")}" target="_blank" '
+            f'rel="noreferrer">API ↗</a></small></span></div>'
+        )
+        if len(rows) >= 24:
+            break
+    return rows
+
+
+def verification_panel(verification: dict[str, Any]) -> str:
+    """The result of the last automated re-check against the official API."""
+    if not verification:
+        return ('<p class="empty-state">No verification run has been recorded '
+                'yet. The scheduled pipeline re-opens every published market '
+                'response and compares it with what the site shows.</p>')
+    counts = verification.get("counts") or {}
+    rows = []
+    for row in (verification.get("checks") or [])[:40]:
+        badge = {"match": "tag-yes", "drift": "tag-purple",
+                 "mismatch": "tag-no"}.get(row.get("result"), "tag-purple")
+        rows.append(
+            "<tr>"
+            f'<td><span class="tag {badge}">{html.escape(str(row.get("result")).upper())}</span></td>'
+            f'<td>{esc(row.get("check"))}</td>'
+            f'<td><code>{esc(row.get("field"))}</code></td>'
+            f'<td>{esc(row.get("published"))}</td>'
+            f'<td>{esc(row.get("official"))}</td>'
+            f'<td><a class="source-link" href="{safe_url(row.get("url") or "") or "#"}" '
+            f'target="_blank" rel="noreferrer">official API ↗</a></td>'
+            "</tr>")
+    if not rows:
+        rows.append('<tr><td colspan="6" class="empty-state">No checks were '
+                    'recorded in the last run.</td></tr>')
+    return f"""<p>Every published row links to the exact official response it came
+          from. The scheduled pipeline re-opens those responses and compares them
+          with what this site shows, one market at a time. Last run
+          <b>{html.escape(verification.get("generated_at") or "n/a")}</b>:
+          <b>{count(verification.get("markets_checked"))}</b> markets and
+          <b>{count(verification.get("series_checked"))}</b> series re-checked —
+          {count(counts.get("match"))} match,
+          {count(counts.get("drift"))} drift (a live price moved inside the
+          tolerance), {count(counts.get("mismatch"))} mismatch,
+          {count(counts.get("unverified"))} unverified (the response could not be
+          read on that run).</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Result</th><th>Source</th><th>Field</th>
+              <th>Published here</th><th>Official response</th><th>Checked</th></tr></thead>
+            <tbody>{''.join(rows)}</tbody>
+          </table>
+        </div>
+        <p class="empty-state">Prices and sizes move between the snapshot and
+        the check, so a difference inside the tolerance is recorded as drift
+        rather than as an error.</p>"""
+
+
 def build_overview(live: dict[str, Any]) -> str:
     generated = live.get("generated_at", "")
     events = live.get("events", [])
@@ -385,6 +511,36 @@ def build_overview(live: dict[str, Any]) -> str:
           </div>
           <a class="button button-primary" href="live.html">◈ Open live desk</a>
         </section>
+        <section class="panel">
+          <div class="panel-title">
+            <div><span class="section-icon">▤</span><div>
+              <h2>How to use this site</h2>
+              <p>Every page, one click away</p></div></div>
+          </div>
+          <div class="link-grid">
+            <a class="link-card" href="live.html"><b>Live desk</b><small>Two scrolling chats, the
+            price graph and the order book</small></a>
+            <a class="link-card" href="summary.html"><b>Executive summary</b><small>What this is,
+            what is live and what is simulated</small></a>
+            <a class="link-card" href="methodology.html"><b>Methodology</b><small>Every rule,
+            fee and verification step</small></a>
+            <a class="link-card" href="review.html"><b>Flagged for review</b><small>Irregularities
+            and unverified items, with sources</small></a>
+            <a class="link-card" href="categories/gas-prices.html"><b>Gas prices</b><small>Topic
+            page: markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/elections.html"><b>Elections</b><small>Topic
+            page: markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/culture.html"><b>Culture</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/crypto.html"><b>Crypto</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+            <a class="link-card" href="categories/golf.html"><b>Golf</b><small>Topic page:
+            markets, swings, resolutions</small></a>
+          </div>
+          <div class="table-foot"><span>The two chats below are also on the
+          live desk</span><span>Swing chat = every ≥ $0.10 move · Model chat =
+          what the model would trade</span></div>
+        </section>
         <section class="stats-grid" aria-label="Summary">
           <article class="stat-card"><span>Markets tracked</span>
             <strong>{count(live.get("observation_count"))}</strong>
@@ -470,6 +626,21 @@ def build_topic(slug: str, live: dict[str, Any],
     events = [e for e in live.get("events", []) if e.get("topic") == slug]
     if resolutions is None:
         resolutions = (live.get("resolutions") or {}).get(slug, [])
+    news = live.get("news") or {}
+    shortlist = live.get("shortlist") or {}
+
+    topic_alerts = [a for a in (live.get("alerts") or []) if a.get("topic") == slug]
+    topic_alerts = extras.group_alerts(topic_alerts)[:20]
+    swing_rows = [alert_chat_row(a) for a in topic_alerts]
+    for row_html in swing_rows:
+        pass  # headlines are already rendered by alert_chat_row
+    if not swing_rows:
+        swing_rows = ['<div class="empty-state inline">No ≥ $0.10 swing has '
+                      "been observed in this topic yet.</div>"]
+    topic_model_rows = model_chat_rows(shortlist, topic=slug)
+    if not topic_model_rows:
+        topic_model_rows = ['<div class="empty-state inline">The model has not '
+                            "priced a market in this topic yet.</div>"]
 
     market_rows = []
     for e in events[:60]:
@@ -606,6 +777,25 @@ def build_topic(slug: str, live: dict[str, Any],
               <tbody>{''.join(series_rows) or '<tr><td colspan="5" class="empty-state">None matched</td></tr>'}</tbody>
             </table>
           </div>
+        </section>
+        <section class="panel alert-panel">
+          <div class="panel-title">
+            <div><span class="section-icon amber">◉</span><div>
+              <h2>Swings in this topic</h2>
+              <p>Every observed move of at least $0.10, with candidate headlines</p>
+              </div></div>
+            <a class="source-link" href="../live.html">Full live desk →</a>
+          </div>
+          <div class="chat-feed">{''.join(swing_rows)}</div>
+        </section>
+        <section class="panel alert-panel model-panel">
+          <div class="panel-title">
+            <div><span class="section-icon violet">★</span><div>
+              <h2>Model's view of this topic</h2>
+              <p>What the order-book model picked, and why it passed on the rest</p></div></div>
+            <a class="source-link" href="../methodology.html">How the model works →</a>
+          </div>
+          <div class="chat-feed">{''.join(topic_model_rows)}</div>
         </section>"""
 
 
@@ -633,12 +823,24 @@ def build_live(live: dict[str, Any]) -> str:
         pick = shortlist.get(a.get("ticker"))
         if pick is not None:
             model_rows.append(alert_chat_row(a, pick.get("model_net_roi")))
-    if not model_rows:
-        model_html = ('<div class="empty-state inline">Nothing clears the '
-                      "model's net-ROI gate right now. An empty feed is an "
-                      "honest answer.</div>")
+    # The order-book model (collector/shortlist.py) publishes its own picks
+    # and a verdict for every alerted market. Those rows come first; the
+    # signal-based high-ROI rows follow for any ticker the book model did
+    # not already price, so the two views never duplicate a market.
+    book = live.get("shortlist") or {}
+    book_rows = model_chat_rows(book)
+    covered = {p.get("ticker") for p in (book.get("picks") or [])}
+    covered |= {v.get("ticker") for v in (book.get("verdicts") or [])}
+    extra_rows = [alert_chat_row(a, shortlist.get(a.get("ticker"), {}).get("model_net_roi"))
+                  for a in alerts
+                  if a.get("ticker") in shortlist and a.get("ticker") not in covered]
+    if book_rows or extra_rows:
+        model_html = "".join((book_rows + extra_rows)[:40])
     else:
-        model_html = "".join(model_rows[:40])
+        model_html = ('<div class="empty-state inline">Nothing clears the '
+                      "model's gates right now. An empty shortlist is an "
+                      "honest answer — the verdicts below the fold say why."
+                      "</div>")
 
     desk_rows = []
     for e in (live.get("events") or [])[:40]:
@@ -768,6 +970,7 @@ def build_live(live: dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 
 def build_methodology(live: dict[str, Any]) -> str:
+    verification_block = verification_panel(live.get("verification") or {})
     return f"""{topbar("Methodology", live.get("generated_at", ""), "", live.get("generated_at_ts"))}
         <section class="page-heading">
           <div><div class="eyebrow">HOW EVERY NUMBER IS PRODUCED</div>
@@ -820,13 +1023,17 @@ def build_methodology(live: dict[str, Any]) -> str:
           <a href="https://kalshi.com/docs/kalshi-fee-schedule.pdf" target="_blank"
           rel="noreferrer">official fee schedule</a>. All 42 published rows of that
           table are reproduced exactly by the implementation and are asserted in
-          <code>tests/test_engine.py</code>. The <code>trading/</code> engine
-          respects each series' own <code>fee_multiplier</code>; the collector's
-          simulated ledger, which is what <code>trades.html</code> publishes,
-          applies a multiplier of 1 to every series because it calls
-          <code>kalshi_fee(price, contracts)</code> without one — that difference
-          is listed on <a href="review.html">Flagged for review</a> rather than
-          left implicit.</p>
+          <code>tests/test_engine.py</code>. Both the <code>trading/</code> engine
+          and the collector's simulated ledger, which is what
+          <code>trades.html</code> publishes, follow each series' own
+          <code>fee_multiplier</code> / <code>fee_type</code> from the official
+          <code>GET /series</code> response, print that basis on every trade row,
+          and fall back to the schedule's default M = 1 only when a series lookup
+          is unavailable. The remaining published disagreement is between the fee
+          PDF and the demo API for some series (KXBTCY: 0/0 in the PDF table vs
+          <code>fee_multiplier: 1</code> on demo — this project follows the API
+          field), listed on <a href="review.html">Flagged for review</a> rather
+          than left implicit.</p>
           <h2>The high-ROI filter</h2>
           <p>Fair value is the mid, pulled toward 0.50 in proportion to the spread —
           a wide book means the mid is unreliable. Edge is fair value minus the price
@@ -849,6 +1056,8 @@ def build_methodology(live: dict[str, Any]) -> str:
             portfolio endpoints require credentials this repo does not hold.</li>
             <li>Unadjusted open interest is not traded dollar volume.</li>
           </ul>
+          <h2>Last automated verification run</h2>
+          {verification_block}
         </section>"""
 
 
@@ -963,6 +1172,12 @@ def build_performance_section(live: dict[str, Any]) -> str:
 
 def main() -> dict[str, Any]:
     live = load_json(LIVE_PATH, {})
+    # Side-cars written by the model steps that run after the collector:
+    # the order-book shortlist, the candidate-news lookup and the automated
+    # verification report.
+    live["shortlist"] = load_json(SHORTLIST_PATH, {})
+    live["news"] = load_json(NEWS_PATH, {})
+    live["verification"] = load_json(VERIFICATION_PATH, {})
     resolutions_store = load_json(RESOLUTIONS_PATH, {"resolutions": {}})
     series_cache = load_json(SERIES_CACHE_PATH, {})
     portfolio_state = load_json(PORTFOLIO_STATE_PATH, {})

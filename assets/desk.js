@@ -317,6 +317,59 @@
     return row;
   }
 
+  function newsFor(ticker) {
+    var news = (state.snapshot && state.snapshot.news) || {};
+    return (news.headlines || {})[ticker] || [];
+  }
+
+  function newsLinks(ticker) {
+    var items = newsFor(ticker);
+    if (!items.length) return "";
+    var links = items.slice(0, 2).map(function (item) {
+      if (!item || !item.url || !item.title) return "";
+      return '<a class="headline-link" href="' + esc(item.url) + '" target="_blank" ' +
+        'rel="noreferrer nofollow" title="Candidate headline published near this ' +
+        'move - temporal proximity is not a confirmed cause">↗ ' +
+        esc(String(item.title).slice(0, 110)) +
+        (item.source ? " · " + esc(item.source) : "") + "</a>";
+    }).filter(Boolean);
+    if (!links.length) return "";
+    return '<span class="headlines"><b>Possible catalyst:</b> ' + links.join(" · ") + "</span>";
+  }
+
+  function modelRows(shortlist) {
+    var rows = [];
+    (shortlist.picks || []).forEach(function (pick) {
+      var row = document.createElement("div");
+      row.className = "chat-row model-pick";
+      row.innerHTML =
+        '<span class="chat-delta up">★ ' + pct(pick.net_roi) + "</span>" +
+        '<span class="chat-body"><a href="' + esc(pick.market_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">' + esc(pick.title || pick.ticker) + "</a>" +
+        "<small>buy " + esc(String(pick.side || "").toUpperCase()) + " at " +
+        money(pick.executable_price) + " · fair " + money(pick.model_fair) +
+        " · edge " + money(pick.net_edge) + " after $" +
+        Number(pick.fee || 0).toFixed(4) + " fee · " + esc(pick.kind || "") + "</small>" +
+        '<small><a class="source-link" href="' + esc(pick.source_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">API ↗</a></small></span>';
+      rows.push(row);
+    });
+    (shortlist.verdicts || []).forEach(function (verdict) {
+      var row = document.createElement("div");
+      row.className = "chat-row model-verdict " + (verdict.verdict === "picked" ? "picked" : "passed");
+      row.innerHTML =
+        '<span class="chat-delta ' + (verdict.verdict === "picked" ? "up" : "flat") + '">' +
+        (verdict.verdict === "picked" ? "★ picked" : "— passed") + "</span>" +
+        '<span class="chat-body"><a href="' + esc(verdict.market_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">' + esc(verdict.title || verdict.ticker) + "</a>" +
+        "<small>" + esc(verdict.reason || "") + "</small>" +
+        '<small><a class="source-link" href="' + esc(verdict.source_url || "#") + '" ' +
+        'target="_blank" rel="noreferrer">API ↗</a></small></span>';
+      rows.push(row);
+    });
+    return rows;
+  }
+
   function renderFeeds() {
     var s = state.snapshot;
     if (!s) return;
@@ -326,6 +379,8 @@
      * non-executable. Display-only: the raw rows stay in the snapshot. */
     var V = window.AlertsView;
     var all = V ? V.dedupeAlerts(raw) : raw;
+    /* Order-book model side-car (picks + verdicts per alerted market). */
+    var shortlist = s.shortlist || {};
 
     /* Model shortlist: the collector publishes it through one gate
      * (high_roi_alerts, >= MODEL_MIN_NET_ROI and executable), so the polled
@@ -380,24 +435,50 @@
       } else if (raw.length > all.length) {
         feedAll.appendChild(feedNote(all, raw));
       }
-      all.slice(0, 200).forEach(function (a) { feedAll.appendChild(alertRow(a, false)); });
+      all.slice(0, 200).forEach(function (a) {
+        var row = alertRow(a, false);
+        var body = row.querySelector(".chat-body");
+        if (body) body.insertAdjacentHTML("beforeend", newsLinks(a.ticker));
+        feedAll.appendChild(row);
+      });
     }
+
+    var modelCount = 0;
     if (feedModel) {
       feedModel.innerHTML = "";
-      if (!model.length && !signalRows.length) {
+      /* Order-book model rows first (picks + a verdict for every alert), then
+       * any high-ROI alert row on a market the book model did not price, so
+       * the two model views never show the same ticker twice. When the model
+       * priced nothing and no alert clears the high-ROI gate, the merged
+       * fallback from the pre-shortlist contract still renders the current
+       * top signals as chat rows (pinned by tests/test_chat_rows.py and
+       * test/desk_render_dc732aa6.mjs). */
+      var rows = modelRows(shortlist);
+      var covered = {};
+      (shortlist.picks || []).forEach(function (p) { covered[p.ticker] = 1; });
+      (shortlist.verdicts || []).forEach(function (v) { covered[v.ticker] = 1; });
+      var extra = (model || []).filter(function (a) { return !covered[a.ticker]; });
+      if (rows.length || extra.length) {
+        rows.forEach(function (row) { feedModel.appendChild(row); });
+        extra.slice(0, 200).forEach(function (a) {
+          feedModel.appendChild(alertRow(a, true));
+        });
+        modelCount = rows.length + extra.length;
+      } else if (signalRows.length) {
+        signalRows.slice(0, 200).forEach(function (sig) {
+          feedModel.appendChild(signalRow(sig, seriesByTicker));
+        });
+        modelCount = signalRows.length;
+      } else {
         feedModel.innerHTML = '<div class="empty-state inline">Nothing clears the ' +
-          "model's net-ROI gate right now. This is normal — an empty feed is an " +
-          "honest answer.</div>";
+          "model's gates right now. This is normal — an empty shortlist is an " +
+          "honest answer, and the verdicts say why.</div>";
       }
-      model.slice(0, 200).forEach(function (a) { feedModel.appendChild(alertRow(a, true)); });
-      signalRows.slice(0, 200).forEach(function (sig) {
-        feedModel.appendChild(signalRow(sig, seriesByTicker));
-      });
     }
     var ac = document.getElementById("allCount");
     if (ac) ac.textContent = all.length + (raw.length > all.length ? " of " + raw.length : "");
     var mc = document.getElementById("modelCount");
-    if (mc) mc.textContent = model.length + signalRows.length;
+    if (mc) mc.textContent = modelCount;
   }
 
   /* One-line explainer shown above the "all events" feed whenever grouping

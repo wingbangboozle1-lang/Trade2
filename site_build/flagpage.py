@@ -163,6 +163,43 @@ def detect_data_issues(live: dict[str, Any]) -> list[dict[str, Any]]:
                 "source": f"{API}/markets/{a.get('ticker')}/orderbook",
             })
 
+    # 5. A published value that the automated re-check could not confirm.
+    for row in ((live.get("verification") or {}).get("mismatches") or []):
+        issues.append({
+            "kind": "Published value disagrees with the official API",
+            "topic": None,
+            "ticker": row.get("field"),
+            "detail": (f"the re-check read {row.get('official')!r} from the official "
+                       f"response while the site publishes {row.get('published')!r}"
+                       + (f" — {row.get('detail')}" if row.get("detail") else "")),
+            "source": row.get("url"),
+        })
+
+    # 6. A published swing that the order book does not confirm.
+    # The Kalshi demo feed prints alternating trades on some markets while the
+    # quoted book stays flat. A price move the book did not make is a trade
+    # print, not a change in the market, so it is flagged here rather than
+    # presented as a swing. The model's verdict for each alert says the same
+    # thing on the live desk.
+    for verdict in ((live.get("shortlist") or {}).get("verdicts") or []):
+        if verdict.get("verdict") == "picked":
+            continue
+        reason = verdict.get("reason") or ""
+        if "book has not moved" not in reason:
+            continue
+        ticker = verdict.get("ticker")
+        issues.append({
+            "kind": "Swing not confirmed by the order book",
+            "topic": verdict.get("topic"),
+            "ticker": ticker,
+            "detail": ("the alert stream reports a >= $0.10 move for this market, "
+                       "but the quoted book did not move between the last two "
+                       "snapshots — the demo feed printed an alternating trade. "
+                       "The model passes on it and the row is labelled as an "
+                       "unconfirmed print."),
+            "source": f"{API}/markets/{ticker}/orderbook",
+        })
+
     # De-duplicate by (kind, ticker) and cap.
     seen = set()
     unique = []
@@ -350,6 +387,18 @@ STANDING = [
         "source": ("https://docs.kalshi.com/getting_started/demo_env",),
     },
     {
+        "title": "The demo feed prints alternating trades on some markets",
+        "body": ("On several demo markets the traded price oscillates between two "
+                 "levels every minute while the quoted order book never changes. "
+                 "For example the one-minute candles for KXPRESNOMD-28-AKLO "
+                 "alternate between $0.8030 and $0.0030 while the book stays at "
+                 "$0.0020 x $0.0030 for the whole window. A move the book did not "
+                 "make is a trade print rather than a market move, so the model "
+                 "rejects it and it is listed on this page."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/series/"
+                   "KXPRESNOMD/markets/KXPRESNOMD-28-AKLO/candlesticks",),
+    },
+    {
         "title": "Live streaming uses polling, not the WebSocket",
         "body": ("The documented demo WebSocket requires the same signed handshake as "
                  "REST, so without credentials the site polls the public REST API. "
@@ -365,22 +414,20 @@ STANDING = [
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
     {
-        "title": "Taker fees use a multiplier of 1 for every series",
+        "title": "The fee PDF and the demo API disagree about some series' multiplier",
         "body": ("Kalshi's quadratic taker fee is round-up(M x 0.07 x C x P x (1-P)), "
                  "and the published schedule sets M per series — 0 for fee-free "
                  "series such as the yearly Bitcoin and Ether ranges, 2 for "
-                 "uncorrelated combos. The simulated ledger applies M = 1 everywhere "
-                 "instead of reading each series' own value "
-                 "(collector/engine.py calls kalshi_fee(price, contracts) with the "
-                 "default multiplier at both the entry and the exit site, although "
-                 "collector/topics.py already caches fee_multiplier per series). This "
-                 "was checked against the live demo record for KXBTCY on 2026-11-20, "
-                 "which returns fee_multiplier 1, so the fee shown for the open "
-                 "position on that series is correct for the demo environment — the "
-                 "exposure is to series whose demo multiplier is not 1, and to "
-                 "production, where the same series is listed at 0. Fees on those "
-                 "rows would be mis-stated until the engine threads the value "
-                 "through."),
+                 "uncorrelated combos. The simulated ledger and the engine read "
+                 "each series' own fee_multiplier and fee_type from the official "
+                 "GET /series response (alerts.fee_params) and print that basis on "
+                 "every trade row, falling back to the schedule's default M = 1 "
+                 "only when a series lookup is unavailable. What remains "
+                 "unresolved is a source disagreement, not a code path: the PDF "
+                 "table lists KXBTCY at 0/0 while the demo GET /series/KXBTCY "
+                 "returned fee_multiplier 1 on 2026-11-20, and this project "
+                 "follows the API field. In production the same series is listed "
+                 "at 0, so fees there would differ from the demo ledger."),
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",
                    "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBTCY"),
     },

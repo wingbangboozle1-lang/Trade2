@@ -86350,5 +86350,1883 @@
   "orderbook": "https://docs.kalshi.com/getting_started/orderbook_responses.md",
   "settlement": "https://docs.kalshi.com/getting_started/market_settlement.md",
   "fees": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+ },
+ "shortlist": {
+  "generated_at": "2026-11-21T06:28:00Z",
+  "generated_at_ts": 1795244495.1586056,
+  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
+  "threshold_dollars": 0.1,
+  "min_edge_dollars": 0.02,
+  "max_spread_dollars": 0.2,
+  "min_depth_contracts": 10.0,
+  "trail_length": 12,
+  "model": "fair = (book mid before the move + book mid now) / 2; the model assumes half of a move is an overreaction. Edge is measured against the executable price (YES ask, or 1 - YES bid for NO) and Kalshi's published taker fee 0.07 * C * P * (1 - P) with the schedule's default multiplier M = 1: this module works offline from the snapshot, which carries no per-series fee_multiplier field (the trading engine and the paper ledger read it from GET /series; see the Flagged for Review page for the PDF-vs-API disagreement this follows).",
+  "model_inputs": {
+   "fair_value": "(previous book mid + current book mid) / 2",
+   "yes_edge": "fair - implied YES ask",
+   "no_edge": "YES bid - fair",
+   "fee": "0.07 * C * P * (1 - P), Kalshi published taker fee",
+   "reference": "the order book only; both ends of every comparison are book mids so a traded price is never compared with a book quote"
+  },
+  "picks": [
+   {
+    "accepted": true,
+    "kind": "level",
+    "ticker": "KXPRESNOMD-28-RKHA",
+    "event_ticker": "KXPRESNOMD-28",
+    "series_ticker": "KXPRESNOMD",
+    "topic": "elections",
+    "title": "Ro Khanna",
+    "side": "yes",
+    "executable_price": 0.016,
+    "model_fair": 0.1268,
+    "reference_price": 0.238,
+    "current_price": 0.0155,
+    "edge": 0.1108,
+    "fee": 0.01,
+    "net_edge": 0.1008,
+    "net_roi": 6.3,
+    "spread": 0.001,
+    "depth_contracts": 153646.02,
+    "yes_bid": 0.015,
+    "yes_ask": 0.016,
+    "market_url": "https://kalshi.com/markets/KXPRESNOMD/KXPRESNOMD-28-RKHA",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RKHA",
+    "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RKHA/orderbook",
+    "reason": "book mid moved 0.2380 -> 0.0155; fair value 0.1268 is the midpoint of the two, so YES at 0.0160 leaves $0.1108 of edge and $0.1008 after the $0.0100 taker fee",
+    "ts": 1795244495.1580133,
+    "book_move": -0.2225
+   },
+   {
+    "accepted": true,
+    "kind": "level",
+    "ticker": "KXBTCMINY-27JAN01-55000.00",
+    "event_ticker": "KXBTCMINY-27JAN01",
+    "series_ticker": "KXBTCMINY",
+    "topic": "crypto",
+    "title": "Below $55,000.00",
+    "side": "no",
+    "executable_price": 0.31,
+    "model_fair": 0.3978,
+    "reference_price": 0.5095,
+    "current_price": 0.695,
+    "edge": 0.0878,
+    "fee": 0.02,
+    "net_edge": 0.0678,
+    "net_roi": 0.2187,
+    "spread": 0.01,
+    "depth_contracts": 773.5,
+    "yes_bid": 0.69,
+    "yes_ask": 0.7,
+    "market_url": "https://kalshi.com/markets/KXBTCMINY/KXBTCMINY-27JAN01-55000.00",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00",
+    "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-55000.00/orderbook",
+    "reason": "book mid moved 0.5095 -> 0.6950; fair value 0.6022 is the midpoint of the two, so NO at 0.3100 leaves $0.0878 of edge and $0.0678 after the $0.0200 taker fee",
+    "ts": 1795244495.1582372,
+    "book_move": 0.1855
+   },
+   {
+    "accepted": true,
+    "kind": "level",
+    "ticker": "KXBTC50VS100-BTC-26DEC31",
+    "event_ticker": "KXBTC50VS100-BTC-26DEC31",
+    "series_ticker": "KXBTC50VS100",
+    "topic": "crypto",
+    "title": "50,000 first",
+    "side": "yes",
+    "executable_price": 0.43,
+    "model_fair": 0.5039,
+    "reference_price": 0.5877,
+    "current_price": 0.42,
+    "edge": 0.0739,
+    "fee": 0.02,
+    "net_edge": 0.0539,
+    "net_roi": 0.1253,
+    "spread": 0.02,
+    "depth_contracts": 3445.61,
+    "yes_bid": 0.41,
+    "yes_ask": 0.43,
+    "market_url": "https://kalshi.com/markets/KXBTC50VS100/KXBTC50VS100-BTC-26DEC31",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC50VS100-BTC-26DEC31",
+    "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTC50VS100-BTC-26DEC31/orderbook",
+    "reason": "book mid moved 0.5877 -> 0.4200; fair value 0.5039 is the midpoint of the two, so YES at 0.4300 leaves $0.0739 of edge and $0.0539 after the $0.0200 taker fee",
+    "ts": 1795244495.158192,
+    "book_move": -0.1677
+   },
+   {
+    "accepted": true,
+    "kind": "level",
+    "ticker": "KXLPGATOUR-CMEGTC26-ALIKIM",
+    "event_ticker": "KXLPGATOUR-CMEGTC26",
+    "series_ticker": "KXLPGATOUR",
+    "topic": "golf",
+    "title": "A Lim Kim",
+    "side": "no",
+    "executable_price": 0.71,
+    "model_fair": 0.7942,
+    "reference_price": 0.1117,
+    "current_price": 0.3,
+    "edge": 0.0842,
+    "fee": 0.02,
+    "net_edge": 0.0642,
+    "net_roi": 0.0904,
+    "spread": 0.02,
+    "depth_contracts": 1563.51,
+    "yes_bid": 0.29,
+    "yes_ask": 0.31,
+    "market_url": "https://kalshi.com/markets/KXLPGATOUR/KXLPGATOUR-CMEGTC26-ALIKIM",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXLPGATOUR-CMEGTC26-ALIKIM",
+    "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXLPGATOUR-CMEGTC26-ALIKIM/orderbook",
+    "reason": "book mid moved 0.1117 -> 0.3000; fair value 0.2058 is the midpoint of the two, so NO at 0.7100 leaves $0.0842 of edge and $0.0642 after the $0.0200 taker fee",
+    "ts": 1795244495.1584089,
+    "book_move": 0.1883
+   },
+   {
+    "accepted": true,
+    "kind": "level",
+    "ticker": "KXBTCMINY-27JAN01-50000.00",
+    "event_ticker": "KXBTCMINY-27JAN01",
+    "series_ticker": "KXBTCMINY",
+    "topic": "crypto",
+    "title": "Below $50,000.00",
+    "side": "no",
+    "executable_price": 0.63,
+    "model_fair": 0.6782,
+    "reference_price": 0.2686,
+    "current_price": 0.375,
+    "edge": 0.0482,
+    "fee": 0.02,
+    "net_edge": 0.0282,
+    "net_roi": 0.0448,
+    "spread": 0.01,
+    "depth_contracts": 1153.35,
+    "yes_bid": 0.37,
+    "yes_ask": 0.38,
+    "market_url": "https://kalshi.com/markets/KXBTCMINY/KXBTCMINY-27JAN01-50000.00",
+    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00",
+    "book_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMINY-27JAN01-50000.00/orderbook",
+    "reason": "book mid moved 0.2686 -> 0.3750; fair value 0.3218 is the midpoint of the two, so NO at 0.6300 leaves $0.0482 of edge and $0.0282 after the $0.0200 taker fee",
+    "ts": 1795244495.158257,
+    "book_move": 0.1064
+   }
+  ],
+  "picks_count": 5,
+  "swing_picks_count": 0,
+  "level_picks_count": 5,
+  "verdicts": [],
+  "verdicts_count": 0,
+  "rejected_count": 37,
+  "rejection_summary": [
+   {
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid",
+    "count": 8
+   },
+   {
+    "reason": "YES at 0.1000",
+    "count": 2
+   },
+   {
+    "reason": "YES at 0.2400",
+    "count": 2
+   },
+   {
+    "reason": "YES at 0.0500",
+    "count": 2
+   },
+   {
+    "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful",
+    "count": 2
+   },
+   {
+    "reason": "the spread is $0.88, wider than $0.20, so the mid is not meaningful",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.2000",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.2600",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.1300",
+    "count": 1
+   },
+   {
+    "reason": "YES",
+    "count": 1
+   },
+   {
+    "reason": "YES leaves $0.0136 after the $0.0100 taker fee; NO at 0.9000",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0400",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0200",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0700",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0880",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0320",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0180",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0150",
+    "count": 1
+   },
+   {
+    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.1700",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0130",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0430",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.9700",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.0280",
+    "count": 1
+   },
+   {
+    "reason": "YES at 0.1800",
+    "count": 1
+   },
+   {
+    "reason": "the spread is $0.90, wider than $0.20, so the mid is not meaningful",
+    "count": 1
+   }
+  ],
+  "rejected_sample": [
+   {
+    "ticker": "KXPRESNOMD-28-BOBA",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": 0.3596,
+    "reason": "the spread is $0.88, wider than $0.20, so the mid is not meaningful"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-DMCC",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.2991,
+    "reason": "the spread is $1.00, wider than $0.20, so the mid is not meaningful"
+   },
+   {
+    "ticker": "KXPRESNOMD-28-BORO",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": -0.2719,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXPRESNOMD-28-HBID",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": -0.2191,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXNGASMAX-26DEC31-P4.00",
+    "topic": "gas-prices",
+    "kind": "level",
+    "book_move": -0.1186,
+    "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+   },
+   {
+    "ticker": "KXLPGATOUR-CMEGTC26-PAJANA",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0997,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B97500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": -0.0873,
+    "reason": "YES has only 0 contracts resting"
+   },
+   {
+    "ticker": "KXNGASMAX-26DEC31-P4.50",
+    "topic": "gas-prices",
+    "kind": "level",
+    "book_move": -0.0859,
+    "reason": "the spread is $0.99, wider than $0.20, so the mid is not meaningful"
+   },
+   {
+    "ticker": "KXPRESNOMD-28-AKLO",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": -0.0727,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-MPEN",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.0647,
+    "reason": "YES at 0.0880 leaves only -$0.0348 of edge before fees; NO leaves $0.0198 after the $0.0100 taker fee"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-KMIT",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0625,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B67500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": -0.0573,
+    "reason": "YES leaves $0.0136 after the $0.0100 taker fee; NO at 0.9000 leaves only -$0.0336 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B42500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": 0.045,
+    "reason": "YES at 0.1000 leaves only -$0.0325 of edge before fees; NO at 0.9200 leaves only $0.0125 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B87500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": -0.0441,
+    "reason": "YES at 0.0200 leaves only $0.0170 of edge before fees; NO at 0.9900 leaves only -$0.0270 of edge before fees"
+   },
+   {
+    "ticker": "KXPRESNOMD-28-JOSS",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": -0.038,
+    "reason": "YES at 0.2600 leaves only $0.0185 of edge before fees; NO at 0.7410 leaves only -$0.0195 of edge before fees"
+   },
+   {
+    "ticker": "KXNGASMAX-26DEC31-P5.50",
+    "topic": "gas-prices",
+    "kind": "level",
+    "book_move": 0.0368,
+    "reason": "the spread is $0.90, wider than $0.20, so the mid is not meaningful"
+   },
+   {
+    "ticker": "KXLPGATOUR-CMEGTC26-HYECHO",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0342,
+    "reason": "YES at 0.0280 leaves only $0.0116 of edge before fees; NO at 0.9830 leaves only -$0.0226 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B47500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": 0.0327,
+    "reason": "YES at 0.1000 leaves only -$0.0214 of edge before fees; NO at 0.9100 leaves only $0.0114 of edge before fees"
+   },
+   {
+    "ticker": "KXAAAGASM-26NOV30-3.60",
+    "topic": "gas-prices",
+    "kind": "level",
+    "book_move": 0.0327,
+    "reason": "YES at 0.1800 leaves only -$0.1014 of edge before fees; NO at 0.9900 leaves only -$0.0686 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B52500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": 0.03,
+    "reason": "YES at 0.1300 leaves only -$0.0200 of edge before fees; NO at 0.8800 leaves only $0.0100 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-MTHO",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.03,
+    "reason": "YES at 0.1700 leaves only -$0.0200 of edge before fees; NO at 0.8400 leaves only $0.0100 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-MMCN",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0282,
+    "reason": "YES at 0.0150 leaves only $0.0126 of edge before fees; NO at 0.9880 leaves only -$0.0156 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B57500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": 0.0245,
+    "reason": "YES at 0.2000 leaves only -$0.0172 of edge before fees; NO at 0.8100 leaves only $0.0072 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-LHOD",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.0228,
+    "reason": "YES at 0.0500 leaves only -$0.0119 of edge before fees; NO at 0.9510 leaves only $0.0109 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-HENG",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.0222,
+    "reason": "YES at 0.0500 leaves only -$0.0146 of edge before fees; NO at 0.9570 leaves only $0.0076 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-ADUM",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.0221,
+    "reason": "YES at 0.0320 leaves only -$0.0126 of edge before fees; NO at 0.9710 leaves only $0.0096 of edge before fees"
+   },
+   {
+    "ticker": "KXAAAGASW-26NOV23-3.6200",
+    "topic": "gas-prices",
+    "kind": "level",
+    "book_move": 0.0191,
+    "reason": "YES at 0.9700 leaves only -$0.0146 of edge before fees; NO at 0.0400 leaves only $0.0046 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-HHAL",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": 0.0181,
+    "reason": "YES at 0.0430 leaves only -$0.0095 of edge before fees; NO at 0.9580 leaves only $0.0085 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-DGHI",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.018,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-JSVE",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0164,
+    "reason": "YES at 0.0180 leaves only $0.0062 of edge before fees; NO at 0.9860 leaves only -$0.0102 of edge before fees"
+   },
+   {
+    "ticker": "KXPRESNOMR-28-MR",
+    "topic": "elections",
+    "kind": "level",
+    "book_move": 0.0163,
+    "reason": "YES at 0.2400 leaves only -$0.0132 of edge before fees; NO at 0.7700 leaves only $0.0032 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-SVAL",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0161,
+    "reason": "YES at 0.0130 leaves only $0.0065 of edge before fees; NO at 0.9900 leaves only -$0.0095 of edge before fees"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B37500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": 0.0155,
+    "reason": "YES at 0.0400 leaves only -$0.0127 of edge before fees; NO at 0.9700 leaves only $0.0027 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-EGRI",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0145,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXBTCY-27JAN0100-B72500",
+    "topic": "crypto",
+    "kind": "level",
+    "book_move": -0.0136,
+    "reason": "YES at 0.0700 leaves only $0.0018 of edge before fees; NO at 0.9400 leaves only -$0.0118 of edge before fees"
+   },
+   {
+    "ticker": "KXPGATOUR-THRC26-GHIG",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0131,
+    "reason": "neither side can be bought inside the $0.01-$0.99 grid"
+   },
+   {
+    "ticker": "KXPGATOP20-THRC26-PCOO",
+    "topic": "golf",
+    "kind": "level",
+    "book_move": -0.0109,
+    "reason": "YES at 0.2400 leaves only -$0.0146 of edge before fees; NO at 0.8000 leaves only -$0.0254 of edge before fees"
+   }
+  ],
+  "alerts_seen": 0,
+  "markets_seen": 750,
+  "sources": {
+   "markets": "https://docs.kalshi.com/api-reference/market/get-markets",
+   "orderbook": "https://docs.kalshi.com/getting_started/orderbook_responses",
+   "candlesticks": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "fees": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+  }
+ },
+ "news": {
+  "generated_at": "2026-11-20T19:45:47.529349Z",
+  "window_hours": 24,
+  "source": "https://news.google.com/rss/search?q={q}&hl=en-US&gl=US&ceid=US:en",
+  "note": "Headlines are keyword and publish-time candidates only. Temporal proximity is not causation and no headline here is presented as the confirmed cause of a price move. Every alert row also links to the official Kalshi market response.",
+  "markets_considered": 0,
+  "headlines": {},
+  "headline_count": 0,
+  "errors": []
+ },
+ "verification": {
+  "generated_at": "2026-11-20T19:45:54Z",
+  "api_root": "https://external-api.demo.kalshi.co/trade-api/v2",
+  "snapshot_generated_at": "2026-11-20T19:43:49Z",
+  "markets_checked": 15,
+  "series_checked": 5,
+  "checks": [
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "ticker",
+    "published": "KXPRESNOMD-28-RW",
+    "official": "KXPRESNOMD-28-RW",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "event_ticker",
+    "published": "KXPRESNOMD-28",
+    "official": "KXPRESNOMD-28",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "open_interest_fp",
+    "published": 189529515.91,
+    "official": "189529515.91",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "volume_fp",
+    "published": 414925093.53,
+    "official": "414925101.74",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.035,
+    "official": 0.035,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.038,
+    "official": 0.038,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "ticker",
+    "published": "KXPRESNOMD-28-GW",
+    "official": "KXPRESNOMD-28-GW",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "event_ticker",
+    "published": "KXPRESNOMD-28",
+    "official": "KXPRESNOMD-28",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "open_interest_fp",
+    "published": 169497438.62,
+    "official": "169497438.62",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "volume_fp",
+    "published": 432107426.1,
+    "official": "432107434.46",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.005,
+    "official": 0.005,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-GW/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.006,
+    "official": 0.006,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "ticker",
+    "published": "KXPRESNOMD-28-SAS",
+    "official": "KXPRESNOMD-28-SAS",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "event_ticker",
+    "published": "KXPRESNOMD-28",
+    "official": "KXPRESNOMD-28",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "open_interest_fp",
+    "published": 162254359.41,
+    "official": "162254359.41",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "volume_fp",
+    "published": 358761581.77,
+    "official": "358761587.75",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.002,
+    "official": 0.002,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-SAS/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.003,
+    "official": 0.003,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "ticker",
+    "published": "KXBTCY-27JAN0100-B127500",
+    "official": "KXBTCY-27JAN0100-B127500",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "event_ticker",
+    "published": "KXBTCY-27JAN0100",
+    "official": "KXBTCY-27JAN0100",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "open_interest_fp",
+    "published": 39622231.36,
+    "official": "39622240.47",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "volume_fp",
+    "published": 83444119.44,
+    "official": "83444128.55",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B127500/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.01,
+    "official": 0.01,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "ticker",
+    "published": "KXBTCY-27JAN0100-B142500",
+    "official": "KXBTCY-27JAN0100-B142500",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "event_ticker",
+    "published": "KXBTCY-27JAN0100",
+    "official": "KXBTCY-27JAN0100",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "open_interest_fp",
+    "published": 36300011.88,
+    "official": "36300011.88",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "volume_fp",
+    "published": 134091739.81,
+    "official": "134091743.99",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B142500/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": 0.01,
+    "result": "drift",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "ticker",
+    "published": "KXBTCY-27JAN0100-B47500",
+    "official": "KXBTCY-27JAN0100-B47500",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "event_ticker",
+    "published": "KXBTCY-27JAN0100",
+    "official": "KXBTCY-27JAN0100",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "open_interest_fp",
+    "published": 26587983.59,
+    "official": "26587985.22",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "volume_fp",
+    "published": 80178812.16,
+    "official": "80178813.79",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.05,
+    "official": 0.05,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCY-27JAN0100-B47500/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.06,
+    "official": 0.06,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "ticker",
+    "published": "KXPGATOUR-THRC26-TMOO",
+    "official": "KXPGATOUR-THRC26-TMOO",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "event_ticker",
+    "published": "KXPGATOUR-THRC26",
+    "official": "KXPGATOUR-THRC26",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "open_interest_fp",
+    "published": 1152034.51,
+    "official": "1152040.10",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "volume_fp",
+    "published": 1157523.4,
+    "official": "1157528.99",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.003,
+    "official": 0.003,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-TMOO/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.005,
+    "official": 0.005,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "ticker",
+    "published": "KXPGATOUR-MAST27-MFIT",
+    "official": "KXPGATOUR-MAST27-MFIT",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "event_ticker",
+    "published": "KXPGATOUR-MAST27",
+    "official": "KXPGATOUR-MAST27",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "open_interest_fp",
+    "published": 826086.18,
+    "official": "826086.18",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "volume_fp",
+    "published": 826114.18,
+    "official": "826114.18",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-MAST27-MFIT/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "ticker",
+    "published": "KXPGATOUR-THRC26-SSTR",
+    "official": "KXPGATOUR-THRC26-SSTR",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "event_ticker",
+    "published": "KXPGATOUR-THRC26",
+    "official": "KXPGATOUR-THRC26",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "open_interest_fp",
+    "published": 681894.62,
+    "official": "681894.62",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "volume_fp",
+    "published": 761516.7,
+    "official": "761518.93",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR/orderbook",
+    "field": "best_yes_bid",
+    "published": 0.021,
+    "official": 0.021,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-SSTR/orderbook",
+    "field": "best_yes_ask",
+    "published": 0.025,
+    "official": 0.025,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "ticker",
+    "published": "KXCRITICSFOREIGN-27-LAB",
+    "official": "KXCRITICSFOREIGN-27-LAB",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "event_ticker",
+    "published": "KXCRITICSFOREIGN-27",
+    "official": "KXCRITICSFOREIGN-27",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "open_interest_fp",
+    "published": 473339.45,
+    "official": "473339.45",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "volume_fp",
+    "published": 671773.31,
+    "official": "671773.31",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-LAB/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "ticker",
+    "published": "KXCRITICSFOREIGN-27-FJO",
+    "official": "KXCRITICSFOREIGN-27-FJO",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "event_ticker",
+    "published": "KXCRITICSFOREIGN-27",
+    "official": "KXCRITICSFOREIGN-27",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "open_interest_fp",
+    "published": 27083.16,
+    "official": "27083.16",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "volume_fp",
+    "published": 27083.16,
+    "official": "27083.16",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-FJO/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "ticker",
+    "published": "KXCRITICSFOREIGN-27-ROS",
+    "official": "KXCRITICSFOREIGN-27-ROS",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "event_ticker",
+    "published": "KXCRITICSFOREIGN-27",
+    "official": "KXCRITICSFOREIGN-27",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "open_interest_fp",
+    "published": 22222.21,
+    "official": "22222.21",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "volume_fp",
+    "published": 22222.21,
+    "official": "22222.21",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCRITICSFOREIGN-27-ROS/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "ticker",
+    "published": "KXAAAGASM-26NOV30-4.70",
+    "official": "KXAAAGASM-26NOV30-4.70",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "event_ticker",
+    "published": "KXAAAGASM-26NOV30",
+    "official": "KXAAAGASM-26NOV30",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "open_interest_fp",
+    "published": 58062.52,
+    "official": "58062.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "volume_fp",
+    "published": 58071.52,
+    "official": "58071.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "ticker",
+    "published": "KXAAAGASM-26NOV30-4.50",
+    "official": "KXAAAGASM-26NOV30-4.50",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "event_ticker",
+    "published": "KXAAAGASM-26NOV30",
+    "official": "KXAAAGASM-26NOV30",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "open_interest_fp",
+    "published": 55576.52,
+    "official": "55576.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "volume_fp",
+    "published": 55597.52,
+    "official": "55597.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.50/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "ticker",
+    "published": "KXAAAGASM-26NOV30-4.80",
+    "official": "KXAAAGASM-26NOV30-4.80",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "event_ticker",
+    "published": "KXAAAGASM-26NOV30",
+    "official": "KXAAAGASM-26NOV30",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "status",
+    "published": "active",
+    "official": "active",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "result",
+    "published": "",
+    "official": "",
+    "result": "match",
+    "detail": "settled market result must match the official field"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "open_interest_fp",
+    "published": 55567.52,
+    "official": "55567.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "volume_fp",
+    "published": 55571.52,
+    "official": "55571.52",
+    "result": "match",
+    "detail": "relative tolerance 2%"
+   },
+   {
+    "check": "market record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80",
+    "field": "notional_value_dollars",
+    "published": 1.0,
+    "official": "1.0000",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
+    "field": "best_yes_bid",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "order book",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.80/orderbook",
+    "field": "best_yes_ask",
+    "published": null,
+    "official": null,
+    "result": "match",
+    "detail": "a live book moves (including emptying or reappearing); tolerance $0.02"
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/BITCOINMAXY",
+    "field": "title",
+    "published": "Bitcoin min/max",
+    "official": "Bitcoin min/max",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/BITCOINMAXY",
+    "field": "settlement_sources",
+    "published": "https://www.cfbenchmarks.com/data/indices/BRTI?ref=blog.cfbenchmarks.com",
+    "official": "https://www.cfbenchmarks.com/data/indices/BRTI?ref=blog.cfbenchmarks.com",
+    "result": "match",
+    "detail": "the settlement source is the official page the contract settles against"
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/1SONG-DRAKE",
+    "field": "title",
+    "published": "Drake top song",
+    "official": "Drake top song",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/1SONG-DRAKE",
+    "field": "settlement_sources",
+    "published": "https://www.billboard.com/charts/hot-100/",
+    "official": "https://www.billboard.com/charts/hot-100/",
+    "result": "match",
+    "detail": "the settlement source is the official page the contract settles against"
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/CONTROLS",
+    "field": "title",
+    "published": "Senate winner",
+    "official": "Senate winner",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/CONTROLS",
+    "field": "settlement_sources",
+    "published": "https://www.congress.gov/",
+    "official": "https://www.congress.gov/",
+    "result": "match",
+    "detail": "the settlement source is the official page the contract settles against"
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/AAAGASD",
+    "field": "title",
+    "published": "US gas price up",
+    "official": "US gas price up",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/AAAGASD",
+    "field": "settlement_sources",
+    "published": "https://gasprices.aaa.com/",
+    "official": "https://gasprices.aaa.com/",
+    "result": "match",
+    "detail": "the settlement source is the official page the contract settles against"
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBDSHOLEINONE",
+    "field": "title",
+    "published": "Bob Does Sports Hole in One",
+    "official": "Bob Does Sports Hole in One",
+    "result": "match",
+    "detail": ""
+   },
+   {
+    "check": "series record",
+    "url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXBDSHOLEINONE",
+    "field": "settlement_sources",
+    "published": "https://www.instagram.com/jensen_custis/?hl=en, https://www.instagram.com/joey.coldcuts/?hl=en, https://www.twitch.tv/robbyberger, https://www.instagram.com/thefatperez/, https://www.instagram.com/benlambers/?hl=en, https://www.youtube.com/@RobbyBergerOfficial",
+    "official": "https://www.instagram.com/jensen_custis/?hl=en, https://www.instagram.com/joey.coldcuts/?hl=en, https://www.twitch.tv/robbyberger, https://www.instagram.com/thefatperez/, https://www.instagram.com/benlambers/?hl=en, https://www.youtube.com/@RobbyBergerOfficial",
+    "result": "match",
+    "detail": "the settlement source is the official page the contract settles against"
+   }
+  ],
+  "counts": {
+   "match": 144,
+   "drift": 1,
+   "mismatch": 0,
+   "unverified": 0
+  },
+  "mismatches": [],
+  "ok": true,
+  "tolerances": {
+   "price_dollars": 0.02,
+   "relative": 0.02
+  },
+  "note": "Prices and sizes move between the snapshot and this check, so a difference inside the tolerance is recorded as drift, not as an error. Every row records the official URL it was checked against."
  }
 }
