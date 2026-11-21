@@ -2213,3 +2213,89 @@ Not claimed here: `site_build/**`, root `*.html`, `docs/**`, `kalshi-dashboard/*
 | F-57-6 | `series_ticker` on settled rows stays `null`. The official market object has no such field. |
 
 **Requests not touched:** R-3DCF-2 (no-ask-size display), R-3DCF-3 (reverted-within-one-candle label), R-3DCF-5 (store last price), R-3DCF-6 (relabel the "seconds" window as 1-minute candles). These belong to the table and chart owners, outside this claim.
+
+---
+
+# Board L — session `arena-f3affadb` (branch `arena/f3affadb-trade2`, base `main` @ `c264beb`)
+
+Status at open (2026-11-21T07:14Z): `main` green — GitHub Pages `built`
+(source `main`, path `/`, public, https enforced); all local suites green.
+`arena/f3affadb-trade2` is checked out at `c264beb`, identical to
+`origin/main`. Open PRs from other sessions at claim time: **#28**
+(`arena/dd1da6b5`, DIRTY), **#29** (`arena/c78c9b36`, CLEAN), **#59**
+(`arena/bbfedfd5`, DIRTY), **#60** (`arena/bc051b95`, DIRTY).
+
+## Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-f3affadb` | `arena/f3affadb-trade2` | Independent line-by-line re-verification of the merged tree against official Kalshi sources; verification record; PR/merge/Pages confirmation | 2026-11-21T07:14Z | in progress |
+
+## Task board — arena-f3affadb
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| L1 | Independent line-by-line verification of endpoints, orderbook semantics, market rows, resolutions, fees, WebSocket, rate limits against official sources | done | `arena-f3affadb` | `VERIFICATION-f3affadb.md` (new) |
+| L2 | Live-site pass: fetch every published page from GitHub Pages and confirm real data + per-row source links | done | `arena-f3affadb` | read-only (report in L1 record) |
+| L3 | Re-check one published flagged irregularity against the live demo API | done | `arena-f3affadb` | read-only (report in L1 record) |
+| L4 | Local gates: unittest, npm test, collector.test_runner, trading.test_engine, linkcheck, site_build | done | `arena-f3affadb` | read-only (report in L1 record) |
+| L5 | PR → merge → confirm Pages → record | in progress | `arena-f3affadb` | `COORDINATION.md` (this section only) |
+
+## Scope and overlap check at claim time
+
+Files **not** touched by this session: everything owned by the open PRs —
+`collector/collector.py` (#59), and #60's scope (`EXECUTIVE_SUMMARY.md`,
+`VERIFICATION.md`, `assets/desk.js`, `assets/styles.css`, `collector/news.py`,
+`collector/shortlist.py`, `site_build/*`, `tools/*`, `data/*.json`,
+`.github/workflows/kalshi-dashboard.yml`, several `tests/*`), plus #28/#29's
+scopes. `COORDINATION.md` is append-only by convention; this section is
+appended, nothing earlier was edited. No conflict with any active owner.
+
+## Work log — `arena-f3affadb` (2026-11-21)
+
+**Official sources fetched directly during this session** (each claim in
+`VERIFICATION-f3affadb.md` carries the exact URL and UTC time):
+
+| Claim | Official source | Result |
+| - | - | - |
+| Demo REST roots + both WS URLs | [demo_env](https://docs.kalshi.com/getting_started/demo_env), [api_environments](https://docs.kalshi.com/getting_started/api_environments) | **Confirmed.** All four match the brief's intent and the code. |
+| Exchange live & trading | [live GET /exchange/status](https://external-api.demo.kalshi.co/trade-api/v2/exchange/status) | **Confirmed.** `trading_active: true`, demo shards active. |
+| Orderbook shape and spread math | [orderbook_responses](https://docs.kalshi.com/getting_started/orderbook_responses) | **Confirmed.** |
+| Settlement payout | [market_settlement](https://docs.kalshi.com/getting_started/market_settlement) | **Confirmed.** YES/NO holders $1/contract; no settlement fee. |
+| Fee formula + table + per-series multipliers | [fee schedule PDF eff. 2026-07-07](https://kalshi.com/docs/kalshi-fee-schedule.pdf) | **Confirmed.** Hand-recomputed spot rows; matches `tests/test_engine.py::TestFees` (42 rows). |
+| WebSocket auth + channels | [quick_start_websockets](https://docs.kalshi.com/getting_started/quick_start_websockets) | **Confirmed.** Explains the static-site + anonymous-REST design; WS handshake needs credentials. |
+| Unauthenticated request limits | [rate_limits](https://docs.kalshi.com/getting_started/rate_limits) | **Confirmed.** Public GETs carry separate limits; live-pulse uses one anonymous `GET /markets/orderbooks` per ~45 s. |
+
+**Published rows re-verified against the live demo API** (2026-11-21T07:15–07:17Z):
+`KXPRESNOMD-28-RW` (bid/ask/OI exact), `KXBTCY-27JAN0100-B47500` (bid/ask
+exact; OI drift 170 contracts vs 07:09Z snapshot, both official),
+`KXAAAGASCDAK-26NOV20-LD` (resolution row exact: `result yes`,
+`settlement_value_dollars 1.0000`, `settlement_ts 2026-11-20T10:35:14.609488Z`),
+`KXAAAGASM-26NOV30-4.70` (no-quote → UNVERIFIED, correct), and the flagged
+`KXPRESNOMD-28-GPLA` (live orderbook empty — flag confirmed).
+
+**Deployed-site pass:** every published page fetched from
+https://wingbangboozle1-lang.github.io/Trade2/ returned real rendered data —
+overview (750 markets, 5 topics, 328 resolved, per-row API links), live desk
+(two chats, seconds/minutes/hours chart, YES/NO toggle, bid ladders, live
+pulse), golf category, executive summary, flagged-for-review (48 rows),
+resolutions.
+
+**Local gates:** `python3 -m unittest discover -s tests` **261 OK**
+(skipped 12) · `npm test` **pass** · `collector.test_runner` **PASSED** ·
+`trading.test_engine` **ALL PASSED** · `linkcheck` **50 pages / 679 links /
+0 errors** · `site_build.build` **clean**.
+
+**Irregularities:** none new. Pre-existing flags stand (demo API credentials
+absent → portfolio/orders SIMULATED and flagged; news attribution not
+invented; Kalshi-side template text in some series records — published on
+the Flagged page with official API links).
+
+## PR / merge record — `arena-f3affadb` (Board L)
+
+| Step | Result |
+| - | - |
+| Branch pushed | `arena/f3affadb-trade2` → origin |
+| PR | see below |
+| Merge | see below |
+| Pages deploy | see below |
