@@ -549,6 +549,62 @@ STANDING = [
                  "oracle, because it matches every one of the 42 published rows."),
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
+    {
+        "title": "Resolutions for the root snapshot are checked by ticker once a market closes; earlier outcomes are not published (arena-67bd954a)",
+        "body": ("The root collector tracks every in-scope market it has seen open, plus open simulated "
+                 "positions, and re-reads each one by ticker after its close time (documented GET /markets/{ticker}) "
+                 "until a yes/no result is reported. The earlier exchange-wide read returned only "
+                 "gas-prices and crypto. A two-hour settled window returned 10,000 markets (truncated) in the "
+                 "verification run, almost all 15-minute crypto, and no elections, culture or golf, so that "
+                 "window is now a supplement only. Outcomes that settled before the tracker first saw a market "
+                 "are not in the store, and no pipeline on this site holds verified earlier elections, culture "
+                 "or golf outcomes to backfill from. Rows for those topics appear as markets settle. Checked by "
+                 "ticker on 2026-11-21: KXDPWORLDTOUR-DPWTC26-THAT (golf, yes) and "
+                 "KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC (elections, yes)."),
+        "source": ("https://docs.kalshi.com/api-reference/market/get-markets",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXDPWORLDTOUR-DPWTC26-THAT",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC",
+                   "https://github.com/wingbangboozle1-lang/Trade2/commit/81d68b14e758e4852710184d04debe6500df9d57"),
+    },
+    {
+        "title": "Big Brother markets are 'culture' in one pipeline and untracked in the root pipeline",
+        "body": ("The docs pipeline's series list labels the Big Brother series culture, but the root "
+                 "culture keyword matcher in collector/topics.py does not match it, so the root collector "
+                 "never tracks those markets and never stores their outcomes. Example, read from the official "
+                 "record: KXBIGBROTHER-26DEC31-RIC, 'Will Rick Devens win Big Brother Season 28?', result yes, "
+                 "settlement 2026-10-02T04:20:30Z. Not changed in this task: the matcher is shared by both "
+                 "pipelines, so the scope decision needs a reviewer."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBIGBROTHER-26DEC31-RIC",
+                   "https://github.com/wingbangboozle1-lang/Trade2/blob/main/docs/data/series.json"),
+    },
+    {
+        "title": "Finalized markets were listed as live events (fixed on arena/67bd954a-trade2)",
+        "body": ("Eight of the 750 published live events had market status 'finalized' (six KXBTCMAX100 "
+                 "rows and two KXAAAGASMAXCA rows), each with open interest and no quote. Example: "
+                 "KXBTCMAX100-26-APR, official result 'no', settled 2026-05-02, open interest 694,493 "
+                 "contracts. Markets with a terminal status are now excluded from the live table. Their "
+                 "settlement is still graded through the resolution path."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-APR",),
+    },
+    {
+        "title": "KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC carries placeholder text in its custom_strike field",
+        "body": ("The official record has custom_strike {\"demo strike\": \"demo strike\"}, a placeholder "
+                 "rather than a real strike. The outcome shown (result yes, settlement value 1.0000) comes from "
+                 "the record's populated result and settlement fields. Logged as a Kalshi-side data-quality "
+                 "item and not changed here."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC",),
+    },
+    {
+        "title": "Tracked outcomes are kept ahead of bulk rows; the 2,000-row bound still drops the oldest bulk rows (arena-67bd954a)",
+        "body": ("Found in verification run R-C: 1,898 crypto rows settled in the last 30 minutes filled the "
+                 "2,000-row bound, so any watched outcome settled earlier was evicted in the same run it was stored. "
+                 "Fix: a market the tracker followed to resolution keeps priority over bulk scan rows, up to the "
+                 "newest 1,000. Bulk rows are still dropped by the bound, and each run records the eviction counts in "
+                 "the store's meta.retention. Not stored: outcomes that settled before the tracker first saw the "
+                 "market (no backfill, see the Flagged item above)."),
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXBTCMAX100-26-AUG",
+                   "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASMAXCA-26DEC31-6.20"),
+    },
 ]
 
 

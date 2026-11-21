@@ -2835,3 +2835,60 @@ figure knows the two are not on the same basis.
 | **R-560-4** | owner of `scripts/collect.mjs` / `kalshi-dashboard/**` | `tools/rowsource_check.py` reports **1 333 `blank_rows`** in `kd.markets` (0 missing source URLs, 0 production links). Pre-existing, not caused or touched here; the same "blank is blank, never inferred" rule the root site follows would settle it. |
 
 **Coordination notes.** This session's claim merged with `origin/main` (through PR #73) as a **union** — `arena-737bff9c`'s Board M and this section coexist, and this board is keyed by session id after the letter collision was noticed. The one shared file this session appended to is `COORDINATION.md`. `audit/rootsource-*` and `audit/rowsource-*` were rewritten as a side effect of running those tools and were **reverted uncommitted**, so another session's audit snapshots stay intact. No file in any open PR (#70, #68, #64, #60, #59, #28) was edited.
+
+---
+
+## Session claim — `arena-67bd954a` (2026-11-21, UTC)
+
+Branch `arena/67bd954a-trade2` · base `main` @ `8d15b95` · claimed at session start, before any code change.
+Open PRs at claim time: #57 (`arena/f3cb9b9f-trade2`, live detection, K1–K6), #28, #29 (both `CONFLICTING`). None of their scopes is claimed below.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| R1 | **Root-pipeline resolution coverage (request R-3DCF-1).** `data/resolutions.json` (written by `collector/collector.py`, run every 5 min by `.github/workflows/kalshi-dashboard.yml`) has 0 elections, culture or golf rows; it has only gas-prices (268) and crypto (60) from the exchange-wide settled scan (`limit=400`, `max_pages=3`, no time filter). Fix the settled scan so in-scope settlements are fetched with the documented `min_settled_ts` window and cursor paging. | done | `arena-67bd954a` | `collector/collector.py` (settled-scan block in `collect()` and a new helper only), `tests/test_root_settled_scan_67bd954a.py` (new) |
+| R2 | Live verification of R1: `workflow_dispatch` of `kalshi-dashboard.yml` on this branch (the only egress to the demo API from this sandbox is blocked, so the run happens in Actions), then row-by-row check of the new `data/resolutions.json` rows against the official API. | done | `arena-67bd954a` | `VERIFICATION-67bd954a.md` (new). The dry-run data commit on this branch is reverted before the PR so no `data/` files are merged from this session. |
+| R3 | PR → merge → confirm Pages deploy → post-merge check that the next scheduled `main` run publishes elections/culture/golf resolution rows. | in progress | `arena-67bd954a` | `COORDINATION.md` |
+
+**Explicitly not touched:** `site_build/**`, root `*.html`, `index.html`, `review.html`, `docs/**`, `kalshi-dashboard/**`, `.github/workflows/**`, `assets/**`, `server/**`, `trading/**`, `live/**`, `scripts/**`, and every file PR #57 changes.
+
+**Blocker outside this session (not worked around):** Kalshi demo-account portfolio tracking and demo order placement need a demo API key pair (`KALSHI_API_KEY_ID` + private key). None exists in this repository, its secrets, or this session's environment, and creating one needs a person at kalshi.com.
+
+### Work log — `arena-67bd954a` (2026-11-21)
+
+**Final state (merged tree, verified live as run R-F).**
+
+- **Settlement tracking** is main's pending tracker from session `arena-57e6bd3d` (E57-T1, `pending` in `data/resolutions.json`). It re-reads a market by ticker (`GET /markets/{ticker}`) once its close time has passed. This session did not add a second tracker. A separate watchlist built earlier on this branch was dropped during the merge with main.
+- **Changes this session makes on top of main** (`collector/collector.py`):
+  1. `scan_settled()`: the untimed read of the newest settled markets is replaced by a documented window (`min_settled_ts` = now − 2 h, `mve_filter=exclude`, cursor paging, `truncated` flag). It is a supplement; the window alone is still truncated (cap 3 pages) and the tracker covers the rest.
+  2. `is_live_market()`: finalized, settled, and determined markets are not published as live events. They are graded through the settlement path. Fixes I-A.
+  3. `track_held()`: every open simulated position is followed to settlement, even when its market is not a live observation (for example a finalized market, which the live filter removes). Without this, such a position would never be graded.
+  4. Retention: each topic keeps its newest 100 rows; a row the tracker resolved (`source: "watch"`) ranks ahead of bulk scan rows (newest 1,000); the 2,000-row bound is unchanged; evictions are counted in `meta.retention`. Fixes I-E.
+- **Tests:** `python3 -m unittest discover -s tests` → 372 tests OK (12 pre-existing skips). `npm test` → 59/59. `python3 -m collector.test_runner` → PASSED. The R1 test file has 16 methods.
+- **Live verification:** `VERIFICATION-67bd954a.md`. Runs R-A to R-F. R-F (`a66a34b`, final code): all 10 seeded official outcomes stored with `source: watch` and the official values; 0 evicted. Runs R-B to R-E used the earlier watchlist implementation, which is superseded by the merge.
+
+**Watch-resolved gap, diagnosed from the data.** The 8 non-seed outcomes in run R-B were not stored. The topic lookup is not the cause: all 8 map correctly (checked offline against `data/series_cache.json`). The cause is the 2,000-row bound. 1,898 crypto rows that settled in 30 minutes filled it, so the global cut sat at 07:04Z, and older watched outcomes were evicted in the run that stored them. The fix is in item 4 above.
+
+**Irregularities (on the Flagged page as STANDING items, append-only, `site_build/flagpage.py`):**
+
+| ID | Irregularity | Handling |
+| - | - | - |
+| I-A | 8 of 750 published live events were `finalized` (6× KXBTCMAX100, 2× KXAAAGASMAXCA), with open interest and no quote. | Fixed (`is_live_market`). Flagged. |
+| I-B | The root culture matcher does not classify `KXBIGBROTHER`; the docs pipeline does (`docs/data/series.json`), so the root store never holds Big Brother outcomes. | **Not changed** (shared matcher; a scope decision). Flagged. |
+| I-C | No backfill: outcomes that settled before the tracker first saw a market are not in the store. No verified earlier elections, culture, or golf source exists in the repo. | Stated. Flagged. |
+| I-D | `KXCAGOVPRIMARY1ST-26JUN02-1ST-XBEC` carries `custom_strike: {"demo strike": "demo strike"}` (placeholder, Kalshi-side). The result fields are populated and match. | Flagged for Kalshi. |
+| I-E | Retention: the 2,000-row bound was filled by 15-minute crypto rows, which evicted watched outcomes in the run that stored them. | **Fixed:** tracked outcomes rank ahead of bulk rows; evictions counted in `meta.retention`. Flagged. |
+| I-F | The shared `collect` concurrency group cancelled dispatched verification runs when `main` queued newer ones. | Already a standing Flagged item. A temporary workflow with its own group was used. |
+| I-G | The window scan is still truncated at its 3-page cap (`truncated: true` in every run). The tracker covers in-scope markets; out-of-scope settlements are not read. | Stated in `VERIFICATION-67bd954a.md`. Flagged. |
+| I-H | Review item: watch priority also covers short-dated crypto markets (for example `KXBTC15M-*`) that the tracker followed to resolution. The 1,000-row cap limits their share. | Product decision, for review. Flagged. |
+
+**Requests (not in this session's file scope):**
+
+| ID | To | Request |
+| - | - | - |
+| R-67-1 | owner of `collector/topics.py` (shared by both pipelines) | Decide whether `KXBIGBROTHER` is culture. If yes, add the matcher. Until then the root and docs stores disagree on that series (I-B). |
+| R-67-2 | integration session | After the merge, check that `review.html` shows the new STANDING items on the next scheduled `main` run. |
+| R-67-3 | owner of the chart labels (`R-3DCF-6`, still open) | Unchanged: the candle periods are 1 minute, 1 hour, and 1 day. |
+
+**Cleanup before the PR:** the temporary `.github/workflows/verify-67bd954a.yml` and `verify-67bd954a-run.json` are removed, and `data/` is reverted to `main`, so the PR diff contains code, tests, and docs only. The evidence stays in history.
+
+**Board status:** R1 done (code, tests, live verification R-F). R2 done (`VERIFICATION-67bd954a.md`). R3 in progress: PR, merge after the Pages deploy is confirmed, and a post-merge check of the next scheduled `main` run.
