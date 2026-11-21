@@ -77,7 +77,7 @@ touched: **<https://wingbangboozle1-lang.github.io/Trade2/docs/>**.
 
 | Path | Purpose |
 |---|---|
-| `collector/` (client.py, runner.py, news.py, kalshi.py) | Pulls the public demo REST API (markets, series, order books, candlesticks, settlements) and writes `docs/data/*.json`. Topic matchers in `collector/topics.py` (shared module — both pipelines import it). |
+| `collector/` (`runner.py` + its `kalshi.py` HTTP client, `news.py`, `topics.py`; tested by `test_runner.py`) | Pulls the public demo REST API (markets, series, order books, candlesticks, settlements) and writes `docs/data/*.json`. Topic matchers in `collector/topics.py` (shared module — both pipelines import it). |
 | `trading/` | Automated **simulated** trading engine: official fee formula, three strategies, settlement grading, stats by strategy & trade type. |
 | `docs/` | GitHub Pages site: landing page, one subpage per topic, portfolio, executive summary, **Flagged for Review** (`docs/flagged.html`). |
 | `docs/verification/` | Verification ledger — every published claim mapped to an official source URL. |

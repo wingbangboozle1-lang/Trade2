@@ -189,26 +189,54 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   const scanTargets = rotateScanSeries(seriesMap, nowMs, maxScanSeries);
   let scannedSeries = 0;
   let scannedMarkets = 0;
+  let scanRequests = 0;
+  let scanPages = 0;
+  let dupes = 0;
   let resolvedAdded = 0;
+  const budget = { left: RESOLUTION_SCAN_MAX_REQUESTS };
+  const seenInRun = new Set(); // the listing is allowed to repeat a market; state.resolved alone hides that
   for (const { ticker: st, topic } of scanTargets) {
-    if (breakerTripped()) break;
-    const params = { series_ticker: st, status: 'settled', min_settled_ts: Math.floor(nowMs / 1000) - RESOLUTION_LOOKBACK_S, limit: 200 };
+    if (breakerTripped() || budget.left <= 0) break;
+    // Documented filters, from https://docs.kalshi.com/api-reference/market/get-markets:
+    //   status=settled ("Only one status filter may be supplied at a time"), min_settled_ts
+    //   ("settled after this Unix timestamp", seconds), limit (default 100, max 1000),
+    //   mve_filter=exclude (multi-event markets are not part of a topic series sweep here).
+    // Paging: "pass the cursor exactly as returned, stop when it is empty" — so this walks the
+    // cursor until it ends or the run's request budget is spent, instead of reading two pages.
+    // key order here is the request order; the demo host accepted this exact ordering in the
+    // live probes (VERIFICATION-8a8d4294.md §3 P1).
+    const params = { status: 'settled', series_ticker: st, min_settled_ts: Math.floor(nowMs / 1000) - RESOLUTION_LOOKBACK_S, limit: 100, mve_filter: 'exclude' };
+    let cursor;
+    let firstError = null;
     try {
-      let res = (await get('/markets', params)).data;
-      scannedSeries++;
-      const page1 = res.markets || [];
-      scannedMarkets += page1.length;
-      for (const m of page1) if (noteResolved(state, m, { topic, seriesTicker: st, via: 'settled-scan', base, nowMs })) resolvedAdded++;
-      if (res.cursor && page1.length) {
-        res = (await get('/markets', { ...params, cursor: res.cursor })).data;
-        scannedMarkets += (res.markets || []).length;
-        for (const m of res.markets || []) if (noteResolved(state, m, { topic, seriesTicker: st, via: 'settled-scan', base, nowMs })) resolvedAdded++;
+      for (;;) {
+        if (budget.left <= 0) break;
+        const url = `${base}/markets?${new URLSearchParams({ ...params, ...(cursor ? { cursor } : {}) })}`;
+        const res = (await get('/markets', cursor ? { ...params, cursor } : params)).data;
+        budget.left--; scanRequests++; scanPages++;
+        const page = res.markets || [];
+        scannedMarkets += page.length;
+        for (const m of page) {
+          if (!m || !m.ticker) continue;
+          if (seenInRun.has(m.ticker)) { dupes++; continue; }
+          seenInRun.add(m.ticker);
+          if (noteResolved(state, m, { topic, seriesTicker: st, via: 'settled-scan', base, nowMs, requestUrl: url })) resolvedAdded++;
+        }
+        cursor = res.cursor || '';
+        if (!cursor || !page.length) break;
       }
+      scannedSeries++;
     } catch (e) {
+      // A failed series must not blank what earlier runs accumulated: state.resolved is only
+      // ever added to here, so the rows already published stay published.
       errors.push(describeErr(`markets?series_ticker=${st}&status=settled`, e));
+      firstError = String((e && e.message) || e);
       if (breakerTripped()) break;
+    } finally {
+      if (firstError) log(`[collect] settled scan ${st}: stopped after ${scanPages} page(s): ${firstError}`);
     }
   }
+  if (dupes) log(`[collect] settled scan: ${dupes} repeated ticker(s) in the listings, deduped`);
 
   // b) watch check: anything once tracked (or previously pending) that is no longer active
   const watch = [...new Set([...Object.keys(state.meta), ...Object.keys(state.pending)])]
@@ -226,7 +254,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
           seriesTicker: meta?.series_ticker ?? prevPending?.series_ticker ?? null,
           eventTitle: meta?.event_title ?? prevPending?.event_title ?? null,
           outcomeLabel: meta?.outcome_label ?? null,
-          via: 'watch', base, nowMs,
+          via: 'watch', base, nowMs, requestUrl: `${base}/markets/${t}`,
         })) resolvedAdded++;
       } else if (m) {
         state.pending[t] = {
@@ -339,7 +367,7 @@ export async function main({ base = BASE, stateDir = STATE_DIR, outDir = OUT_DIR
   for (const [t, pts] of Object.entries(state.history)) {
     historyOut[t] = { meta: state.meta[t] || null, points: pts, fields: ['t_ms', 'last_cents', 'yes_bid_cents', 'yes_ask_cents', 'volume_24h_contracts', 'open_interest_contracts'] };
   }
-  const statusOut = { generated_at: runInfo.generated_at, run: state.run, base_url: base, counts: { series_mapped: seriesMap.size, markets_active: rows.length, alerts_this_run: alerts.length, alerts_total: state.alerts.length, orderbooks: Object.keys(orderbooks).length, resolved_total: Object.keys(state.resolved).length, resolved_added_this_run: resolvedAdded, settled_scan_series: scannedSeries, settled_scan_markets: scannedMarkets, pending_total: Object.keys(state.pending).length, resolution_checks_this_run: checked, positions: state.positions.length, positions_opened_this_run: opened.length, history_markets: Object.keys(historyOut).length }, errors };
+  const statusOut = { generated_at: runInfo.generated_at, run: state.run, base_url: base, counts: { series_mapped: seriesMap.size, markets_active: rows.length, alerts_this_run: alerts.length, alerts_total: state.alerts.length, orderbooks: Object.keys(orderbooks).length, resolved_total: Object.keys(state.resolved).length, resolved_added_this_run: resolvedAdded, settled_scan_series: scannedSeries, settled_scan_markets: scannedMarkets, settled_scan_requests: scanRequests, settled_scan_pages: scanPages, settled_scan_duplicates_deduped: dupes, settled_scan_budget: budget.left, pending_total: Object.keys(state.pending).length, resolution_checks_this_run: checked, positions: state.positions.length, positions_opened_this_run: opened.length, history_markets: Object.keys(historyOut).length }, errors };
 
   // Fail closed: if the API was unreachable for the whole run, do not publish a partial snapshot.
   if (breakerTripped()) {
@@ -373,13 +401,27 @@ export const RESOLUTION_LOOKBACK_S = 30 * 86400;
 export const RESOLUTION_WINDOW_S = 900; // rotate the scan slice every 15 minutes (matches the docs pipeline, X1)
 export const RESOLUTION_KEEP_PER_TOPIC = 100;
 export const RESOLUTION_SCAN_MAX_SERIES = 15; // bound the request count; full series pass in ceil(series/perCap) runs
+// A second, harder bound, because a series with many settlements is paginated: one run never
+// spends more than this many listing requests on the settled scan. The budget is spent in series
+// order, so a truncated series simply resumes on the next rotation window (rate limits for public
+// endpoints are not published numerically, F-06, hence a conservative number).
+export const RESOLUTION_SCAN_MAX_REQUESTS = 30;
 
 /** Build one resolved row from a raw market object. `result` is copied verbatim (never inferred). */
-export function resolutionRow(m, { topic = null, seriesTicker = null, eventTitle = null, outcomeLabel = null, via, base, nowMs }) {
+export function resolutionRow(m, { topic = null, seriesTicker = null, eventTitle = null, outcomeLabel = null, via, base, nowMs, requestUrl = null } = {}) {
   return {
     ticker: m.ticker,
     topic,
-    event_title: eventTitle ?? m.title ?? null,
+    // Only a title the collector actually saw on an EVENT object may be called an event title.
+    // The settled listing documents a market-level `title`, which is published as `market_title`
+    // instead of being renamed (the two are different objects, and a reader must be able to tell
+    // which one a line of text came from).
+    event_title: eventTitle ?? null,
+    market_title: m.title ?? null,
+    // Provenance: `via` is this pipeline's name, `detected_by` the root/docs name, so a reviewer
+    // can read one field on any of the three sites. `request_url` is the exact listing that
+    // returned the row, so the claim is re-checkable with one click.
+    detected_by: via,
     outcome_label: outcomeLabel ?? m.yes_sub_title ?? m.subtitle ?? '',
     event_ticker: m.event_ticker ?? null,
     series_ticker: seriesTicker ?? (m.ticker ? String(m.ticker).split('-')[0] : null),
@@ -391,6 +433,7 @@ export function resolutionRow(m, { topic = null, seriesTicker = null, eventTitle
     detected_at: new Date(nowMs).toISOString(),
     via,
     source_url: `${base}/markets/${m.ticker}`,
+    request_url: requestUrl || null,
     docs_url: 'https://docs.kalshi.com/getting_started/market_settlement',
   };
 }

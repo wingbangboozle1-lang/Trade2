@@ -7,7 +7,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assertDemoBase, main, resolveTopicSeries, rotateScanSeries, pruneResolved, RESOLUTION_WINDOW_S } from '../collect.mjs';
+import { assertDemoBase, main, resolveTopicSeries, rotateScanSeries, pruneResolved, resolutionRow, RESOLUTION_WINDOW_S } from '../collect.mjs';
 import { DEMO_BASE, PRODUCTION_BASE } from '../kalshi.mjs';
 import { takerFeeCents } from '../fees.mjs';
 import { readFileSync } from 'node:fs';
@@ -76,7 +76,13 @@ function makeMockApi(script) {
       return ok({ orderbook_fp: { yes_dollars: [['0.4000', '120.00'], ['0.3900', '40.00']], no_dollars: [['0.5800', '90.00']] } });
     }
     if (p === '/markets') {
+      if (script.settledError) throw new Error('mock: settled listing rejected');
       // settled-market scan (documented GET /markets filters; F642-T1)
+      const pages = script.settledPages && script.settledPages[params.series_ticker];
+      if (pages) {
+        const hit = pages.find((pg) => (pg.cursor || '') === (params.cursor || ''));
+        return ok(hit ? { markets: hit.markets, cursor: hit.next || '' } : { markets: [], cursor: '' });
+      }
       return ok({ markets: (script.settledList && script.settledList[params.series_ticker]) || [], cursor: '' });
     }
     if (p === '/markets/GAS-E1-A') {
@@ -207,6 +213,45 @@ test('settled-scan records official results with per-row source links (documente
   assert.equal(status.counts.settled_scan_series >= 2, true, 'rotating scan visited the fixture series');
   // the scan request used the documented filters (seen by the mock as params)
   assert.equal(r.calls.filter((p) => p === '/markets').length >= 2, true);
+  assert.equal(by['GAS-E1-S'].detected_by, 'settled-scan', 'provenance under the root/docs field name too');
+  assert.match(by['GAS-E1-S'].request_url, /^https:\/\/external-api\.demo\.kalshi\.co\/trade-api\/v2\/markets\?status=settled&series_ticker=KXAAAGASM&min_settled_ts=\d+&limit=100&mve_filter=exclude$/,
+    'the row links the exact listing that returned it, so a reviewer can re-run one click');
+});
+
+test('the scan request is exactly the documented filter set, in the documented order', async () => {
+  // GET /markets documents: one status at a time, min_settled_ts "settled after this Unix
+  // timestamp" (seconds), limit default 100 / max 1000, and mve_filter. Anything else on the
+  // request is a bug the API would silently ignore — so the shape itself is pinned.
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-shape-'));
+  const seen = [];
+  const inner = makeMockApi({ settledList: {} });
+  const r = { fn: async (base, p, params = {}) => { if (p === '/markets') seen.push(params); return inner.fn(base, p, params); } };
+  await main({ base: BASE, stateDir: path.join(dir, 's'), outDir: path.join(dir, 'o'), configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r.fn, nowMs: Date.parse('2026-11-20T12:00:00Z'), maxScanSeries: 60 });
+  assert.ok(seen.length >= 1, 'the scan ran');
+  for (const params of seen) {
+    assert.deepEqual(Object.keys(params).sort(), ['limit', 'min_settled_ts', 'mve_filter', 'series_ticker', 'status'], `only documented params: ${Object.keys(params)}`);
+    assert.equal(params.status, 'settled', 'one status filter at a time');
+    assert.equal(params.limit, 100, 'the documented default (page max is 1000)');
+    assert.equal(params.mve_filter, 'exclude');
+    assert.match(String(params.min_settled_ts), /^\d{10}$/, 'a Unix timestamp in SECONDS, not milliseconds');
+    assert.equal(Number(params.min_settled_ts) < Date.parse('2026-11-20T12:00:00Z') / 1000, true);
+  }
+});
+
+test('resolutionRow never renames a market title into an event title', () => {
+  // GET /markets documents a market-level `title`; that is not the event's title. A row whose
+  // event was never seen open publishes `market_title` and leaves `event_title` null (rendered
+  // blank on the site), rather than promoting the market text into a field a reader trusts as
+  // the event name.
+  const row = resolutionRow({ ticker: 'A', title: 'SYNTHETIC **market** title', result: 'yes' }, { topic: 'gas', via: 'settled-scan', base: BASE, nowMs: 0 });
+  assert.equal(row.event_title, null, 'nothing was observed on an event object, so no event title is claimed');
+  assert.equal(row.market_title, 'SYNTHETIC **market** title', 'the market title is published verbatim, markdown and all');
+  const row2 = resolutionRow({ ticker: 'B', title: 'market title', result: 'no' }, { topic: 'gas', eventTitle: 'observed event title', via: 'watch', base: BASE, nowMs: 0 });
+  assert.equal(row2.event_title, 'observed event title', 'an actually observed event title wins');
+  const row3 = resolutionRow({ ticker: 'C', result: 'no' }, { via: 'watch', base: BASE, nowMs: 0 });
+  assert.equal(row3.event_title, null);
+  assert.equal(row3.market_title, null, 'a missing title stays missing');
+  assert.equal(row3.request_url, null, 'no provenance claimed when none was recorded');
 });
 
 test('resolution history survives a state-cache wipe via the published snapshot', async () => {
@@ -285,4 +330,79 @@ test('pruneResolved keeps the newest per topic and never drops protected tickers
   const gasRows = Object.values(state.resolved).filter((r) => r.topic === 'gas').map((r) => r.ticker).sort();
   assert.deepEqual(gasRows, ['KEEP-ME', 'OLD-5', 'OLD-4', 'OLD-3'].sort(), 'newest 3 kept + protected old row');
   assert.equal(!!state.resolved['NEW-1'], true);
+});
+
+test('settled scan walks the cursor until it empties, and stops at the run budget (documented paging)', async () => {
+  // Documented paging rule: "pass the cursor exactly as returned … stop when the cursor is empty".
+  // Reading only the first pages would silently drop settlements inside a busy series.
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-paging-'));
+  const pages = [];
+  for (let i = 0; i < 5; i++) {
+    pages.push({
+      cursor: i === 0 ? '' : `P${i}`,
+      next: `P${i + 1}`,
+      markets: [settledFixture(`GAS-P${i}-A`), settledFixture(`GAS-P${i}-B`, { result: 'no' })],
+    });
+  }
+  const r = makeMockApi({ settledPages: { KXAAAGASM: pages } });
+  await main({
+    base: BASE, stateDir: path.join(dir, 's'), outDir: path.join(dir, 'o'),
+    configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r.fn,
+    nowMs: Date.parse('2026-11-20T12:00:00Z'), maxScanSeries: 60,
+  });
+  const out = JSON.parse(await readFile(path.join(dir, 'o', 'resolved.json'), 'utf8'));
+  const tickers = out.resolved.map((x) => x.ticker).sort();
+  assert.equal(tickers.length, 10, 'every page of the series was read, not just the first two');
+  assert.equal(tickers.includes('GAS-P4-B'), true, 'the last page is included');
+  const status = JSON.parse(await readFile(path.join(dir, 'o', 'status.json'), 'utf8'));
+  assert.equal(status.counts.settled_scan_pages >= 5, true, 'the pages are counted in the run record');
+  assert.equal(status.counts.settled_scan_requests >= 5, true, 'so is the number of listing requests');
+  assert.equal(status.counts.settled_scan_budget >= 0, true, 'the remaining budget is published, so truncation is visible rather than silent');
+  assert.match(out.resolved[0].request_url, /status=settled&series_ticker=KXAAAGASM|min_settled_ts=\d+/, 'each row links the listing that returned it');
+});
+
+test('settled scan dedupes a ticker repeated across listing pages and never relabels a market title as an event title', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-dupe-'));
+  const r = makeMockApi({
+    settledPages: {
+      KXAAAGASM: [
+        { cursor: '', next: 'P2', markets: [
+          settledFixture('GAS-DUP', { result: 'no', title: 'SYNTHETIC **repeated** market' }),
+          settledFixture('GAS-OTHER', { result: 'yes' }),
+        ] },
+        { cursor: 'P2', next: '', markets: [
+          settledFixture('GAS-DUP', { result: 'yes' }), // same ticker, contradicting result: must be ignored
+          settledFixture('GAS-LAST', { result: 'no' }),
+        ] },
+      ],
+    },
+  });
+  await main({
+    base: BASE, stateDir: path.join(dir, 's'), outDir: path.join(dir, 'o'),
+    configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r.fn,
+    nowMs: Date.parse('2026-11-20T12:00:00Z'), maxScanSeries: 60,
+  });
+  const out = JSON.parse(await readFile(path.join(dir, 'o', 'resolved.json'), 'utf8'));
+  const by = Object.fromEntries(out.resolved.map((x) => [x.ticker, x]));
+  assert.equal(Object.keys(by).length, 3, 'the repeated ticker produced one row, not two');
+  assert.equal(by['GAS-DUP'].result, 'no', 'the first answer wins; the collector never re-decides a result');
+  assert.equal(by['GAS-DUP'].event_title, null, 'a market-level title is NOT published as an event title');
+  assert.equal(by['GAS-DUP'].market_title, 'SYNTHETIC **repeated** market', 'the market title is published as what it is, verbatim, markdown and all');
+  assert.equal(by['GAS-DUP'].detected_by, 'settled-scan', 'the row says which path found it');
+  const status = JSON.parse(await readFile(path.join(dir, 'o', 'status.json'), 'utf8'));
+  assert.equal(status.counts.settled_scan_duplicates_deduped, 1, 'the duplicate is counted, not silently swallowed');
+});
+
+test('a failed settled listing leaves the accumulated rows published and records the error', async () => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), 'k-res-fail-'));
+  const stateDir = path.join(dir, 's');
+  const outDir = path.join(dir, 'o');
+  const ok1 = makeMockApi({ settledList: { KXAAAGASM: [settledFixture('GAS-KEEP')] } });
+  await main({ base: BASE, stateDir, outDir, configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: ok1.fn, nowMs: Date.parse('2026-11-20T12:00:00Z'), maxScanSeries: 60 });
+  const r2 = makeMockApi({ settledError: true });
+  await main({ base: BASE, stateDir, outDir, configPath: path.join(here, '..', '..', 'config', 'topics.json'), getFn: r2.fn, nowMs: Date.parse('2026-11-20T12:30:00Z'), maxScanSeries: 60 });
+  const out = JSON.parse(await readFile(path.join(outDir, 'resolved.json'), 'utf8'));
+  assert.equal(out.resolved.some((x) => x.ticker === 'GAS-KEEP'), true, 'a failed scan never blanks a prior result');
+  const status = JSON.parse(await readFile(path.join(outDir, 'status.json'), 'utf8'));
+  assert.equal(status.errors.length > 0, true, 'and the failure is visible on the run record');
 });
