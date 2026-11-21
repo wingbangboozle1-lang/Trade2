@@ -5,27 +5,22 @@ name: Live probe — verify request shapes against the demo API
 # to Kalshi. This workflow closes the gap: it builds the URLs with the shipped
 # module and asks the real demo API whether they mean what the code assumes.
 #
-# What it proves, per the official specification:
-#   * `tickers` is a repeated query parameter (form/explode). The probe sends
-#     `?tickers=A&tickers=B`; a comma-joined value would be read as one unknown
-#     ticker and return an empty book — indistinguishable from "no swings".
-#   * `GET /markets?tickers=…` (tickers as the only filter) returns every
-#     matching market in one unpaged response.
-#   * `GET /markets/orderbooks?tickers=…` returns one entry per ticker, in
-#     request order, each wrapped in `orderbook_fp`.
+# It exists because the first version of that module serialised `tickers` as a
+# single comma-joined value AND, once corrected to repeated parameters, the
+# check found that `GET /markets?tickers=…` answers 400 on the demo host. Both
+# of those would have looked like "no swings" in the chat instead of an error.
 #
 # Read-only: it never commits, never writes a token, and never places an order.
 
 on:
   workflow_dispatch:
   schedule:
-    # Hourly. Cheap (3 requests) and catches an API-shape change before a
-    # weekend of nobody looking.
     - cron: "17 * * * *"
   push:
     paths:
       - "assets/live-probe.js"
       - "tools/probe_live_check.py"
+      - "tools/probe_shape_assert.py"
       - ".github/workflows/probe-live.yml"
 
 permissions:
@@ -56,18 +51,7 @@ jobs:
       - name: Verify the probe's URLs against the live demo API
         run: |
           set -o pipefail
-          # Print the report to the run log as well as the artifact: artifacts
-          # are not always downloadable from a restricted client, and a failing
-          # check whose evidence cannot be read is not a check.
           python3 tools/probe_live_check.py --json probe-live.json 2>&1 | tee probe-check.log
-          if [ ! -s probe-live.json ]; then
-            echo "::error::probe_live_check.py wrote no report"
-            exit 1
-          fi
-          # Re-assert the two documented invariants from the report itself, so a
-          # silently-passing script cannot hide a shape change.
-          # A heredoc body must start at column 0, so this lives in its own file
-          # rather than inline: an indented body is a syntax error under bash.
           python3 tools/probe_shape_assert.py probe-live.json
 
       - name: Upload the report
