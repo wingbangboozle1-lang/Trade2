@@ -223,6 +223,13 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         badges += ('<span class="tag tag-grey" title="Written before the collector '
                    'stated a price basis per row; no executability claim is made '
                    'either way.">pre-rule row</span> ')
+    reverted = a.get("reverted_within_candle")
+    if reverted:
+        badges += ('<span class="tag tag-grey" title="The first completed candle '
+                   'after this move closed back within $0.10 of the alert\'s '
+                   'previous level (official 1-minute candlestick trade close '
+                   f'at {esc(str(reverted.get("candle_end_ts") or ""))}).">'
+                   'reverted within one candle</span> ')
     badge_html = (f'<span class="chat-badges">{badges}</span>' if badges else "")
     # What the two numbers being subtracted actually are. Stated on the row so a
     # mid-vs-mid step is never mistaken for two prints.
@@ -231,9 +238,21 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
     depth_html = ""
     if a.get("spread") is not None:
         size = a.get("size_at_top")
-        depth = (f"{count(size)} contracts at the level" if size is not None
-                 else "no resting size at the level")
+        if size is None:
+            depth = "no resting size at the level"
+        elif size == 0:
+            # An explicit 0.00 from the exchange is not book depth; saying
+            # "0 contracts" alone reads like a depth figure (R-3DCF-2).
+            depth = "no ask size: 0 contracts resting at the level"
+        else:
+            depth = f"{count(size)} contracts at the level"
         depth_html = f' · YES spread {cents(a.get("spread"))} · {depth}'
+    ticks_html = ""
+    ticks = a.get("threshold_ticks")
+    if ticks:
+        tick_size = a.get("tick_size")
+        ticks_html = (f' · ${a.get("threshold"):.2f} ≈ {count(ticks)} ticks'
+                      f' of {cents(tick_size)}')
     # Headlines the collector found inside ± six hours of the move. Labelled
     # candidates: no row on this site claims that an article caused a price.
     causes = []
@@ -256,7 +275,7 @@ def alert_chat_row(a: dict[str, Any], model_roi: float | None = None) -> str:
         f'<span class="chat-body"><a href="{safe_url(market_url) or "#"}" '
         f'target="_blank" rel="noreferrer">{esc(title)}</a> '
         f'<small>{cents(a.get("previous"))} → {cents(a.get("current"))} · '
-        f'{esc(topic)}{roi}{basis_html}{depth_html}</small>'
+        f'{esc(topic)}{roi}{basis_html}{depth_html}{ticks_html}</small>'
         f'{badge_html}'
         f'{news_html}'
         f'<span class="cause-links">'
@@ -1051,10 +1070,14 @@ def build_live(live: dict[str, Any]) -> str:
               <div class="control-row">
                 <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option></select>
                 <div class="filter-tabs" id="windowTabs">
-                  <button data-window="seconds">Seconds</button>
-                  <button data-window="minutes" class="selected">Minutes</button>
-                  <button data-window="hours">Hours</button>
+                  <button data-window="seconds" title="Rolling 90-second window: live book quotes polled every few seconds. Kalshi publishes no second-based candles.">Seconds</button>
+                  <button data-window="minutes" class="selected" title="Rolling 60-minute window: official 1-minute candlesticks plus live quotes">Minutes</button>
+                  <button data-window="hours" title="Rolling 12-hour window: official 1-minute candlesticks plus live quotes">Hours</button>
                 </div>
+                <p class="chart-note">Window lengths, not candle sizes. The seconds
+                window plots live book quotes polled every few seconds; the minute
+                and hour windows include official candlesticks, whose smallest
+                period is 1 minute (<a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">docs ↗</a>).</p>
                 <div class="filter-tabs" id="sideTabs" aria-label="Contract side">
                   <button data-side="yes" class="selected">YES</button>
                   <button data-side="no">NO</button>

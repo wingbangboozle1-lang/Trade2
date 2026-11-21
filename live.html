@@ -47,7 +47,7 @@
           <div class="top-actions">
             <span class="live-pill" id="livePill"><i></i> SNAPSHOT</span>
             <time id="updatedAt">Snapshot 2026-11-21T07:43:19Z</time>
-            <span class="snap-age" id="snapshotAge" data-generated-ts="1795246999.33983">1 min old</span>
+            <span class="snap-age" id="snapshotAge" data-generated-ts="1795246999.33983">3 min old</span>
           </div>
         </header>
         <section class="page-heading">
@@ -70,10 +70,14 @@
               <div class="control-row">
                 <select id="chartMarket" aria-label="Market"><option value="">Choose a market</option></select>
                 <div class="filter-tabs" id="windowTabs">
-                  <button data-window="seconds">Seconds</button>
-                  <button data-window="minutes" class="selected">Minutes</button>
-                  <button data-window="hours">Hours</button>
+                  <button data-window="seconds" title="Rolling 90-second window: live book quotes polled every few seconds. Kalshi publishes no second-based candles.">Seconds</button>
+                  <button data-window="minutes" class="selected" title="Rolling 60-minute window: official 1-minute candlesticks plus live quotes">Minutes</button>
+                  <button data-window="hours" title="Rolling 12-hour window: official 1-minute candlesticks plus live quotes">Hours</button>
                 </div>
+                <p class="chart-note">Window lengths, not candle sizes. The seconds
+                window plots live book quotes polled every few seconds; the minute
+                and hour windows include official candlesticks, whose smallest
+                period is 1 minute (<a href="https://docs.kalshi.com/api-reference/market/get-market-candlesticks" target="_blank" rel="noreferrer">docs ↗</a>).</p>
                 <div class="filter-tabs" id="sideTabs" aria-label="Contract side">
                   <button data-side="yes" class="selected">YES</button>
                   <button data-side="no">NO</button>

@@ -458,12 +458,30 @@ def bar_reference(client: KalshiClient, market: dict[str, Any],
     # ``trade_close`` is published next to the quote mid for transparency only
     # (the chart legend and the methodology page); it is never the basis of a
     # swing alert, which is the point of 856e184e's quote rule.
+    # ``price.previous_dollars`` of the reference candle (documented at
+    # https://docs.kalshi.com/api-reference/market/get-market-candlesticks).
+    # The merged R-F3-1 corroboration reads ``previous_dollars`` from this
+    # record (Observation.ref_previous_dollars); without it the guard can only
+    # fall back to ``price.close_dollars``, so the plumbing ends here by design.
+    price_block = chosen.get("price") or {}
+    try:
+        price_previous = float(price_block.get("previous_dollars"))
+    except (TypeError, ValueError):
+        price_previous = None
     return {"mid": round((bid + ask) / 2.0, 4),
             "ts": float(chosen["end_period_ts"]),
             "spread": round(ask - bid, 4),
             "yes_bid": bid, "yes_ask": ask,
             "trade_close": _candle_close(chosen, "price"),
-            "period_interval_minutes": 1}
+            "previous_dollars": price_previous,
+            "period_interval_minutes": 1,
+            # Completed candles in the window, for the revert check (R-3DCF-3).
+            # The still-forming current bar is excluded — its close is not final.
+            "candles": [{"ts": float(c["end_period_ts"]),
+                         "trade_close": _candle_close(c, "price"),
+                         "yes_bid_close": _candle_close(c, "yes_bid"),
+                         "yes_ask_close": _candle_close(c, "yes_ask")}
+                        for c in completed]}
 
 
 def _candle_close(candle: dict[str, Any], side: str) -> float | None:
@@ -719,6 +737,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             obs.ref_yes_bid = ref.get("yes_bid")
             obs.ref_yes_ask = ref.get("yes_ask")
             obs.ref_trade_close = ref.get("trade_close")
+            obs.ref_previous_dollars = ref.get("previous_dollars")
 
     new_alerts: list[dict[str, Any]] = []
     suppressed: list[dict[str, Any]] = []
@@ -764,6 +783,11 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
                 if alerts.alert_record_valid(a)]
     fold = alerts.fold_alerts(new_alerts, existing, max_alerts=MAX_ALERTS)
     merged = fold["alerts"]
+
+    # Revert check (R-3DCF-3): annotate rows whose move unwound within one
+    # candle, using the completed candles fetched with the reference bars.
+    reverted_count = alerts.mark_reverted(merged, references,
+                                          threshold=alerts.SWING_THRESHOLD)
 
     # -- signals ----------------------------------------------------------
     signals: list[alerts.Signal] = []
@@ -962,6 +986,7 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
             "executable": sum(1 for a in merged if a.get("quality") == "executable"),
             "indicative": sum(1 for a in merged if a.get("quality") == "indicative"),
             "suppressed_this_run": len(suppressed),
+            "reverted_annotated_this_run": reverted_count,
         },
         "suppressed_alerts": suppressed[:40],
         "book_record_gaps": sorted(gaps, key=lambda g: g["abs_gap"],

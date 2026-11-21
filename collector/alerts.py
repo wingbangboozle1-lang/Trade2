@@ -93,6 +93,12 @@ class Observation:
     no_bid: float | None = None
     no_bid_size: float | None = None   # contracts at the best NO bid = YES ask size
     notional: float | None = None      # notional_value_dollars per contract
+    # Tick size: ``price_ranges[0].step``, documented on the market schema at
+    # https://docs.kalshi.com/api-reference/market/get-market ("Price step/tick
+    # size for this range in dollars"). Published next to the $0.10 threshold
+    # so a reader can see how many ticks a swing represents. None = the market
+    # object carried no price_ranges; the tick is then omitted, never guessed.
+    tick_size: float | None = None
     # Reference prices from the official candlestick record of the bar being
     # measured against, when the collector has one (all documented fields of the
     # candlestick schema at
@@ -212,6 +218,10 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         yes_bid, yes_ask = None, None
 
     ref = reference or {}
+    price_ranges = market.get("price_ranges") or []
+    tick = None
+    if price_ranges:
+        tick = dollars((price_ranges[0] or {}).get("step"))
     return Observation(
         ts=ts if ts is not None else time.time(),
         ref_ts=ref.get("ts"),
@@ -233,6 +243,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         yes_bid_size=yes_bid_size,
         no_bid=no_bid,
         notional=dollars(market.get("notional_value_dollars")),
+        tick_size=tick,
         status=market.get("status", "active"),
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
@@ -254,6 +265,67 @@ def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
     """True only for a two-sided quote tighter than ALERT_MAX_SPREAD."""
     spread = quoted_spread(yes_bid, yes_ask)
     return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
+
+
+def threshold_in_ticks(threshold: float,
+                       tick_size: float | None) -> float | None:
+    """How many of this market's ticks the $ threshold represents.
+
+    ``tick_size`` is the documented ``price_ranges[0].step``. None when the
+    tick is unknown or not positive — the UI then omits the ticks note rather
+    than inventing one.
+    """
+    if tick_size is None or tick_size <= 0:
+        return None
+    return round(threshold / tick_size, 1)
+
+
+def mark_reverted(alerts_list: list[dict[str, Any]],
+                  references: dict[str, dict[str, Any]],
+                  threshold: float = SWING_THRESHOLD) -> int:
+    """Annotate alerts that reverted within one candle (request R-3DCF-3).
+
+    ``references[ticker]["candles"]`` carries the completed 1-minute candles
+    bar_reference fetched for that market (each with its documented trade
+    close). For an alert, the first candle whose ``end_period_ts`` is strictly
+    after the alert's reference bar (``previous_ts`` for candle-basis rows, the
+    observation time otherwise) is "the next candle". When that candle's trade
+    close is back within ``threshold`` of the alert's previous level, the alert
+    gains ``reverted_within_candle = {candle_end_ts, trade_close,
+    previous_level}``. Rows keep a once-set annotation: a measured revert is a
+    fact that happened, not a state to clear when the candle ages out of the
+    fetch window. Returns the number of rows annotated this run.
+    """
+    annotated = 0
+    for alert in alerts_list:
+        if alert.get("reverted_within_candle"):
+            continue
+        ref = references.get(alert.get("ticker") or "") or {}
+        candles = [c for c in (ref.get("candles") or []) if c.get("ts")]
+        if not candles:
+            continue
+        after = alert.get("previous_ts")
+        if after is None:
+            after = alert.get("ts")
+        if after is None:
+            continue
+        nxt = min((c for c in candles if c["ts"] > after),
+                  key=lambda c: c["ts"], default=None)
+        if not nxt:
+            continue
+        close = nxt.get("trade_close")
+        prev_level = alert.get("previous")
+        if close is None or prev_level is None:
+            continue
+        if abs(close - prev_level) + 1e-9 < threshold:
+            alert["reverted_within_candle"] = {
+                "candle_end_ts": nxt["ts"],
+                "trade_close": close,
+                "previous_level": prev_level,
+                "check_basis": "official 1-minute candlestick trade close",
+            }
+            annotated += 1
+    return annotated
 
 
 QUOTE_BASES = ("candle_quote_mid", "previous_snapshot_mid")
@@ -479,6 +551,10 @@ def _swing(previous: Observation | None, current: Observation,
         "first_seen_ts": current.ts,
         "last_seen_ts": current.ts,
         "repeat_count": 0,
+        # Tick size from the documented price_ranges[0].step (R-F3-2), so the
+        # row can state how many ticks the $0.10 threshold represents.
+        "tick_size": current.tick_size,
+        "threshold_ticks": threshold_in_ticks(threshold, current.tick_size),
     }
     return alert, None
 
@@ -913,6 +989,7 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "notional_per_contract": notional,
             "open_interest_notional": round(oi * notional, 2),
             "dollar_activity": round(oi * notional, 2),
+            "tick_size": obs.tick_size,
             "status": obs.status,
             "result": obs.result,
             "close_time": obs.close_time,
