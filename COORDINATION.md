@@ -1906,3 +1906,17 @@ Explicitly **not** claimed here (owned by other sessions or by the user): `site_
 **Other irregularities found and published (FL-10…FL-20):** see `VERIFICATION-3dcf3f13.md` §2 (I-1…I-10) and `docs/flagged.html`.
 
 **Merge/deploy record:** to be appended after PR merge.
+
+---
+
+## Session claim — `arena-bbfedfd5` (2026-11-21, UTC)
+
+Branch `arena/bbfedfd5-trade2` (fixed by Arena; the `session-<id>/<task>` form is not used, as in Board B) · base `main` @ `8d15b95` · claimed at session start.
+
+| ID | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-BB-1 | Close **R-3DCF-1** (previously unclaimed): the root pipeline's settled scan is exchange-wide, newest-first, so `data/resolutions.json` holds only gas-prices and crypto rows (328 rows: gas 268, crypto 60; elections, culture and golf = 0). Add a per-topic settled scan over each registered series (documented `series_ticker` + `min_settled_ts` filters), keep the exchange-wide scan for portfolio grading, and keep a per-topic retention bound so one topic cannot evict the others. | in progress | `arena-bbfedfd5` | `collector/collector.py` (resolution block and its helpers only), `tests/test_resolutions_root_coverage.py` (new), this section of `COORDINATION.md` |
+
+Explicitly not claimed here: `data/**` (regenerated only by the scheduled collector run), `docs/**`, `site_build/**`, `.github/workflows/**`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `collector/runner.py`, `collector/alerts.py`, `collector/engine.py`.
+
+Sandbox note: outbound access in this session is limited to GitHub, npm and PyPI, so no live Kalshi call is made from the sandbox. Live checks are made with the documented-page fetch tool and recorded with their URLs.
