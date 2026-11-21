@@ -1,62 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795225256&end_ts=1795246856&period_interval=60",
-   "delta": -0.17,
-   "direction": "down",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
-   "from": 0.9,
-   "headlines": [],
-   "news_status": "no-headlines-found",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2117-T1459.99",
-   "t": 1795237200,
-   "t_iso": "2026-11-21T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXETHD-26NOV2117-T1459.99",
-   "title": "Ethereum price at Nov 21, 2026 at 5pm EST?",
-   "to": 0.73,
-   "topic": "crypto",
-   "window": "minutes"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
-   "delta": 0.11,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.86,
-   "headlines": [
-    {
-     "published": "2026-11-21T07:11:53+00:00",
-     "source": "cwibc.co.id",
-     "status": "verified-fetch",
-     "title": "US Gas Prices Record Biggest Three Week Drop Since 2008 - cwibc.co.id",
-     "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE84U255RXFtX2NnRmVpajJoVTI4djZGVDdRUW85YkJNcHlwMGJCd1FjVkJiekpmbE53dXdwVHJFY2RvbF9JbHd0eG5KTWxvTWpad0FKaW8zZEpOZ2JoaUthS1hn?oc=5"
-    },
-    {
-     "published": "2026-11-21T01:39:00+00:00",
-     "source": "FOX 8 Local First",
-     "status": "verified-fetch",
-     "title": "Louisiana gas prices fall ahead of Thanksgiving, AAA says - FOX 8 Local First",
-     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaHVWTjQ4MldTQVZJVnJBNnl4eGtReWlfWXlmVUowS29TYWx0WnNwVkJPaW9uUF9mQWRDRzN0MjdDaE9mejJXc2hoRHA1azI1S3o4eU0td0R3Zjh6TzNZRDNLX1lDYnFLZlN6bGVOdF93aWNia1AxaDBxQVNDaV9UcTlyWE95YkRXdWljUllBaGFOcjBk0gGoAUFVX3lxTE9TLUF5eGZqWEcyQWF1MHNHSnRMaEs4SUlqME4xQTFvZzZVbnJ6OE1fVTQxM2V1QkZVeGg0S1U1ejV4N2pQSjdKSGpYZlVjU1NxdFdJVHNYd2tlSmR3OGhZV00yeXBsSWg1a0RKenE2bUtGUTdYOWwycUJOblhfWFZMY2JXVTlIVHVoWDNQdFhFS1hwUGxCcVlOMEJ2SXYtN1pyREhpOFN5Uw?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6200",
-   "t": 1795237200,
-   "t_iso": "2026-11-21T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXAAAGASW-26NOV23-3.6200",
-   "title": "Will average **gas prices** be above $3.6200?",
-   "to": 0.97,
-   "topic": "gas-prices",
-   "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794987781&end_ts=1795246981&period_interval=1440",
    "delta": 0.877,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -83,7 +28,69 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795225381&end_ts=1795246981&period_interval=60",
+   "delta": -0.17,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [
+    "news-unverified:no headline within window (link left blank)"
+   ],
+   "from": 0.9,
+   "headlines": [],
+   "news_status": "no-headlines-found",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXETHD-26NOV2117-T1459.99",
+   "t": 1795237200,
+   "t_iso": "2026-11-21T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXETHD-26NOV2117-T1459.99",
+   "title": "Ethereum price at Nov 21, 2026 at 5pm EST?",
+   "to": 0.73,
+   "topic": "crypto",
+   "window": "minutes"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794987781&end_ts=1795246981&period_interval=1440",
+   "delta": 0.11,
+   "direction": "up",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.86,
+   "headlines": [
+    {
+     "published": "2026-11-21T07:11:53+00:00",
+     "source": "cwibc.co.id",
+     "status": "verified-fetch",
+     "title": "US Gas Prices Record Biggest Three Week Drop Since 2008 - cwibc.co.id",
+     "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE84U255RXFtX2NnRmVpajJoVTI4djZGVDdRUW85YkJNcHlwMGJCd1FjVkJiekpmbE53dXdwVHJFY2RvbF9JbHd0eG5KTWxvTWpad0FKaW8zZEpOZ2JoaUthS1hn?oc=5"
+    },
+    {
+     "published": "2026-11-21T07:08:51+00:00",
+     "source": "Demokratis.co.id",
+     "status": "verified-fetch",
+     "title": "US Gas Prices Drop 50 Cents in Three Weeks - Demokratis.co.id",
+     "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1pcjdfMkkzNThqZXNndmlmaWc2YlJIWlhZZ2ZJX1VkcUlSZDJ1bW1jc0FrcWx3VG4taEFCdEtKNktkaDkzNGNPZUZpOHhpbXFqbkFKUElMTVFjRHpNeFRDX2FxaHhhU3hS?oc=5"
+    },
+    {
+     "published": "2026-11-21T01:39:00+00:00",
+     "source": "FOX 8 Local First",
+     "status": "verified-fetch",
+     "title": "Louisiana gas prices fall ahead of Thanksgiving, AAA says - FOX 8 Local First",
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaHVWTjQ4MldTQVZJVnJBNnl4eGtReWlfWXlmVUowS29TYWx0WnNwVkJPaW9uUF9mQWRDRzN0MjdDaE9mejJXc2hoRHA1azI1S3o4eU0td0R3Zjh6TzNZRDNLX1lDYnFLZlN6bGVOdF93aWNia1AxaDBxQVNDaV9UcTlyWE95YkRXdWljUllBaGFOcjBk0gGoAUFVX3lxTE9TLUF5eGZqWEcyQWF1MHNHSnRMaEs4SUlqME4xQTFvZzZVbnJ6OE1fVTQxM2V1QkZVeGg0S1U1ejV4N2pQSjdKSGpYZlVjU1NxdFdJVHNYd2tlSmR3OGhZV00yeXBsSWg1a0RKenE2bUtGUTdYOWwycUJOblhfWFZMY2JXVTlIVHVoWDNQdFhFS1hwUGxCcVlOMEJ2SXYtN1pyREhpOFN5Uw?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASW-26NOV23-3.6200",
+   "t": 1795237200,
+   "t_iso": "2026-11-21T05:00:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXAAAGASW-26NOV23-3.6200",
+   "title": "Will average **gas prices** be above $3.6200?",
+   "to": 0.97,
+   "topic": "gas-prices",
+   "window": "hours"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794987781&end_ts=1795246981&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -138,7 +145,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794987781&end_ts=1795246981&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -165,7 +172,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794987656&end_ts=1795246856&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794987781&end_ts=1795246981&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -186,7 +193,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T07:41:28.540924+00:00",
+ "generated_at": "2026-11-21T07:43:32.324191+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
