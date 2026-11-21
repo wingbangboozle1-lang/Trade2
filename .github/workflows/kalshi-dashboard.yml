@@ -42,7 +42,14 @@ jobs:
         run: |
           node --check assets/alerts-view.js
           node --check assets/desk.js
+          node --check assets/live-feed.js
           node --test test/alerts-view.test.mjs
+          # The browser live pulse (assets/live-feed.js + assets/desk.js) had no
+          # CI coverage until session arena-7695ba1b: a comma-joined
+          # `?tickers=A,B` request shape made the pulse measure nothing while
+          # the panel reported healthy readings. These two suites pin the
+          # documented request shape and the detector's rules.
+          node --test test/live-feed.test.mjs test/live-feed-url.test.mjs
 
       - name: Collect
         env:

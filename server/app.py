@@ -179,8 +179,17 @@ class Handler(SimpleHTTPRequestHandler):
         instead of going dark. The response is passed through unchanged so the
         page parses one shape either way.
         """
-        raw = (query.get("tickers") or [""])[0]
-        tickers = [t.strip() for t in raw.split(",") if t.strip()][:100]
+        # `tickers` is a string[] query parameter, so the browser sends one
+        # occurrence per ticker. Accept every occurrence AND a comma-joined
+        # list, so the proxy works with either shape and always forwards the
+        # full set to the exchange (which requires the repeated form).
+        tickers = []
+        for raw in (query.get("tickers") or []):
+            for part in raw.split(","):
+                part = part.strip()
+                if part:
+                    tickers.append(part)
+        tickers = tickers[:100]
         if not tickers:
             return self._json({"error": "tickers is required"}, HTTPStatus.BAD_REQUEST)
         client = KalshiClient(DEMO_REST)
