@@ -960,13 +960,13 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | --- | --- | --- | --- | --- |
-| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | active |
+| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | done |
 
 | # | Task | Status | Owner | File scope |
 | --- | --- | --- | --- | --- |
-| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | in progress | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
+| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | done | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
 
-**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `9f93a6a`, a collector refresh committed at 19:27:39Z after PR #21's root-site redesign and PR #27's coordination/Pages-deployment record. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 keeps detections as review items rather than fills, will flag repeated tickers when they actually occur, and will keep Culture + Entertainment provenance distinct from the Culture-only category query. PR #25's previous head passed collector CI, but the rebased head needs fresh checks.
+**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `8b5d701`, the PR #25 merge after PR #21's root-site redesign, PR #27's coordination/Pages-deployment record, and the `19:27:39Z` collector refresh. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 is complete: counts render accurately, Culture + Entertainment provenance remains distinct from the Culture-only category query, and repeated alerts are review items rather than fills.
 
 ### 2026-11-20 — `arena-c78c9b36` — final-main integration record (PR #25)
 
@@ -1889,3 +1889,7 @@ additively) are untouched here.
   for ~40 minutes while Pages kept serving a healthy-looking page (its age badge is
   the only honest signal). Recommend an ordering rule for every publishing workflow:
   render/link checks after the commit step, or a `commit` job that runs regardless.
+
+- Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
+- PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
+- Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
