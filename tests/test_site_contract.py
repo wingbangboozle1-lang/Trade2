@@ -11,9 +11,14 @@ change can silently break.
      contract to the winning side — Yes holders on a Yes outcome *and* No
      holders on a No outcome. Wording that implies NO never pays is a factual
      error, not a style choice.
-  3. **Fees carry their assumption.** The ledger applies taker multiplier 1 to
-     every series while the schedule sets M per series, so that must stay
-     visible on the Flagged-for-Review page with its official sources.
+  3. **Fees carry their basis.** Both engines read each series' own
+     ``fee_multiplier`` / ``fee_type`` from the official ``GET /series``
+     response and print that basis per row, so the Flagged-for-Review page
+     publishes the remaining *source* disagreement (the fee PDF vs the demo
+     API field for some series) with its official sources, and the
+     methodology page may never again claim a blanket "multiplier of 1 for
+     every series" — that stopped being true when the collector's ledger
+     started threading the series multiplier (request R-79CC-1, Board J).
 
 `tools/root_pages_render.mjs` covers the DOM side of the same contract.
 """
@@ -114,8 +119,12 @@ class TestFeeAssumptionIsFlagged(unittest.TestCase):
         self.assertIn("fee_multiplier", body)
 
     def test_it_is_rendered_on_the_flagged_page(self):
+        # R-1E3-2: the flagged item describes the *source disagreement* (fee
+        # PDF vs GET /series field) rather than the pre-2026-11-21 code path;
+        # the title is HTML-escaped on render, so assert the apostrophe-free
+        # prefix.
         page = read("review.html")
-        self.assertIn("Taker fees use a multiplier of 1 for every series", page)
+        self.assertIn("The fee PDF and the demo API disagree about some series", page)
         self.assertIn("trade-api/v2/series/KXBTCY", page)
 
 
@@ -140,10 +149,13 @@ class TestNegativeMoney(unittest.TestCase):
 class TestFeeClaimIsScoped(unittest.TestCase):
     """The methodology page must not overstate fee coverage.
 
-    ``trading/engine.py`` reads each market's ``fee_multiplier``;
-    ``collector/engine.py`` — the ledger behind ``trades.html`` — does not. A
-    blanket "fee-free series are respected" sentence on the page that publishes
-    the collector's numbers is a factual claim about code, so it is pinned here.
+    Both engines now read each market's ``fee_multiplier`` (``trading/engine.py``
+    since its inception; ``collector/engine.py`` since request R-79CC-1 landed),
+    print the basis per row, and fall back to the schedule's default M = 1 only
+    when a series lookup is unavailable. A sentence claiming the collector's
+    ledger "applies a multiplier of 1 to every series" is a factual claim about
+    code that stopped being true, so it is pinned *gone* here, and the accurate
+    scoping is pinned present.
     """
 
     def test_fees_section_names_both_engines(self):
@@ -151,13 +163,13 @@ class TestFeeClaimIsScoped(unittest.TestCase):
         i = blob.index("Fees")
         section = blob[i:i + 1600]
         self.assertIn("trading/", section)
-        self.assertIn("applies a multiplier of 1", section)
+        self.assertIn("fee_multiplier", section)
+        self.assertIn("GET /series", section)
         self.assertIn("review.html", section)
 
-    def test_the_unqualified_claim_is_gone(self):
+    def test_the_false_blanket_claim_stays_gone(self):
         blob = re.sub(r"\s+", " ", read("methodology.html"))
-        self.assertNotIn("Fee-free series (multiplier 0) are respected via each "
-                         "series' own <code>fee_multiplier</code>.</p>", blob)
+        self.assertNotIn("applies a multiplier of 1 to every series", blob)
 
 
 class TestAgeLabel(unittest.TestCase):

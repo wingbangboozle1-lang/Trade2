@@ -24,6 +24,14 @@
  * (ignore the shortlist; re-gate it client-side) turn this file red; the clean
  * tree is green.
  *
+ * 2026-11-21, session arena-bc051b95 (Board K): the merged PR #28 order-book
+ * side-car (`snapshot.shortlist`: picks + verdicts from collector/shortlist.py)
+ * is now the first layer of the model chat, ahead of the gated
+ * `high_roi_alerts` rows on tickers the book model did not price, with the
+ * published-signals fallback unchanged underneath both. The main-fixture
+ * expectations count all three layers from the snapshot itself and identify
+ * each rendered row by content; the fallback fixtures are unchanged.
+ *
  * Run: node test/desk_render_dc732aa6.mjs
  */
 import fs from "node:fs";
@@ -107,18 +115,27 @@ const modelRows = doc.querySelectorAll("#feedModel .chat-row");
 const deskRows = doc.querySelectorAll("#deskRows tr");
 
 /* Model-chat contract since merged PR #40 (arena-5bbd15fd, T-D3; pinned in
- * Python by tests/test_chat_rows.py): the chat shows the collector's gated
- * shortlist (`high_roi_alerts`), and when that is empty it shows the
- * collector's published `signals` (top ≤ 8) — a healthy signal with no
- * matching ≥ $0.10 swing must still reach the chat. Either way every row is
- * published by the collector; desk.js never re-gates client-side. The original
- * assertion predates the fallback and failed on main (run 44808226182) the
- * moment the snapshot legitimately held signals with no gated swing rows
- * ("expected 0, got 5"). Aligned 2026-11-20 by session arena-479bbd2f (F-479-1). */
+ * Python by tests/test_chat_rows.py), extended 2026-11-21 by the merged PR #28
+ * order-book side-car (session arena-dd1da6b5, aligned by arena-bc051b95):
+ * the chat shows the book-model rows published in `shortlist` (picks + a
+ * verdict for every alerted market), then any gated `high_roi_alerts` row on a
+ * ticker the book model did not price, and only when BOTH of those are empty
+ * it falls back to the collector's published `signals` (top ≤ 8). Every row is
+ * published data; desk.js never re-gates client-side. The original assertion
+ * predates the fallback and failed on main (run 44808226182) the moment the
+ * snapshot legitimately held signals with no gated swing rows ("expected 0,
+ * got 5"); the F-479-1 alignment pinned the pre-side-car contract. */
 const gatedShortlist = snapshot.high_roi_alerts || [];
 const publishedSignals = snapshot.signals || [];
-const expectedModelRows = gatedShortlist.length
-  ? Math.min(200, gatedShortlist.length)
+const bookModel = snapshot.shortlist || {};
+const bookModelRows = (bookModel.picks || []).length + (bookModel.verdicts || []).length;
+const bookCovered = new Set([
+  ...(bookModel.picks || []).map((p) => p.ticker),
+  ...(bookModel.verdicts || []).map((v) => v.ticker),
+]);
+const extraGated = gatedShortlist.filter((a) => !bookCovered.has(a.ticker));
+const expectedModelRows = (bookModelRows || extraGated.length)
+  ? bookModelRows + extraGated.length
   : Math.min(8, publishedSignals.length);
 
 
@@ -130,7 +147,31 @@ check("all-events chat renders every buffered alert",
 check("model chat uses the published shortlist, not a client-side re-gate",
       modelRows.length === expectedModelRows,
       `expected ${expectedModelRows}, got ${modelRows.length}`);
-if (!gatedShortlist.length && publishedSignals.length) {
+if (bookModelRows || extraGated.length) {
+  /* Content teeth: every rendered model row must be either a book-model pick
+   * or verdict for a published ticker, or a gated alert row the book model
+   * did not price — never a row the client could have invented. */
+  const pickTickers = new Set((bookModel.picks || []).map((p) => p.ticker));
+  const verdictTickers = new Set((bookModel.verdicts || []).map((v) => v.ticker));
+  const extraTickers = new Set(extraGated.map((a) => a.ticker));
+  const rendered = Array.from(modelRows).map((r) => ({
+    isBook: r.className.includes("model-pick") || r.className.includes("model-verdict"),
+    // Book-model rows carry the ticker in their official-API source link
+    // (collector/shortlist.py sets source_url = {API}/markets/{ticker}); gated
+    // alert rows carry it in the chart button.
+    src: r.querySelector("a.source-link")?.getAttribute("href") || "",
+    ticker: r.querySelector("[data-chart]")?.getAttribute("data-chart"),
+  }));
+  const inBook = (row) =>
+    [...pickTickers, ...verdictTickers].some((t) =>
+      row.src.includes("/markets/" + t));
+  check("model chat rows are all published: book-model rows or uncovered gated alerts",
+        rendered.every((row) =>
+          (row.isBook && inBook(row)) ||
+          (!row.isBook && extraTickers.has(row.ticker))),
+        `${rendered.length} rows (book ${bookModelRows}, extra ${extraGated.length})`);
+}
+if (!bookModelRows && !extraGated.length && !gatedShortlist.length && publishedSignals.length) {
   const published = new Set(publishedSignals.map((s) => s.ticker));
   const rendered = Array.from(modelRows)
     .map((r) => r.querySelector("[data-chart]")?.getAttribute("data-chart"));
@@ -189,9 +230,17 @@ if (chartBtn) {
   check("market row click drives the chart selector (no alerts to click)", !!row,
         `selected ${sel2?.value}`);
 }
-check("an empty all-events feed explains itself",
+/* Session arena-27de8294: a chat with no row must still say what was measured.
+ * The old wording ("No ... 0.10 swing") read as "nothing happened" even when
+ * most tracked markets had no candle reference and the previous-snapshot
+ * fallback had nothing to compare against. Assert the stronger contract. */
+const emptyAllText = doc.querySelector("#feedAll").textContent;
+check("an empty all-events feed states what was measured",
       alerts.length > 0 ||
-      /No .*0\.10 swing/.test(doc.querySelector("#feedAll").textContent));
+      (/markets measured this snapshot/.test(emptyAllText) &&
+       /candle_quote_mid/.test(emptyAllText) &&
+       /previous_snapshot_mid/.test(emptyAllText)),
+      emptyAllText.slice(0, 160));
 
 check("the chart drew price lines and swing markers", drawn.strokes > 0 && drawn.texts > 0,
       JSON.stringify(drawn));

@@ -22,6 +22,7 @@ response it was read from. Nothing here is inferred.
 
 from __future__ import annotations
 
+import calendar
 import html
 import time
 from typing import Any
@@ -185,8 +186,12 @@ def age_label(generated_at: Any, generated_at_ts: Any = None) -> str:
             ts = None
     if ts is None and generated_at:
         try:
-            ts = time.mktime(time.strptime(str(generated_at)[:19],
-                                            "%Y-%m-%dT%H:%M:%S"))
+            # The stamp is ISO-8601 UTC ("…Z"); time.mktime would read it as
+            # *local* time and skew the age on any non-UTC runner.
+            # calendar.timegm is the correct UTC counterpart (R-79CC-2,
+            # session arena-f642a30a).
+            ts = calendar.timegm(time.strptime(str(generated_at)[:19],
+                                               "%Y-%m-%dT%H:%M:%S"))
         except (ValueError, TypeError):
             ts = None
     if ts is None:

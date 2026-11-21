@@ -50,6 +50,13 @@ MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
 # not because a trade happened. Design choice (not a Kalshi rule): require the
 # spread to be strictly below the $0.10 threshold. Logged in VERIFICATION_856e184e.md.
 ALERT_MAX_SPREAD = 0.10
+# R-F3-1 corroboration tolerance: a reference bar's quote mid must agree with the
+# same bar's trade price (``price.previous_dollars`` / ``price.close_dollars``)
+# to within this. A stray quote (one un-arbitraged level, e.g. KXPRESNOMD-28-BOBA's
+# 0.8820 ask against a 0.0050 trade) moves the quote mid without any trade behind
+# it; refusing that at the source is the point of this guard. It is the same
+# $0.10 swing threshold so the published reason lines up with the alert rule.
+REFERENCE_TRADE_TOLERANCE = SWING_THRESHOLD
 SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.5
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
@@ -86,16 +93,28 @@ class Observation:
     no_bid: float | None = None
     no_bid_size: float | None = None   # contracts at the best NO bid = YES ask size
     notional: float | None = None      # notional_value_dollars per contract
+    # Tick size: ``price_ranges[0].step``, documented on the market schema at
+    # https://docs.kalshi.com/api-reference/market/get-market ("Price step/tick
+    # size for this range in dollars"). Published next to the $0.10 threshold
+    # so a reader can see how many ticks a swing represents. None = the market
+    # object carried no price_ranges; the tick is then omitted, never guessed.
+    tick_size: float | None = None
     # Reference prices from the official candlestick record of the bar being
-    # measured against, when the collector has one (all three are documented
-    # closes at https://docs.kalshi.com/api-reference/market/get-market-candlesticks):
+    # measured against, when the collector has one (all documented fields of the
+    # candlestick schema at
+    # https://docs.kalshi.com/api-reference/market/get-market-candlesticks):
     #   ref_yes_bid / ref_yes_ask -> yes_bid.close_dollars / yes_ask.close_dollars
     #   ref_trade_close           -> price.close_dollars (last trade, never used
     #                                 as a swing basis - see 856e184e's quote rule)
+    #   ref_previous_dollars      -> price.previous_dollars (trade price at the
+    #                                 start of the reference bar; used only to
+    #                                 corroborate the reference quote mid - see
+    #                                 R-F3-1 in COORDINATION.md)
     ref_ts: float | None = None
     ref_yes_bid: float | None = None
     ref_yes_ask: float | None = None
     ref_trade_close: float | None = None
+    ref_previous_dollars: float | None = None
     status: str = "active"
     result: str = ""
     series_ticker: str = ""
@@ -199,12 +218,17 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         yes_bid, yes_ask = None, None
 
     ref = reference or {}
+    price_ranges = market.get("price_ranges") or []
+    tick = None
+    if price_ranges:
+        tick = dollars((price_ranges[0] or {}).get("step"))
     return Observation(
         ts=ts if ts is not None else time.time(),
         ref_ts=ref.get("ts"),
         ref_yes_bid=ref.get("yes_bid"),
         ref_yes_ask=ref.get("yes_ask"),
         ref_trade_close=ref.get("trade_close"),
+        ref_previous_dollars=ref.get("previous_dollars"),
         no_bid_size=no_bid_size,
         ticker=market.get("ticker", ""),
         event_ticker=market.get("event_ticker", ""),
@@ -219,6 +243,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         yes_bid_size=yes_bid_size,
         no_bid=no_bid,
         notional=dollars(market.get("notional_value_dollars")),
+        tick_size=tick,
         status=market.get("status", "active"),
         result=market.get("result", "") or "",
         series_ticker=market.get("series_ticker", "") or "",
@@ -240,6 +265,67 @@ def swing_quotes_ok(yes_bid: float | None, yes_ask: float | None) -> bool:
     """True only for a two-sided quote tighter than ALERT_MAX_SPREAD."""
     spread = quoted_spread(yes_bid, yes_ask)
     return spread is not None and 0.0 <= spread < ALERT_MAX_SPREAD
+
+
+def threshold_in_ticks(threshold: float,
+                       tick_size: float | None) -> float | None:
+    """How many of this market's ticks the $ threshold represents.
+
+    ``tick_size`` is the documented ``price_ranges[0].step``. None when the
+    tick is unknown or not positive — the UI then omits the ticks note rather
+    than inventing one.
+    """
+    if tick_size is None or tick_size <= 0:
+        return None
+    return round(threshold / tick_size, 1)
+
+
+def mark_reverted(alerts_list: list[dict[str, Any]],
+                  references: dict[str, dict[str, Any]],
+                  threshold: float = SWING_THRESHOLD) -> int:
+    """Annotate alerts that reverted within one candle (request R-3DCF-3).
+
+    ``references[ticker]["candles"]`` carries the completed 1-minute candles
+    bar_reference fetched for that market (each with its documented trade
+    close). For an alert, the first candle whose ``end_period_ts`` is strictly
+    after the alert's reference bar (``previous_ts`` for candle-basis rows, the
+    observation time otherwise) is "the next candle". When that candle's trade
+    close is back within ``threshold`` of the alert's previous level, the alert
+    gains ``reverted_within_candle = {candle_end_ts, trade_close,
+    previous_level}``. Rows keep a once-set annotation: a measured revert is a
+    fact that happened, not a state to clear when the candle ages out of the
+    fetch window. Returns the number of rows annotated this run.
+    """
+    annotated = 0
+    for alert in alerts_list:
+        if alert.get("reverted_within_candle"):
+            continue
+        ref = references.get(alert.get("ticker") or "") or {}
+        candles = [c for c in (ref.get("candles") or []) if c.get("ts")]
+        if not candles:
+            continue
+        after = alert.get("previous_ts")
+        if after is None:
+            after = alert.get("ts")
+        if after is None:
+            continue
+        nxt = min((c for c in candles if c["ts"] > after),
+                  key=lambda c: c["ts"], default=None)
+        if not nxt:
+            continue
+        close = nxt.get("trade_close")
+        prev_level = alert.get("previous")
+        if close is None or prev_level is None:
+            continue
+        if abs(close - prev_level) + 1e-9 < threshold:
+            alert["reverted_within_candle"] = {
+                "candle_end_ts": nxt["ts"],
+                "trade_close": close,
+                "previous_level": prev_level,
+                "check_basis": "official 1-minute candlestick trade close",
+            }
+            annotated += 1
+    return annotated
 
 
 QUOTE_BASES = ("candle_quote_mid", "previous_snapshot_mid")
@@ -351,6 +437,44 @@ def _swing(previous: Observation | None, current: Observation,
     direction = "up" if delta > 0 else "down"
     spread = quoted_spread(current.yes_bid, current.yes_ask)
 
+    # --- trade-price corroboration (R-F3-1, COORDINATION.md board L) -------
+    # The reference is a *quote* mid. A quote mid can move on a single stray,
+    # un-arbitraged level with no trade behind it (observed on
+    # KXPRESNOMD-28-BOBA: quote ask close 0.8820 against a trade price of
+    # 0.0050). The candle also publishes the bar's trade price, so compare the
+    # reference quote mid against it. If they disagree by at least the swing
+    # threshold, the reference quote is not corroborated by trades and the
+    # candidate swing is a quote artefact: refuse it here, at the source, and
+    # publish the refusal (never hide it) the same way the quote rule does.
+    # Only the candle basis has a trade price to compare against; the
+    # previous-snapshot fallback never carries one and is left untouched.
+    trade_ref = current.ref_previous_dollars
+    trade_basis = "price.previous_dollars"
+    if trade_ref is None:
+        trade_ref = current.ref_trade_close
+        trade_basis = "price.close_dollars"
+    if basis == "candle_quote_mid" and trade_ref is not None:
+        ref_trade_gap = round(base - trade_ref, 4)
+        if abs(ref_trade_gap) + 1e-9 >= REFERENCE_TRADE_TOLERANCE:
+            sup = suppress(
+                f"reference quote mid {base:.4f} is not corroborated by the "
+                f"candle trade price {trade_basis} {trade_ref:.4f} "
+                f"(gap {abs(ref_trade_gap):.4f} >= ${REFERENCE_TRADE_TOLERANCE:.2f}), "
+                "so the move is a stray quote, not a trade")
+            if sup[1] is not None:
+                sup[1]["trade_price"] = trade_ref
+                sup[1]["trade_price_basis"] = trade_basis
+                sup[1]["trade_price_gap"] = ref_trade_gap
+                sup[1]["corroboration"] = "uncorroborated"
+            return sup
+    corroboration = None
+    corroboration_gap = None
+    if trade_ref is not None:
+        corroboration_gap = round(base - trade_ref, 4)
+        corroboration = ("corroborated"
+                         if abs(corroboration_gap) + 1e-9
+                         < REFERENCE_TRADE_TOLERANCE else "uncorroborated")
+
     # --- executability ---------------------------------------------------
     # Buy YES at the ask (implied by the best NO bid); sell YES into the YES bid.
     ref_bid, ref_ask = _mid_and_spread(base, reference_spread)
@@ -405,6 +529,10 @@ def _swing(previous: Observation | None, current: Observation,
         "basis": basis,                       # alias used by the site templates
         "price_pair": "quote mid to quote mid",
         "spread": spread,
+        "trade_price": trade_ref,
+        "trade_price_basis": trade_basis if trade_ref is not None else None,
+        "trade_price_gap": corroboration_gap,
+        "corroboration": corroboration,
         "size_at_top": size,
         "size_name": size_name,
         "executable": {
@@ -423,6 +551,10 @@ def _swing(previous: Observation | None, current: Observation,
         "first_seen_ts": current.ts,
         "last_seen_ts": current.ts,
         "repeat_count": 0,
+        # Tick size from the documented price_ranges[0].step (R-F3-2), so the
+        # row can state how many ticks the $0.10 threshold represents.
+        "tick_size": current.tick_size,
+        "threshold_ticks": threshold_in_ticks(threshold, current.tick_size),
     }
     return alert, None
 
@@ -857,6 +989,7 @@ def rank_events(observations: Iterable[Observation]) -> list[dict[str, Any]]:
             "notional_per_contract": notional,
             "open_interest_notional": round(oi * notional, 2),
             "dollar_activity": round(oi * notional, 2),
+            "tick_size": obs.tick_size,
             "status": obs.status,
             "result": obs.result,
             "close_time": obs.close_time,
