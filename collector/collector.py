@@ -57,9 +57,18 @@ RESOLUTION_TOPIC_FLOOR = 100
 # returned only gas-prices and crypto. The documented ``min_settled_ts`` filter
 # (https://docs.kalshi.com/api-reference/market/get-markets) bounds the window; the
 # store keeps accumulating, so a run only has to overlap the previous run's window.
-SETTLED_LOOKBACK_S = 2 * 3600   # settled after now - 2h; runs every 5 min, so gaps are covered
+SETTLED_LOOKBACK_S = 2 * 3600   # settled after now - 2h (supplement only; see WATCH_*)
 SETTLED_PAGE_SIZE = 1000        # documented maximum for GET /markets ``limit``
-SETTLED_DEFAULT_CAP = 10000     # default ``settle_scan``: at most 10 pages per run
+SETTLED_DEFAULT_CAP = 3000      # default ``settle_scan``: at most 3 pages per run
+# Resolution watchlist (session arena-67bd954a / R1, rev. 2). The 2-hour exchange-wide
+# window is not enough: in the live run of 2026-11-21 it returned 10,000 settled markets
+# (truncated), almost all 15-minute crypto, and no elections, culture or golf. So every
+# in-scope market the collector has seen open is kept on a watchlist and checked BY TICKER
+# (documented ``tickers`` filter) until Kalshi reports a yes/no result. That is the
+# brief's "track the event until it resolves", done directly.
+WATCH_BATCH = 50                # tickers per GET /markets?tickers=... request
+WATCH_MAX_CALLS = 30            # lookups per run: at most 1,500 watched tickers
+WATCH_TTL_S = 14 * 86400        # an unresolved ticker not seen open for 14 days is dropped
 MAX_EQUITY_POINTS = 1500
 BAR_SECONDS = 300         # reference bar for swing measurement (5 minutes)
 REFERENCE_MARKET_CAP = 50   # markets per topic to ask for a reference bar
@@ -184,9 +193,9 @@ def scan_settled(client: KalshiClient, now: float,
     return out, info
 
 
-def lookup_held_settled(client: KalshiClient, tickers: list[str],
-                        batch: int = 50) -> tuple[list[dict[str, Any]], list[str]]:
-    """Settled rows (result yes/no) for open simulated positions outside the window.
+def lookup_settled_tickers(client: KalshiClient, tickers: list[str],
+                           batch: int = WATCH_BATCH) -> tuple[list[dict[str, Any]], list[str]]:
+    """Settled rows (result yes/no) for specific market tickers.
 
     Uses the documented ``tickers`` filter on GET /markets ("Comma-separated list of
     market tickers to retrieve",
@@ -202,12 +211,37 @@ def lookup_held_settled(client: KalshiClient, tickers: list[str],
             page = client._request("GET", "/markets", {
                 "tickers": ",".join(chunk), "limit": SETTLED_PAGE_SIZE})
         except KalshiHTTPError as exc:
-            errors.append(f"held-position lookup failed ({exc})")
+            errors.append(f"ticker lookup failed ({exc})")
             continue
         for market in page.get("markets") or []:
             if market.get("ticker") and market.get("result") in ("yes", "no"):
                 rows.append(market)
     return rows, errors
+
+
+def update_watchlist(watch: dict[str, dict[str, Any]], seen: dict[str, str],
+                     holdings: set[str], now: float) -> int:
+    """Refresh the resolution watchlist in place and return its size.
+
+    ``seen`` maps every in-scope ticker observed this run to its topic; ``holdings`` are
+    open simulated positions. Both are watched. Entries not seen open for
+    ``WATCH_TTL_S`` are dropped, so the list cannot grow without bound.
+    """
+    for ticker, topic in seen.items():
+        entry = watch.setdefault(ticker, {"topic": topic, "last_seen": now, "last_checked": 0})
+        entry["topic"] = topic
+        entry["last_seen"] = now
+    for ticker in holdings:
+        entry = watch.setdefault(ticker, {"topic": None, "last_seen": now, "last_checked": 0})
+        entry["last_seen"] = now
+    for ticker in [t for t, e in watch.items() if now - float(e.get("last_seen") or 0) > WATCH_TTL_S]:
+        del watch[ticker]
+    return len(watch)
+
+
+def pick_watchlist(watch: dict[str, dict[str, Any]], limit: int) -> list[str]:
+    """The ``limit`` watched tickers checked longest ago (never-checked first)."""
+    return sorted(watch, key=lambda t: (float(watch[t].get("last_checked") or 0), t))[:limit]
 
 
 def migrate_resolutions(store: dict[str, Any],
@@ -691,20 +725,34 @@ def collect(market_cap: int = 150, orderbook_cap: int = 300,
     settled_markets: list[dict[str, Any]] = []
     settled_info: dict[str, Any] = {}
     t_settle = time.time()
+    # Every in-scope market seen open this run, plus open simulated positions, is watched
+    # until it resolves (see WATCH_*). The watchlist lives in the resolutions store.
+    watch: dict[str, dict[str, Any]] = resolutions.setdefault("watch", {})
+    seen_topics = {o.ticker: o.topic for o in observations if o.topic}
+    watch_size = update_watchlist(watch, seen_topics, holdings, now)
     if time.time() < deadline:
         try:
             settled_markets, settled_info = scan_settled(client, now, settle_scan)
         except KalshiHTTPError as exc:
             errors.append(f"settled scan failed ({exc})")
-        # An open simulated position must be graded even when its market settled
-        # before the window. Look those tickers up directly (documented ``tickers``
-        # filter, comma-separated) instead of hoping the window still covers them.
-        held_missing = sorted(holdings - {m.get("ticker") for m in settled_markets})
-        held_rows, lookup_errors = lookup_held_settled(client, held_missing)
-        settled_markets.extend(held_rows)
+        # Check the watchlist by ticker, least recently checked first, bounded per run.
+        checking = pick_watchlist(watch, WATCH_BATCH * WATCH_MAX_CALLS)
+        watched_rows, lookup_errors = lookup_settled_tickers(client, checking)
         errors.extend(lookup_errors)
-        settled_info["held_lookups"] = len(held_missing)
-        settled_info["held_settled_found"] = len(held_rows)
+        for ticker in checking:
+            if ticker in watch:
+                watch[ticker]["last_checked"] = now
+        already = {m.get("ticker") for m in settled_markets}
+        newly = [r for r in watched_rows if r.get("ticker") not in already]
+        settled_markets.extend(newly)
+        # A watched market that has a yes/no result is done, whichever pass found it.
+        for market in settled_markets:
+            if (market.get("result") or "").lower() in ("yes", "no"):
+                watch.pop(market.get("ticker"), None)
+        settled_info["watch_size"] = watch_size
+        settled_info["watch_checked"] = len(checking)
+        settled_info["watch_resolved"] = len(newly)
+        settled_info["watch_remaining"] = len(watch)
 
     lap("settled_scan", t_settle)
     resolution_memo: dict[str, str | None] = {}
