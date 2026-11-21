@@ -1094,10 +1094,20 @@
    *    preview origin the exchange has never seen.
    * A failure of both is reported on the panel; the rows are never fabricated. */
   function pulseUrls() {
-    var list = pulse.tickers.map(encodeURIComponent).join(",");
-    var urls = ["https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks?tickers=" + list];
+    /* `tickers` is a string[] query parameter, so each ticker is its own
+     * `tickers=` occurrence. A comma-joined value is read by the exchange as
+     * one ticker named "A,B" and comes back with an empty book — which
+     * silently starves the pulse. LiveFeed.batchOrderbookUrl() builds the
+     * documented form and is unit-tested (test/live-feed-url.test.mjs). */
+    var urls = [];
+    var direct = LiveFeed.batchOrderbookUrl(
+      "https://external-api.demo.kalshi.co/trade-api/v2/markets/orderbooks",
+      pulse.tickers);
+    if (direct) urls.push(direct);
     if (/^https?:$/.test(location.protocol)) {
-      urls.push(location.origin + "/api/orderbooks?tickers=" + list);
+      var proxied = LiveFeed.batchOrderbookUrl(location.origin + "/api/orderbooks",
+                                               pulse.tickers);
+      if (proxied) urls.push(proxied);
     }
     return urls;
   }
@@ -1135,6 +1145,15 @@
           if (!pulse.meta[t]) return;
           quotes[t] = { meta: pulse.meta[t], quote: LiveFeed.quoteFromBook(books[t]) };
         });
+        /* If none of the returned books is one of the tracked tickers, the
+         * request shape was wrong (e.g. a comma-joined `tickers` value is
+         * read by the exchange as one ticker with commas in its name). Report
+         * it instead of counting a healthy-looking refresh that measured
+         * nothing. */
+        if (!Object.keys(quotes).length) {
+          throw new Error("no tracked ticker in response (" +
+            Object.keys(books).length + " unmatched)");
+        }
         var out = pulse.detector.ingest(quotes, started);
         pulse.refreshes += 1;
         pulse.error = "";
