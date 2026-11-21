@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-21T10:39:57Z",
+ "generated_at": "2026-11-21T11:37:20Z",
  "parameters": {
   "swing_threshold": 0.1,
   "hold_bars": 12,
@@ -20,147 +20,135 @@
  "book_freshness": [
   {
    "book": "docs-sim book",
-   "book_generated_at": "2026-11-21T10:24:49.636923+00:00",
-   "hours_before_this_analysis": 0.25
+   "book_generated_at": "2026-11-21T11:16:21.759909+00:00",
+   "hours_before_this_analysis": 0.35
   },
   {
    "book": "root book",
-   "book_generated_at": "2026-11-21T10:15:04Z",
-   "hours_before_this_analysis": 0.41
+   "book_generated_at": "2026-11-21T11:04:04Z",
+   "hours_before_this_analysis": 0.55
   },
   {
    "book": "kalshi-dashboard book",
-   "book_generated_at": "2026-11-21T09:43:13.963Z",
-   "hours_before_this_analysis": 0.95
+   "book_generated_at": "2026-11-21T10:43:24.221Z",
+   "hours_before_this_analysis": 0.9
   }
  ],
- "max_book_age_hours": 0.95,
+ "max_book_age_hours": 0.9,
  "candle_series": [
   {
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "window": "minutes",
-   "points": 5,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "points": 6,
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6200",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6400",
    "window": "minutes",
-   "points": 5,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "points": 6,
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXAAAGASW-26NOV23-3.6400",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXDOGED-26NOV2117-T0.0499999",
    "window": "hours",
    "points": 1,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXDOGED/markets/KXDOGED-26NOV2117-T0.0499999/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
-  },
-  {
-   "ticker": "KXETHD-26NOV2117-T1459.99",
-   "window": "minutes",
-   "points": 1,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1459.99/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
-  },
-  {
-   "ticker": "KXETHD-26NOV2117-T1499.99",
-   "window": "minutes",
-   "points": 1,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXETHD/markets/KXETHD-26NOV2117-T1499.99/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXDOGED/markets/KXDOGED-26NOV2117-T0.0499999/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXPGATOUR-THRC26-MPEN",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MPEN/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MPEN/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXPGATOUR-THRC26-MPEN",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MPEN/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MPEN/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXPGATOUR-THRC26-MTHO",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXPGATOUR-THRC26-MTHO",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXPRESNOMD-28-BOBA",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXPRESNOMD-28-BOBA",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXPRESNOMD-28-JOSS",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXPRESNOMD-28-JOSS",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXPRESNOMD-28-JTAL",
    "window": "minutes",
    "points": 6,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JTAL/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JTAL/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXPRESNOMD-28-JTAL",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JTAL/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JTAL/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXRT-FUR-85",
    "window": "minutes",
-   "points": 2,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "points": 1,
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXRT-FUR-85",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   },
   {
    "ticker": "KXRT-HUN-65",
    "window": "minutes",
    "points": 1,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795235056&end_ts=1795256656&period_interval=60"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795238149&end_ts=1795259749&period_interval=60"
   },
   {
    "ticker": "KXRT-HUN-65",
    "window": "hours",
    "points": 3,
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
   }
  ],
  "round_trips": [
@@ -1482,7 +1470,7 @@
      "result": "win",
      "ticker": "KXAAAGASW-26NOV23-3.6400",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "momentum",
@@ -1501,7 +1489,7 @@
      "result": "win",
      "ticker": "KXPGATOUR-THRC26-MTHO",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "momentum",
@@ -1520,7 +1508,7 @@
      "result": "loss",
      "ticker": "KXRT-FUR-85",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "momentum",
@@ -1539,7 +1527,7 @@
      "result": "loss",
      "ticker": "KXRT-HUN-65",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     }
    ]
   },
@@ -1572,7 +1560,7 @@
      "result": "loss",
      "ticker": "KXAAAGASW-26NOV23-3.6400",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "mean-reversion",
@@ -1591,7 +1579,7 @@
      "result": "loss",
      "ticker": "KXPGATOUR-THRC26-MTHO",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "mean-reversion",
@@ -1610,7 +1598,7 @@
      "result": "win",
      "ticker": "KXRT-FUR-85",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     },
     {
      "rule": "mean-reversion",
@@ -1629,7 +1617,7 @@
      "result": "win",
      "ticker": "KXRT-HUN-65",
      "window": "hours",
-     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440"
+     "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440"
     }
    ]
   },
