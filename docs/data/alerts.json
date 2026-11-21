@@ -1,7 +1,41 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795202647&end_ts=1795224247&period_interval=60",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795224411&end_ts=1795228011&period_interval=1",
+   "delta": -0.22,
+   "direction": "down",
+   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+   "flags": [],
+   "from": 0.39,
+   "headlines": [
+    {
+     "published": "2026-11-20T23:33:00+00:00",
+     "source": "Golfweek",
+     "status": "verified-fetch",
+     "title": "RSM Classic FedEx Cup Fall bubble: Who\u2019s in, who\u2019s out for 2027 PGA Tour cards after 36 holes - Golfweek",
+     "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPMmxMVlR4R3ItNU5pWlJ5UUF0NnBqczJyWTh6NGphZHhCaDlZUDMtQUVrNWQwWDJpS2ZucDFkVFRESHBnLWFUbi0zWWRyTVFWYzVDdHMwRzh2NEc4bWpmNTZNM1NNbFdnY3M0Nk03RXRvblpKLWtwWEhEUHRKTHNzeE5YS1gzZTB4ekhBQ2FBSk5aV3ZEbDUzZFJqRWgzTVYySFZQRzRQTXM2emt0dG1LWlU5Q21MdWpPT2pPdWF1LUIwa3RERjBUSGRES0FWaWtE?oc=5"
+    },
+    {
+     "published": "2026-11-20T21:17:21+00:00",
+     "source": "PGA Tour",
+     "status": "verified-fetch",
+     "title": "Highlights | Round 2 | The RSM Classic | 2026 - PGA Tour",
+     "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNamY1MXVMaW1HcVJ3dTROUmdJVmw0WTZRTklUTW51VDIxR09UNV9pekhtVmI4WnNHemQ0Q21icThXWTNYZDlCYUxtb3JvcWxsVnh3V2tJTXRSbnItdEwwT3BfdEJJYTZFYkxRaFlnbUtFYllYLTdGRUthOFlnWXd3Nk5ueWI0bXk5VVBpd2JZdlk4b0xFLUVIbw?oc=5"
+    }
+   ],
+   "news_status": "ok",
+   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
+   "t": 1795226640,
+   "t_iso": "2026-11-21T02:04:00+00:00",
+   "threshold": 0.1,
+   "ticker": "KXPGATOUR-THRC26-MTHO",
+   "title": "The RSM Classic: Michael Thorbjornsen wins",
+   "to": 0.17,
+   "topic": "golf",
+   "window": "seconds"
+  },
+  {
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-JOSS/candlesticks?start_ts=1795206411&end_ts=1795228011&period_interval=60",
    "delta": -0.73,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -9,7 +43,7 @@
    "from": 0.99,
    "headlines": [
     {
-     "published": "2026-11-20T22:06:49+00:00",
+     "published": "2026-11-21T00:21:01+00:00",
      "source": "The Washington Post",
      "status": "verified-fetch",
      "title": "Who gets to look presidential? - The Washington Post",
@@ -49,7 +83,7 @@
    "window": "minutes"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794968811&end_ts=1795228011&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -104,34 +138,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
-   "delta": 0.108,
-   "direction": "up",
-   "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [],
-   "from": 0.032,
-   "headlines": [
-    {
-     "published": "2026-11-20T07:32:43+00:00",
-     "source": "PGA Tour",
-     "status": "verified-fetch",
-     "title": "Michael Thorbjornsen sinks 21-foot birdie putt on No. 16 at The RSM - PGA Tour",
-     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQbHJidEFMdk1CcUlyenJKVmFwejJfRjRNd1ZXRE83T0F0ckUta1N4Z3dQSGJCOUdtOTFLZ1FYY25oSGlEQ0JUU1J5a1ptRzlzcE5zR3Z2Tk5maVc4aHFNaVZud29QM2hYODVzRGRiS1dwVDNzU3R1X2NVQjlSOVFiQVRabUJPVnVvd2x0QjBLM2w3VmthU2Y5Q20yOFJtTUkzUmFnSWw1OThicXVQQmVFQjJSSmEweEMy?oc=5"
-    }
-   ],
-   "news_status": "ok",
-   "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPGATOUR-THRC26-MTHO",
-   "t": 1795150800,
-   "t_iso": "2026-11-20T05:00:00+00:00",
-   "threshold": 0.1,
-   "ticker": "KXPGATOUR-THRC26-MTHO",
-   "title": "The RSM Classic: Michael Thorbjornsen wins",
-   "to": 0.14,
-   "topic": "golf",
-   "window": "hours"
-  },
-  {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794968811&end_ts=1795228011&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -152,7 +159,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-75/candlesticks?start_ts=1794968811&end_ts=1795228011&period_interval=1440",
    "delta": 0.2,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -179,7 +186,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794965047&end_ts=1795224247&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794968811&end_ts=1795228011&period_interval=1440",
    "delta": 0.18,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -192,13 +199,6 @@
      "status": "verified-fetch",
      "title": "Why Are Gasoline Prices Falling? Thank the Diesel Shortage - Bloomberg.com",
      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOTlFkVG1FeDdLZmMtTVVOOFZSOUFSMVB6UDRQOHo1OXJ6d0l6X1hndTN2VUhFMXpwSGxWWmt5NEFTZ3FCX2dUeFJNdDRLNFhzbmZ6RFFXUldXcTJjQnZvZ1ZaZE82ZWlLal9hZ1JQaWtCdjduSldMUjhQMzBFcnJ2UFdManBzZ3BSeVh5dXdvUXd1NXhMVDYyMk5RTlhzdThOSFYzNVM5MVRvVXVhYkI2ZzhzTnE1ZnM?oc=5"
-    },
-    {
-     "published": "2026-11-19T06:49:53+00:00",
-     "source": "Peradaban.id",
-     "status": "verified-fetch",
-     "title": "Iowa Gasoline Prices Fall 25 Cents to $3.57 - Peradaban.id",
-     "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBSTmRQQmJwZVg5M3RSODJoMk50NEdGcVJpRC1fbV9Sc1F3cTVVOFpObTFISkxYTHdQOHk1UFI4Tkx4RFNqc1pQZmNtd0RIRi13SEs0bmdtRVl1V181WGc?oc=5"
     },
     {
      "published": "2026-11-19T03:29:34+00:00",
@@ -220,7 +220,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T01:24:42.854098+00:00",
+ "generated_at": "2026-11-21T02:27:27.644620+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
