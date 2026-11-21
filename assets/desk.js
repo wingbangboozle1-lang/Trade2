@@ -182,6 +182,15 @@
     }
   }
 
+  /* The API root the snapshot was collected from, so a per-row source link
+   * points at the same demo environment the numbers came from. Falls back to
+   * the documented demo host when the snapshot does not carry one. */
+  var API_ROOT_FALLBACK = "https://external-api.demo.kalshi.co/trade-api/v2";
+  function apiRoot() {
+    var root = state.snapshot && state.snapshot.api_root;
+    return (typeof root === "string" && root) ? root.replace(/\/+$/, "") : API_ROOT_FALLBACK;
+  }
+
   /* ------------------------------------------------------------------ */
   /* chat feeds                                                          */
   /* ------------------------------------------------------------------ */
@@ -481,7 +490,9 @@
         "<td>$" + num(e.open_interest_notional) + "</td>" +
         "<td>" + (sig ? '<span class="tag tag-yes">' + esc(sig.side.toUpperCase()) +
           "</span>" : "—") + "</td>" +
-        "<td>" + (sig ? pct(sig.net_roi) : "—") + "</td>";
+        "<td>" + (sig ? pct(sig.net_roi) : "—") + "</td>" +
+        '<td><a class="source-link" target="_blank" rel="noreferrer" href="' +
+        esc(apiRoot() + "/markets/" + e.ticker) + '">API &#8597;</a></td>';
       tr.addEventListener("click", function (ev) {
         if (ev.target.tagName === "A") return;
         selectMarket(e.ticker, e.series_ticker);

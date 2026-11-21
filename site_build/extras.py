@@ -443,9 +443,11 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
             f"<td>{money(t.get('fee'))}</td>"
             f"<td>{money(t.get('realized'))}</td>"
             f"<td>{esc(t.get('note'))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{API}/markets/{html.escape(ticker)}">API &#8597;</a></td>'
             "</tr>")
     if not trade_rows:
-        trade_rows.append('<tr><td colspan="10" class="empty-state">No '
+        trade_rows.append('<tr><td colspan="11" class="empty-state">No '
                           "simulated trade has been opened yet. The ledger "
                           "fills when a strategy gate fires on a tracked "
                           "market.</td></tr>")
@@ -465,9 +467,11 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
             f"<td>{cents(p.get('entry_price'))}</td>"
             f"<td>{cents(p.get('current_price'))}</td>"
             f"<td>{money(p.get('unrealized'))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{API}/markets/{html.escape(ticker)}">API &#8597;</a></td>'
             "</tr>")
     if not open_rows:
-        open_rows.append('<tr><td colspan="8" class="empty-state">No open '
+        open_rows.append('<tr><td colspan="9" class="empty-state">No open '
                          "simulated position.</td></tr>")
 
     settled_rows = []
@@ -484,9 +488,11 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
             f"<td>{result_chip(p.get('result'))}</td>"
             f"<td class=\"{'positive' if (p.get('realized') or 0) >= 0 else 'negative'}\">"
             f"{money(p.get('realized'))}</td>"
+            f'<td><a class="source-link" target="_blank" rel="noreferrer" '
+            f'href="{API}/markets/{html.escape(ticker)}">API &#8597;</a></td>'
             "</tr>")
     if not settled_rows:
-        settled_rows.append('<tr><td colspan="6" class="empty-state">No '
+        settled_rows.append('<tr><td colspan="7" class="empty-state">No '
                             "simulated position has resolved yet.</td></tr>")
 
     topic_rows = []
@@ -596,7 +602,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
             <table>
               <thead><tr><th>When (UTC)</th><th>Market</th><th>Strategy</th>
                 <th>Side</th><th>Action</th><th>Contracts</th><th>Price</th>
-                <th>Fee</th><th>Realised</th><th>Note</th></tr></thead>
+                <th>Fee</th><th>Realised</th><th>Note</th><th>Source</th></tr></thead>
               <tbody>{''.join(trade_rows)}</tbody>
             </table>
           </div>
@@ -611,7 +617,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
             <table>
               <thead><tr><th>Market</th><th>Topic</th><th>Strategy</th>
                 <th>Side</th><th>Contracts</th><th>Entry</th><th>Last</th>
-                <th>Unrealised</th></tr></thead>
+                <th>Unrealised</th><th>Source</th></tr></thead>
               <tbody>{''.join(open_rows)}</tbody>
             </table>
           </div>
@@ -625,7 +631,7 @@ def build_trades(live: dict[str, Any], state: dict[str, Any]) -> str:
           <div class="table-wrap">
             <table>
               <thead><tr><th>Market</th><th>Strategy</th><th>Side</th>
-                <th>Entry</th><th>Result</th><th>P&amp;L</th></tr></thead>
+                <th>Entry</th><th>Result</th><th>P&amp;L</th><th>Source</th></tr></thead>
               <tbody>{''.join(settled_rows)}</tbody>
             </table>
           </div>
