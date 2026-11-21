@@ -50,6 +50,13 @@ MAX_SPREAD = 0.20        # skip books wider than this: mid is not meaningful
 # not because a trade happened. Design choice (not a Kalshi rule): require the
 # spread to be strictly below the $0.10 threshold. Logged in VERIFICATION_856e184e.md.
 ALERT_MAX_SPREAD = 0.10
+# R-F3-1 corroboration tolerance: a reference bar's quote mid must agree with the
+# same bar's trade price (``price.previous_dollars`` / ``price.close_dollars``)
+# to within this. A stray quote (one un-arbitraged level, e.g. KXPRESNOMD-28-BOBA's
+# 0.8820 ask against a 0.0050 trade) moves the quote mid without any trade behind
+# it; refusing that at the source is the point of this guard. It is the same
+# $0.10 swing threshold so the published reason lines up with the alert rule.
+REFERENCE_TRADE_TOLERANCE = SWING_THRESHOLD
 SHRINK = 0.50            # how strongly a wide spread pulls the fair value to 0.5
 MIN_EXECUTABLE_PRICE = 0.01   # $0.01 is the lowest valid quote on Kalshi's grid
 MIN_DEPTH_CONTRACTS = 10.0    # a market with no resting size is not tradable
@@ -87,15 +94,21 @@ class Observation:
     no_bid_size: float | None = None   # contracts at the best NO bid = YES ask size
     notional: float | None = None      # notional_value_dollars per contract
     # Reference prices from the official candlestick record of the bar being
-    # measured against, when the collector has one (all three are documented
-    # closes at https://docs.kalshi.com/api-reference/market/get-market-candlesticks):
+    # measured against, when the collector has one (all documented fields of the
+    # candlestick schema at
+    # https://docs.kalshi.com/api-reference/market/get-market-candlesticks):
     #   ref_yes_bid / ref_yes_ask -> yes_bid.close_dollars / yes_ask.close_dollars
     #   ref_trade_close           -> price.close_dollars (last trade, never used
     #                                 as a swing basis - see 856e184e's quote rule)
+    #   ref_previous_dollars      -> price.previous_dollars (trade price at the
+    #                                 start of the reference bar; used only to
+    #                                 corroborate the reference quote mid - see
+    #                                 R-F3-1 in COORDINATION.md)
     ref_ts: float | None = None
     ref_yes_bid: float | None = None
     ref_yes_ask: float | None = None
     ref_trade_close: float | None = None
+    ref_previous_dollars: float | None = None
     status: str = "active"
     result: str = ""
     series_ticker: str = ""
@@ -205,6 +218,7 @@ def observe(market: dict[str, Any], orderbook: dict[str, Any] | None,
         ref_yes_bid=ref.get("yes_bid"),
         ref_yes_ask=ref.get("yes_ask"),
         ref_trade_close=ref.get("trade_close"),
+        ref_previous_dollars=ref.get("previous_dollars"),
         no_bid_size=no_bid_size,
         ticker=market.get("ticker", ""),
         event_ticker=market.get("event_ticker", ""),
@@ -351,6 +365,44 @@ def _swing(previous: Observation | None, current: Observation,
     direction = "up" if delta > 0 else "down"
     spread = quoted_spread(current.yes_bid, current.yes_ask)
 
+    # --- trade-price corroboration (R-F3-1, COORDINATION.md board L) -------
+    # The reference is a *quote* mid. A quote mid can move on a single stray,
+    # un-arbitraged level with no trade behind it (observed on
+    # KXPRESNOMD-28-BOBA: quote ask close 0.8820 against a trade price of
+    # 0.0050). The candle also publishes the bar's trade price, so compare the
+    # reference quote mid against it. If they disagree by at least the swing
+    # threshold, the reference quote is not corroborated by trades and the
+    # candidate swing is a quote artefact: refuse it here, at the source, and
+    # publish the refusal (never hide it) the same way the quote rule does.
+    # Only the candle basis has a trade price to compare against; the
+    # previous-snapshot fallback never carries one and is left untouched.
+    trade_ref = current.ref_previous_dollars
+    trade_basis = "price.previous_dollars"
+    if trade_ref is None:
+        trade_ref = current.ref_trade_close
+        trade_basis = "price.close_dollars"
+    if basis == "candle_quote_mid" and trade_ref is not None:
+        ref_trade_gap = round(base - trade_ref, 4)
+        if abs(ref_trade_gap) + 1e-9 >= REFERENCE_TRADE_TOLERANCE:
+            sup = suppress(
+                f"reference quote mid {base:.4f} is not corroborated by the "
+                f"candle trade price {trade_basis} {trade_ref:.4f} "
+                f"(gap {abs(ref_trade_gap):.4f} >= ${REFERENCE_TRADE_TOLERANCE:.2f}), "
+                "so the move is a stray quote, not a trade")
+            if sup[1] is not None:
+                sup[1]["trade_price"] = trade_ref
+                sup[1]["trade_price_basis"] = trade_basis
+                sup[1]["trade_price_gap"] = ref_trade_gap
+                sup[1]["corroboration"] = "uncorroborated"
+            return sup
+    corroboration = None
+    corroboration_gap = None
+    if trade_ref is not None:
+        corroboration_gap = round(base - trade_ref, 4)
+        corroboration = ("corroborated"
+                         if abs(corroboration_gap) + 1e-9
+                         < REFERENCE_TRADE_TOLERANCE else "uncorroborated")
+
     # --- executability ---------------------------------------------------
     # Buy YES at the ask (implied by the best NO bid); sell YES into the YES bid.
     ref_bid, ref_ask = _mid_and_spread(base, reference_spread)
@@ -405,6 +457,10 @@ def _swing(previous: Observation | None, current: Observation,
         "basis": basis,                       # alias used by the site templates
         "price_pair": "quote mid to quote mid",
         "spread": spread,
+        "trade_price": trade_ref,
+        "trade_price_basis": trade_basis if trade_ref is not None else None,
+        "trade_price_gap": corroboration_gap,
+        "corroboration": corroboration,
         "size_at_top": size,
         "size_name": size_name,
         "executable": {
