@@ -54,6 +54,10 @@ jobs:
           python3 tools/probe_live_check.py --json probe-live.json 2>&1 | tee probe-check.log
           python3 tools/probe_shape_assert.py probe-live.json
 
+      - name: The shipped page, end to end, against the live API
+        run: |
+          node tools/live_e2e.mjs --json live-e2e.json
+
       - name: Upload the report
         if: always()
         uses: actions/upload-artifact@v4
