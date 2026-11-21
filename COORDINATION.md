@@ -1893,3 +1893,118 @@ additively) are untouched here.
 - Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
 - PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
 - Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
+
+---
+
+## Integration session — `arena-1ebe818a` (branch `arena/1ebe818a-trade2`, 2026-11-21)
+
+Session ID `arena-1ebe818a` · branch `arena/1ebe818a-trade2` · base `main` @
+`06738d1`. Claimed 2026-11-21. Role: **final integration** — merge the two open
+peer PRs, re-verify the combined tree line by line, confirm the site builds with
+no broken links, then PR → merge → confirm GitHub Pages.
+
+### Session registry (append)
+
+| Session ID | Branch | Role | Started (UTC) | Status |
+| - | - | - | - | - |
+| `arena-1ebe818a` | `arena/1ebe818a-trade2` | Final integration of PRs #28 + #29, re-verification, PR → merge → Pages | 2026-11-21 | active |
+
+### Task board (this session)
+
+| # | Task | Status | Owner | File scope |
+| - | - | - | - | - |
+| T-INT1 | Merge PR #28 + PR #29 into the integration branch, resolving conflicts without discarding peer work | done | `arena-1ebe818a` | all files brought in by the two PRs |
+| T-INT2 | Re-verify the combined tree (all suites, link check, row-source check, render checks) | done | `arena-1ebe818a` | read-only verification + the two defect fixes below |
+| T-INT3 | Fix defects the combined tree exposed (negative-money form; model-chat contract) | done | `arena-1ebe818a` | `collector/shortlist.py`, `assets/desk.js`, regenerated data/pages |
+| T-INT4 | PR integration branch → main, merge, confirm Pages deploy, record | in progress | `arena-1ebe818a` | `COORDINATION.md` |
+
+### What was integrated
+
+* **PR #28** (`arena/dd1da6b5-trade2`, merge-base `9cceb88`): order-book model
+  shortlist (`collector/shortlist.py`), candidate-news lookup (`collector/news.py`),
+  snapshot verification (`tools/verify_snapshot.py`), mid-history seeding
+  (`tools/seed_mid_history.py`), and the site/chat/news/shortlist rendering.
+* **PR #29** (`arena/c78c9b36-trade2`, merge-base `8b5d701`): COORDINATION.md
+  close-out of the T14 integration record.
+
+`main` (`06738d1`) was ahead of both PR bases and was **not** contained in either
+PR head, so both were merged into the integration branch (not fast-forwarded).
+
+### Merge conflicts resolved (no peer work discarded)
+
+| File | Conflict | Resolution |
+| - | - | - |
+| `assets/desk.js` | HEAD added the `signalRow` fallback; PR #28 added `newsFor`/`newsLinks`/`modelRows` and a different model-chat block | Kept **both** feature sets. The model-chat block was then corrected to the pinned contract (see T-INT3). |
+| `site_build/flagpage.py` | HEAD had the wide-spread flag block; PR #28 had the order-book-verification flag blocks | Appended both (additive list entries). |
+| `COORDINATION.md` (PR #29) | HEAD's updated integration-verification paragraph vs PR #29's older paragraph + PR #25 merge record | Append-only union: kept both. |
+| `categories/*.html`, `index.html`, `live.html`, `methodology.html`, `resolutions.html`, `review.html`, `suggestions.html`, `trades.html` | Generated pages with differing snapshot timestamps / generated cards | Regenerated from the merged snapshot via `python3 -m site_build.build` (the intended workflow). |
+
+### Defects found and fixed during re-verification (T-INT3)
+
+1. **Negative-money form (`$-0.0388`).** `collector/shortlist.py` formatted
+   negative edge/net with the sign after the symbol. Caught by
+   `tests/test_site_contract.py::TestNegativeMoney::test_no_page_shows_the_wrong_form`.
+   Fix: added `_usd()` (sign before the symbol) and applied it to every dollar
+   figure that can be negative. Regenerated `data/shortlist.json` +
+   `data/mid_history.json` and rebuilt the site. Source of the rule: the repo's
+   own `tests/test_site_contract.py` (money-form contract).
+2. **Model-chat contract.** The merged `assets/desk.js` rendered the order-book
+   `modelRows` plus extra high-ROI alerts, so the model chat showed 9 rows where
+   the collector published 3. Caught by
+   `test/desk_render_dc732aa6.mjs`. Fix: the model chat renders the collector's
+   published gated shortlist (`high_roi_alerts`) exactly, falling back to the
+   published `signals` (top ≤ 8) only when the gate is empty — matching the pinned
+   PR #40 contract. No client-side re-gate.
+
+### Verification performed on the combined tree (all green)
+
+| Check | Command | Result |
+| - | - | - |
+| Python unit tests | `python3 -m unittest discover -s tests` | 243 pass / 1 skip |
+| Node unit tests | `npm test` | 29 / 29 pass |
+| Internal link check | `python3 tools/linkcheck.py` | 50 pages, 685 internal links, 0 errors |
+| Row-source check | `python3 tools/rowsource_check.py` | `missing=0` across every table; all demo-host links |
+| Site smoke (jsdom) | `node test/site_smoke.mjs docs/data` | ALL PASS |
+| docs live (jsdom) | `node tests/test_docs_live.mjs` | ALL PASS |
+| Root render (jsdom) | `node test/root_render.mjs` | RENDER CHECK PASSED (all pages) |
+| Render check (jsdom) | `node tools/rendercheck.mjs` | ok (all pages) |
+| Desk render (browser path) | `node test/desk_render_dc732aa6.mjs` | DESK RENDER CHECK PASSED |
+| Collector end-to-end | `python3 -m collector.test_runner` | PASS |
+| Trading engine | `python3 -m trading.test_engine` | ALL PASS |
+| Site build | `python3 -m site_build.build` | exit 0, all pages written |
+| JS syntax | `node --check assets/desk.js` | OK |
+
+### Sources (official, for manual review)
+
+* Kalshi demo REST API: <https://external-api.demo.kalshi.co/trade-api/v2>
+* Kalshi demo WebSocket: `wss://external-api-ws.demo.kalshi.co/trade-api/ws/v2`
+* Get Markets: <https://docs.kalshi.com/api-reference/market/get-markets>
+* Order book responses: <https://docs.kalshi.com/getting_started/orderbook_responses>
+* Market settlement: <https://docs.kalshi.com/getting_started/market_settlement>
+* Candlesticks: <https://docs.kalshi.com/api-reference/market/get-market-candlesticks>
+* Taker fee schedule: <https://kalshi.com/docs/kalshi-fee-schedule.pdf>
+* Authenticated requests: <https://docs.kalshi.com/getting_started/quick_start_authenticated_requests.md>
+* Create order: <https://docs.kalshi.com/getting_started/quick_start_create_order.md>
+
+### Irregularities / limits carried forward (not blocking)
+
+* **No Kalshi demo API credentials** are configured for this repo, so R9
+  (portfolio performance of the live demo account) and R11 (executing real
+  orders) remain **flagged**. The trading figures are a clearly labelled
+  SIMULATED paper ledger; the order adapter activates automatically when
+  `KALSHI_API_KEY_ID` + `KALSHI_PRIVATE_KEY_PATH` are present. Published on the
+  Flagged for Review page.
+* **News attribution (R17).** No official source maps a news article to a Kalshi
+  price move, so alerts link to the Kalshi event page and attach candidate
+  headlines labelled "candidate, not confirmed" rather than asserting cause.
+* The demo feed prints alternating trades on some markets while the quoted book
+  stays flat; the model rejects those and they are flagged. See the Flagged page.
+
+### Completion record — `arena-1ebe818a` (T-INT4)
+
+| ID | Task | Status | Result |
+| - | - | - | - |
+| T-INT1 | merge PR #28 + #29 | **done** | Both merged into `arena/1ebe818a-trade2`; conflicts resolved per table above. |
+| T-INT2 | re-verify combined tree | **done** | All suites green (table above). |
+| T-INT3 | fix exposed defects | **done** | `collector/shortlist.py` money form; `assets/desk.js` model-chat contract. |
+| T-INT4 | PR → merge → Pages → record | see below | |
