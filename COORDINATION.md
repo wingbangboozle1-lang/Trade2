@@ -960,20 +960,22 @@ one in `VERIFICATION.md` section **H** (H1–H14), each with the URL opened.
 
 | Session ID | Branch | Role | Started (UTC) | Status |
 | --- | --- | --- | --- | --- |
-| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | active |
+| `arena-c78c9b36` | `arena/c78c9b36-trade2` | Root dashboard count formatting, Culture source provenance, and review-page accuracy | 2026-11-20 | done |
 
 | # | Task | Status | Owner | File scope |
 | --- | --- | --- | --- | --- |
-| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | in progress | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
+| T14 (C78) | Harden integral count formatting without changing fractional quantities; distinguish the combined Culture/Entertainment topic from Culture-only provenance; keep an accurate no-fill alert review item | done | `arena-c78c9b36` | `site_build/format.py`, `site_build/build.py`, `site_build/flagpage.py`, `tests/test_site_build.py`, `COORDINATION.md`, generated root Pages outputs |
 
-**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `9f93a6a`, a collector refresh committed at 19:27:39Z after PR #21's root-site redesign and PR #27's coordination/Pages-deployment record. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 keeps detections as review items rather than fills, will flag repeated tickers when they actually occur, and will keep Culture + Entertainment provenance distinct from the Culture-only category query. PR #25's previous head passed collector CI, but the rebased head needs fresh checks.
+**Upstream integration / scope note (2026-11-20).** The current base `origin/main` is `8b5d701`, the PR #25 merge after PR #21's root-site redesign, PR #27's coordination/Pages-deployment record, and the `19:27:39Z` collector refresh. Preserve all upstream pages, tests, coordination records, and the latest sourced data. The root snapshot is `2026-11-20T19:25:15Z` with zero stored alert rows. T14 is complete: counts render accurately, Culture + Entertainment provenance remains distinct from the Culture-only category query, and repeated alerts are review items rather than fills.
 
 ### 2026-11-20 — `arena-c78c9b36` — final-main integration record (PR #25)
 
 - Rebased T14 successively onto PR #21's merge (`be3bcfc`), PR #27's coordination/Pages-deployment record (`7bdff2f`), and the latest collector refresh (`9f93a6a`). The current main snapshot was collected at `2026-11-20T19:25:15Z` and committed at 19:27:39Z; it contains zero alert rows. Preserved the refreshed `data/live.json`, `assets/live.json`, portfolio state, resolutions store, and upstream pages/tests.
 - Retained the merged overview grouping, dual chats, cause/search links, resolutions/trades/suggestions pages, shared formatters and extras, desk scripts, and offline root-render test. T14 uses exact Decimal integrality checks for counts, keeps fractional count-like values at two decimals, and leaves quantity/price/money formatters separate. Culture topic discovery links both official Culture and Entertainment queries. Actual repeated tickers become review findings with orderbook links; alerts remain detections, not fills.
 - Rebuilt generated root pages from the latest main snapshot and kept the standing no-fill caution. No dynamic repeated-alert finding is fabricated for the current zero-row snapshot; stale "29 raw alert rows" copy is absent.
-- Local verification on the integrated code: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed. Fresh PR CI on this latest head, merge, and this PR's Pages build remain pending.
+- Local verification: Python discovery 86 passed / 1 skipped (`cryptography` unavailable); npm 29/29; collector fixtures and trading engine passed; site smoke passed; network-free `test/root_render.mjs` passed on 13 pages; `tools/rendercheck.mjs` passed on 10 pages; linkcheck 48 pages / 621 internal links / 0 errors; Python compilation, JS syntax, and `git diff --check` passed.
+- PR #25 merged at 2026-11-20T19:31:09Z as merge commit `8b5d7016b317a30bb7b28be88f5aa5d402097445`. PR-head collector CI [44802792303](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802792303) passed; main collector check [44802871721](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871721) passed. GitHub Pages build/deployment [44802871035](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871035) succeeded, and the Pages API reports `built` for the merge commit.
+- Cache-busted public checks confirmed the overview serves the `19:25:15Z` snapshot (750 tracked markets, 2,000 resolved tracked, 0 swing alerts), the Culture page links both Culture and Entertainment category queries, and the review page retains the detections-not-fills caution. The separate `Kalshi dashboard — collect, build, deploy` run [44802871432](https://github.com/wingbangboozle1-lang/Trade2/actions/runs/44802871432) was cancelled; the dedicated Pages deployment still succeeded and was verified.
 ## Board E — session `arena-5bec0ea3` (current Arena branch `arena/5bec0ea3-trade2`)
 
 Session ID `arena-5bec0ea3` · branch `arena/5bec0ea3-trade2` · base `main` @ `1bc32b74` (rebased onto `d6aaca4`, 2026-11-20). Claimed 2026-11-20T19:20Z. Scope chosen to be disjoint from every active claim above (`arena-e4e8f4e1`, `arena-856e184e`, `arena-93e9da14`, `arena-fb6cb424`, `arena-4f92a11c`, `arena-dc732aa6`): this session does **not** touch `collector/**`, `trading/**`, `site_build/**`, `scripts/**`, `assets/desk.js`, root `*.html`, `EXECUTIVE_SUMMARY.md`, `docs/summary.html`, `tools/rendercheck.mjs`, or `kalshi-dashboard/**`.
@@ -1917,3 +1919,20 @@ Base: `main` @ `06738d1` (identical to this branch tip at start). Started 2026-1
 ## Overlap check at claim time
 
 `gh pr list --state open` → #28 (`arena/dd1da6b5-trade2`, files listed in K-T1) and #29 (`arena/c78c9b36-trade2`, `COORDINATION.md` only). No other session has an open PR. `gh run list --branch main` is green (collector, Kalshi dashboard, Pages). The most recent board section is Board J (`arena-1e3b2594`, integration complete 2026-11-20T20:45Z). This session's work therefore covers exactly the two stale PRs plus the one open request addressed to their owner (R-1E3-1). R-1E3-2 (stale fee-multiplier claim in `flagpage.py`/`build.py` copy) is inside PR #28's claimed scope (`site_build/flagpage.py`, `site_build/build.py` were both touched by that PR) — this session will check on the merged tree whether the flagged item and methodology sentence now match the code, and fix the copy if the takeover leaves them stale.
+
+## Completion record — Board K (updated through the PR, merge result appended below)
+
+| ID | Status | Result |
+| - | - | - |
+| K-T1 | done | PR #28's content merged onto `main` @ `06738d1` in merge commit `b218b05` on this branch; every conflict resolved as a union (resolutions + rationale in `VERIFICATION-bc051b95.md` §2); five defects found in the line-by-line review and fixed with the battery re-run (§3); full battery green (§5). Handoff note recorded: session `arena-dd1da6b5`'s T20–T26 work reaches `main` through this session's PR; their Session E board section is preserved verbatim. |
+| K-T2 | done | PR #29's T14 (C78) close-out integrated additively into the `arena-c78c9b36` board section (registry `done`, task `done`, completed PR #25 verification evidence). Handoff note recorded; PR #29 itself will be closed referencing this integration. |
+| K-T3 | done | R-1E3-1 applied: `collect` concurrency group of `.github/workflows/kalshi-dashboard.yml` is now `collect-${{ github.event_name }}` with the cancellation evidence in a comment, matching `collector.yml`'s pattern. |
+| K-T4 | merge pending | Battery + live-API verification in `VERIFICATION-bc051b95.md`; PR opened from this branch; merge result + Pages confirmation appended below after the merge. |
+
+Battery at the final tree: unittest 243 OK (1 skip) · npm 29/29 · collector
+fixtures + trading engine PASS · root/render/desk-render checks PASS · site
+smoke PASS · linkcheck 50 pages / 685 links / 0 errors · rowsource 0 missing
+source URLs / 0 production leaks. Live demo-API spot checks: 3 rows + 1 order
+book + 1 series re-verified field-by-field through the platform fetcher
+(`VERIFICATION-bc051b95.md` §4) — structural fields exact, live-size fields
+drift inside the published 2 % tolerance.
