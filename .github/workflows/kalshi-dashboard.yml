@@ -20,7 +20,10 @@ permissions:
   contents: write
 
 concurrency:
-  group: collect
+  # Distinct group per event (R-1E3-1): GitHub cancels a *pending* run in a
+  # shared group when a newer one queues, so the */5 schedule used to be
+  # replaced by queued push runs and the snapshot age drifted.
+  group: collect-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
