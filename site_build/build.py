@@ -24,6 +24,10 @@ from typing import Any
 
 from collector.collector import LIVE_PATH, load_json
 from . import extras, flagpage
+# The GitHub Pages root of this site, used only to cross-link the two other
+# dashboards that are published from this repository (see build_overview).
+SITE_ROOT = "https://wingbangboozle1-lang.github.io/Trade2/"
+
 from .format import (API, count, cents, esc, kalshi_event_url,
                      kalshi_market_url, money, news_search_url, num, pct,
                      result_chip, safe_url)
@@ -427,6 +431,38 @@ def build_overview(live: dict[str, Any]) -> str:
           no order is ever sent. Every row links to the exact API response it
           came from.</p></div>
         </div>
+        <details class="panel panel-compact" id="which-site">
+          <summary><b>Which of the published dashboards should I use?</b>
+          <span class="muted">— three of them are live on this repo</span></summary>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Address</th><th>What it is</th><th>Use it when</th></tr></thead>
+              <tbody>
+                <tr><td><a href="{SITE_ROOT}" >this page</a></td>
+                  <td><b>Primary desk.</b> Live event tables, two alert chats
+                  (one of which polls the demo order books from your own browser
+                  and tags what it measures <b>LIVE</b>), order-book depth,
+                  price chart, resolutions, paper ledger, flagged page.</td>
+                  <td>Always — it is the maintained one.</td></tr>
+                <tr><td><a href="{SITE_ROOT}docs/">/docs/</a></td>
+                  <td>An older parallel build by a different session: same public
+                  demo data, different renderer, its own portfolio and strategy-lab
+                  pages. Still built. Its alert buffer is produced by a different
+                  collector and has published at least one phantom swing (a $0.877
+                  move on a market whose book was 0.0010 / 0.8860); that is logged
+                  on <a href="{SITE_ROOT}docs/flagged.html">its flagged page</a>.</td>
+                  <td>Cross-checking a number against a second implementation.</td></tr>
+                <tr><td><a href="{SITE_ROOT}kalshi-dashboard/">/kalshi-dashboard/</a></td>
+                  <td>Third early build, refreshed on its own schedule.</td>
+                  <td>Historical interest only.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted">All three read the same public demo API and none can
+          place an order. They are separate because they were built in parallel
+          sessions under the repository's coordination rules, not because the
+          work differs.</p>
+        </details>
         <section class="panel">
           <div class="panel-title">
             <div><span class="section-icon">⌕</span><div>

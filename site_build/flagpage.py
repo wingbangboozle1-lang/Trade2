@@ -421,6 +421,76 @@ STANDING = [
                  "oracle, because it matches every one of the 42 published rows."),
         "source": ("https://kalshi.com/docs/kalshi-fee-schedule.pdf",),
     },
+    {
+        "title": "This tab stops alerting when it is closed, and a reload restarts "
+                 "its baseline",
+        "body": "The two chat feeds draw on two independent sources: the CI "
+                "collector's stored buffer, and the order-book polling a browser "
+                "does while the page is open (rows tagged LIVE). The browser "
+                "poller cannot run when the page is closed, cannot see prices "
+                "between polls, and starts a fresh baseline on reload, so a move "
+                "that happened while nobody was watching is not in its output. "
+                "It is a live view, not a recording. The only durable record is "
+                "the CI snapshot, which runs on a schedule.",
+        "source": ("https://docs.kalshi.com/getting_started/rate_limits",
+                   "https://docs.kalshi.com/api-reference/market/get-markets"),
+    },
+    {
+        "title": "Public unauthenticated rate limits are undocumented in detail",
+        "body": "Kalshi documents that unauthenticated public requests are "
+                "subject to separate limits and tells clients to back off on "
+                "429, but does not publish the numeric ceiling. The browser "
+                "poller therefore sends two requests every five seconds per "
+                "open tab and backs off exponentially (5s, 10s, 20s, 60s) on any "
+                "failure. Several visitors with the page open will each poll "
+                "independently, so the observed ceiling may be lower than the "
+                "documented tier allows.",
+        "source": ("https://docs.kalshi.com/getting_started/rate_limits",),
+    },
+    {
+        "title": "WebSocket streaming is not used because the public WebSocket "
+                 "requires an API key",
+        "body": "The demo WebSocket host accepts a connection only with API-key "
+                "authentication, and this project ships no credentials to a "
+                "public page (and the repository holds none). Alerts are "
+                "therefore derived from REST order-book snapshots, which are "
+                "point-in-time reads. Kalshi's own documentation recommends the "
+                "WebSocket channel when current state matters, so a "
+                "credentialed deployment would be strictly more timely than "
+                "this one.",
+        "source": ("https://docs.kalshi.com/websockets/websocket-connection",
+                   "https://docs.kalshi.com/getting_started/orderbook_responses"),
+    },
+    {
+        "title": "A second published dashboard still shows a phantom $0.877 swing",
+        "body": "The /docs/ dashboard on this repository publishes its own alert "
+                "buffer, produced by a different collector. Its row for "
+                "KXPRESNOMD-28-BOBA reports a move from 0.005 to 0.882. The "
+                "official market record at that time quoted yes_bid 0.0010 and "
+                "yes_ask 0.8860: an 88.5-cent one-sided quote with no two-sided "
+                "market, not a price move. That collector does not apply the "
+                "two-sided / maximum-spread rule this desk applies, so the row "
+                "was refused here and published there. It is listed for review "
+                "rather than edited, because that pipeline has a different "
+                "owner and its own coordination entry.",
+        "source": ("https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
+                   "https://docs.kalshi.com/getting_started/orderbook_responses"),
+    },
+    {
+        "title": "Two prompts in the brief cannot be satisfied from official "
+                 "sources, so they are answered as described, not faked",
+        "body": "(1) 'Demo-account portfolio': reading a Kalshi account requires "
+                "an API key pair; the repository holds none and none may be "
+                "shipped to a public page, so the portfolio on this site is a "
+                "paper ledger graded against real demo prices. (2) 'Website "
+                "links that may have caused a jump': no official source maps a "
+                "news article to a Kalshi price move. Alert rows therefore link "
+                "the market and a clearly labelled news search, and only show a "
+                "headline when the CI collector fetched one, labelled as a "
+                "candidate, never as a cause.",
+        "source": ("https://docs.kalshi.com/getting_started/quick_start_authenticated_requests",
+                   "https://docs.kalshi.com/getting_started/market_settlement"),
+    },
 ]
 
 

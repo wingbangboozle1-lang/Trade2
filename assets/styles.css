@@ -1271,3 +1271,20 @@ table tr.topic-head th a { font-weight: 700; font-size: 13px; }
 .cause-label { color: var(--muted); font-size: 10.5px; }
 .cause-none { color: var(--muted); font-size: 10.5px; font-style: italic; }
 .cause-links .cause-none { border-bottom: none; }
+
+/* Collapsible panel used on the overview to explain the three published
+ * dashboards without pushing the event tables below the fold. */
+.panel.panel-compact { padding: 0 0 4px; }
+.panel.panel-compact > summary {
+  cursor: pointer; padding: 12px 16px; font-size: 13.5px;
+  list-style: none; display: flex; gap: 8px; flex-wrap: wrap;
+  align-items: baseline;
+}
+.panel.panel-compact > summary::-webkit-details-marker { display: none; }
+.panel.panel-compact > summary::before {
+  content: "▸"; color: var(--muted); font-size: 11px; margin-top: 2px;
+}
+.panel.panel-compact[open] > summary::before { content: "▾"; }
+.panel.panel-compact > summary:hover { background: #f7faf8; }
+.panel.panel-compact > .table-wrap { padding: 0 16px; }
+.panel.panel-compact > p { padding: 0 16px 6px; font-size: 12px; }

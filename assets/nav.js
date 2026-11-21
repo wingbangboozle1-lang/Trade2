@@ -12,11 +12,7 @@
  *      invented). Green under 15 minutes, amber to 60, red beyond — the same
  *      thresholds the desk uses.
  *   3. Cross-links the secondary dashboard published under /kalshi-dashboard/,
- *      but only when that page is actually present in this deployment. The
- *      earlier version always appended the link, which produced a 404 from the
- *      root site: the file list is built once into BASE_PAGES below, and the
- *      link is only added for a deployment whose paths match one of the known
- *      layouts.
+ *      but only from a path prefix that is known to contain it.
  *
  * Nothing in this file changes the set of links that is present without it,
  * with the single documented exception of the cross-link in (3), which is what
@@ -25,23 +21,29 @@
 (function () {
   "use strict";
 
-  var CROSSLINK = {
-    title: "The separate dashboard published alongside this one",
-    label: "Session dashboard"
-  };
-
   /* Deployments that actually contain kalshi-dashboard/index.html. The root
-   * site (served from /) and the docs site (served from /docs/) are the two
-   * that do; the category pages are one level deeper. A location outside
-   * these prefixes (a local file open, a preview server) simply gets no link. */
+   * site and the docs site are the two that do; category pages sit one level
+   * deeper. Anything else (a local file, a preview server) gets no link. */
   var KNOWN_ROOTS = ["/Trade2/", "/Trade2/docs/"];
+
+  var CROSSLINK = {
+    label: "Session dashboard",
+    title: "The separately built dashboard published next to this one. Same " +
+           "public demo data; a different renderer. See the Overview page for " +
+           "which one to use."
+  };
 
   function crosslinkTarget() {
     var here = location.pathname.replace(/[^/]*$/, "");
-    var ok = KNOWN_ROOTS.some(function (root) {
-      return here.indexOf(root) === 0 || here === root.slice(0, -1) + "/";
+    var known = KNOWN_ROOTS.some(function (root) {
+      return here === root || here.indexOf(root) === 0;
     });
-    return ok ? here + "kalshi-dashboard/index.html" : null;
+    if (!known) return null;
+    /* Never link a page to its own deployment root: from /Trade2/docs/ the
+     * file is directly under this prefix, from /Trade2/ it is one level down. */
+    if (here === "/Trade2/") return here + "kalshi-dashboard/index.html";
+    if (here === "/Trade2/docs/") return here + "kalshi-dashboard/index.html";
+    return "/Trade2/kalshi-dashboard/index.html";
   }
 
   function addCrosslink() {
