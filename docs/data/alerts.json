@@ -1,7 +1,7 @@
 {
  "alerts": [
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6200/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": 0.11,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -21,6 +21,20 @@
      "status": "verified-fetch",
      "title": "US Gas Prices Drop 50 Cents in Three Weeks - Demokratis.co.id",
      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1pcjdfMkkzNThqZXNndmlmaWc2YlJIWlhZZ2ZJX1VkcUlSZDJ1bW1jc0FrcWx3VG4taEFCdEtKNktkaDkzNGNPZUZpOHhpbXFqbkFKUElMTVFjRHpNeFRDX2FxaHhhU3hS?oc=5"
+    },
+    {
+     "published": "2026-11-21T01:39:00+00:00",
+     "source": "FOX 8 Local First",
+     "status": "verified-fetch",
+     "title": "Louisiana gas prices fall ahead of Thanksgiving, AAA says - FOX 8 Local First",
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaHVWTjQ4MldTQVZJVnJBNnl4eGtReWlfWXlmVUowS29TYWx0WnNwVkJPaW9uUF9mQWRDRzN0MjdDaE9mejJXc2hoRHA1azI1S3o4eU0td0R3Zjh6TzNZRDNLX1lDYnFLZlN6bGVOdF93aWNia1AxaDBxQVNDaV9UcTlyWE95YkRXdWljUllBaGFOcjBk0gGoAUFVX3lxTE9TLUF5eGZqWEcyQWF1MHNHSnRMaEs4SUlqME4xQTFvZzZVbnJ6OE1fVTQxM2V1QkZVeGg0S1U1ejV4N2pQSjdKSGpYZlVjU1NxdFdJVHNYd2tlSmR3OGhZV00yeXBsSWg1a0RKenE2bUtGUTdYOWwycUJOblhfWFZMY2JXVTlIVHVoWDNQdFhFS1hwUGxCcVlOMEJ2SXYtN1pyREhpOFN5Uw?oc=5"
+    },
+    {
+     "published": "2026-11-21T10:45:26+00:00",
+     "source": "Wisevoter",
+     "status": "verified-fetch",
+     "title": "Pennsylvania Gas Falls to $4.10 Per Gallon - Wisevoter",
+     "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPdV9SZVRzU054RVNvR25GeUlsaVEydnlWUmxtX0haQnJham5saFAzOFZOdTdOZVZoRzhONVJTWWNqbkMxME96UFlfOVY0eUlZUlFGMzNnYXFCblkwd1prZG9STVYxM0xxOV9jQXRFTlJubXJyRUhwY0QtbWNHX1JEVGkwZy1MS2l5Vm85dmVDdUVJdw?oc=5"
     }
    ],
    "news_status": "ok",
@@ -35,16 +49,29 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": 0.877,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
-   "flags": [
-    "news-unverified:no headline within window (link left blank)"
-   ],
+   "flags": [],
    "from": 0.005,
-   "headlines": [],
-   "news_status": "no-headlines-found",
+   "headlines": [
+    {
+     "published": "2026-11-21T11:00:00+00:00",
+     "source": "Newsweek",
+     "status": "verified-fetch",
+     "title": "Democrats Have 56 Senate Seats. Is That Enough? - Newsweek",
+     "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE81WV9ZVGE4M0o2MFV2Z3pQaE1Ock1SVUpIaVRlUk9CR0pId0FjSFhXaXJPN2VRUTRXekduWVU5R3d5aTJwanc2RmN1R3JwcVFLVDVReWpsQnh5Qlg4QVE2U19ScjRQQW84ZlhNTk9laXdYY0pQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T23:33:20+00:00",
+     "source": "Creators Syndicate",
+     "status": "verified-fetch",
+     "title": "2028 Is Looking Like 2016 but Upside Down, by Michael Barone - Creators Syndicate",
+     "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQSDdLOU9Ub1FWNklibXo4Wmt1cUFrYk1uSnBHVGJRZzluVkk3Rl8xWGtZeUFodUZ3Q0dVVDM3OEs2Y2wxRHROQVEzZm85eTNvMDhuajBHekwtV2VSY0xzbkQ4VEVpSnNxTGpyX3Rva0l6czRpSkZLSUVrUTJDQVRfQzR2d3h2Z2dIMjdRaU9HbE1QS1N0TG5r?oc=5"
+    }
+   ],
+   "news_status": "ok",
    "source_url": "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-BOBA",
    "t": 1795237200,
    "t_iso": "2026-11-21T05:00:00+00:00",
@@ -56,7 +83,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-FUR-85/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": -0.38,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -111,7 +138,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPGATOUR/markets/KXPGATOUR-THRC26-MTHO/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": 0.108,
    "direction": "up",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -138,7 +165,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26NOV23-3.6400/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": -0.21,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -159,7 +186,7 @@
    "window": "hours"
   },
   {
-   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1794997456&end_ts=1795256656&period_interval=1440",
+   "candle_source_url": "https://external-api.demo.kalshi.co/trade-api/v2/series/KXRT/markets/KXRT-HUN-65/candlesticks?start_ts=1795000549&end_ts=1795259749&period_interval=1440",
    "delta": -0.61,
    "direction": "down",
    "docs_url": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
@@ -167,18 +194,18 @@
    "from": 0.97,
    "headlines": [
     {
-     "published": "2026-11-20T01:00:00+00:00",
-     "source": "Variety",
-     "status": "verified-fetch",
-     "title": "Hunger Games: How Jennifer Lawrence Is Back in Sunrise on Reaping - Variety",
-     "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNLVZGREhCczNVN2RteGNWRDZZNnhmTGRUTkZ1UUw4dUlBTlFaeWRoNm5CUk1JUExjemNlc2ZLZXN2eF8yT2Eza3ZLbHVkcWhiejhHQVdHZWl0WmswelBVZnA5djJRVUJrb2p3dHlDYjNRczJ6Y0dxdE81bzR4RjY1SUxURHFJWjVvTXRJdURPWDdraVlUNE9WRllBb3U?oc=5"
-    },
-    {
      "published": "2026-11-20T04:27:14+00:00",
      "source": "The Hollywood Reporter",
      "status": "verified-fetch",
      "title": "How High Can \u2018Hunger Games: Sunrise on the Reaping\u2019 Reach in Its Box Office Opening? - The Hollywood Reporter",
      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNS0tmNm9tdUJ1TXljZlhiTGFHeFNnSnVkc0hPOGpQUmEtXy1iS2VOY185LW1kdXdMYi1jNU1KWUpweGVBZEMtdW5veW05R0FndEg2RFBSMWVaRXBTY1lVVTJ4YkJnZ0JodGd6TlFvcEhMNkNuWFVQWU1XNHJ1TWZ3c3pUNVdsQkNYNVVlSWJaaFVQbmJQUld5bDIyS1hIRjBhNjlSWko4bVppMFd6OHAxR3ZsUkNNYmhHbjg1ak9OSQ?oc=5"
+    },
+    {
+     "published": "2026-11-20T01:00:00+00:00",
+     "source": "Variety",
+     "status": "verified-fetch",
+     "title": "Hunger Games: How Jennifer Lawrence Is Back in Sunrise on Reaping - Variety",
+     "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNLVZGREhCczNVN2RteGNWRDZZNnhmTGRUTkZ1UUw4dUlBTlFaeWRoNm5CUk1JUExjemNlc2ZLZXN2eF8yT2Eza3ZLbHVkcWhiejhHQVdHZWl0WmswelBVZnA5djJRVUJrb2p3dHlDYjNRczJ6Y0dxdE81bzR4RjY1SUxURHFJWjVvTXRJdURPWDdraVlUNE9WRllBb3U?oc=5"
     },
     {
      "published": "2026-11-20T04:38:00+00:00",
@@ -214,7 +241,7 @@
    "window": "hours"
   }
  ],
- "generated_at": "2026-11-21T10:24:49.584347+00:00",
+ "generated_at": "2026-11-21T11:16:21.693164+00:00",
  "source_docs": "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
  "threshold": 0.1
 }
