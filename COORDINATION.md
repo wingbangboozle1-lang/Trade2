@@ -1938,3 +1938,34 @@ owners' scopes), and `EXECUTIVE_SUMMARY.md`/`VERIFICATION.md` (PR #28's scope).
 | K-04 | **Published resolution rows are exact.** `KXAAAGASCDAK-26NOV20-LD` shows `result: yes`, `settlement_value_dollars: 1.0000`, `settlement_ts: 2026-11-20T10:35:14.609488Z` — identical to the row on `/resolutions.html`. | [market](https://external-api.demo.kalshi.co/api-reference/../trade-api/v2/markets/KXAAAGASCDAK-26NOV20-LD) |
 | K-05 | **A "no quote" market is shown as `UNVERIFIED`, correctly.** `KXAAAGASM-26NOV30-4.70` has an empty book and a 0.0000/1.0000 record quote. The published row leaves bid/ask blank/UNVERIFIED instead of publishing the phantom 0.50 mid. | [market](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70) · [book](https://external-api.demo.kalshi.co/trade-api/v2/markets/KXAAAGASM-26NOV30-4.70/orderbook) |
 | K-06 | Repo/tooling notes: this checkout is a **shallow clone (depth 1)**, so local `git log` shows one commit; the GitHub API shows the real history. `data/alerts.json` was rewritten to `{"version": 3, "alerts": []}` by the rule-version reset, while `docs/data/alerts.json` still holds 6 verified swings — the two pipelines are independent by design, and the root site's chats read `data/live.json.alerts` (also 0), so the root chats are empty *by rule*, and `review.html#refused` explains the 4 refusals. | `git rev-parse --is-shallow-repository`; `data/alerts.json` |
+
+## Board K progress — `arena-f3cb9b9f` (2026-11-21 ~07:10Z)
+
+| ID | Status | Result |
+| - | - | - |
+| K1 | **done** | `assets/live-feed.js` (pure, 18 Node cases) + `assets/desk.js:startLivePulse` + a server-rendered panel on `/live.html`. One anonymous request per 45 s (`GET /markets/orderbooks`, documented cap 100) measures the whole tracked set; the detector mirrors `collector/alerts.py` (best bid = last level, YES ask = 1 − best NO bid, two-sided spread strictly < $0.10, ≥ 1 contract at the level) and **relaxes nothing**. Rows are labelled `live`, state `quote mid to quote mid (live polls)`, carry no news link and claim no cause. Opt-out checkbox. Falls back to the site's own `/api/orderbooks` proxy when the exchange is unreachable. |
+| K2 | **done** | YES/NO switch on the price chart. NO is derived from the same book (NO = 1 − YES) so no price is invented; the Y axis and legend relabel, and both depth ladders now say they are bid ladders. |
+| K3 | **withdrawn** | My original claim (pre-rendered `#feedAll` publishing refused moves) was **wrong** and retracted before any code changed — see K-01 above and §E of `VERIFICATION-f3cb9b9f.md`. |
+| K4 | **partly done, deliberately** | Evaluated in `LIVE_DETECTION_EVALUATION-f3cb9b9f.md`. The reference-augmentation change itself is **not** implemented: `collector/alerts.py` is imported by the `docs/` pipeline too, and every published row would need re-verification. Raised as `R-F3-1` and published as findings F-01/F-02 on `review.html` instead. |
+| K5 | **done** | `VERIFICATION-f3cb9b9f.md`: 6 market rows + 1 resolution row + 2 derived figures + 6 doc claims, each with the exact official URL. |
+| K6 | in progress | PR → merge → Pages → record. |
+| K7 | **done (unplanned, forced by a measured finding)** | 411 of 750 ranked events have **no two-sided quote**, so the "highest dollar amount" leaderboard compared priced and unpriced markets without saying so. The overview now opens with a price-mix strip (75 near even odds / 44 one side favoured / 220 effectively decided / 411 no quote) and each row carries a `no book` / `wide` / `decided` chip. Derived only from fields already published; a blank is still never inferred. |
+
+### Requests raised by this session
+
+| ID | To | Request |
+| - | - | - |
+| **R-F3-1** | owner of `collector/alerts.py` (`arena-856e184e`'s task T16; module is shared with `docs/`) | In `_swing()`, compare the swing direction against the candle's documented `price.previous_dollars`. Today `KXPRESNOMD-28-BOBA`'s bar `1795237200` shows `yes_ask.close 0.8820` against a `previous_dollars` of 0.0050; using `previous_dollars` as a cross-check would catch that class of single-stray-quote artefact at the source instead of refusing it downstream. Needs its own tests because `scanner`-style callers pass no candle. |
+| **R-F3-2** | owner of the collector payload schema | Add `price_ranges[0].step` (already present on `GET /markets/{ticker}`) to each event row, so alert rows can print "≈ N ticks" beside the $0.10 threshold. This is finding F-01 — the single most decision-relevant number missing from the desk. |
+| **R-F3-3** | integration session | `docs/` and `kalshi-dashboard/` were **not** touched by this session. The pulse lives only on the root site. If the other two pipelines get an equivalent panel, they should reuse `assets/live-feed.js` rather than re-implement the rule a fourth time. |
+
+### Scope note
+
+Files touched: `assets/live-feed.js` (new), `assets/desk.js`, `assets/styles.css`,
+`site_build/build.py`, `site_build/flagpage.py`, `server/app.py`,
+`tests/test_live_pulse_f3cb9b9f.py` (new), `tests/test_orderbook_proxy_f3cb9b9f.py`
+(new), `test/live-feed.test.mjs` (new), regenerated root pages,
+`LIVE_DETECTION_EVALUATION-f3cb9b9f.md` (new), `VERIFICATION-f3cb9b9f.md` (new),
+this file. **Not** touched: `docs/**`, `kalshi-dashboard/**`, `live/**`,
+`trading/**`, `scripts/**`, `EXECUTIVE_SUMMARY.md`, `VERIFICATION.md`.
+`collector/**` is untouched — the R-F3 requests are logged, not implemented.
