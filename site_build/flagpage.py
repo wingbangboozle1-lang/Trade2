@@ -249,6 +249,54 @@ STANDING = [
         ),
     },
     {
+        "title": "A flat $0.10 threshold is not the same distance on every market",
+        "body": ("A contract on a one-cent grid needs ten ticks to move $0.10; a contract quoted "
+                 "0.01 / 1.00 needs one tick. The largest open-interest market in this snapshot, "
+                 "KXPRESNOMD-28-RW, trades on a 0.0010 step, so its midpoint needs a hundred ticks "
+                 "to clear the threshold, while an empty demo book clears it on a single tick. "
+                 "The alert rule is correct but the number is not comparable across markets. "
+                 "Recommendation (not yet implemented, needs a per-row price_ranges source link "
+                 "and a payload change owned by other sessions): show 'approx N ticks' on each "
+                 "alert row. Worked examples are in LIVE_DETECTION_EVALUATION-f3cb9b9f.md section 3."),
+        "source": (
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPRESNOMD-28-RW",
+            "https://external-api.demo.kalshi.co/trade-api/v2/markets/KXPERFORMBONDSONG-35-COL",
+            "https://docs.kalshi.com/api-reference/market/get-market",
+        ),
+    },
+    {
+        "title": "A one-minute candle close can be a single stray quote",
+        "body": ("The collector measures each swing against the previous completed 1-minute "
+                 "candle's yes_bid / yes_ask closes. One minute is the finest official bar "
+                 "(period_interval must be 1, 60 or 1440), so it cannot be shortened. But a "
+                 "candle close is an instantaneous quote: the KXPRESNOMD-28-BOBA daily bar "
+                 "ending 2026-11-21T05:00Z closed with yes_bid 0.0010 against yes_ask 0.8820, "
+                 "one stray NO bid at 0.118 on a two-cent market. The quote rule refuses the "
+                 "resulting $0.877 'move' (see 'Refused midpoint moves'), which is the right "
+                 "outcome, but the check fires only after the number exists. Recommendation: "
+                 "cross-check with the documented price.previous_dollars field already present "
+                 "in every candle. Logged as R-F3-1; not implemented because it changes the "
+                 "shared alert payload."),
+        "source": (
+            "https://external-api.demo.kalshi.co/trade-api/v2/series/KXPRESNOMD/markets/KXPRESNOMD-28-BOBA/candlesticks?start_ts=1794983000&end_ts=1795243400&period_interval=1440",
+            "https://docs.kalshi.com/api-reference/market/get-market-candlesticks",
+        ),
+    },
+    {
+        "title": "The live pulse measures a different reference than the collector",
+        "body": ("The panel called 'Live pulse' on the live desk re-reads the order books from the "
+                 "visitor's browser every 45 s and compares each reading with the previous one, so "
+                 "a row there means 'the book moved $0.10 between two readings of this tab', not "
+                 "'the collector measured a move against Kalshi's candle'. Both use the same quote "
+                 "integrity rule and both label their basis, but they are not the same series and "
+                 "the site does not merge them. If the browser cannot reach the demo API, the panel "
+                 "reports that instead of showing stale rows."),
+        "source": (
+            "https://docs.kalshi.com/api-reference/market/get-multiple-market-orderbooks",
+            "https://docs.kalshi.com/getting_started/orderbook_responses",
+        ),
+    },
+    {
         "title": "Demo-account portfolio performance cannot be shown",
         "body": ("Reading a Kalshi demo balance, fills or positions requires signed "
                  "requests with an API key pair. No key is configured for this "
