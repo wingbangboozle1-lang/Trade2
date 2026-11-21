@@ -126,7 +126,12 @@ class KalshiClient:
         limit: int = 1000,
         max_pages: int = 12,
         mve_filter: str = "exclude",
+        min_settled_ts: Optional[int] = None,
+        max_settled_ts: Optional[int] = None,
     ) -> List[Dict[str, Any]]:
+        # min_settled_ts / max_settled_ts: documented GET /markets filters
+        # ("Filter items that settled after/before this Unix timestamp")
+        # https://docs.kalshi.com/api-reference/market/get-markets
         out: List[Dict[str, Any]] = []
         cursor: Optional[str] = None
         for _ in range(max_pages):
@@ -138,6 +143,8 @@ class KalshiClient:
                 limit=limit,
                 cursor=cursor,
                 mve_filter=mve_filter,
+                min_settled_ts=min_settled_ts,
+                max_settled_ts=max_settled_ts,
             )
             out.extend(data.get("markets") or [])
             cursor = data.get("cursor") or None
